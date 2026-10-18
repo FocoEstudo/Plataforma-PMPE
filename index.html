@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operação PMPE - QG Ian Ítalo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050b14;
+            color: #f8fafc;
+            isolation: isolate;
+            overflow-x: hidden; /* Previne qualquer vazamento horizontal na tela */
+        }
+        .font-tactical {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+        
+        /* Fundo da Caveira Tática com máscara ajustada para maior visibilidade */
+        .skull-bg {
+            position: relative;
+            background: #050b14;
+        }
+        .skull-bg::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: url('https://caveira.com/wp-content/uploads/2022/12/Wallpaper-05-9x16-1-576x1024.png') center / cover no-repeat;
+            opacity: 0.45; /* Aumentado de 0.25 para 0.45 para a caveira ficar bem mais visível */
+        }
+
+        /* Painéis de Vidro Fumê (Glassmorphism) ajustados para destacar o fundo */
+        .glass-panel {
+            background: rgba(8, 15, 30, 0.45); /* Reduzido de 0.65 para 0.45 para mais transparência */
+            backdrop-filter: blur(8px); /* Reduzido levemente para o fundo transparecer com mais nitidez */
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        }
+        body .text-gray-300 { color: #f1f5f9; }
+        body .text-gray-400 { color: #bfdbfe; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+        ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+        
+        /* Estilização densa para os PDFs internos */
+        .pdf-content h1 { color: #1e293b; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 20px; text-transform: uppercase;}
+        .pdf-content h2 { color: #1d4ed8; font-size: 1.4rem; font-weight: bold; margin-top: 30px; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;}
+        .pdf-content p { margin-bottom: 15px; text-align: justify; line-height: 1.8; }
+        .pdf-content ul { list-style-type: disc; margin-left: 20px; margin-bottom: 15px; line-height: 1.8; }
+        .pdf-content li { margin-bottom: 8px; text-align: justify;}
+        .pdf-content strong { color: #000; background-color: rgba(59, 130, 246, 0.2); padding: 0 4px; border-radius: 2px;}
+        .pdf-content blockquote { border-left: 4px solid #1d4ed8; background-color: #f8fafc; padding: 15px; margin: 15px 0; font-style: italic; color: #334155;}
+        
+        @media print {
+            body * { visibility: hidden !important; }
+            #materialModal, #materialModal * { visibility: visible !important; }
+            #materialModal { position: static !important; display: block !important; overflow: visible !important; padding: 0 !important; background: white !important; }
+            #materialModal > div { max-width: none !important; border: 0 !important; box-shadow: none !important; }
+            #materialModal .sticky { position: static !important; }
+            #materialModal button { display: none !important; }
+            .pdf-content { color: #111 !important; }
+        }
+
+        /* Efeito visual da missão bloqueada */
+        .locked-mission {
+            pointer-events: none;
+            filter: grayscale(100%) opacity(0.4);
+        }
+
+        /* Piscar alerta */
+        .pulse-red { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+    </style>
+</head>
+<body class="skull-bg min-h-screen pb-10 w-full max-w-full">
+
+    <header class="border-b border-blue-600/30 bg-slate-900/50 sticky top-0 z-50 backdrop-blur-md shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-blue-700 rounded-full flex items-center justify-center border-2 border-white shadow-[0_0_15px_rgba(29,78,216,0.6)]">
+                    <i class="fa-solid fa-shield-halved text-3xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-tactical text-blue-500 tracking-wider">OPERAÇÃO PMPE</h1>
+                    <p class="text-gray-300 font-semibold tracking-widest uppercase text-sm">SD IAN ÍTALO <span class="text-xs text-blue-400 ml-2"><i class="fa-solid fa-crosshairs"></i> Reta Final AOCP</span></p>
+                </div>
+            </div>
+            
+            <div class="glass-panel px-6 py-2 rounded-xl text-center border-blue-500/50">
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">A Farda Te Espera (21 Fev 2027)</p>
+                <div id="countdown" class="font-tactical text-2xl text-white tracking-widest">
+                    -- DIAS --:--:--
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
+        
+        <!-- Coluna Esquerda: CASCATA DE MISSÕES (05h às 23h) perfeitamente alinhada -->
+        <div class="lg:col-span-8 space-y-6 w-full max-w-full">
+            <div class="flex flex-col items-stretch glass-panel p-4 rounded-t-xl border-b-2 border-blue-600 gap-4 w-full">
+                <h2 class="text-2xl font-tactical text-white"><i class="fa-solid fa-calendar-check text-blue-500 mr-2"></i> Dias Operacionais (05h às 23h)</h2>
+                <select id="missionSelector" class="bg-slate-900 text-blue-400 border border-blue-500/50 rounded px-4 py-2 font-bold outline-none focus:ring-2 focus:ring-blue-500 w-full min-w-0 max-w-full truncate">
+                    <!-- Gerado dinamicamente -->
+                </select>
+            </div>
+
+            <p class="glass-panel px-4 py-3 rounded-lg text-sm text-gray-300 w-full">
+                <strong class="text-blue-400">Disciplina de Ferro:</strong> O Dia de Operação 02 só será destrancado quando as tarefas do Dia 01 estiverem 100% cumpridas. Se parar, o dia seguinte não abre. Faça por Júlia. Faça por Jailene.
+            </p>
+
+            <div class="relative min-h-[500px] w-full">
+                <!-- TELA DE BLOQUEIO (Glassmorphism) -->
+                <div id="lockScreen" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md z-10 hidden flex-col items-center justify-center rounded-xl border border-red-500/50 shadow-[0_0_30px_rgba(220,38,38,0.3)] pulse-red w-full h-full">
+                    <i class="fa-solid fa-lock text-6xl text-red-600 mb-4"></i>
+                    <h2 class="text-3xl font-tactical text-white tracking-widest text-center">ACESSO NEGADO</h2>
+                    <p class="text-gray-300 mt-4 text-center px-4 md:px-8 text-lg leading-relaxed">
+                        Soldado, você deixou inimigos para trás.<br>
+                        <strong class="text-red-400">A próxima operação só é liberada com 100% de aproveitamento na anterior.</strong>
+                    </p>
+                    <button onclick="goToActiveMission()" class="mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded font-tactical text-lg transition-transform hover:scale-105">RETORNAR À MISSÃO ATIVA</button>
+                </div>
+
+                <div id="scheduleContainer" class="space-y-4 w-full">
+                    <!-- Tarefas Injetadas via JS -->
+                </div>
+            </div>
+            
+            <div class="glass-panel p-6 rounded-xl mt-8 flex flex-col md:flex-row items-center gap-6 border-l-4 border-l-blue-600 w-full">
+                <i class="fa-solid fa-skull text-5xl text-gray-400"></i>
+                <div class="min-w-0">
+                    <h3 class="font-tactical text-xl text-blue-400 mb-2">Sem Atalhos. Apenas Guerra.</h3>
+                    <p class="text-gray-300 text-sm break-words">Ian, acorde às 05:00 e cumpra as ordens de cima a baixo. A cada caixa marcada, você está um passo mais perto de tirar sua família de qualquer dificuldade. Não pare por nada.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita -->
+        <div class="lg:col-span-4 space-y-6 w-full max-w-full">
+            
+            <!-- Edital Alvo PMPE -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg hidden lg:block w-full">
+                <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-list-check mr-2"></i> Edital Alvo PMPE</h3>
+                <div class="space-y-4 text-sm text-gray-300 h-48 overflow-y-auto pr-2 custom-scrollbar">
+                    <div>
+                        <strong class="text-white block mb-1">Bloco I (20 Questões)</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Língua Portuguesa (10q)</li>
+                            <li>História de Pernambuco (10q)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">Bloco II (20 Questões)</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Raciocínio Lógico Matemático (10q)</li>
+                            <li>Informática Básica (10q)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">Bloco III (20 Questões)</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Direito Constitucional (10q)</li>
+                            <li>Dir. Humanos e Legislação Extravagante (10q)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong class="text-white block mb-1">Prova Discursiva</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-xs">
+                            <li>Redação Dissertativa em Prosa</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMULADOR GERADOR 60Q -->
+            <div class="glass-panel rounded-xl overflow-hidden border-2 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.3)] relative group w-full">
+                <div class="bg-red-600 p-3 flex justify-between items-center">
+                    <h3 class="font-tactical text-white text-lg"><i class="fa-solid fa-crosshairs mr-2"></i> SIMULADOR AOCP</h3>
+                    <span class="bg-white text-red-600 text-xs px-2 py-1 rounded font-bold">60 QUESTÕES</span>
+                </div>
+                <div class="p-5 text-center">
+                    <p class="text-sm text-gray-300 mb-4">Motor de geração procedimental blindado. Sempre extrai exatamente 60 questões inéditas para treino pesado.</p>
+                    <select id="quizFilter" class="w-full bg-slate-800 text-white border border-slate-700 rounded py-2 px-3 mb-4 font-bold outline-none focus:border-red-500 transition-colors max-w-full">
+                        <option value="todos">Simulado Geral PMPE (60 Questões Exatas)</option>
+                        <option value="Língua Portuguesa">Língua Portuguesa (60q)</option>
+                        <option value="História de Pernambuco">História de Pernambuco (60q)</option>
+                        <option value="Raciocínio Lógico Matemático">Raciocínio Lógico Matemático (60q)</option>
+                        <option value="Informática Básica">Informática Básica (60q)</option>
+                        <option value="Direito Constitucional">Direito Constitucional (60q)</option>
+                        <option value="Direitos Humanos e Legislação Extravagante">Direitos Humanos e Extravagante (60q)</option>
+                    </select>
+                    <button onclick="openQuiz()" class="w-full bg-slate-900 hover:bg-red-600 text-white border border-red-600 py-3 rounded font-tactical transition-colors text-lg shadow-lg">
+                        <i class="fa-solid fa-play mr-2"></i> INICIAR BATERIA (60Q)
+                    </button>
+                </div>
+            </div>
+
+            <!-- PAUSA TÁTICA (JOGOS) -->
+            <div class="glass-panel p-5 rounded-xl border border-blue-500/40 shadow-lg w-full">
+                <h3 class="font-tactical text-blue-400 text-lg mb-2"><i class="fa-solid fa-puzzle-piece mr-2"></i> Pausa Tática (Descompressão)</h3>
+                <p class="text-xs text-gray-400 mb-4">Jogue para relaxar a mente, mas fixando os termos do edital PMPE.</p>
+                <select id="studyGameTheme" onchange="startStudyGame()" class="w-full bg-slate-900 text-white border border-slate-600 rounded py-2 px-3 mb-3 text-sm max-w-full">
+                    <option value="portugues">Língua Portuguesa</option>
+                    <option value="historia">História de Pernambuco</option>
+                    <option value="rlm">Raciocínio Lógico Matemático</option>
+                    <option value="informatica">Informática Básica</option>
+                    <option value="constitucional">Direito Constitucional</option>
+                    <option value="extravagante">Leis Extravagantes / DH</option>
+                </select>
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <button id="wordSearchMode" onclick="setStudyGameMode('wordsearch')" class="bg-blue-600 text-white font-bold py-2 rounded text-sm transition-colors">Caça-palavras</button>
+                    <button id="crosswordMode" onclick="setStudyGameMode('crossword')" class="bg-slate-800 text-gray-200 hover:bg-slate-700 font-bold py-2 rounded text-sm transition-colors">Cruzadinha</button>
+                </div>
+                <p id="studyGameStatus" aria-live="polite" class="text-sm text-gray-300 min-h-10 mb-2">Selecione um jogo para começar.</p>
+                <div id="studyGameTargets" class="flex flex-wrap gap-2 mb-3"></div>
+                <div id="studyGameBoard" class="overflow-auto max-w-full flex justify-center"></div>
+                <div id="studyGameClues" class="hidden mt-4 space-y-4 text-sm text-gray-200"></div>
+                <button onclick="startStudyGame()" class="w-full mt-4 bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-600 py-2 rounded font-bold text-sm">
+                    <i class="fa-solid fa-rotate mr-2"></i> NOVO JOGO
+                </button>
+            </div>
+
+            <!-- Gráfico de Situação -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg hidden lg:block w-full">
+                <h3 class="font-tactical text-blue-400 text-lg mb-4 border-b border-slate-700 pb-2"><i class="fa-solid fa-chart-radar mr-2"></i> Situação Tática (Radar)</h3>
+                <div class="relative w-full aspect-square">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-2 text-xs text-gray-400">
+                    <div class="bg-slate-800 p-2 rounded text-center border border-slate-700"><span class="block text-white font-bold text-lg" id="statTotal">0/0</span> Missões Concluídas</div>
+                    <div class="bg-slate-800 p-2 rounded text-center border border-slate-700"><span class="block text-blue-400 font-bold text-lg" id="statPercent">0%</span> Prontidão</div>
+                </div>
+            </div>
+
+            <!-- CADERNO DE ANOTAÇÕES -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg w-full">
+                <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-pen-to-square mr-2"></i> Caderno de Anotações</h3>
+                <textarea id="tacticalNotes" class="w-full h-32 bg-slate-900 border border-slate-600 rounded p-3 text-sm text-gray-200 outline-none focus:border-blue-500 resize-none" placeholder="Suas anotações, mnemônicos e justificativas das questões que errou são salvas automaticamente aqui..."></textarea>
+            </div>
+
+            <!-- LINKS ÚTEIS -->
+            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg w-full">
+                <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-link mr-2"></i> Arsenal Externo</h3>
+                <div class="space-y-2 text-sm">
+                    <a href="https://www.institutoaocp.org.br/concurso.jsp?id=611" target="_blank" class="block bg-slate-800 hover:bg-slate-700 p-3 rounded text-white font-bold transition-colors border-l-4 border-red-500"><i class="fa-solid fa-download mr-2 text-red-400"></i> BAIXAR PROVA PMPE 2024 (AOCP)</a>
+                    <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-scale-balanced mr-2 text-blue-400"></i> Constituição Federal</a>
+                    <a href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11343.htm" target="_blank" class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-capsules mr-2 text-green-400"></i> Lei de Drogas (Planalto)</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modais do Sistema -->
+    <div id="customModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[100] backdrop-blur-sm">
+        <div class="bg-slate-900 border-2 border-blue-600 rounded-xl p-6 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-200">
+            <i class="fa-solid fa-circle-exclamation text-4xl text-blue-500 mb-4" id="modalIcon"></i>
+            <h3 class="text-xl font-tactical text-white mb-2" id="modalTitle">Atenção</h3>
+            <p class="text-gray-300 mb-6" id="modalMessage">Mensagem</p>
+            <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded">ENTENDIDO</button>
+        </div>
+    </div>
+
+    <!-- Modal Visualizador de PDFs -->
+    <div id="materialModal" class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[120] backdrop-blur-md overflow-y-auto py-10 px-4">
+        <div class="bg-white border-2 border-slate-400 rounded-xl max-w-5xl w-full shadow-2xl relative text-slate-900">
+            <div class="p-4 border-b border-slate-300 flex justify-between items-center bg-gray-100 rounded-t-xl sticky top-0 z-30 shadow-sm">
+                <h3 class="text-xl font-tactical text-slate-800 truncate" id="materialTitle"><i class="fa-solid fa-book-open text-blue-600 mr-2"></i> DOUTRINA E LEI SECA</h3>
+                <div class="flex gap-4 items-center flex-shrink-0 ml-2">
+                    <button onclick="window.print()" class="text-blue-600 hover:text-blue-800 font-bold text-sm bg-blue-100 px-3 py-1 rounded hidden sm:block"><i class="fa-solid fa-print mr-1"></i> IMPRIMIR PDF</button>
+                    <button onclick="closeMaterial()" class="text-gray-500 hover:text-red-600 transition-colors bg-gray-200 hover:bg-red-100 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="p-6 md:p-16 pdf-content" id="materialContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal do Simulador de Questões -->
+    <div id="quizModal" class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[110] backdrop-blur-md overflow-y-auto py-10 px-4">
+        <div class="bg-slate-900 border-2 border-slate-700 rounded-xl max-w-4xl w-full shadow-2xl relative">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800 rounded-t-xl sticky top-0 z-20">
+                <h3 class="text-xl md:text-2xl font-tactical text-red-500 truncate" id="quizModalTitle"><i class="fa-solid fa-crosshairs mr-2"></i> TREINAMENTO PMPE</h3>
+                <button onclick="closeQuiz()" class="text-gray-400 hover:text-white transition-colors bg-slate-700 hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 ml-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 md:p-10" id="quizContent">
+                <div class="flex flex-col sm:flex-row justify-between text-sm text-gray-400 mb-6 font-bold tracking-wider border-b border-slate-700 pb-2 gap-2">
+                    <span id="quizProgress" class="bg-slate-800 px-3 py-1 rounded w-fit">Questão 1</span>
+                    <span id="quizSubject" class="text-blue-400">Disciplina</span>
+                </div>
+                <p id="quizQuestionText" class="text-xl text-white mb-8 leading-relaxed font-semibold break-words"></p>
+                <div id="quizOptions" class="space-y-4"></div>
+                <div id="detailedFeedbackBox" class="mt-8 p-6 rounded-lg hidden border-l-4 break-words">
+                    <h4 id="feedbackTitle" class="font-bold text-lg mb-2 flex items-center"></h4>
+                    <p id="feedbackExplanation" class="text-gray-200 leading-relaxed"></p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-slate-700 bg-slate-800 rounded-b-xl flex justify-end items-center hidden sticky bottom-0 z-20" id="quizResultFooter">
+                <button id="btnNextQuiz" onclick="nextQuizQuestion()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded font-tactical text-lg transition-transform hover:scale-105 shadow-lg hidden">AVANÇAR <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                <button id="btnFinishQuiz" onclick="finishQuizReport()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded font-tactical text-lg transition-transform hover:scale-105 shadow-lg hidden">FINALIZAR E VER RELATÓRIO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do Relatório Final -->
+    <div id="reportModal" class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[130] backdrop-blur-md overflow-y-auto py-10 px-4">
+        <div class="bg-slate-900 border-2 border-slate-700 rounded-xl max-w-4xl w-full shadow-2xl relative">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800 rounded-t-xl sticky top-0 z-20 shadow-lg">
+                <h3 class="text-xl md:text-2xl font-tactical text-blue-400 truncate"><i class="fa-solid fa-flag-checkered mr-2"></i> RELATÓRIO TÁTICO FINAL</h3>
+                <button onclick="closeReport()" class="text-gray-400 hover:text-white transition-colors bg-slate-700 hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 ml-2"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 md:p-10" id="reportContent"></div>
+            <div class="p-6 border-t border-slate-700 bg-slate-800 rounded-b-xl flex justify-end items-center sticky bottom-0 z-20">
+                <button onclick="closeReport()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded font-tactical text-lg transition-transform hover:scale-105 shadow-lg w-full sm:w-auto">VOLTAR AO QUARTEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // =========================================================================
+        // 1. DADOS LOCAIS (PROGRESSO E ANOTAÇÕES)
+        // =========================================================================
+        let userProgress = {};
+        try {
+            const savedProgress = localStorage.getItem('pmpe_ian_v7');
+            if (savedProgress) userProgress = JSON.parse(savedProgress);
+            
+            const savedNotes = localStorage.getItem('pmpe_ian_notes_v7');
+            if (savedNotes) document.getElementById('tacticalNotes').value = savedNotes;
+        } catch (e) { console.error("Erro no load de dados:", e); }
+
+        document.getElementById('tacticalNotes').addEventListener('input', (e) => {
+            localStorage.setItem('pmpe_ian_notes_v7', e.target.value);
+        });
+
+        // =========================================================================
+        // 2. BANCO DE PDFs DENSOS (OS 10 TÓPICOS APROFUNDADOS)
+        // =========================================================================
+        const materialsDatabase = {
+            "mat_pt_pmpe": {
+                title: "Língua Portuguesa - Doutrina AOCP",
+                content: `
+                    <h1>Língua Portuguesa para a PMPE (Instituto AOCP)</h1>
+                    <p>A prova de português da AOCP exige gramática normativa pesada e interpretação cirúrgica.</p>
+                    
+                    <h2>1. Compreensão vs Interpretação Textual</h2>
+                    <p><strong>Compreensão:</strong> Foco no que está explícito no texto. O comando clássico é "Segundo o texto" ou "O autor afirma que". A resposta correta será uma paráfrase (a mesma ideia escrita com sinônimos). Você não pode deduzir nada.<br><br>
+                    <strong>Interpretação:</strong> Foco no que está implícito, nas entrelinhas. O comando será "Infere-se do texto" ou "Depreende-se que". Aqui você deduz com base em pistas lógicas. O erro fatal é extrapolar usando seu "achismo" ou marcar alternativas com palavras absolutas (sempre, nunca) que o autor não usou.</p>
+                    
+                    <h2>2. Tipologia e Gênero Textual</h2>
+                    <p>A AOCP sempre cobra a tipologia predominante. <strong>Narrativo:</strong> Foco no passado (pretérito perfeito), enredo e personagens. Conta uma história. <strong>Descritivo:</strong> Retrato verbal, sem passagem de tempo, farto em adjetivos e verbos de estado. <br><br>
+                    <strong>Dissertativo-Expositivo:</strong> Informa, explica, conceitua de forma neutra, sem tentar convencer. <strong>Dissertativo-Argumentativo:</strong> Defende uma tese (ponto de vista) usando argumentos para persuadir o leitor (é a sua Redação). <strong>Injuntivo:</strong> Dá ordens, orientações ou receitas, usando verbos no imperativo.</p>
+
+                    <h2>3. Coesão Referencial (Anáfora e Catáfora)</h2>
+                    <p>A banca adora grifar um pronome e perguntar quem ele substitui. <strong>Anáfora</strong> retoma um termo que JÁ FOI DITO (aponta para trás). Exemplo: <em>"O soldado sacou a arma. <strong>Ele</strong> a destravou."</em> ('Ele' é anafórico, retoma soldado). <br><br>
+                    <strong>Catáfora</strong> antecipa um termo que AINDA SERÁ DITO (aponta para frente). Exemplo: <em>"A ordem do comandante foi <strong>esta</strong>: todos no pátio."</em> Macete: Esse/Isso (Anáfora). Este/Isto (Catáfora).</p>
+
+                    <h2>4. Coesão Sequencial (Conjunções)</h2>
+                    <p>As conjunções amarram as orações. <strong>Adversativas</strong> (mas, porém, contudo, todavia, no entanto, entretanto) indicam oposição direta, um choque de ideias. <br><br>
+                    <strong>Concessivas</strong> (embora, conquanto, ainda que, mesmo que, posto que) indicam uma oposição branda, um obstáculo que foi superado (quebra de expectativa). <strong>Causais</strong> (porque, visto que, já que, porquanto). Cuidado com a pegadinha da banca: "Porquanto" = Porque (Causa). "Conquanto" = Embora (Concessão).</p>
+
+                    <h2>5. Pronome Relativo "Que" vs Conjunção Integrante "Que"</h2>
+                    <p>Se você conseguir trocar a palavra "que" por <strong>"o qual / a qual"</strong>, ela será um Pronome Relativo e iniciará uma Oração Subordinada Adjetiva. O pronome relativo sempre retoma o substantivo que vem imediatamente antes dele. Exemplo: <em>"O policial <strong>que</strong> (o qual) treina, sobrevive."</em><br><br>
+                    Se você conseguir trocar a oração inteira que começa com "que" pela palavra <strong>"ISSO"</strong>, ela será uma Conjunção Integrante. Exemplo: <em>"O sargento disse <strong>que a ronda seria feita</strong>" -> "O sargento disse <strong>ISSO</strong>."</em></p>
+
+                    <h2>6. Concordância Verbal e Verbos Impessoais</h2>
+                    <p>A AOCP pune quem vacila nos impessoais. Verbos impessoais NÃO têm sujeito e, portanto, <strong>NUNCA vão para o plural</strong>, ficando cravados na 3ª pessoa do singular. 1) Verbo <strong>Haver</strong> no sentido de existir ou indicando tempo passado: <em>"Havia dezenas de soldados"</em> (Certo) / <em>"Haviam soldados"</em> (Errado). <br><br>
+                    2) Verbo <strong>Fazer</strong> indicando tempo decorrido ou clima: <em>"Faz dez anos que estudo"</em>. Atenção: se houver uma locução verbal, o verbo auxiliar "herda" a impessoalidade do verbo principal: <em>"Deve haver soluções"</em> (Certo) / <em>"Devem haver"</em> (Errado).</p>
+
+                    <h2>7. Partícula "SE" (Apassivadora vs Índice de Indeterminação)</h2>
+                    <p>Se o verbo for Transitivo Direto (VTD - quem vê, vê algo) + "se", a partícula é Apassivadora. O verbo deve concordar com o sujeito paciente. Exemplo: <em>"Vende-se viatura"</em> / <em>"Vendem-se viaturas"</em>. <br><br>
+                    Se o verbo for Transitivo Indireto (VTI - exige preposição) + "se", a partícula é Índice de Indeterminação do Sujeito. A frase não tem sujeito definido, e o verbo <strong>obrigatoriamente fica no singular</strong>. Exemplo: <em>"Precisa-se de novos fuzis"</em> (Quem precisa, precisa DE algo).</p>
+
+                    <h2>8. Emprego da Crase (A+A)</h2>
+                    <p>A crase é a fusão da preposição "a" com o artigo "a". <strong>Casos Proibidos (Regra de Ouro):</strong> Nunca use crase antes de palavras masculinas (a pé, a prazo), antes de verbos (começou a correr), antes de pronomes pessoais/indefinidos (falei a ela, a todos), e entre palavras repetidas (frente a frente, cara a cara). <br><br>
+                    <strong>Casos Facultativos (Decore o Macete "Até Minha Maria"):</strong> A crase é opcional 1) Depois da preposição 'até' (Fui até a/à praia); 2) Antes de pronome possessivo feminino singular (Falei a/à minha mãe); 3) Antes de nome próprio feminino (Entreguei a/à Maria).</p>
+
+                    <h2>9. O Uso da Vírgula na Sintaxe</h2>
+                    <p>A AOCP cobra a proibição suprema da vírgula: <strong>É terminantemente proibido separar o Sujeito do seu Verbo, e o Verbo dos seus Complementos (Objetos)</strong> com uma única vírgula, não importa o quão longo seja o sujeito. <br><br>
+                    <strong>Vírgulas Obrigatórias:</strong> Você deve usar vírgula para isolar o Vocativo (chamamento: <em>"Guerreiro, pegue a arma"</em>), isolar o Aposto Explicativo (<em>"Recife, a capital, é quente"</em>), e para marcar o deslocamento de Adjuntos Adverbiais longos para o início da frase (<em>"Durante a madrugada chuvosa, a PM atuou"</em>).</p>
+
+                    <h2>10. Orações Adjetivas (Restritivas vs Explicativas)</h2>
+                    <p>A semântica (sentido) da frase muda completamente com o uso ou não de uma vírgula. <strong>Sem vírgula = Restritiva:</strong> Ela limita o universo a uma parte menor. Exemplo: <em>"Os soldados que treinaram passaram."</em> (O sentido é que APENAS alguns soldados treinaram, e só esses passaram). <br><br>
+                    <strong>Com vírgula = Explicativa:</strong> Ela generaliza, referindo-se à totalidade do grupo. Exemplo: <em>"Os soldados, que treinaram, passaram."</em> (O sentido é que TODOS os soldados do batalhão, sem exceção, treinaram e passaram). Inserir ou retirar a vírgula altera o sentido, mas mantém a correção gramatical.</p>
+                `
+            },
+            "mat_hist_pmpe": {
+                title: "História de Pernambuco",
+                content: `
+                    <h1>História de Pernambuco (O Diferencial da PMPE)</h1>
+                    <p>A PMPE aprofunda a história estadual como nenhum outro edital do Brasil. O domínio das Invasões Holandesas e do ciclo de Revoluções é o que aprova o soldado.</p>
+                    
+                    <h2>1. Capitanias Hereditárias e Ciclo do Açúcar</h2>
+                    <p>A Capitania de Pernambuco (então chamada de Nova Lusitânia) foi doada a Duarte Coelho em 1534. Ela prosperou de forma ímpar (junto apenas com São Vicente), graças à combinação de três fatores: o solo extremamente fértil de massapê, o clima úmido/quente, e a implantação rigorosa do sistema *Plantation* (Latifúndio, Monocultura de cana, produção para Exportação e mão de obra Escrava - inicialmente indígena, depois africana). Olinda enriqueceu rapidamente e tornou-se a capital da capitania.</p>
+
+                    <h2>2. O Início das Invasões Holandesas (1630)</h2>
+                    <p>A motivação da invasão não foi territorial, mas estritamente econômica. Com a União Ibérica (1580-1640), Portugal e Espanha foram governados pelo mesmo rei (Filipe II). A Espanha, inimiga declarada da Holanda, proibiu o lucrativo comércio de refino e transporte de açúcar do Brasil com os holandeses (Embargo Espanhol). Prejudicada, a burguesia holandesa criou a Companhia das Índias Ocidentais (WIC), uma empresa militar-comercial. Após uma tentativa fracassada na Bahia, a WIC invadiu Pernambuco em 1630, incendiou a elite em Olinda e fixou sua base portuária no Recife.</p>
+
+                    <h2>3. A Era de Apogeu de Maurício de Nassau (1637-1644)</h2>
+                    <p>O Conde Maurício de Nassau foi enviado pela WIC para governar o Brasil Holandês e pacificou a região com uma diplomacia brilhante. Seu governo foi o apogeu da ocupação. Ele concedeu fartos empréstimos aos senhores de engenho luso-brasileiros para reerguer as plantações destruídas pela guerra. Estabeleceu uma notável **liberdade e tolerância de culto** (calvinistas, católicos e judeus conviviam no Recife). Além disso, urbanizou a cidade (conhecida como Cidade Maurícia), construindo pontes, canais e trazendo cientistas e artistas europeus (como Frans Post e Albert Eckhout) para documentar a terra.</p>
+
+                    <h2>4. Insurreição Pernambucana e as Batalhas dos Guararapes (1645-1654)</h2>
+                    <p>A WIC, visando apenas o lucro, demitiu Nassau em 1644 e passou a cobrar agressivamente as dívidas dos senhores de engenho, além de restringir a tolerância religiosa. Isso gerou a Insurreição Pernambucana: a união militar para expulsar os holandeses. Esse movimento é considerado o **berço do Exército Brasileiro** por unir as três raças: brancos luso-brasileiros (João Fernandes Vieira), negros escravizados e libertos (Henrique Dias) e indígenas (Filipe Camarão). O ápice militar foram as Batalhas dos Guararapes (1648 e 1649), culminando na assinatura da Campina do Taborda e expulsão holandesa em 1654.</p>
+
+                    <h2>5. Guerra dos Mascates (1710-1711)</h2>
+                    <p>Foi um conflito nativista de cunho econômico e político. Após a expulsão holandesa, o preço do açúcar caiu no mercado mundial. A aristocracia rural (senhores de engenho de Olinda) entrou em grave crise e passou a pegar dinheiro emprestado com juros altos dos comerciantes portugueses instalados no Recife (apelidados pejorativamente de "Mascates"). Recife, rica pelo comércio, exigiu autonomia e foi elevada à categoria de Vila pela Coroa Portuguesa, ganhando um pelourinho. Olinda, para não perder a subordinação política de Recife e não pagar as dívidas, invadiu a nova vila. A Coroa interveio militarmente, prendeu os líderes olindenses e confirmou a vitória dos mascates e de Recife.</p>
+
+                    <h2>6. Revolução Pernambucana de 1817 (A Revolução dos Padres)</h2>
+                    <p>Este foi um poderoso Movimento **Separatista e Republicano** ainda na época colonial. As causas profundas foram: a crise econômica (seca de 1816 que destruiu safras de algodão e açúcar) e, principalmente, a fúria contra a carga tributária altíssima criada por Dom João VI (que havia fugido para o Rio de Janeiro em 1808) para bancar os luxos da corte, além dos privilégios dados aos portugueses. O movimento teve imensa participação de clérigos (padres) e maçons (Domingos José Martins). Eles tomaram o poder em Pernambuco, fundaram uma República independente que durou 74 dias e criaram a primeira bandeira do estado, mas não aboliram a escravidão por medo de perder o apoio da elite agrária. Foram esmagados pelas tropas reais.</p>
+
+                    <h2>7. A Confederação do Equador (1824)</h2>
+                    <p>Outra revolta **Republicana e Separatista**, mas agora durante o Primeiro Reinado do Império (Brasil já independente). A causa central foi o autoritarismo extremo do Imperador D. Pedro I, que dissolveu a Assembleia Constituinte, outorgou à força a Constituição de 1824 e criou o absoluto **Poder Moderador** (ditadura disfarçada), além de nomear governadores indesejados para as províncias. Pernambuco se uniu ao Ceará, Rio Grande do Norte e Paraíba para tentar fundar um novo país republicano (a Confederação). O grande líder intelectual e moral do movimento foi o carmelita Frei Caneca, que acabou sendo condenado e fuzilado (os carrascos se recusaram a enforcá-lo por ser padre).</p>
+
+                    <h2>8. A Revolução Praieira (1848)</h2>
+                    <p>Foi a **última grande revolta armada do Império do Brasil** (ocorreu no Segundo Reinado, sob D. Pedro II). O nome veio do jornal "Diário Novo", cuja sede ficava na Rua da Praia no Recife. A revolta atacava a concentração de terras nas mãos da família Cavalcanti e o monopólio do comércio varejista exercido pelos portugueses. O documento histórico da revolta foi o **Manifesto ao Mundo** (redigido por Borges da Fonseca), que exigia reformas muito liberais para a época: o voto livre e universal, a liberdade de imprensa, o direito ao trabalho, a nacionalização do comércio varejista (só brasileiros) e o fim do Poder Moderador. Os praieiros tentaram invadir Recife, mas foram derrotados pelas tropas imperiais.</p>
+
+                    <h2>9. O Cangaço no Sertão (Fim do Século XIX a 1938)</h2>
+                    <p>O Cangaço foi um fenômeno de "banditismo social" característico do polígono das secas no Nordeste. Ele foi motivado pela miséria extrema, as secas prolongadas, a ineficácia do Estado e o poder absoluto e opressor dos "coronéis" locais. Bandos armados vagavam atacando fazendas, cobrando pedágios de cidades e enfrentando as polícias estaduais (as chamadas tropas "volantes"). O bando mais célebre foi liderado por Virgulino Ferreira da Silva (Lampião) e Maria Bonita. O movimento não tinha uma ideologia política de revolução socialista; era um banditismo de sobrevivência e vingança. O Cangaço foi dizimado fisicamente durante a ditadura do Estado Novo de Getúlio Vargas (1938), na famosa emboscada na Grota de Angicos (Sergipe), onde Lampião e seu bando foram mortos e decapitados.</p>
+
+                    <h2>10. O Complexo Econômico e Geopolítico Atual de Pernambuco</h2>
+                    <p>Para a PMPE, o conhecimento do estado moderno é crucial. Geopolítica atual: 1) **Polo Gesseiro do Araripe**, no sertão (região de Araripina e Ouricuri), que responde por cerca de 95% do gesso consumido no Brasil. 2) **Polo Tecnológico do Porto Digital**, localizado no Bairro do Recife, sendo o maior parque tecnológico do país. 3) **Complexo Industrial e Portuário de Suape**, no litoral sul (Ipojuca/Cabo), que abriga a Refinaria Abreu e Lima e estaleiros, sendo um hub logístico nacional. 4) **Polo Frutícola e Vitivinícola do Vale do São Francisco** (Petrolina), que utiliza alta tecnologia de irrigação no meio do semiárido para exportar uvas e mangas para a Europa e EUA.</p>
+                `
+            },
+            "mat_rlm_pmpe": {
+                title: "Raciocínio Lógico Matemático (RLM)",
+                content: `
+                    <h1>Raciocínio Lógico Matemático (Padrão AOCP)</h1>
+                    <p>A prova de RLM da PMPE exige a matemática formal das tabelas-verdade, sem margem para interpretações subjetivas ou "charadas". É cálculo lógico puro.</p>
+                    
+                    <h2>1. Proposições Lógicas (O Alicerce)</h2>
+                    <p>Uma Proposição é obrigatoriamente uma sentença declarativa (com sujeito e verbo) que pode ser julgada exclusivamente como **Verdadeira (V) ou Falsa (F)**, sem nenhum meio termo (Princípio do Terceiro Excluído). <br><br>
+                    O que **NUNCA** é proposição para a banca: Frases exclamativas ("Que dia lindo!"), frases interrogativas ("Que horas são?"), frases imperativas (ordens: "Vá estudar agora"), paradoxos e sentenças abertas onde a variável não é conhecida (Ex: "Ele é um bom policial" - Ele quem? / "x + 2 = 5" - Qual o valor de X?).</p>
+
+                    <h2>2. A Conjunção (Conectivo E / Símbolo: ^)</h2>
+                    <p>A Conjunção é o operador lógico mais rígido de todos. Ela exige perfeição absoluta. Uma frase ligada pelo "E" só será Verdadeira se **TODAS as suas partes forem Verdadeiras** ao mesmo tempo (V ^ V = V). <br><br>
+                    Basta que uma única mentira (Falso) seja dita na frase inteira para que o resultado final da Conjunção desmorone e seja julgado como Falso (V ^ F = F). Exemplo: "Sou policial E sou rico" (Se você for policial, mas for pobre, a frase toda é falsa).</p>
+
+                    <h2>3. A Disjunção Inclusiva (Conectivo OU / Símbolo: v)</h2>
+                    <p>A Disjunção Inclusiva é o operador mais tolerante da lógica. Ela aceita "qualquer coisa". Uma frase ligada pelo "OU" só será Falsa no pior cenário possível: **quando TODAS as partes forem Falsas** (F v F = F). <br><br>
+                    Basta que uma única afirmação da frase seja Verdadeira para que o resultado da Disjunção inteira seja salvo e julgado como Verdadeiro (V v F = V). Exemplo: "Vou passar na PMPE OU serei astronauta" (Se você passar na PMPE, a frase já é V, mesmo sem ir pro espaço).</p>
+
+                    <h2>4. A Disjunção Exclusiva (Conectivo OU... OU / Símbolo: v sublinhado)</h2>
+                    <p>A Disjunção Exclusiva é o operador "ciumento". Ele exige exclusividade total. A frase só será Verdadeira se os valores lógicos das partes forem **DIFERENTES / OPOSTOS** (V com F, ou F com V dá V). <br><br>
+                    Se as duas partes forem Verdadeiras ao mesmo tempo, ou Falsas ao mesmo tempo, o resultado dá Falso, pois ele proíbe o acúmulo. Exemplo: "OU estou fardado, OU estou à paisana" (Você não pode estar os dois ao mesmo tempo; se estiver, a frase é mentira).</p>
+
+                    <h2>5. A Condicional (Conectivo SE... ENTÃO / Símbolo: ->)</h2>
+                    <p>Este é o conectivo mais cobrado em todos os concursos policiais do Brasil. Na tabela-verdade do "Se... Então", só existe **UM ÚNICO CASO** em que a frase resulta em Falso. É a famosa regra da **Vera Fischer Falsa**.<br><br>
+                    A Condicional só dá Falso se a primeira parte (antecedente) for Verdadeira e a segunda parte (consequente) for Falsa na mesma linha (V -> F = F). Qualquer outra mistura de V e F, ou F e V, ou F e F, vai gerar um resultado final Verdadeiro.</p>
+
+                    <h2>6. A Bicondicional (Conectivo SE E SOMENTE SE / Símbolo: <->)</h2>
+                    <p>A Bicondicional exige acordo perfeito e sincronia entre as partes. A tabela-verdade só resultará em Verdade se os dois lados tiverem rigorosamente o **MESMO valor lógico** (V <-> V = V) e (F <-> F = V). <br><br>
+                    Se houver qualquer atrito de informações (um lado for V e o outro for F, ou vice-versa), o resultado da Bicondicional será automaticamente Falso.</p>
+
+                    <h2>7. As Leis de De Morgan (Negação do E e do OU)</h2>
+                    <p>A banca vai pedir para você NEGAR uma frase inteira. Não faça pelo sentido da cabeça; use a matemática. Para negar o (E) e o (OU), aplicamos a Lei de De Morgan. <br><br>
+                    **Regra Tática:** Você nega a primeira parte, **INVERTE o conectivo** (O 'E' vira 'OU', e o 'OU' vira 'E'), e nega a segunda parte. Exemplo prático: A negação correta de "Estudo E corro" (P ^ Q) é "NÃO estudo OU NÃO corro" (~P v ~Q).</p>
+
+                    <h2>8. Negação da Condicional (A Regra do MANÉ)</h2>
+                    <p>Como o edital manda você NEGAR a frase com o "Se... Então" (Condicional)? Aqui o candidato comum erra feio. Você usa a Regra do MANÉ: **MA**ntém a primeira parte exatamente igual **E** **NE**ga a segunda parte. <br><br>
+                    Atenção absoluta: A seta da condicional é DESTRUÍDA e substituída pelo conectivo "E" na negação. Exemplo: A negação de "Se chove, então o chão molha" (P -> Q) é "Chove E o chão não molha" (P ^ ~Q). O "Se" desaparece da resposta final.</p>
+
+                    <h2>9. Equivalências Lógicas da Condicional (Dizer o mesmo de outra forma)</h2>
+                    <p>Equivalência NÃO é negação. Equivalência é reescrever a frase mantendo a mesma tabela-verdade e o mesmo sentido matemático. A AOCP cobra as duas principais equivalências do "Se... Então": <br><br>
+                    1) **Contrapositiva (Cruza Negando):** (~Q -> ~P). Você inverte a ordem das duas partes e coloca o "NÃO" em ambas. Exemplo: "Se estudo, passo" vira "Se não passo, não estudo". <br>
+                    2) **Regra do Neymar (~P v Q):** Você Nega a primeira parte, troca o 'Se..Então' pelo 'OU', e Mantém a segunda parte. Exemplo: "Se bebo, durmo" vira "Não bebo OU durmo".</p>
+
+                    <h2>10. Tautologia, Contradição e Contingência</h2>
+                    <p>A banca pedirá para você classificar o resultado de uma Tabela-Verdade gigante. É simples: <br>
+                    **Tautologia:** Ocorre quando, após calcular todos os conectivos, a última coluna da tabela-verdade inteira resulta APENAS em valores Verdadeiros (Tudo V). É uma verdade lógica absoluta. <br>
+                    **Contradição:** Ocorre quando a última coluna inteira resulta APENAS em valores Falsos (Tudo F). É um absurdo matemático. <br>
+                    **Contingência:** Ocorre quando a última coluna fica misturada, contendo resultados V e F, dependendo dos valores iniciais testados.</p>
+                `
+            },
+            "mat_info_pmpe": {
+                title: "Informática Básica",
+                content: `
+                    <h1>Informática para Segurança Pública (PMPE)</h1>
+                    <p>Domine o hardware, o ecossistema Windows, pacotes de escritório e, principalmente, as ameaças virtuais cibernéticas cobradas nos editais policiais.</p>
+                    
+                    <h2>1. Hardware (A Máquina Física)</h2>
+                    <p>Hardware é a parte física (tudo que você chuta). A <strong>CPU (Processador)</strong> é o cérebro da máquina, dividida em ULA (faz os cálculos matemáticos), UC (controla o fluxo) e Registradores (memória interna hiperveloz). <br><br>
+                    As <strong>Memórias Secundárias (HD e SSD)</strong> guardam os arquivos de forma Não-Volátil (não apagam sem energia). O HD usa discos magnéticos pesados e frágeis. O SSD usa chips de memória flash (o mesmo do pendrive), sendo dezenas de vezes mais rápido, silencioso e imune a choques mecânicos leves.</p>
+
+                    <h2>2. Memória RAM vs ROM</h2>
+                    <p>A <strong>Memória RAM (Random Access Memory)</strong> é a memória principal e de trabalho. Ela é a "mesa de estudos" do processador. O grande foco das provas: A RAM é <strong>VOLÁTIL</strong>, ou seja, se a energia cair ou o PC for desligado, tudo que está nela é apagado instantaneamente. Ela não guarda seus PDFs para amanhã. <br><br>
+                    A <strong>Memória ROM (Read Only Memory)</strong> vem gravada de fábrica na placa-mãe. Ela é <strong>NÃO-VOLÁTIL</strong> e contém os softwares básicos de inicialização da máquina, como a BIOS (que desperta o hardware).</p>
+
+                    <h2>3. Atalhos Essenciais do Windows 10/11</h2>
+                    <p>A AOCP não pede cliques de mouse, ela exige atalhos de produtividade policial no teclado. Memorize os campeões de prova: <br>
+                    <strong>Win + E</strong> (Abre o Explorador de Arquivos / Explorer). <br>
+                    <strong>Win + D</strong> (Desktop: Minimiza todas as telas e mostra a Área de Trabalho instantaneamente). <br>
+                    <strong>Win + L</strong> (Lock: Bloqueia a sessão do usuário exigindo a senha para voltar). <br>
+                    <strong>Ctrl + Shift + Esc</strong> (Abre o Gerenciador de Tarefas DIRETAMENTE, sem passar por tela azul, excelente para matar programas travados).</p>
+
+                    <h2>4. Editores de Texto (Word e Writer)</h2>
+                    <p>Foco na estruturação de inquéritos e B.O.s. A <strong>Quebra de Página (Ctrl + Enter)</strong> encerra a folha atual e joga o cursor para a próxima folha, mas mantém a formatação e a estrutura idênticas. <br><br>
+                    A <strong>Quebra de Seção</strong> (MUITO cobrada) serve para isolar e cortar o vínculo de um documento. É ela que permite que você coloque a página 1 em formato Retrato (em pé) e a página 2 no formato Paisagem (deitada) no mesmo arquivo, ou mude o cabeçalho no meio do documento.</p>
+
+                    <h2>5. Planilhas Eletrônicas (Excel e Calc) e os Sinais Táticos</h2>
+                    <p>Nas fórmulas, a leitura errada de um sinal destrói a questão. Toda fórmula deve começar com o sinal de IGUAL (=). <br>
+                    O sinal de <strong>Dois Pontos (:)</strong> indica um INTERVALO contínuo (Até). Exemplo: SOMA(A1:A5) vai somar as células A1, A2, A3, A4 e A5. <br>
+                    O sinal de <strong>Ponto e Vírgula (;)</strong> indica uma UNIÃO ISOLADA (E). Exemplo: SOMA(A1;A5) vai somar APENAS a célula A1 e a célula A5. <br>
+                    O sinal de Cifrão <strong>$</strong> serve para fixar (travar) uma linha ou coluna criando uma Referência Absoluta que não muda ao ser arrastada.</p>
+
+                    <h2>6. O Conceito de Internet, Intranet e Extranet</h2>
+                    <p>A <strong>Internet</strong> é a rede mundial e pública. A <strong>Intranet</strong> é a rede corporativa fechada e privada (como a rede exclusiva de despachos do Batalhão da PMPE). A pegadinha letal da prova é: a Intranet usa rigorosamente os MESMOS protocolos da Internet (TCP/IP, HTTP). <br><br>
+                    A <strong>Extranet</strong> ocorre quando a corporação permite que um usuário acesse partes da Intranet de forma segura a partir de casa (pela internet pública), utilizando senhas pesadas ou VPN (Rede Privada Virtual criptografada).</p>
+
+                    <h2>7. Protocolos de Navegação e Correio Eletrônico</h2>
+                    <p><strong>HTTP e HTTPS:</strong> Protocolos de navegação web (o HTTPS usa criptografia de segurança TLS/SSL na porta 443, blindando os dados como num site de banco). <br>
+                    <strong>SMTP:</strong> Protocolo exclusivo para o ENVIO (saída) de e-mails (Sua Mensagem Tá Partindo). <br>
+                    <strong>POP3:</strong> Recebe o e-mail, baixa para a máquina local do usuário e <strong>apaga</strong> a mensagem do servidor nas nuvens. <br>
+                    <strong>IMAP:</strong> Recebe e sincroniza o e-mail, mantendo todas as mensagens seguras nas nuvens e espelhando nos seus vários dispositivos.</p>
+
+                    <h2>8. O Sigilo do Email (Campo CCO)</h2>
+                    <p>Num envio oficial da PM, o sigilo das operações é vital. <br>
+                    <em>Para (To)</em>: É o destinatário alvo que deve cumprir a ordem. <br>
+                    <em>CC (Com Cópia)</em>: Pessoas informadas daquela ordem; todos conseguem ver os endereços de todos. <br>
+                    <em>CCO (Com Cópia Oculta / BCC)</em>: A pessoa recebe a mensagem normalmente, mas o endereço de e-mail dela fica <strong>invisível</strong> (cego) para os outros destinatários que também receberam a mensagem. É usado para envio em massa mantendo a privacidade.</p>
+
+                    <h2>9. Malwares Clássicos e Engenharia Social</h2>
+                    <p><strong>Vírus:</strong> Um código que precisa obrigatoriamente se anexar a um arquivo hospedeiro e depende da ação humana (clicar, executar) para se ativar e espalhar. <br>
+                    <strong>Worm (Verme):</strong> É um programa autônomo. Ele NÃO infecta arquivos e NÃO depende do usuário. Ele varre as brechas da rede da empresa, se multiplica absurdamente sozinho e derruba servidores por congestionamento. <br>
+                    <strong>Trojan (Cavalo de Troia):</strong> Um programa disfarçado de presente inofensivo (ex: um jogo pirata). Quando instalado, ele escancara uma porta oculta (backdoor) para o hacker invadir seu PC. <br>
+                    <strong>Phishing:</strong> É uma pescaria virtual. Não é um vírus autônomo, é engenharia social. O hacker falsifica a página do seu banco ou cria um e-mail falso idêntico à Receita Federal para induzir você a entregar sua senha voluntariamente.</p>
+
+                    <h2>10. A Ameaça do Ransomware e Políticas de Backup</h2>
+                    <p>O <strong>Ransomware</strong> é a ameaça policial mais grave da atualidade. Ele invade a máquina policial, <strong>criptografa (tranca/embaralha) todos os inquéritos e PDFs</strong> e o hacker passa a cobrar um Resgate financeiro (geralmente em Bitcoin) para devolver a chave. O único remédio real é não pagar e restaurar um Backup offline. <br><br>
+                    Tipos de Cópia: <strong>Backup Full (Completo)</strong> copia absolutamente tudo (é lento). <strong>Backup Incremental</strong> copia apenas as pequenas modificações feitas desde o ÚLTIMO backup realizado, seja ele qual for (é super rápido). <strong>Backup Diferencial</strong> copia todas as modificações feitas apenas desde o último backup COMPLETO.</p>
+                `
+            },
+            "mat_const_pmpe": {
+                title: "Direito Constitucional",
+                content: `
+                    <h1>Direito Constitucional Policial (A Base Jurídica)</h1>
+                    <p>Para o Instituto AOCP, a letra da lei (Art. 5º e 144) é inegociável. Você deve dominar as exceções constitucionais com as quais lidará nas ruas e a jurisprudência sumulada do STF.</p>
+                    
+                    <h2>1. O Princípio da Legalidade (Privado vs Público)</h2>
+                    <p>A prova adora misturar os conceitos. Para o cidadão comum (particular), vigora a <strong>Legalidade Ampla</strong>: o particular pode fazer TUDO que a lei não proíbe expressamente (ninguém será obrigado a fazer ou deixar de fazer algo senão em virtude de lei). <br><br>
+                    Para o Policial Militar (Administração Pública), vigora a <strong>Legalidade Estrita</strong>: a PM SÓ PODE fazer aquilo que a lei autoriza ou determina previamente. Agir fora do comando legal, mesmo com a "melhor das intenções", gera abuso de autoridade e ilicitude.</p>
+
+                    <h2>2. A Inviolabilidade Domiciliar (O Teto do Cidadão)</h2>
+                    <p>A casa é o asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador. Mas a Constituição autoriza a entrada FORÇADA pela Polícia em 4 exceções absolutas: <br><br>
+                    <strong>A qualquer hora do DIA OU DA NOITE:</strong> (1) Flagrante Delito (o crime está ocorrendo lá dentro); (2) Desastre (incêndio, desabamento); (3) Prestar Socorro. <br>
+                    <strong>APENAS DURANTE O DIA:</strong> (4) Por determinação judicial (Mandado de Busca e Apreensão). O STF pacificou que para a PM entrar à noite em caso de flagrante (ex: tráfico), deve haver "fundadas razões" documentadas e não apenas uma denúncia anônima ou "fuga rápida para dentro".</p>
+
+                    <h2>3. Sigilo das Comunicações e o Grampo</h2>
+                    <p>É inviolável o sigilo da correspondência e das comunicações telegráficas, de dados e das comunicações telefônicas. Contudo, a Constituição permite a quebra EXCLUSIVA da <strong>Comunicação Telefônica (o grampo das escutas)</strong>, e sob requisitos inquebráveis: <br><br>
+                    (1) Por ordem exclusiva de um Juiz (autoridade policial/delegado não quebra sigilo por conta própria); (2) Para fins de investigação criminal ou instrução processual penal (nunca para processo cível de pensão alimentícia); e (3) Nas hipóteses e forma que a lei estabelecer (Lei 9.296). <br>
+                    <strong>Jurisprudência STF para a PM:</strong> O acesso pelo PM às mensagens do WhatsApp de um celular apreendido no flagrante na rua SEM mandado judicial prévio é prova ilícita e anula o flagrante do tráfico.</p>
+
+                    <h2>4. Direito de Reunião (Sem Autorização)</h2>
+                    <p>Todos podem reunir-se pacificamente, sem armas, em locais abertos ao público. A regra de ouro que a banca tenta distorcer: Esse direito <strong>INDEPENDE DE AUTORIZAÇÃO</strong> do Prefeito, do Governador ou da PM. <br><br>
+                    Existem apenas duas exigências constitucionais: Não frustrar outra reunião convocada para o mesmo local e horário, e fazer o mero <strong>PRÉVIO AVISO</strong> à autoridade competente (para que a PM e órgãos de trânsito redirecionem o fluxo da rua). O STF definiu que a falta de aviso formal não torna a reunião ilegal se a mobilização for amplamente divulgada pelas redes sociais.</p>
+
+                    <h2>5. O Tribunal do Júri e o Latrocínio</h2>
+                    <p>O Tribunal do Júri possui a soberania dos veredictos, o sigilo das votações e julga EXCLUSIVAMENTE os <strong>Crimes Dolosos contra a Vida</strong> (Homicídio doloso, Infanticídio, Aborto e Instigação/Auxílio ao Suicídio), tentados ou consumados. <br><br>
+                    A pegadinha letal da prova de polícia: <strong>Latrocínio (Roubo seguido de Morte) NÃO vai a júri popular.</strong> A Súmula 603 do STF dita que a competência é do juiz criminal comum (juiz singular), pois o latrocínio é primariamente um crime patrimonial (o alvo era o celular, a morte foi a violência grave final).</p>
+
+                    <h2>6. Extradição (Natos vs Naturalizados)</h2>
+                    <p>A Constituição traça um muro intransponível: O Brasileiro NATO <strong>NUNCA</strong> será extraditado para ser julgado em outro país, sob nenhuma hipótese. <br><br>
+                    O Brasileiro NATURALIZADO pode ser extraditado, mas apenas em duas exceções rigorosas: 1) Se cometeu um Crime Comum (homicídio, estelionato) ANTES de conseguir a naturalização brasileira; ou 2) Em caso de comprovado envolvimento em Tráfico Ilícito de Entorpecentes, praticado a QUALQUER TEMPO (antes ou depois de ser brasileiro).</p>
+
+                    <h2>7. Os Remédios Constitucionais Gratuitos (HC e HD)</h2>
+                    <p>A Constituição fornece ferramentas de proteção. <br>
+                    <strong>Habeas Corpus (HC):</strong> O único remédio que NÃO exige capacidade postulatória (qualquer cidadão ou estrangeiro, mesmo sem advogado, pode fazer no papel de pão). Defende o direito à liberdade de locomoção contra prisão ilegal ou abuso de poder. <br>
+                    <strong>Habeas Data (HD):</strong> Exige advogado para dar entrada no tribunal, mas é gratuito de custas. Serve exclusivamente para conhecer ou retificar/corrigir informações pessoais constantes em bancos de dados governamentais ou de caráter público (ex: retirar nome do SPC/Serasa indevidamente).</p>
+
+                    <h2>8. Os Remédios Constitucionais Pagos (MS e AP)</h2>
+                    <p><strong>Mandado de Segurança (MS):</strong> É o remédio subsidiário. Protege Direito Líquido e Certo (direito que não precisa de testemunha, provado documentalmente de cara) que não seja amparado nem por HC nem por HD, contra atos ilegais de autoridade. <br>
+                    <strong>Ação Popular (AP):</strong> A banca adora: SÓ PODE ser proposta por <em>Cidadão</em> (alguém que possua Título de Eleitor válido no Brasil). Visa anular ato lesivo ao patrimônio público, à moralidade administrativa, ao meio ambiente e ao patrimônio histórico. Isenta de custas, salvo comprovada má-fé do autor.</p>
+
+                    <h2>9. Segurança Pública e o Rol do Artigo 144</h2>
+                    <p>A Segurança Pública é dever do Estado, direito e responsabilidade de TODOS. O rol de órgãos do Art. 144 é taxativo e fechado (só é polícia quem está escrito lá): Polícia Federal, PRF, PFF, Polícias Civis, Polícias Militares e Corpos de Bombeiros Militares, e Polícias Penais. <br><br>
+                    <strong>Guarda Municipal:</strong> A GCM está no parágrafo 8º. Ela NÃO é polícia militarizada da federação, ela atua na proteção preventiva de bens, serviços e instalações do município. No entanto, o STF (ADPF 995) julgou que as GCMs integram SIM o Sistema Único de Segurança Pública (SUSP) e possuem poder de polícia para flagrantes nas vias.</p>
+
+                    <h2>10. Polícias Militares e Forças Auxiliares</h2>
+                    <p>As Polícias Militares (PMs) e os Corpos de Bombeiros Militares (CBMs) são constitucionalmente classificados como <strong>Forças Auxiliares e Reserva do Exército Brasileiro</strong>. Isso significa que, em caso de guerra, a PM vira infantaria de combate do exército. <br><br>
+                    Contudo, no tempo de paz e para fins hierárquicos e operacionais do dia a dia, a PM subordina-se direta e exclusivamente aos <strong>Governadores dos Estados</strong>, do Distrito Federal e dos Territórios (e não ao Presidente ou Generais). A função constitucional exclusiva da PM é o Policiamento Ostensivo fardado e a Preservação da Ordem Pública.</p>
+                `
+            },
+            "mat_dh_ext_pmpe": {
+                title: "Direitos Humanos e Legislação Extravagante",
+                content: `
+                    <h1>Legislação e DH (O Mapa Tático da Rua)</h1>
+                    <p>Nenhum PM sobrevive à rua ou à corregedoria sem o domínio profundo destas leis de balizamento de conduta.</p>
+                    
+                    <h2>1. A DUDH (Declaração Universal dos Direitos Humanos)</h2>
+                    <p>Promulgada pela ONU em 1948 no pós-guerra, a DUDH é a bússola moral do mundo. Seu alicerce é a Proteção da Dignidade Humana. Ela prescreve a proibição inegociável e absoluta da tortura e da escravidão. <br><br>
+                    A DUDH cravou internacionalmente o Princípio da Presunção da Inocência (ninguém será considerado culpado até que se prove o contrário). A banca AOCP tenta confundir o candidato: A DUDH é uma Resolução de força moral; ela NÃO é um tratado rígido punitivo que multa ou invade países que a desobedecem. Ela é uma diretriz de comportamento para os governos.</p>
+
+                    <h2>2. Tratados e Hierarquia de Leis de DH no Brasil</h2>
+                    <p>A força de um Tratado de Direitos Humanos no Brasil depende de como o Congresso votou a sua entrada. <br>
+                    <strong>Status de Emenda Constitucional (Força Máxima):</strong> Se o tratado de DH for aprovado em 2 Casas (Câmara e Senado), em 2 Turnos de votação, por 3/5 dos votos (Rito Especial do Art. 5º, §3º). <br>
+                    <strong>Status Supralegal (Acima das Leis, Abaixo da CF):</strong> Se o tratado de DH for aprovado pelo rito comum de maioria simples, ele derruba todas as leis federais do Brasil, ficando submisso apenas à Constituição. O famoso <em>Pacto de San José da Costa Rica</em> é Supralegal, e com essa força, baniu a prisão civil por dívida do depositário infiel no Brasil.</p>
+
+                    <h2>3. Lei de Abuso de Autoridade (Lei 13.869/19) e o Dolo Específico</h2>
+                    <p>A pedra angular que blinda o PM: O <strong>Dolo Específico</strong>. Pela lei atual, o PM SÓ comete o crime de abuso de autoridade se for comprovado que ele agiu com a finalidade EXCLUSIVA e maligna de: (1) Prejudicar outrem; (2) Beneficiar a si mesmo ou a terceiro; ou (3) Por mero capricho ou satisfação pessoal. <br><br>
+                    A divergência honesta na avaliação de fatos durante um flagrante complexo (Crime de Hermenêutica) NÃO configura abuso de autoridade. O abuso é sempre doloso e intencional; o policial que erra um procedimento de forma "culposa" (por negligência ou nervosismo) responderá administrativamente, mas não pela lei criminal de abuso.</p>
+
+                    <h2>4. Lei de Tortura (Lei 9.455/97) e a Perda da Farda</h2>
+                    <p>A tortura no Brasil é crime inafiançável, insuscetível de graça, anistia ou indulto. Se o crime for praticado por agente público (Policial), a pena é aumentada de 1/6 a 1/3. <br><br>
+                    O ponto principal das provas policiais: A condenação de um PM por tortura acarreta o efeito mais letal de todos: a <strong>Perda Automática</strong> do cargo público (o juiz sequer precisa justificar na sentença, perdeu a farda e pronto) e a interdição (proibição) para assumir qualquer outro cargo público pelo <strong>DOBRO</strong> do prazo da pena aplicada à prisão. O PM que testemunha a tortura e se omite (Tortura-Omissão) responde de forma mais branda e a sua omissão NÃO é tipificada como hedionda.</p>
+
+                    <h2>5. Estatuto do Desarmamento (Posse vs Porte Ilegal)</h2>
+                    <p>A prova exige que o policial saiba diferenciar o enquadramento na delegacia. <br>
+                    <strong>Posse Irregular (Art. 12):</strong> O PM flagra a arma de uso permitido guardada <strong>DENTRO</strong> da residência do suspeito, ou nas dependências do seu local de trabalho (caso o abordado seja o dono da empresa/CNPJ). A pena é menor (Detenção). <br>
+                    <strong>Porte Ilegal (Art. 14):</strong> O sujeito foi flagrado ostentando ou escondendo a arma circulando nas vias públicas, dentro do carro ou extramuros (para fora do portão). É crime grave (Reclusão). <br>
+                    Cuidado Extremo: Se a arma (qualquer arma) estiver com a <strong>numeração raspada ou suprimida</strong>, o crime salta automaticamente para o Art. 16 (Posse ou Porte de Arma de Fogo de Uso Restrito - Hediondo), seja dentro do banheiro de casa ou no meio da praça.</p>
+
+                    <h2>6. Lei de Drogas (Usuário - Art. 28)</h2>
+                    <p>O STF julgou a maconha, mas a lei de drogas no Brasil ainda dita que o porte de entorpecentes para consumo pessoal <strong>É CRIME</strong> (a conduta é ilícita). O que ocorreu foi a <strong>despenalização</strong> (não há mais aplicação de pena privativa de liberdade - prisão em cela - para o usuário). <br><br>
+                    O usuário sofrerá as penas restritivas do Juizado Especial: Advertência sobre os efeitos das drogas, prestação de serviços à comunidade ou medida educativa de comparecimento a programa. O Policial Militar no flagrante NÃO enfia o usuário no xadrez da viatura; ele lavra um TCO (Termo Circunstanciado de Ocorrência), apreende a substância e compromete o indivíduo a comparecer ao Juiz.</p>
+
+                    <h2>7. Lei de Drogas (Tráfico - Art. 33)</h2>
+                    <p>O tráfico é crime equiparado a hediondo (embora o "tráfico privilegiado" do réu primário de bons antecedentes não seja hediondo, segundo o STF). O artigo possui um núcleo de ação com 18 verbos mistos. <br><br>
+                    Para prender em flagrante na rua ou em residência por Tráfico, a PM <strong>não precisa</strong> ter filmado o suspeito recebendo dinheiro e entregando o papelote (a venda em si). Basta flagrar a pessoa nos verbos "trazer consigo", "ter em depósito" ou "guardar" substância fracionada, com balança de precisão, empacotada de forma comercial e incompatível com o mero consumo, para enquadrar no Art. 33 imediatamente.</p>
+
+                    <h2>8. Lei Maria da Penha (Lei 11.340/06) - Tipos de Violência</h2>
+                    <p>A lei cria mecanismos severos de proteção à mulher biológica (e mulheres trans, pelo STJ) em situação de vulnerabilidade e violência baseada no gênero. Essa violência pode ocorrer em três contextos: no espaço Doméstico (na casa), Familiar (parentescos) ou em Relação Íntima de Afeto (ex-namorados/maridos, mesmo não coabitando). <br><br>
+                    A lei lista 5 formas de violência. Física (chutes, socos), Sexual (estupro marital, impedir uso de pílulas), Patrimonial (quebrar o celular da mulher, rasgar diplomas, furtar cartão) e Moral (Calúnia, Difamação). A que mais cai é a <strong>Psicológica</strong>: humilhação, isolamento dos amigos, perseguição e gaslighting (fazer ela achar que está louca).</p>
+
+                    <h2>9. ECA (Estatuto da Criança e do Adolescente)</h2>
+                    <p>A CF e o ECA estabelecem: <strong>Criança</strong> (até 12 anos incompletos) e <strong>Adolescente</strong> (entre 12 anos completos e 18 anos) são penalmente <strong>INIMPUTÁVEIS</strong> no Brasil. Eles não cometem "crimes", eles cometem "Atos Infracionais". O PM não os algema como adultos comuns, salvo para contensão do risco real à guarnição. <br><br>
+                    A Criança recebe apenas Medidas de Proteção aplicadas pelo Conselho Tutelar. O Adolescente recebe Medidas Socioeducativas aplicadas EXCLUSIVAMENTE por um Juiz, que podem chegar à Internação restritiva máxima de 3 anos. Corromper menor (adulto que assalta junto com um garoto de 16 anos) é <strong>Crime Formal</strong> (Súmula 500 STJ): o adulto comete corrupção de menores no flagrante, mesmo que o menor já fosse traficante conhecido do bairro.</p>
+
+                    <h2>10. Estatuto do Idoso (> 60 anos)</h2>
+                    <p>O Estatuto do Idoso cria crimes duríssimos contra quem abandona ou negligencia idosos. Regra procedimental fundamental: Todos os crimes elencados no Estatuto do Idoso são de Ação Penal Pública <strong>INCONDICIONADA</strong>. <br><br>
+                    Isso significa que, se a guarnição da PM for acionada e flagrar o neto batendo no avô ou retendo o cartão da aposentadoria dele, o PM leva o neto preso e o Ministério Público abrirá o processo criminal contra o agressor <strong>mesmo que o avô chore na delegacia dizendo que não quer processar o neto e o perdoa</strong>. A vontade da vítima idosa é irrelevante para a ação do Estado.</p>
+                `
+            }
+        };
+
+        // =========================================================================
+        // 3. CASCATA BLINDADA DE MISSÕES (DIAS OPERACIONAIS)
+        // =========================================================================
+        const editalModules = [
+            { sub: "Língua Portuguesa", topic: "Compreensão, Interpretação e Tipologia", mat: "mat_pt_pmpe" },
+            { sub: "História de Pernambuco", topic: "Capitanias Hereditárias e Ciclo do Açúcar", mat: "mat_hist_pmpe" },
+            { sub: "Raciocínio Lógico Matemático", topic: "Proposições Lógicas e Conectivos", mat: "mat_rlm_pmpe" },
+            { sub: "Informática Básica", topic: "Hardware, CPU, Memórias e Windows", mat: "mat_info_pmpe" },
+            { sub: "Direito Constitucional", topic: "Princípio da Legalidade e Domicílio", mat: "mat_const_pmpe" },
+            { sub: "Dir. Humanos e Legislação Extravagante", topic: "DUDH e Tratados Internacionais", mat: "mat_dh_ext_pmpe" },
+            { sub: "Língua Portuguesa", topic: "Coesão Referencial (Anáfora e Catáfora)", mat: "mat_pt_pmpe" },
+            { sub: "História de Pernambuco", topic: "Invasões Holandesas e Nassau", mat: "mat_hist_pmpe" },
+            { sub: "Raciocínio Lógico Matemático", topic: "Disjunções e Condicional (Se...Então)", mat: "mat_rlm_pmpe" },
+            { sub: "Informática Básica", topic: "Editores de Texto e Planilhas (Sinais : e ;)", mat: "mat_info_pmpe" },
+            { sub: "Direito Constitucional", topic: "Remédios Constitucionais (HC, HD, MS)", mat: "mat_const_pmpe" },
+            { sub: "Dir. Humanos e Legislação Extravagante", topic: "Lei de Abuso de Autoridade e Tortura", mat: "mat_dh_ext_pmpe" },
+            { sub: "Língua Portuguesa", topic: "Conjunções e Orações Adjetivas", mat: "mat_pt_pmpe" },
+            { sub: "História de Pernambuco", topic: "Batalhas dos Guararapes e Mascates", mat: "mat_hist_pmpe" },
+            { sub: "Raciocínio Lógico Matemático", topic: "Negações e Equivalências (De Morgan, Mané, Neymar)", mat: "mat_rlm_pmpe" },
+            { sub: "Informática Básica", topic: "Segurança, Ransomware e Phishing", mat: "mat_info_pmpe" },
+            { sub: "Direito Constitucional", topic: "Segurança Pública (Art. 144) e Extradição", mat: "mat_const_pmpe" },
+            { sub: "Dir. Humanos e Legislação Extravagante", topic: "Lei de Drogas, Desarmamento e Maria da Penha", mat: "mat_dh_ext_pmpe" }
+        ];
+
+        let operationDays = [];
+        let modPointer = 0;
+        let dayCounter = 1;
+
+        while (modPointer < editalModules.length * 4) { 
+            let cycleRev = Math.floor(modPointer / editalModules.length) + 1;
+            let actualPointer = modPointer % editalModules.length;
+
+            if (dayCounter % 7 === 0) {
+                operationDays.push({ type: 'simulado', id: dayCounter, cycle: cycleRev });
+            } else {
+                let m1 = editalModules[actualPointer];
+                let m2 = editalModules[(actualPointer + 1) % editalModules.length];
+                operationDays.push({ type: 'teoria', id: dayCounter, mod1: m1, mod2: m2, cycle: cycleRev });
+                modPointer += 2;
+            }
+            dayCounter++;
+        }
+
+        const getYouTubeLinkByCycle = (subject, topic, cycle) => {
+            const base = encodeURIComponent(`${subject} ${topic} PMPE AOCP`);
+            if (cycle === 1) return `https://www.youtube.com/results?search_query=Teoria+Completa+${base}`;
+            if (cycle === 2) return `https://www.youtube.com/results?search_query=Aula+2+Aprofundamento+${base}`;
+            if (cycle === 3) return `https://www.youtube.com/results?search_query=Resolucao+Questoes+${base}`;
+            return `https://www.youtube.com/results?search_query=Revisao+Avancada+Reta+Final+${base}`;
+        };
+
+        const getPDFInstructionByCycle = (cycle) => {
+            if (cycle === 1) return "Fase 1 (Reconhecimento): Leia absorvendo os conceitos gerais. Faça o mapeamento inicial.";
+            if (cycle === 2) return "Fase 2 (Fichamento): Mapeamento das regras. Extraia as exceções para o Caderno de Anotações.";
+            if (cycle === 3) return "Fase 3 (Leitura Reversa): Foque estritamente no que você está errando nas questões e nas pegadinhas.";
+            return "Fase 4 (Manutenção Letal): Apenas bizus, palavras-chave grifadas e leitura dinâmica acelerada.";
+        };
+
+        function generateTasksForDay(dayObj) {
+            const notes = "javascript:document.getElementById('tacticalNotes').focus()";
+            let tasks = [];
+            
+            if (dayObj.type === 'simulado') {
+                tasks = [
+                    { id: `d${dayObj.id}_taf`, time: "05:00 - 06:30", subject: "TAF Policial", topic: "Corrida pesada, barras e flexões para ativar a máquina.", type: "Físico", icon: "fa-running", action: notes },
+                    { id: `d${dayObj.id}_simulado`, time: "08:00 - 12:00", subject: "SIMULADO AOCP PMPE", topic: "Bateria Geral Blindada (60 Questões Isoladas do Algoritmo).", type: "Missão Crítica", icon: "fa-crosshairs", action: "javascript:openQuiz('todos')" },
+                    { id: `d${dayObj.id}_redacao`, time: "14:00 - 16:30", subject: "Redação Dissertativa", topic: "Produza uma redação AOCP sobre Segurança ou Direitos Humanos.", type: "Discursiva", icon: "fa-pen-nib", action: notes },
+                    { id: `d${dayObj.id}_correcao`, time: "18:00 - 20:30", subject: "Análise de Danos", topic: "Mapeie seus erros do simulado no Caderno de Anotações.", type: "Correção", icon: "fa-book-skull", action: notes },
+                    { id: `d${dayObj.id}_sabatina`, time: "22:00 - 23:00", subject: "Sabatina Mental", topic: "Revisão ocular e planejamento da semana. Boa noite.", type: "Foco", icon: "fa-brain", action: notes }
+                ];
+            } else {
+                const cycle = dayObj.cycle;
+                const v1 = getYouTubeLinkByCycle(dayObj.mod1.sub, dayObj.mod1.topic, cycle);
+                const v2 = getYouTubeLinkByCycle(dayObj.mod2.sub, dayObj.mod2.topic, cycle);
+                const inst = getPDFInstructionByCycle(cycle);
+
+                tasks = [
+                    { id: `d${dayObj.id}_taf`, time: "05:00 - 06:00", subject: "TAF - Despertar", topic: "Condicionamento básico para ligar o metabolismo e focar.", type: "Físico", icon: "fa-running", action: notes },
+                    { id: `d${dayObj.id}_v1`, time: "07:00 - 09:30", subject: dayObj.mod1.sub, topic: `(Ciclo ${cycle}) Vídeo-Aula AOCP: ${dayObj.mod1.topic}.`, type: "Teoria", icon: "fa-youtube", action: v1 },
+                    { id: `d${dayObj.id}_pdf1`, time: "10:00 - 12:00", subject: dayObj.mod1.sub, topic: `Apostila Tática: ${dayObj.mod1.topic}. ${inst}`, type: "Leitura", icon: "fa-file-pdf", action: `javascript:openMaterialModal('${dayObj.mod1.mat}')` },
+                    { id: `d${dayObj.id}_v2`, time: "14:00 - 16:00", subject: dayObj.mod2.sub, topic: `(Ciclo ${cycle}) Vídeo-Aula AOCP: ${dayObj.mod2.topic}.`, type: "Teoria", icon: "fa-youtube", action: v2 },
+                    { id: `d${dayObj.id}_pdf2`, time: "16:30 - 18:30", subject: dayObj.mod2.sub, topic: `Apostila Tática: ${dayObj.mod2.topic}. ${inst}`, type: "Leitura", icon: "fa-file-pdf", action: `javascript:openMaterialModal('${dayObj.mod2.mat}')` },
+                    { id: `d${dayObj.id}_q`, time: "19:30 - 21:00", subject: "Bateria Procedural", topic: `Ataque em 60 questões mistas de ${dayObj.mod1.sub} e ${dayObj.mod2.sub}.`, type: "Disparos", icon: "fa-laptop-code", action: "javascript:document.getElementById('quizFilter').focus()" },
+                    { id: `d${dayObj.id}_note`, time: "21:30 - 22:30", subject: "Caderno de Erros", topic: "Transcreva a regra das questões erradas na aba direita.", type: "Revisão", icon: "fa-book-skull", action: notes },
+                    { id: `d${dayObj.id}_sleep`, time: "22:30 - 23:00", subject: "Sabatina Noturna", topic: "Visualização rápida das anotações antes do sono.", type: "Foco", icon: "fa-brain", action: notes }
+                ];
+            }
+            return tasks;
+        }
+
+        function getFirstIncompleteDay() {
+            for(let i = 0; i < operationDays.length; i++) {
+                let d = operationDays[i];
+                let tasks = generateTasksForDay(d);
+                let allDone = true;
+                for(let t of tasks) {
+                    if(!userProgress[t.id]) { allDone = false; break; }
+                }
+                if(!allDone) return i;
+            }
+            return operationDays.length - 1;
+        }
+
+        function populateDaySelector() {
+            const selector = document.getElementById('missionSelector');
+            selector.innerHTML = '';
+            const firstInc = getFirstIncompleteDay();
+
+            operationDays.forEach((d, index) => {
+                let opt = document.createElement('option');
+                opt.value = index;
+                
+                let statusIcon = "";
+                if (index < firstInc) statusIcon = "✅ COMPLETO - ";
+                else if (index === firstInc) statusIcon = "🔥 ATIVO - ";
+                else statusIcon = "🔒 TRANCADO - ";
+
+                if(d.type === 'simulado') opt.text = `${statusIcon} Dia Operacional 0${d.id} (Simulado e Redação)`;
+                else opt.text = `${statusIcon} Dia Operacional 0${d.id} (${d.mod1.sub} e ${d.mod2.sub})`;
+                
+                selector.appendChild(opt);
+            });
+            selector.value = firstInc;
+        }
+
+        function renderDay(dayIndex) {
+            const container = document.getElementById('scheduleContainer');
+            const lockScreen = document.getElementById('lockScreen');
+            container.innerHTML = '';
+            
+            const firstInc = getFirstIncompleteDay();
+            const dayObj = operationDays[dayIndex];
+            const tasks = generateTasksForDay(dayObj);
+
+            if (dayIndex > firstInc) {
+                container.classList.add('locked-mission');
+                lockScreen.classList.remove('hidden');
+                lockScreen.classList.add('flex');
+            } else {
+                container.classList.remove('locked-mission');
+                lockScreen.classList.remove('flex');
+                lockScreen.classList.add('hidden');
+            }
+
+            tasks.forEach(task => {
+                const isChecked = userProgress[task.id] ? 'checked' : '';
+                const completedClass = isChecked ? 'opacity-50 line-through' : '';
+                
+                let actionButtonHtml = '';
+                if(task.action.startsWith('http')) {
+                    actionButtonHtml = `<a href="${task.action}" target="_blank" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-brands fa-youtube mr-2"></i> YOUTUBE</a>`;
+                } else {
+                    actionButtonHtml = `<button onclick="${task.action}" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors shadow-lg"><i class="fa-solid fa-bolt mr-2"></i> EXECUTAR</button>`;
+                }
+
+                const html = `
+                    <div class="glass-panel p-5 rounded-xl flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between border-l-4 border-blue-600 transition-all duration-300 group w-full overflow-hidden">
+                        <div class="flex items-start gap-4 flex-1 min-w-0 w-full">
+                            <div class="mt-1 flex-shrink-0">
+                                <label class="flex items-center cursor-pointer relative">
+                                    <input type="checkbox" class="peer sr-only" onchange="toggleTask('${task.id}', this, ${dayIndex})" ${isChecked}>
+                                    <div class="w-8 h-8 rounded border-2 border-slate-500 flex items-center justify-center peer-checked:bg-blue-600 peer-checked:border-blue-600 transition-colors bg-slate-900 shadow-inner">
+                                        <i class="fa-solid fa-check text-white opacity-0 peer-checked:opacity-100 transition-opacity font-bold"></i>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="${completedClass} flex-1 min-w-0" id="text-${task.id}">
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <span class="bg-slate-800 text-gray-300 text-xs px-2 py-1 rounded font-mono border border-slate-600 shadow-sm"><i class="fa-regular fa-clock mr-1 text-blue-400"></i>${task.time}</span>
+                                    <span class="text-xs uppercase tracking-wider font-bold text-slate-900 bg-blue-500 px-2 py-1 rounded shadow-sm break-words">${task.type}</span>
+                                </div>
+                                <h4 class="font-bold text-lg text-white tracking-wide break-words"><i class="fa-solid ${task.icon} mr-2 text-gray-400"></i>${task.subject}</h4>
+                                <p class="text-gray-300 text-sm mt-1 leading-relaxed break-words">${task.topic}</p>
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-auto flex justify-end flex-shrink-0 mt-2 lg:mt-0">
+                            ${actionButtonHtml}
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+            updateChart();
+        }
+
+        window.goToActiveMission = () => {
+            const firstInc = getFirstIncompleteDay();
+            document.getElementById('missionSelector').value = firstInc;
+            renderDay(firstInc);
+        };
+
+        document.getElementById('missionSelector').addEventListener('change', (e) => renderDay(parseInt(e.target.value)));
+
+        window.toggleTask = (taskId, checkbox, dayIndex) => {
+            const isChecked = checkbox.checked;
+            const textBlock = document.getElementById(`text-${taskId}`);
+            if(isChecked) { textBlock.classList.add('opacity-50', 'line-through'); } 
+            else { textBlock.classList.remove('opacity-50', 'line-through'); }
+
+            userProgress[taskId] = isChecked;
+            localStorage.setItem('pmpe_ian_v7', JSON.stringify(userProgress));
+            
+            populateDaySelector();
+            document.getElementById('missionSelector').value = dayIndex;
+            updateChart();
+        };
+
+        // =========================================================================
+        // 4. JOGOS TÁTICOS
+        // =========================================================================
+        const studyGameTopics = {
+            portugues: {
+                title: "Língua Portuguesa (AOCP)",
+                words: [
+                    { answer: "ANAFORA", clue: "Mecanismo de coesão que retoma um termo anterior para trás." },
+                    { answer: "CATAFORA", clue: "Mecanismo de coesão que aponta e antecipa um termo para frente." },
+                    { answer: "CONJUNCAO", clue: "Liga orações. Exemplos: mas, embora, contudo, visto que." },
+                    { answer: "ADJETIVA", clue: "Oração que restringe ou explica um substantivo. Onde a vírgula muda o sentido." },
+                    { answer: "INJUNÇÃO", clue: "Tipologia textual focada em dar ordens ou manuais, uso de imperativo." },
+                    { answer: "CRASE", clue: "Acento grave (A+A), proibido antes de verbo e palavra masculina." }
+                ]
+            },
+            historia: {
+                title: "História de Pernambuco",
+                words: [
+                    { answer: "MASSAPE", clue: "Tipo de solo fértil que garantiu o sucesso do ciclo do açúcar na capitania." },
+                    { answer: "NASSAU", clue: "Conde holandês que governou e urbanizou a cidade do Recife." },
+                    { answer: "MASCATES", clue: "Guerra civil de 1710 entre senhores de Olinda e comerciantes do Recife." },
+                    { answer: "GUARARAPES", clue: "Batalhas históricas onde ocorreu a expulsão definitiva dos holandeses." },
+                    { answer: "PRAIEIRA", clue: "A última grande revolução do Império (1848) marcada pelo Manifesto ao Mundo." },
+                    { answer: "CANGACEIRO", clue: "Lampião foi o maior líder desse fenômeno de banditismo social do Nordeste." }
+                ]
+            },
+            rlm: {
+                title: "Raciocínio Lógico Matemático",
+                words: [
+                    { answer: "PROPOSICAO", clue: "Sentença com verbo que pode ser julgada apenas como Verdadeira ou Falsa." },
+                    { answer: "CONJUNCAO", clue: "Operador (E) rigoroso. Só é verdadeiro se tudo for verdadeiro." },
+                    { answer: "CONDICIONAL", clue: "O (Se... Então). Único caso falso é a regra da Vera Fischer." },
+                    { answer: "TAUTOLOGIA", clue: "Quando o resultado de todas as linhas da tabela-verdade for Verdadeiro." },
+                    { answer: "EQUIVALENCIA", clue: "Quando duas estruturas lógicas significam e resultam na mesma coisa. Ex: Neymar." }
+                ]
+            },
+            informatica: {
+                title: "Informática Básica",
+                words: [
+                    { answer: "VOLATIL", clue: "Característica da Memória RAM de apagar os dados quando falta energia." },
+                    { answer: "INTRANET", clue: "Rede privada corporativa, mas que usa os mesmos protocolos da Internet pública." },
+                    { answer: "RANSOMWARE", clue: "Vírus que sequestra os arquivos com criptografia e cobra resgate digital." },
+                    { answer: "PHISHING", clue: "Engenharia social focada em pescaria visual (falsificação) para roubar senhas." },
+                    { answer: "INCREMENTAL", clue: "Backup ágil que copia apenas o que foi alterado desde a última cópia feita." }
+                ]
+            },
+            constitucional: {
+                title: "Direito Constitucional",
+                words: [
+                    { answer: "LEGALIDADE", clue: "Princípio onde a Administração só age de forma estrita no que a lei autoriza." },
+                    { answer: "FLAGRANTE", clue: "Motivo que autoriza o PM a entrar de forma violenta na casa de dia ou de noite." },
+                    { answer: "REUNIAO", clue: "Direito constitucional pacífico em locais abertos que dispensa autorização governamental." },
+                    { answer: "HABEAS", clue: "Remédio constitucional gratuito voltado a proteger dados pessoais (Data) ou liberdade (Corpus)." },
+                    { answer: "OSTENSIVA", clue: "Modalidade de policiamento atribuído exclusivamente à Polícia Militar." }
+                ]
+            },
+            extravagante: {
+                title: "Legislação Extravagante / DH",
+                words: [
+                    { answer: "SUPRALEGAL", clue: "Poder/Status que o tratado de direitos humanos possui se for aprovado por rito comum de maioria." },
+                    { answer: "DOLO", clue: "É necessário o (...) específico e caprichoso para configurar crime de Abuso de Autoridade." },
+                    { answer: "AUTOMATICA", clue: "Na lei de Tortura, a perda do cargo público militar após condenação ocorre de forma ()." },
+                    { answer: "PSICOLOGICA", clue: "Modalidade de violência baseada no gaslighting ou humilhação emocional contra a mulher." },
+                    { answer: "INIMPUTAVEL", clue: "Menor de 18 anos pela CF. Comete ato infracional e não crime penal." }
+                ]
+            }
+        };
+
+        const studyGameState = { mode: "wordsearch", theme: "portugues", words: [], grid: [], placements: [], found: new Set(), selectedStart: null, answerGrid: new Map() };
+
+        function normalizeGameWord(value) { return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z]/g, "").toUpperCase(); }
+
+        function buildWordSearch(words) {
+            const size = 15;
+            const grid = Array.from({ length: size }, () => Array(size).fill(""));
+            const placements = [];
+            const directions = [[0, 1], [1, 0], [1, 1], [1, -1], [0, -1], [-1, 0], [-1, -1], [-1, 1]];
+
+            words.forEach(({ answer }) => {
+                let placed = false;
+                for (let attempt = 0; attempt < 1000 && !placed; attempt++) {
+                    const [dr, dc] = directions[Math.floor(Math.random() * directions.length)];
+                    const row = Math.floor(Math.random() * size);
+                    const col = Math.floor(Math.random() * size);
+                    const endRow = row + dr * (answer.length - 1);
+                    const endCol = col + dc * (answer.length - 1);
+                    if (endRow < 0 || endRow >= size || endCol < 0 || endCol >= size) continue;
+
+                    let fits = true;
+                    for (let i = 0; i < answer.length; i++) {
+                        const letter = grid[row + dr * i][col + dc * i];
+                        if (letter && letter !== answer[i]) { fits = false; break; }
+                    }
+                    if (!fits) continue;
+
+                    const cells = [];
+                    for (let i = 0; i < answer.length; i++) {
+                        const cell = { row: row + dr * i, col: col + dc * i };
+                        grid[cell.row][cell.col] = answer[i];
+                        cells.push(cell);
+                    }
+                    placements.push({ answer, cells });
+                    placed = true;
+                }
+            });
+
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            grid.forEach((row, r) => row.forEach((letter, c) => {
+                if (!letter) grid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+            }));
+            return { grid, placements };
+        }
+
+        function buildCrossword(words) {
+            const size = 30;
+            let bestPlacements = [];
+
+            for (let attempt = 0; attempt < 25; attempt++) {
+                const grid = new Map();
+                const placements = [];
+                const first = words[0];
+                const firstCol = Math.floor((size - first.answer.length) / 2);
+                const firstCandidate = { ...first, row: Math.floor(size / 2), col: firstCol, direction: "across", cells: [] };
+                
+                firstCandidate.cells = Array.from(first.answer, (letter, index) => ({ row: firstCandidate.row, col: firstCandidate.col + index, letter }));
+                firstCandidate.cells.forEach(({ row, col, letter }) => grid.set(`${row},${col}`, letter));
+                placements.push(firstCandidate);
+
+                const remaining = words.slice(1).sort(() => Math.random() - 0.5);
+                remaining.forEach(word => {
+                    const candidates = [];
+                    placements.forEach(existing => {
+                        const newDirection = existing.direction === "down" ? "across" : "down";
+                        existing.cells.forEach((existingCell, existingIndex) => {
+                            for (let wordIndex = 0; wordIndex < word.answer.length; wordIndex++) {
+                                if (word.answer[wordIndex] !== existingCell.letter) continue;
+                                candidates.push({ ...word, direction: newDirection, row: existingCell.row - (newDirection === "down" ? wordIndex : 0), col: existingCell.col - (newDirection === "across" ? wordIndex : 0) });
+                            }
+                        });
+                    });
+                    
+                    candidates.sort(() => Math.random() - 0.5);
+                    for (const candidate of candidates) {
+                        const { answer, row, col, direction } = candidate;
+                        const dr = direction === "down" ? 1 : 0;
+                        const dc = direction === "down" ? 0 : 1;
+                        if (row < 1 || col < 1 || row + dr * (answer.length - 1) >= size - 1 || col + dc * (answer.length - 1) >= size - 1) continue;
+
+                        let overlaps = 0;
+                        let valid = true;
+                        const cells = [];
+                        for (let i = 0; i < answer.length; i++) {
+                            const r = row + dr * i;
+                            const c = col + dc * i;
+                            const existingLetter = grid.get(`${r},${c}`);
+                            if (existingLetter && existingLetter !== answer[i]) { valid = false; break; }
+                            if (existingLetter) overlaps++;
+                            else {
+                                const sideCells = direction === "down" ? [[r, c - 1], [r, c + 1]] : [[r - 1, c], [r + 1, c]];
+                                if (sideCells.some(([sr, sc]) => grid.has(`${sr},${sc}`))) { valid = false; break; }
+                            }
+                            cells.push({ row: r, col: c, letter: answer[i] });
+                        }
+                        
+                        if (!valid || overlaps !== 1) continue;
+                        if (grid.has(`${row - dr},${col - dc}`) || grid.has(`${row + dr * answer.length},${col + dc * answer.length}`)) continue;
+
+                        cells.forEach(({ row: r, col: c, letter }) => grid.set(`${r},${c}`, letter));
+                        placements.push({ ...candidate, cells });
+                        break;
+                    }
+                });
+                if (placements.length > bestPlacements.length) bestPlacements = placements;
+                if (bestPlacements.length === words.length) break;
+            }
+            return bestPlacements;
+        }
+
+        function renderWordSearch() {
+            const board = document.getElementById("studyGameBoard");
+            const targets = document.getElementById("studyGameTargets");
+            const clues = document.getElementById("studyGameClues");
+            const size = studyGameState.grid.length;
+            
+            board.innerHTML = "";
+            board.style.display = "grid";
+            board.style.gridTemplateColumns = `repeat(${size}, 1.8rem)`;
+            board.style.gap = "2px";
+            clues.classList.add("hidden");
+            
+            targets.innerHTML = studyGameState.words.map(({ answer }) => `<span data-word-target="${answer}" class="px-2 py-1 rounded bg-slate-800 text-xs text-gray-200 border border-slate-700">${answer}</span>`).join("");
+
+            studyGameState.grid.forEach((row, rowIndex) => row.forEach((letter, colIndex) => {
+                const cell = document.createElement("button");
+                cell.dataset.gameRow = rowIndex;
+                cell.dataset.gameCol = colIndex;
+                cell.textContent = letter;
+                cell.className = "w-[1.8rem] h-[1.8rem] rounded bg-slate-800 hover:bg-slate-600 text-white text-xs font-bold border border-slate-700 transition-colors";
+                
+                const foundPlacement = studyGameState.placements.some(p => studyGameState.found.has(p.answer) && p.cells.some(pos => pos.row === rowIndex && pos.col === colIndex));
+                if (foundPlacement) cell.className = "w-[1.8rem] h-[1.8rem] rounded bg-green-600 text-white text-xs font-bold shadow-lg";
+                else if (studyGameState.selectedStart?.row === rowIndex && studyGameState.selectedStart?.col === colIndex) {
+                    cell.className = "w-[1.8rem] h-[1.8rem] rounded bg-blue-500 text-white text-xs font-bold ring-2 ring-white";
+                }
+                board.appendChild(cell);
+            }));
+        }
+
+        function renderCrossword() {
+            const board = document.getElementById("studyGameBoard");
+            const targets = document.getElementById("studyGameTargets");
+            const clues = document.getElementById("studyGameClues");
+            
+            const cells = new Map();
+            studyGameState.placements.forEach(p => p.cells.forEach(c => cells.set(`${c.row},${c.col}`, c.letter)));
+            studyGameState.answerGrid = cells;
+
+            const rows = Array.from(cells.keys(), k => Number(k.split(",")[0]));
+            const cols = Array.from(cells.keys(), k => Number(k.split(",")[1]));
+            const minRow = Math.min(...rows), maxRow = Math.max(...rows);
+            const minCol = Math.min(...cols), maxCol = Math.max(...cols);
+            
+            const startCells = new Map();
+            studyGameState.placements.forEach(p => {
+                const key = `${p.row},${p.col}`;
+                if (!startCells.has(key)) startCells.set(key, []);
+                startCells.get(key).push(p);
+            });
+            const sortedStarts = Array.from(startCells.keys()).sort((a, b) => {
+                const [ar, ac] = a.split(",").map(Number);
+                const [br, bc] = b.split(",").map(Number);
+                return ar - br || ac - bc;
+            });
+            const numbers = new Map(sortedStarts.map((key, index) => [key, index + 1]));
+
+            board.innerHTML = "";
+            board.style.display = "grid";
+            board.style.gridTemplateColumns = `repeat(${maxCol - minCol + 1}, 1.8rem)`;
+            board.style.gap = "2px";
+            
+            for (let row = minRow; row <= maxRow; row++) {
+                for (let col = minCol; col <= maxCol; col++) {
+                    const key = `${row},${col}`;
+                    if (!cells.has(key)) {
+                        const block = document.createElement("span");
+                        block.className = "w-[1.8rem] h-[1.8rem] bg-slate-950/50 rounded-sm";
+                        board.appendChild(block);
+                        continue;
+                    }
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.maxLength = 1;
+                    input.dataset.cwRow = row;
+                    input.dataset.cwCol = col;
+                    input.dataset.cwAnswer = cells.get(key);
+                    input.className = "w-[1.8rem] h-[1.8rem] text-center uppercase font-bold text-xs text-slate-900 bg-white rounded-sm focus:bg-blue-100 outline-none shadow-inner border border-slate-400";
+                    
+                    if (numbers.has(key)) {
+                        const wrapper = document.createElement("span");
+                        wrapper.className = "relative inline-block w-[1.8rem] h-[1.8rem]";
+                        const number = document.createElement("span");
+                        number.textContent = numbers.get(key);
+                        number.className = "absolute top-0 left-0 z-10 text-[0.6rem] font-bold text-blue-700 bg-white/80 px-1 rounded-br-sm";
+                        wrapper.append(number, input);
+                        board.appendChild(wrapper);
+                    } else {
+                        board.appendChild(input);
+                    }
+                }
+            }
+
+            targets.innerHTML = `<span class="text-xs text-gray-400">As palavras se cruzam. Preencha as letras com as respostas.</span>`;
+            clues.classList.remove("hidden");
+            clues.innerHTML = ["across", "down"].map(direction => {
+                const label = direction === "across" ? "Horizontais" : "Verticais";
+                const entries = studyGameState.placements.filter(item => item.direction === direction);
+                if (!entries.length) return '';
+                return `<div class="bg-slate-800 p-3 rounded border border-slate-700"><h4 class="font-tactical text-blue-400 mb-2">${label}</h4><ol class="list-none space-y-2">${entries.map(item => {
+                    const num = numbers.get(`${item.row},${item.col}`);
+                    return `<li><strong class="text-white">${num}.</strong> ${item.clue}</li>`;
+                }).join("")}</ol></div>`;
+            }).join("");
+        }
+
+        window.setStudyGameMode = mode => {
+            studyGameState.mode = mode;
+            startStudyGame();
+        };
+
+        window.startStudyGame = () => {
+            const themeSelect = document.getElementById("studyGameTheme");
+            studyGameState.theme = themeSelect.value;
+            studyGameState.words = studyGameTopics[studyGameState.theme].words.map(item => ({ ...item, answer: normalizeGameWord(item.answer) }));
+            studyGameState.found = new Set();
+            studyGameState.selectedStart = null;
+
+            document.getElementById("wordSearchMode").className = studyGameState.mode === "wordsearch" ? "bg-blue-600 text-white font-bold py-2 rounded text-sm transition-colors shadow-lg" : "bg-slate-800 text-gray-200 hover:bg-slate-700 font-bold py-2 rounded text-sm transition-colors";
+            document.getElementById("crosswordMode").className = studyGameState.mode === "crossword" ? "bg-blue-600 text-white font-bold py-2 rounded text-sm transition-colors shadow-lg" : "bg-slate-800 text-gray-200 hover:bg-slate-700 font-bold py-2 rounded text-sm transition-colors";
+
+            if (studyGameState.mode === "wordsearch") {
+                const puzzle = buildWordSearch(studyGameState.words);
+                studyGameState.grid = puzzle.grid;
+                studyGameState.placements = puzzle.placements;
+                renderWordSearch();
+                document.getElementById("studyGameStatus").innerHTML = `<i class="fa-solid fa-magnifying-glass mr-2 text-blue-400"></i> Caçando palavras chaves de ${studyGameTopics[studyGameState.theme].title}. Clique na primeira e última letra.`;
+            } else {
+                studyGameState.placements = buildCrossword(studyGameState.words);
+                renderCrossword();
+                document.getElementById("studyGameStatus").innerHTML = `<i class="fa-solid fa-pen mr-2 text-blue-400"></i> Cruzadinha de fixação da PMPE ativada.`;
+            }
+        };
+
+        document.getElementById("studyGameBoard").addEventListener("click", e => {
+            if (studyGameState.mode !== "wordsearch") return;
+            const cell = e.target.closest("[data-game-row]");
+            if (!cell) return;
+            
+            const r = Number(cell.dataset.gameRow);
+            const c = Number(cell.dataset.gameCol);
+            
+            if (!studyGameState.selectedStart) {
+                studyGameState.selectedStart = { row: r, col: c };
+                renderWordSearch();
+                return;
+            }
+            
+            const start = studyGameState.selectedStart;
+            const dR = r - start.row;
+            const dC = c - start.col;
+            if (dR === 0 && dC === 0) { studyGameState.selectedStart = null; renderWordSearch(); return; }
+            if (dR !== 0 && dC !== 0 && Math.abs(dR) !== Math.abs(dC)) {
+                studyGameState.selectedStart = { row: r, col: c }; renderWordSearch(); return;
+            }
+
+            const steps = Math.max(Math.abs(dR), Math.abs(dC));
+            const sR = Math.sign(dR), sC = Math.sign(dC);
+            const selectedStr = Array.from({length: steps + 1}, (_, i) => studyGameState.grid[start.row + sR * i][start.col + sC * i]).join("");
+            
+            const ans = studyGameState.words.find(w => !studyGameState.found.has(w.answer) && (w.answer === selectedStr || w.answer === [...selectedStr].reverse().join("")));
+            studyGameState.selectedStart = null;
+
+            if (ans) {
+                studyGameState.found.add(ans.answer);
+                document.getElementById("studyGameStatus").innerHTML = `<span class="text-green-400 font-bold"><i class="fa-solid fa-check mr-2"></i> ${ans.answer} capturada!</span>`;
+            }
+            renderWordSearch();
+        });
+
+        document.getElementById("studyGameBoard").addEventListener("input", e => {
+            if (studyGameState.mode !== "crossword") return;
+            const input = e.target.closest("input");
+            if (!input) return;
+            input.value = normalizeGameWord(input.value).slice(-1);
+            input.classList.toggle("bg-green-200", input.value === input.dataset.cwAnswer);
+            input.classList.toggle("text-green-800", input.value === input.dataset.cwAnswer);
+            
+            const inputs = Array.from(document.querySelectorAll("input[data-cw-answer]"));
+            if (inputs.length && inputs.every(i => normalizeGameWord(i.value) === i.dataset.cwAnswer)) {
+                document.getElementById("studyGameStatus").innerHTML = `<span class="text-green-400 font-bold text-lg"><i class="fa-solid fa-trophy mr-2"></i> Cruzadinha de fixação concluída!</span>`;
+            }
+        });
+
+
+        // =========================================================================
+        // 5. MOTOR PROCEDURAL DA AOCP (GERAÇÃO BLINDADA COM 30 FORMATOS)
+        // =========================================================================
+        const baseQuizTemplates = { "Língua Portuguesa": [], "História de Pernambuco": [], "Raciocínio Lógico Matemático": [], "Informática Básica": [], "Direito Constitucional": [], "Direitos Humanos e Legislação Extravagante": [] };
+
+        function populateMassiveDatabase() {
+            const portData = [
+                { topic: "Compreensão vs Interpretação", trueFact: "O comando 'Segundo o texto' exige que o candidato assinale o que está explicitamente escrito no texto, de forma literal ou parafraseada.", trueFact2: "Em questões de 'Depreende-se que', o candidato deve inferir ideias lógicas permitidas pelas pistas do texto, sem usar achismos.", trueFact3: "As bancas tendem a considerar incorretas alternativas de interpretação que possuam generalizadores absolutos, como 'nunca' e 'sempre', se o autor não os citou.", falseFacts: ["Comandos de 'compreensão literal' permitem que o candidato adicione seus próprios conhecimentos gerais de jornais da semana passada.", "Os pronomes catafóricos retomam explicitamente as ideias antigas dos primeiros parágrafos.", "A tipologia descritiva foca-se na passagem veloz do tempo, possuindo alta carga de verbos no imperativo."], exp: "Compreensão = Decodificação rasa do que está lá (Segundo o texto). Interpretação = Inferência baseada em pistas. Extrapolação (adicionar conhecimentos de mundo) é o grande erro na AOCP." },
+                { topic: "Emprego da Crase", trueFact: "Não se admite o uso do acento grave indicador de crase antes de verbos no infinitivo em nenhuma hipótese.", trueFact2: "O acento grave é rigorosamente proibido entre palavras repetidas que formam expressão, como em 'frente a frente'.", trueFact3: "A crase é obrigatória nas locuções prepositivas e conjuntivas femininas, como em 'à medida que'.", falseFacts: ["A crase é sempre obrigatória e inquestionável antes de qualquer pronome de tratamento.", "A crase deve ser utilizada antes de pronomes pessoais oblíquos que funcionem como objeto direto da oração.", "Ocorre crase facultativamente antes de verbos que indicam deslocamento direto para cidades estrangeiras."], exp: "As bancas amam cobrar a proibição antes de verbos e palavras masculinas. Exceção 'Até Minha Maria' são os únicos casos estritamente facultativos mais cobrados." },
+                { topic: "Concordância Verbal (Impessoais)", trueFact: "O verbo 'Haver', empregado com o sentido de existir, não possui sujeito e deve ser conjugado estritamente na terceira pessoa do singular.", trueFact2: "Nas locuções verbais, se o verbo principal for o impessoal 'haver', ele contamina o verbo auxiliar, que também fica no singular.", trueFact3: "O verbo 'Fazer' indicando tempo transcorrido é impessoal e não flexiona para o plural.", falseFacts: ["A frase 'Devem haver muitos guardas no batalhão' está em perfeita e impecável concordância gramatical.", "É correto e gramaticalmente aceito escrever 'Fazem três anos que o batalhão não recebe viaturas'.", "O verbo haver sempre concorda com o sujeito lógico quando a frase está na voz passiva analítica profunda."], exp: "Verbos impessoais NÃO tem sujeito e por isso nunca vão ao plural. O correto é: Havia problemas / Deve haver soluções / Faz cinco anos." },
+                { topic: "Coesão (Anáfora/Catáfora)", trueFact: "O termo anafórico serve para retomar um elemento já expresso anteriormente no texto, evitando a sua repetição exaustiva.", trueFact2: "O mecanismo catafórico antecipa e aponta para uma informação que o autor do texto ainda revelará nas linhas seguintes.", trueFact3: "Os pronomes demonstrativos 'esse', 'essa' e 'isso' são classicamente empregados com função anafórica de retomada.", falseFacts: ["A catáfora é o mecanismo linguístico utilizado exclusivamente para referenciar e apontar ideias contidas em parágrafos anteriores.", "O pronome demonstrativo 'isto' atua exclusivamente como retomada anafórica do sujeito da oração.", "A coesão sequencial, marcada por conectivos, anula totalmente a necessidade de usar pontuação em textos dissertativos."], exp: "Anáfora aponta para trás (Esse, Isso). Catáfora aponta para a frente, revelando o que ainda virá (Este, Isto)." }
+            ];
+
+            const histData = [
+                { topic: "Guerra dos Mascates (1710)", trueFact: "Ocorreu na capitania devido ao embate direto de poder entre a aristocracia rural de Olinda e os ricos comerciantes do Recife.", trueFact2: "A crise estourou de vez quando a Coroa portuguesa atendeu aos Mascates e elevou Recife à categoria independente de Vila.", trueFact3: "A Coroa interferiu militarmente no conflito e consolidou a vitória financeira e política do Recife sobre os antigos senhores de engenho.", falseFacts: ["A Guerra dos Mascates foi um movimento focado em expulsar a família real portuguesa de Pernambuco em nome da República.", "A elite olindense expandiu sua riqueza massivamente após a saída imediata de Maurício de Nassau da capitania.", "O conflito culminou no fuzilamento em praça pública de todos os membros das tropas dos mascates franceses invasores."], exp: "A Guerra foi um conflito interno motivado por poder e dívidas (Recife, em ascensão, vs Olinda, endividada). Olinda invadiu Recife quando este ganhou pelourinho (virou Vila). Mascates ganharam com ajuda da Coroa." },
+                { topic: "Revoluções Republicanos-Separatistas", trueFact: "A Revolução Pernambucana de 1817 conseguiu tomar o poder e fundou um governo republicano local que durou pouco mais de dois meses.", trueFact2: "A eclosão de 1817 foi uma resposta direta aos altos impostos exigidos pela corte joanina instalada no Rio de Janeiro e a grande seca local.", trueFact3: "A Confederação do Equador de 1824 reagiu ao autoritarismo extremo do Imperador D. Pedro I ao impor a nova constituição.", falseFacts: ["A revolução de 1817 obteve simpatia imediata do Rei Dom João VI, que revogou todos os tributos nordestinos pacificamente.", "Os rebeldes da Confederação do Equador assinaram um decreto exigindo a imediata abolição irrestrita da escravidão em todas as fazendas da capitania.", "A Praieira foi a primeira revolta brasileira de caráter estritamente comunista a assumir as terras das famílias ricas da época."], exp: "1817 e 1824 queriam se separar e virar Repúblicas. 1817 por causa de D. João VI (impostos) e 1824 por causa de D. Pedro I (Poder Moderador e fechamento da assembleia)." },
+                { topic: "Holandeses e o Cangaço", trueFact: "O governo do conde Maurício de Nassau em Recife destacou-se por enorme tolerância religiosa com judeus e farto empréstimo aos fazendeiros.", trueFact2: "A saída de Nassau por ordens diretas da WIC e a posterior cobrança impiedosa das dívidas resultou na Insurreição Pernambucana.", trueFact3: "O cangaço consistia no banditismo social armado fruto das desigualdades no sertão e foi exterminado durante o governo federal de Getúlio Vargas.", falseFacts: ["Nassau liderou uma ditadura calvinista em Recife, mandando prender todos os padres católicos luso-brasileiros das missões litorâneas.", "As Batalhas dos Guararapes representaram a invasão militar massiva do Império Britânico contra o algodão nordestino holandês.", "Lampião atuou majoritariamente no combate aos holandeses após o financiamento ilícito repassado pela coroa portuguesa."], exp: "Nassau é lembrado pela paz, comércio e construção civil. O cangaço acabou em 1938 na grota de angicos, no Estado Novo Varguista, muito depois da época colonial." },
+                { topic: "Revolução Praieira", trueFact: "A Revolução Praieira (1848) foi o último grande levante armado que sacudiu o Império do Brasil durante o Segundo Reinado.", trueFact2: "Os praieiros divulgaram o Manifesto ao Mundo exigindo, entre outras reformas, o voto livre e universal e a liberdade plena de imprensa.", trueFact3: "Uma das principais motivações da revolta foi o repúdio ao monopólio do comércio varejista, que estava concentrado nas mãos dos portugueses no Recife.", falseFacts: ["O Manifesto ao Mundo da Revolução Praieira exigia, como ponto principal, o retorno imediato da família real portuguesa para governar o Recife.", "A Revolução Praieira triunfou militarmente, conseguindo depor definitivamente Dom Pedro II e instaurar a República de Pernambuco.", "Os revoltosos praieiros contaram com o apoio militar direto e financiamento de tropas enviadas clandestinamente pela Holanda."], exp: "A Praieira (1848) pedia voto livre, fim do monopólio português no comércio e liberdade de imprensa, através do Manifesto ao Mundo. Eles perderam para as tropas de D. Pedro II." }
+            ];
+
+            const rlmData = [
+                { topic: "Conectivos e Tabelas", trueFact: "A tabela-verdade do conectivo Condicional (Se... Então) só será julgada como FALSA se o antecedente for Verdadeiro e o consequente Falso.", trueFact2: "Na Disjunção Inclusiva (OU), a proposição composta somente terá resultado Falso quando ambas as proposições menores forem Falsas.", trueFact3: "Frases que expressam interrogações, exclamações ou proibições absolutas não são enquadradas pela lógica matemática como Proposições.", falseFacts: ["A Condicional (->) resultará invariavelmente em falso caso as duas sentenças envolvidas sejam classificadas simultaneamente como falsas (F -> F).", "Uma proposição composta pelo conectivo 'E' só é considerada falsa se ambos os lados testados nas premissas forem falsos ao mesmo tempo.", "A tabela verdade da Bicondicional só atesta verdade quando as duas proposições em análise apresentarem valores lógicos obrigatoriamente distintos."], exp: "O E (Conjunção) exige tudo V. O OU (Disjunção) aceita qualquer V. O Se..Então tem a regra da Vera Fischer (V->F = F). O Se e Somente Se exige tudo igual." },
+                { topic: "Equivalência e Negação", trueFact: "A contrapositiva da frase 'Se chove, o chão molha' é a equivalência perfeita dada por 'Se o chão não molha, então não chove' (~Q -> ~P).", trueFact2: "Pela aplicação das leis de De Morgan, negar que 'João é policial E Maria é sargento' requer dizer que 'João NÃO é policial OU Maria NÃO é sargento'.", trueFact3: "Para negar adequadamente o conectivo 'Se... Então' usa-se a regra de manter a primeira condição intacta e negar ativamente a segunda afirmação.", falseFacts: ["Para determinar a equivalência de uma Condicional, basta trocar diretamente a ordem das duas partes, como em 'Se A, então B' virar 'Se B, então A'.", "A única regra aceita nos editais para converter o conectivo 'Se.. Então' num sinônimo idêntico é reescrever a frase utilizando a negação com o conectivo E.", "Pelas leis rígidas de De Morgan, é estritamente proibido inverter o sinal de conjunção nas estruturas silogísticas complexas da linguagem."], exp: "Equivalência NUNCA é negação. Para equivaler: Contrapositiva (Cruza Negando) ou Neymar (~A ou B). Para negar: De Morgan (Troca E pelo OU negando tudo) ou MANÉ (P ^ ~Q)." },
+                { topic: "Classificação da Tabela-Verdade", trueFact: "A Tautologia caracteriza-se matematicamente quando o resultado da última coluna de uma tabela-verdade inteira é composto exclusivamente por valorações Verdadeiras.", trueFact2: "A Contradição, oposta à tautologia, ocorre quando todos os resultados lógicos da operação composta resultam invariavelmente na valoração Falsa.", trueFact3: "Dá-se o nome de Contingência à proposição composta cujos resultados finais da tabela-verdade mesclam valores Verdadeiros e Falsos.", falseFacts: ["Tautologia é a classificação atribuída quando a primeira linha da tabela-verdade é verdadeira e a última linha resulta obrigatoriamente em falso.", "A Contingência matemática acontece quando os conectivos 'E' e 'OU' são utilizados exatamente na mesma quantidade dentro de uma expressão.", "Toda proposição que inicia com o conectivo da Bicondicional é sumariamente classificada como uma contradição pela regra lógica básica."], exp: "Tautologia (Tudo V). Contradição (Tudo F). Contingência (Mistura de V e F, dependendo da linha)." }
+            ];
+
+            const infoData = [
+                { topic: "Hardware e SO (Windows)", trueFact: "A Memória RAM é fundamental, principal e volátil, perdendo seu conteúdo assim que a alimentação elétrica da placa for interrompida e cortada.", trueFact2: "O sistema operacional Microsoft Windows, em suas versões atuais, opera obrigatoriamente com o recurso de multitarefa preemptiva de sistema.", trueFact3: "A interrupção de um processo que não responde na interface do Windows pode ser invocada agilmente pelas teclas de atalho Ctrl + Shift + Esc.", falseFacts: ["A Memória RAM do computador atua como o gigantesco depósito não-volátil final onde a CPU armazena arquivos brutos permanentemente e sem riscos.", "O atalho de sistema Win + D envia qualquer arquivo clicado diretamente para a lixeira sem passar pela confirmação na nuvem da Microsoft.", "A Memória ROM pode ser facilmente regravada, modificada e formatada milhares de vezes pelo usuário comum via atalhos no teclado do Windows."], exp: "RAM é a memória de trabalho (mesa), e é Volátil. ROM é a memória de fábrica da placa, quase nunca gravada. SSD/HD é o armazém que guarda os arquivos com força sem energia." },
+                { topic: "Redes, Internet e Malwares", trueFact: "O Ransomware atua invadindo a rede, aplicando forte criptografia que bloqueia e sequestra planilhas da corporação e cobrando resgate ilegal.", trueFact2: "A Intranet é restrita e corporativa, mas opera obrigatoriamente sobre os exatos mesmos protocolos globais (TCP/IP, HTTP) usados na Internet pública.", trueFact3: "Phishing configura uma engenharia social dissimulada, criando sites bancos ou e-mails falsificados visando ludibriar e pescar os dados do policial.", falseFacts: ["Um Firewall bem configurado e um bom antivírus instalado impedem mecanicamente qualquer Phishing de ser recebido e lido na caixa de email militar.", "Cavalos de Troia (Trojans) são pacotes pesados de atualização instalados pelos fabricantes para melhorar e acelerar redes internas com criptografia nativa.", "O backup incremental, ao contrário dos demais tipos de cópia, varre diariamente todos os servidores para salvar a totalidade integral da internet na empresa."], exp: "Ransomware criptografa/tranca arquivos e pede Bitcoin. Phishing mascara o site, não é um vírus autônomo, depende do engano (pescaria). Backup incremental copia só as pequenas alterações do dia." },
+                { topic: "Excel e Sinais Lógicos", trueFact: "A fórmula matemática do Excel que utiliza o sinal de dois pontos (:) soma o intervalo contínuo completo entre a primeira e a última célula referenciada.", trueFact2: "Quando a fórmula =SOMA() contém o símbolo de ponto e vírgula (;), ela executa a adição restrita apenas às células exatas informadas na sintaxe.", trueFact3: "A inclusão do caractere Cifrão ($) na referência de uma célula no Excel tem a finalidade de fixá-la como absoluta, impedindo sua alteração ao arrastar a fórmula.", falseFacts: ["A aplicação da função de soma no Excel requer que o operador utilize sempre chaves colchetes [] em vez do sinal universal de Igualdade inicial.", "O uso de ponto e vírgula (;) dentro da função de SOMA no Excel subtrai os valores das duas extremidades antes de exibir o resultado.", "A referência absoluta ($) aplicada a uma célula no Excel a apaga automaticamente do banco de dados quando enviada via impressão corporativa."], exp: "Dois pontos (:) = ATÉ (Soma o intervalo todo). Ponto e vírgula (;) = E (Soma apenas as duas isoladas). Cifrão ($) trava a célula." }
+            ];
+
+            const constData = [
+                { topic: "Remédios Constitucionais", trueFact: "O Habeas Corpus, único que não exige capacidade de advogado, protege unicamente e gratuitamente o direito de ir, vir ou ficar (Locomoção).", trueFact2: "O Mandado de Segurança é via de exceção e visa blindar Direito Líquido e Certo comprovado em papel, e que não seja abrigado pelo escopo do Habeas Corpus ou Data.", trueFact3: "Qualquer Cidadão regular com título de eleitor possui amparo constitucional legítimo para propor Ação Popular visando suspender corrupção do administrador.", falseFacts: ["O Habeas Data atua de forma rigorosamente paga e custosa para obrigar o Estado na devolução de bens em processo penal transitado da esfera criminal na união.", "Qualquer estrangeiro não residente analfabeto no Brasil detém legitimidade e gratuidade direta para assinar as Ações Populares junto aos conselhos locais ou STF.", "A política e governo de estado podem e devem interromper o Habeas Corpus caso as prisões administrativas ordenadas pela PM passem de 48 horas semanais em caso crítico."], exp: "HC (Locomoção Livre, grátis). HD (Dados da própria pessoa, gratuito). MS (Custa dinheiro, protege direito líquido). AP (Anula dano ao dinheiro público - só exige ser eleitor validado)." },
+                { topic: "Segurança e Inviolabilidade", trueFact: "O mandado processual judicial de busca e apreensão que o juiz assina só tem poder e força constitucional para violar a casa sem o dono deixar no período estrito do DIA.", trueFact2: "Se ocorrer flagrante delito em tempo real na residência, desastre grave ou socorro médico, as forças de segurança podem invadir à força de DIA ou de NOITE.", trueFact3: "A CF 88 impõe e delimita que às Polícias Militares dos Estados reserva-se especificamente a polícia ostensiva fardada e a preservação imediata da ordem pública local.", falseFacts: ["Sargentos, desde que autorizados pelo rádio ou comandante geral na blitz, possuem plenos poderes federais judiciais de expedir grampos do WhatsApp das facções criminosas locais.", "Baseado nas táticas da PMPE, o oficial superior da ronda arromba as portas de noite apenas pela suspeita do indivíduo correr para dentro, não carecendo de provas para atestar a legalidade na hora.", "Guardas Municipais das cidades respondem organicamente, militarmente e de forma hierárquica direta à Superintendência do Exército Brasileiro, sendo extintas do Sistema Único de Segurança em 2024."], exp: "Art. 5º: Juiz autorizou mandado de busca? SÓ PODE ENTRAR DE DIA! PM vai dar batida por flagrante na rua de drogas? PODE ENTRAR A QUALQUER HORA. A GCM não é do exército, ela integra o SUSP pelo STF e atua protegendo e prevenindo na malha do município." },
+                { topic: "Extradição e Tribunal do Júri", trueFact: "A Constituição Federal estabelece que o brasileiro nato, não importando a gravidade de suas ações, jamais será extraditado para ser julgado em outro país.", trueFact2: "O brasileiro naturalizado pode sofrer extradição caso comprovado o envolvimento doloso com o tráfico ilícito de entorpecentes a qualquer tempo.", trueFact3: "A Súmula 603 do STF pacifica que a competência para julgar o crime de latrocínio não pertence ao Tribunal do Júri, mas sim ao juízo criminal comum.", falseFacts: ["O brasileiro nato pode ser extraditado temporariamente se a Organização das Nações Unidas julgar que seu crime feriu tratados mundiais de guerra e paz.", "O Tribunal do Júri julga com soberania absoluta os crimes de roubo seguido de morte (latrocínio), pois o foco constitucional da corte é penalizar mortes violentas.", "O estrangeiro asilado politicamente no Brasil pode ser extraditado legalmente para a nação onde praticou oposição ideológica ao governo autoritário vigente."], exp: "Nato NUNCA é extraditado. Naturalizado pode (Crime comum antes de naturalizar; Tráfico a qualquer tempo). Júri julga APENAS Dolosos contra a Vida (Homicídio, aborto, infanticídio, incentivar suicídio). Latrocínio (Roubo + Morte) NÃO vai a Júri." }
+            ];
+
+            const dhData = [
+                { topic: "Legislação Extravagante PM (Abuso e Maria da Penha)", trueFact: "Para o enquadramento na nova e rigorosa Lei de Abuso de Autoridade contra o policial, exige-se o dolo específico documentado de prejudicar outrem ou puro capricho vingativo.", trueFact2: "Na Lei de Tortura, que é crime hediondo, a condenação na justiça acarreta, inquestionável e automaticamente, a drástica perda do cargo efetivo do PM concursado e interdição temporária dele.", trueFact3: "A Lei Maria da Penha tipifica claramente que humilhações públicas intensas da vítima que causem isolamento, deboche ou dependência caracterizam flagrante Violência Psicológica grave.", falseFacts: ["A temida Lei de Abuso de Autoridade transformou simples divergências interpretativas da lei nas delegacias em infrações inafiançáveis para o PM na mesma hora e data.", "A Lei de Tortura só aplica de fato a demissão punitiva do cargo militar concursado em caso de tripla reincidência judicial da praça perante o juízo comum estadual após sentença ou laudo.", "A Lei 11.340 determinou que o dano doloso aos notebooks da mulher, rasgar roupas ou a retenção de certificados escolares NÃO se enquadra na área de defesa de violência baseada no gênero local."], exp: "Abuso exige Maldade provada (capricho/interesse próprio). Crime CULPOSO nunca será Abuso de autoridade. Na tortura, basta a primeira condenação penal: A perda da farda é AUTOMÁTICA. Na Maria da Penha: a Violência Patrimonial existe (quebrar o bem) e a Psicológica (humilhar) também." },
+                { topic: "Lei de Drogas e Desarmamento", trueFact: "O porte e a guarda de drogas no bolso do indivíduo focado apenas no seu consumo próprio constitui CRIME e fato ilícito, no entanto, foi despenalizado com sanções mais brandas, como advertência.", trueFact2: "O Art. 33 (Tráfico) abrange diversos núcleos práticos. A PM não precisa esperar o ato comercial e a troca do dinheiro pela maconha na esquina, se flagrar ela no guarda-roupa com balança já pode conduzir.", trueFact3: "O Estatuto classifica severamente que a posse de arma sem registro mantida no armário escondida em casa é infração menos pesada do que circular extramuros (Porte Ilegal de rua).", falseFacts: ["O Brasil, segundo o Supremo e a ONU, legalizou 100% de qualquer droga consumida para fins privados nas vias em 2006 desde que seja até 40 gramas, revogando o Código Penal que punia o usuário passivo.", "A PM é blindada de prender o traficante por Art. 33 se ele apenas 'guardava' enormes tijolos num terreno. Somente o verbo 'vender' de forma flagrada por câmera caracteriza crime em sede de delegacia regional.", "Pelo novo sistema processual e militar do nordeste, portar um fuzil .556 que seja de uso restrito do Exército não possui qualquer variação se for comparado a portar um canivete ou revólver legalizado com nota."], exp: "Usuário é crime mas não vai preso na cela (Despenalizou). Tráfico (Art. 33) equiparado a hediondo. Posse = arma intramuros. Porte = arma extramuros. Se raspada = Hediondo." },
+                { topic: "ECA e Estatuto do Idoso", trueFact: "Conforme o Estatuto da Criança e do Adolescente, menores de 18 anos são inimputáveis e, portanto, não cometem crimes formais, mas sim a conduta análoga chamada de Ato Infracional.", trueFact2: "O adulto criminoso que for flagrado e levado à prisão pela PM na companhia de um menor na execução do roubo responde pelo delito tipificado e formal de Corrupção de Menores.", trueFact3: "Pelas regras processuais fixadas no Estatuto do Idoso, os crimes descritos no diploma exigem processamento pelo MP mediante ação penal pública de natureza incondicionada.", falseFacts: ["De acordo com a doutrina policial do ECA, a criança de 11 anos apreendida assaltando à mão armada pode ser sentenciada a internação máxima de 3 anos nas celas da socioeducação estadual.", "Se o adolescente for apreendido roubando a loja junto com o adulto, a polícia militar e o delegado só podem acusar o adulto de corrupção de menores se provarem que o menino era totalmente inocente antes do fato.", "O Estatuto do Idoso obriga a guarnição a soltar o neto agressor caso o idoso vitimado implore perdão aos policiais no plantão da DP e retire voluntariamente as queixas-crime formais."], exp: "Criança (até 12) recebe só proteção. Adolescente (12 a 18) recebe internação. Corromper menor é crime formal (Súmula 500 do STJ: mesmo se o menor já for traficante antes, o adulto dança). Idoso apanhou? Ação Pública Incondicionada, o Estado processa o agressor independente do perdão do vovô." }
+            ];
+
+            const trueFormats = [
+                "De acordo com a doutrina consolidada sobre '{topic}', assinale a alternativa que traz a regra VERDADEIRA:",
+                "Considerando a precisão técnica da AOCP para o tema '{topic}', é correto afirmar que:",
+                "A respeito das disposições relativas a '{topic}', assinale a afirmativa tecnicamente correta para a sua aprovação:",
+                "Qual das assertivas abaixo reflete com perfeição a regra inquebrável de '{topic}'?",
+                "Avalie os cenários e marque a opção que está em total conformidade jurídica ou técnica com '{topic}':",
+                "Sobre as diretrizes táticas e operacionais de '{topic}', o candidato acerta ao cravar que:",
+                "No contexto da PMPE e da prova, o rigor técnico em '{topic}' dita que a alternativa correta é:",
+                "Identifique a única afirmação incontestável sobre o tema '{topic}':",
+                "Assinale a opção que descreve, sem a menor margem a erros teóricos, o conceito de '{topic}':",
+                "Marque a alternativa que expõe a interpretação majoritária e irrefutável sobre '{topic}':",
+                "Com base na literatura de ponta recomendada no edital sobre '{topic}', é perfeitamente correto o que se afirma em:",
+                "Analise as sentenças friamente e escolha a que representa a verdade pura sobre '{topic}':",
+                "Qual enunciado abaixo traduz o comportamento ou a regra imutável de '{topic}' sem cair na pegadinha da banca?",
+                "Em consonância com as bancas estaduais sobre '{topic}', deve-se assinalar como verídica a proposição:",
+                "Diante dos estudos táticos de '{topic}', verifique as alternativas e marque o gabarito oficial:"
+            ];
+
+            const falseFormats = [
+                "A banca AOCP vai testar sua atenção no dia da prova sobre '{topic}'. Todas as alternativas abaixo são verdadeiras, EXCETO (marque a absurda):",
+                "Assinale a alternativa absurdamente INCORRETA em relação aos regramentos base de '{topic}':",
+                "Qual das afirmações abaixo constitui uma nítida e violenta violação do conceito central de '{topic}' e deve ser marcada?",
+                "NÃO é, em nenhuma hipótese ou cenário cabível, uma característica ou regra aplicável a '{topic}':",
+                "Em relação a '{topic}', o examinador colocou uma pegadinha mortal. Assinale a opção nitidamente FALSA:",
+                "Ocorre um erro conceitual e fatal muito grave na prova sobre '{topic}' na seguinte alternativa escrita:",
+                "Dentre as fortes e detalhadas opções abaixo discorrendo sobre '{topic}', identifique onde mora o erro grave:",
+                "Apenas uma única das alternativas elaboradas NÃO condiz com os pilares básicos de '{topic}'. Assinale-a agora:",
+                "Sobre o conteúdo teórico estudado na plataforma sobre '{topic}', qual afirmação beira o absurdo e é INCORRETA?",
+                "Marque sem piedade a alternativa que contém um claro desvio conceitual ou ilegalidade sobre '{topic}':",
+                "Identifique rapidamente a inverdade técnica/jurídica flagrante que a banca formulou sobre o tema de '{topic}':",
+                "Abaixo, as frases refletem acertos consolidados sobre '{topic}', MENOS uma. Extraia e assinale o erro tático:",
+                "Assinale o único item que contraria frontalmente a jurisprudência, a gramática ou o entendimento sobre '{topic}':",
+                "Na análise cirúrgica e minuciosa do tema '{topic}', assinale a alternativa que deve ser imediatamente INVALIDADA por erro:",
+                "Qual assertiva esbarra em um erro infantil de teoria ou lei sobre '{topic}' e deve ser interceptada e marcada como falsa?"
+            ];
+
+            const add = (cat, text, c, w1, w2, w3, exp) => {
+                baseQuizTemplates[cat].push({ text, options: [c, w1, w2, w3], correct: 0, exp });
+            };
+
+            // Multiplica o banco combinando formatos com fatos (Gera banco massivo)
+            const buildProceduralQuestions = (category, data) => {
+                data.forEach(item => {
+                    trueFormats.forEach(format => {
+                        add(category, format.replace('{topic}', item.topic), item.trueFact, item.falseFacts[0], item.falseFacts[1], item.falseFacts[2], `Gabarito Justificado (Tática): ${item.exp}`);
+                    });
+                    falseFormats.forEach(format => {
+                        add(category, format.replace('{topic}', item.topic), item.falseFacts[0], item.trueFact, item.trueFact2, item.trueFact3, `Elimine o Inimigo! A alternativa que contém o erro e a pegadinha armada da banca é o nosso gabarito e a explicação da doutrina real é: ${item.exp}`);
+                    });
+                });
+            };
+
+            buildProceduralQuestions("Língua Portuguesa", portData);
+            buildProceduralQuestions("História de Pernambuco", histData);
+            buildProceduralQuestions("Raciocínio Lógico Matemático", rlmData);
+            buildProceduralQuestions("Informática Básica", infoData);
+            buildProceduralQuestions("Direito Constitucional", constData);
+            buildProceduralQuestions("Direitos Humanos e Legislação Extravagante", dhData);
+        }
+
+        let currentQuizQuestions = [];
+        let currentQIndex = 0;
+        let score = 0;
+        let answersLog = [];
+
+        function generateUniqueQuestions(category) {
+            if (!window.dbPopulated) {
+                populateMassiveDatabase();
+                window.dbPopulated = true;
+            }
+
+            let finalQuestionsPool = [];
+            
+            // SIMULADO GERAL - AOCP (10 de cada matéria = 60 exatas)
+            if (category === 'todos') {
+                const cats = ["Língua Portuguesa", "História de Pernambuco", "Raciocínio Lógico Matemático", "Informática Básica", "Direito Constitucional", "Direitos Humanos e Legislação Extravagante"];
+                cats.forEach(c => {
+                    let catPool = [...baseQuizTemplates[c]];
+                    // Algoritmo Fisher-Yates shuffle
+                    for (let i = catPool.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [catPool[i], catPool[j]] = [catPool[j], catPool[i]];
+                    }
+                    finalQuestionsPool.push(...catPool.slice(0, 10)); // Pega exatamente as 10 primeiras inéditas do bolo embaralhado
+                });
+            } else {
+                // BATERIA DE 60 QUESTÕES FOCADAS EM UMA ÚNICA MATÉRIA
+                let catPool = [...baseQuizTemplates[category]];
+                
+                // Embaralha todas
+                for (let i = catPool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [catPool[i], catPool[j]] = [catPool[j], catPool[i]];
+                }
+                
+                finalQuestionsPool = catPool.slice(0, 60); // Puxa 60 cravadas inéditas
+                
+                // Failsafe (Se por acaso a categoria tiver menos q 60, replica até fechar 60 para não quebrar o motor, mas com as 30 formatações novas sempre terá sobra)
+                while (finalQuestionsPool.length < 60 && catPool.length > 0) {
+                    finalQuestionsPool.push(...catPool);
+                }
+                finalQuestionsPool = finalQuestionsPool.slice(0, 60); 
+            }
+
+            // Embaralha o pacote final de 60 pra matéria geral misturar, ou quebrar o ritmo
+            for (let i = finalQuestionsPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [finalQuestionsPool[i], finalQuestionsPool[j]] = [finalQuestionsPool[j], finalQuestionsPool[i]];
+            }
+
+            // Embaralha as posições A, B, C, D DENTRO de cada questão
+            finalQuestionsPool.forEach(base => {
+                let optsWithAns = base.options.map((opt, idx) => ({ text: opt, isCorrect: idx === base.correct }));
+                optsWithAns.sort(() => Math.random() - 0.5);
+                base.options = optsWithAns.map(o => o.text);
+                base.correct = optsWithAns.findIndex(o => o.isCorrect);
+            });
+
+            return finalQuestionsPool;
+        }
+
+        window.openQuiz = (overrideFilter = null) => {
+            let filterValue = overrideFilter || document.getElementById('quizFilter').value;
+            if (overrideFilter && document.getElementById('quizFilter').querySelector(`option[value="${filterValue}"]`)) {
+                document.getElementById('quizFilter').value = filterValue;
+            }
+
+            currentQuizQuestions = generateUniqueQuestions(filterValue);
+            currentQIndex = 0;
+            score = 0;
+            answersLog = [];
+            
+            document.getElementById('quizModalTitle').innerHTML = `<i class="fa-solid fa-crosshairs mr-2"></i> TREINAMENTO PMPE - ${currentQuizQuestions.length} QUESTÕES INÉDITAS`;
+            document.getElementById('quizSubject').innerText = document.getElementById('quizFilter').options[document.getElementById('quizFilter').selectedIndex].text;
+            
+            document.getElementById('quizModal').classList.remove('hidden');
+            document.getElementById('quizModal').classList.add('flex');
+            renderQuizQuestion();
+        };
+
+        window.closeQuiz = () => {
+            document.getElementById('quizModal').classList.add('hidden');
+            document.getElementById('quizModal').classList.remove('flex');
+        };
+
+        function renderQuizQuestion() {
+            const q = currentQuizQuestions[currentQIndex];
+            document.getElementById('quizProgress').innerText = `Questão Operacional ${currentQIndex + 1} de ${currentQuizQuestions.length}`;
+            document.getElementById('quizQuestionText').innerHTML = q.text;
+            
+            const optsContainer = document.getElementById('quizOptions');
+            optsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 transition-colors text-gray-300 option-btn text-lg shadow-sm break-words';
+                btn.innerHTML = `<span class="font-bold text-blue-500 mr-3 text-xl flex-shrink-0">${String.fromCharCode(65 + idx)})</span> <span>${opt}</span>`;
+                btn.onclick = () => handleAnswerSubmission(idx, btn);
+                optsContainer.appendChild(btn);
+            });
+
+            document.getElementById('detailedFeedbackBox').classList.add('hidden');
+            document.getElementById('quizResultFooter').classList.add('hidden');
+            document.getElementById('btnNextQuiz').classList.add('hidden');
+            document.getElementById('btnFinishQuiz').classList.add('hidden');
+        }
+
+        window.handleAnswerSubmission = (selectedIndex, btnElement) => {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.onclick = null;
+                btn.classList.add('opacity-70', 'cursor-default');
+                btn.classList.remove('hover:bg-slate-700');
+            });
+
+            const q = currentQuizQuestions[currentQIndex];
+            const isCorrect = selectedIndex === q.correct;
+            const letters = ['A', 'B', 'C', 'D'];
+            
+            answersLog.push({
+                questionText: q.text,
+                userAnswer: letters[selectedIndex],
+                correctAnswer: letters[q.correct],
+                isCorrect: isCorrect,
+                explanation: q.exp
+            });
+
+            if (isCorrect) {
+                btnElement.classList.replace('bg-slate-800', 'bg-green-900');
+                btnElement.classList.replace('border-slate-600', 'border-green-500');
+                btnElement.classList.remove('opacity-70');
+                btnElement.classList.add('text-white');
+                score++;
+            } else {
+                btnElement.classList.replace('bg-slate-800', 'bg-red-900');
+                btnElement.classList.replace('border-slate-600', 'border-red-500');
+                btnElement.classList.remove('opacity-70');
+                btnElement.classList.add('text-white');
+                
+                buttons[q.correct].classList.replace('bg-slate-800', 'bg-green-900/50');
+                buttons[q.correct].classList.replace('border-slate-600', 'border-green-500');
+                buttons[q.correct].classList.add('text-green-300');
+            }
+
+            showDetailedFeedback(isCorrect, letters[selectedIndex], letters[q.correct], q.exp);
+
+            document.getElementById('quizResultFooter').classList.remove('hidden');
+            if (currentQIndex < currentQuizQuestions.length - 1) {
+                document.getElementById('btnNextQuiz').classList.remove('hidden');
+            } else {
+                document.getElementById('btnFinishQuiz').classList.remove('hidden');
+            }
+        };
+
+        function showDetailedFeedback(isCorrect, userLetter, correctLetter, explanation) {
+            const fbBox = document.getElementById('detailedFeedbackBox');
+            const fbTitle = document.getElementById('feedbackTitle');
+            const fbExp = document.getElementById('feedbackExplanation');
+            
+            fbBox.classList.remove('hidden', 'bg-green-900/30', 'border-green-500', 'bg-red-900/30', 'border-red-500');
+            
+            if(isCorrect) {
+                fbBox.classList.add('bg-green-900/30', 'border-green-500');
+                fbTitle.innerHTML = `<i class="fa-solid fa-circle-check text-green-500 mr-2 text-2xl"></i> TÁTICA PERFEITA (Gabarito: ${correctLetter})`;
+                fbTitle.className = "font-bold text-xl mb-3 flex items-center text-green-400";
+            } else {
+                fbBox.classList.add('bg-red-900/30', 'border-red-500');
+                fbTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-500 mr-2 text-2xl"></i> ALVO DESVIADO`;
+                fbTitle.className = "font-bold text-xl mb-3 flex items-center text-red-400";
+            }
+            
+            let expHtml = `
+                <div class="mb-3 text-sm border-b border-gray-600 pb-2">
+                    <span class="text-gray-400">Sua marcação:</span> <strong class="text-white">${userLetter}</strong> &nbsp;|&nbsp; 
+                    <span class="text-gray-400">Gabarito Oficial:</span> <strong class="text-white">${correctLetter}</strong>
+                </div>
+                <div class="mt-3"><strong class="text-blue-400 uppercase tracking-wider text-sm"><i class="fa-solid fa-microscope mr-1"></i> A Doutrina da Questão:</strong><br> <span class="text-gray-200 mt-1 block">${explanation}</span></div>
+            `;
+            fbExp.innerHTML = expHtml;
+        }
+
+        window.nextQuizQuestion = () => {
+            currentQIndex++;
+            renderQuizQuestion();
+        };
+
+        window.finishQuizReport = () => {
+            closeQuiz();
+            const perc = (score / currentQuizQuestions.length) * 100;
+            
+            let statusHtml = '';
+            if (perc >= 85) statusHtml = '<span class="text-green-500 font-bold bg-green-900/30 px-3 py-1 rounded border border-green-500"><i class="fa-solid fa-medal mr-2"></i> Padrão Operacional AOCP Atingido. A vaga está se aproximando.</span>';
+            else if (perc >= 65) statusHtml = '<span class="text-yellow-500 font-bold bg-yellow-900/30 px-3 py-1 rounded border border-yellow-500"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Mediano não veste a farda da PMPE. Retorne aos PDFs na sua coluna direita.</span>';
+            else statusHtml = '<span class="text-red-500 font-bold bg-red-900/30 px-3 py-1 rounded border border-red-500"><i class="fa-solid fa-skull-crossbones mr-2"></i> Prontidão Crítica de Desempenho. Você falhou. Alimente o caderno de erros imediatamente.</span>';
+
+            let reportHtml = `
+                <div class="text-center mb-8 border-b border-slate-700 pb-8">
+                    <h2 class="text-3xl md:text-5xl font-tactical text-white mb-3">PONTUAÇÃO: <span class="${perc >= 65 ? 'text-blue-500' : 'text-red-500'}">${score} / ${currentQuizQuestions.length}</span></h2>
+                    <h3 class="text-xl md:text-2xl text-gray-400 mb-6 font-tactical tracking-widest">Aproveitamento Final: ${perc.toFixed(1)}%</h3>
+                    <p class="text-base md:text-lg mb-4">${statusHtml}</p>
+                    <p class="text-sm text-gray-400 mt-4 italic">Júlia e Jailene esperam o preenchimento do seu Caderno de Erros com as justificativas abaixo.</p>
+                </div>
+                <div class="space-y-6">
+            `;
+
+            answersLog.forEach((log, index) => {
+                const isCorrect = log.isCorrect;
+                const borderColor = isCorrect ? 'border-green-500' : 'border-red-500';
+                const bgColor = isCorrect ? 'bg-green-900/10' : 'bg-red-900/10';
+                const icon = isCorrect ? '<i class="fa-solid fa-circle-check text-green-500 text-2xl"></i>' : '<i class="fa-solid fa-circle-xmark text-red-500 text-2xl"></i>';
+                
+                reportHtml += `
+                    <div class="p-6 rounded-lg border-l-4 ${borderColor} ${bgColor} shadow-md break-words">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="mt-1 flex-shrink-0">${icon}</div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-white font-tactical text-lg mb-2">QUESTÃO OPERACIONAL ${index + 1}</h4>
+                                <p class="text-gray-200 text-sm leading-relaxed mb-4 font-semibold break-words">${log.questionText}</p>
+                            </div>
+                        </div>
+                        <div class="ml-0 md:ml-10 text-sm bg-slate-900 p-4 rounded border border-slate-700 break-words">
+                            <div class="mb-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div><span class="text-gray-400">Sua marcação:</span> <strong class="${isCorrect ? 'text-green-400' : 'text-red-400'} text-base md:text-lg">${log.userAnswer}</strong></div>
+                                ${!isCorrect ? `<div><span class="text-gray-400">Gabarito Oficial:</span> <strong class="text-green-400 text-base md:text-lg">${log.correctAnswer}</strong></div>` : ''}
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700">
+                                <strong class="text-blue-400 uppercase text-xs tracking-widest"><i class="fa-solid fa-scale-balanced mr-1"></i> A Doutrina da Questão:</strong><br>
+                                <span class="text-gray-300 mt-2 block leading-relaxed break-words">${log.explanation}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            reportHtml += `</div>`;
+            document.getElementById('reportContent').innerHTML = reportHtml;
+            document.getElementById('reportModal').classList.remove('hidden');
+            document.getElementById('reportModal').classList.add('flex');
+        };
+
+        window.closeReport = () => {
+            document.getElementById('reportModal').classList.add('hidden');
+            document.getElementById('reportModal').classList.remove('flex');
+            populateDaySelector();
+        };
+
+        // =========================================================================
+        // 6. FUNÇÕES GERAIS E GRÁFICO
+        // =========================================================================
+        let myChart = null;
+        function updateChart() {
+            let total = 0, completed = 0;
+            const stats = [0, 0, 0, 0];
+
+            operationDays.forEach(day => {
+                const tasks = generateTasksForDay(day);
+                tasks.forEach(task => {
+                    total++;
+                    if (userProgress[task.id]) {
+                        completed++;
+                        if(task.subject.includes("Portugu") || task.subject.includes("Raciocínio") || task.subject.includes("História") || task.subject.includes("Inform")) stats[0] += 10;
+                        else if(task.subject.includes("Direitos") || task.subject.includes("Legislação")) stats[1] += 10;
+                        else if(task.subject.includes("Constitucional")) stats[2] += 10;
+                        else stats[3] += 10;
+                    }
+                });
+            });
+
+            document.getElementById('statTotal').innerText = `${completed}/${total}`;
+            document.getElementById('statPercent').innerText = total ? `${Math.round((completed/total)*100)}%` : '0%';
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            if (myChart) {
+                myChart.data.datasets[0].data = stats;
+                myChart.update();
+            } else {
+                myChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Bloco I/II', 'Extravagante/DH', 'Constitucional', 'TAF/Redação/Simulado'],
+                        datasets: [{ data: stats, backgroundColor: 'rgba(59, 130, 246, 0.4)', borderColor: 'rgba(59, 130, 246, 1)', borderWidth: 2, pointBackgroundColor: '#fff' }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false, max: 100 }, grid: {color: 'rgba(255,255,255,0.1)'}, angleLines: {color: 'rgba(255,255,255,0.1)'} } }, plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        window.openMaterialModal = (materialKey) => {
+            const material = materialsDatabase[materialKey];
+            if(material) {
+                document.getElementById('materialTitle').innerHTML = `<i class="fa-solid fa-book-open text-blue-600 mr-2"></i> ${material.title}`;
+                document.getElementById('materialContent').innerHTML = material.content;
+                document.getElementById('materialModal').classList.remove('hidden');
+                document.getElementById('materialModal').classList.add('flex');
+            } else {
+                showModal("Atenção", "Apostila em verificação tática.", "fa-gears");
+            }
+        };
+
+        window.closeMaterial = () => {
+            document.getElementById('materialModal').classList.add('hidden');
+            document.getElementById('materialModal').classList.remove('flex');
+        };
+
+        window.showModal = (title, msg, icon) => {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            document.getElementById('modalIcon').className = `fa-solid ${icon} text-4xl text-blue-500 mb-4`;
+            document.getElementById('customModal').classList.remove('hidden');
+            document.getElementById('customModal').classList.add('flex');
+        };
+        
+        window.closeModal = () => {
+            document.getElementById('customModal').classList.add('hidden');
+            document.getElementById('customModal').classList.remove('flex');
+        };
+
+        setInterval(() => {
+            const distance = new Date('2027-02-21T13:00:00').getTime() - new Date().getTime();
+            if (distance < 0) { document.getElementById("countdown").innerHTML = "A HORA CHEGOU!"; return; }
+            document.getElementById("countdown").innerHTML = `${Math.floor(distance / (1000 * 60 * 60 * 24))} DIAS`;
+        }, 1000);
+
+        window.onload = () => {
+            populateDaySelector();
+            const firstInc = getFirstIncompleteDay();
+            document.getElementById('missionSelector').value = firstInc;
+            renderDay(firstInc);
+            updateChart();
+            startStudyGame();
+        };
+    </script>
+</body>
+</html>
