@@ -225,7 +225,8 @@
             padding: clamp(1.5rem, 4vw, 3rem);
             color: #fff;
             background:
-                radial-gradient(ellipse at 78% 20%, rgba(125, 190, 137, .28), transparent 40%),
+                linear-gradient(90deg, rgba(10, 39, 25, .94) 0%, rgba(13, 63, 37, .78) 48%, rgba(15, 75, 43, .45) 100%),
+                url('https://penoticias.com.br/blog/wp-content/uploads/2024/07/Policia-Militar.jpg') center 35% / cover no-repeat,
                 linear-gradient(115deg, #102e20 0%, #176b45 62%, #24794e 100%);
         }
 
@@ -264,6 +265,20 @@
             color: #e2f2e6;
         }
 
+        .dashboard-home-credit {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #d1ead8;
+            font-size: .72rem;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .dashboard-home-credit:hover,
+        .dashboard-home-credit:focus-visible {
+            color: #fff;
+        }
+
         .dashboard-home-crest {
             width: clamp(6rem, 17vw, 10rem);
             height: clamp(6rem, 17vw, 10rem);
@@ -284,10 +299,10 @@
 
         .dashboard-shortcut {
             display: flex;
-            min-height: 5.5rem;
-            align-items: center;
-            gap: .9rem;
-            padding: 1rem;
+            min-width: 0;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
             color: #173b2c;
             text-align: left;
             background: #fff;
@@ -306,7 +321,26 @@
             outline: none;
         }
 
-        .dashboard-shortcut i {
+        .dashboard-shortcut-image {
+            display: block;
+            width: 100%;
+            height: 7rem;
+            flex: none;
+            object-fit: cover;
+            object-position: center 42%;
+            background: #e4ebe5;
+            border-bottom: 1px solid #d7e7dc;
+        }
+
+        .dashboard-shortcut-content {
+            display: flex;
+            min-height: 5.5rem;
+            align-items: center;
+            gap: .9rem;
+            padding: .9rem 1rem;
+        }
+
+        .dashboard-shortcut-content i {
             display: grid;
             width: 2.6rem;
             height: 2.6rem;
@@ -791,6 +825,8 @@
                     <p class="text-xs font-bold tracking-[0.2em] uppercase">Operação PMPE</p>
                     <h2 class="dashboard-home-title">Soldado Ian de Pernambuco</h2>
                     <p>Seu espaço de preparação: conteúdos, missões diárias, simulados e redação em um só lugar.</p>
+                    <a class="dashboard-home-credit" href="https://penoticias.com.br/blog/pmpe-mobiliza-mais-de-4-mil-policiais-para-garantir-seguranca-de-folioes-e-torcedores-em-pernambuco/"
+                        target="_blank" rel="noopener noreferrer">Imagem de fundo: PE Notícias</a>
                 </div>
                 <img
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
@@ -799,19 +835,29 @@
             </div>
             <div class="dashboard-shortcuts" aria-label="Acessos rápidos">
                 <button class="dashboard-shortcut" type="button" data-open-dashboard-view="content">
-                    <i class="fa-solid fa-book-open" aria-hidden="true"></i><span><strong>Conteúdos</strong><small>Consulte as matérias do edital</small></span>
+                    <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
+                        alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span><strong>Conteúdos</strong><small>Consulte as matérias do edital</small></span></span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-dashboard-view="missions">
-                    <i class="fa-solid fa-list-check" aria-hidden="true"></i><span><strong>Missões diárias</strong><small>Continue sua rotina de estudos</small></span>
+                    <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
+                        alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-list-check" aria-hidden="true"></i><span><strong>Missões diárias</strong><small>Continue sua rotina de estudos</small></span></span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-dashboard-view="simulations">
-                    <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span><strong>Simulados</strong><small>Pratique e acompanhe seu progresso</small></span>
+                    <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
+                        alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span><strong>Simulados</strong><small>Pratique e acompanhe seu progresso</small></span></span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-dashboard-view="writing">
-                    <i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span><strong>Redação</strong><small>Treine com o mentor de escrita</small></span>
+                    <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
+                        alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span><strong>Redação</strong><small>Treine com o mentor de escrita</small></span></span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-dashboard-view="errors">
-                    <i class="fa-solid fa-book-skull" aria-hidden="true"></i><span><strong>Caderno de erros</strong><small>Retome seus registros salvos</small></span>
+                    <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
+                        alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-book-skull" aria-hidden="true"></i><span><strong>Caderno de erros</strong><small>Retome seus registros salvos</small></span></span>
                 </button>
             </div>
         </section>
