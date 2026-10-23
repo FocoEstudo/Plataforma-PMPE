@@ -4,10 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operação PMPE - QG Ian Ítalo</title>
+    <title>Operação PMPE | Plataforma de Estudos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dados-topicos.js"></script>
+    <script src="aprofundamento-portugues.js"></script>
+    <script src="aprofundamento-historia.js"></script>
+    <script src="aprofundamento-logica.js"></script>
+    <script src="aprofundamento-informatica.js"></script>
+    <script src="aprofundamento-constitucional.js"></script>
+    <script src="aprofundamento-dh-1.js"></script>
+    <script src="aprofundamento-dh-2.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,11 +22,10 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #050b14;
-            color: #f8fafc;
+            background-color: #f3f8f4;
+            color: #173b2c;
             isolation: isolate;
             overflow-x: hidden;
-            /* Previne qualquer vazamento horizontal na tela */
         }
 
         .font-tactical {
@@ -27,40 +33,479 @@
             text-transform: uppercase;
         }
 
-        /* Fundo da Caveira Tática com máscara ajustada para maior visibilidade */
         .skull-bg {
             position: relative;
-            background: #050b14;
+            background: #f3f8f4;
         }
 
         .skull-bg::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-            background: url('https://caveira.com/wp-content/uploads/2022/12/Wallpaper-05-9x16-1-576x1024.png') center / cover no-repeat;
-            opacity: 0.45;
-            /* Aumentado de 0.25 para 0.45 para a caveira ficar bem mais visível */
+            display: none;
         }
 
-        /* Painéis de Vidro Fumê (Glassmorphism) ajustados para destacar o fundo */
         .glass-panel {
-            background: rgba(8, 15, 30, 0.45);
-            /* Reduzido de 0.65 para 0.45 para mais transparência */
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(8px);
-            /* Reduzido levemente para o fundo transparecer com mais nitidez */
             -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(59, 130, 246, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+            border: 1px solid #d7e7dc;
+            box-shadow: 0 12px 32px rgba(20, 75, 48, 0.08);
         }
 
         body .text-gray-300 {
-            color: #f1f5f9;
+            color: #52665a;
         }
 
         body .text-gray-400 {
-            color: #bfdbfe;
+            color: #6b7d71;
+        }
+
+        body .text-gray-200 {
+            color: #405448;
+        }
+
+        body .text-white {
+            color: #173b2c;
+        }
+
+        body button.text-white,
+        body a.text-white,
+        .platform-header .text-white {
+            color: #fff;
+        }
+
+        body .text-red-300,
+        body .text-red-400,
+        body .text-red-500,
+        body .text-red-600,
+        body .text-red-700 {
+            color: #b42318;
+        }
+
+        body [class*="bg-slate-950"] {
+            background-color: #f0f6f1;
+        }
+
+        body [class*="bg-slate-900"] {
+            background-color: #fff;
+        }
+
+        body [class*="bg-slate-800"] {
+            background-color: #edf4ef;
+        }
+
+        body [class*="bg-slate-700"] {
+            background-color: #e2eee5;
+        }
+
+        body #lockScreen[class*="bg-slate-950"] {
+            background-color: rgba(13, 45, 31, 0.92);
+        }
+
+        #lockScreen .text-white {
+            color: #fff;
+        }
+
+        #lockScreen .text-gray-300 {
+            color: #e5f1e8;
+        }
+
+        body [class*="text-blue-"],
+        body [class*="text-cyan-"],
+        body [class*="text-amber-"] {
+            color: #176b45;
+        }
+
+        body [class*="border-blue-"],
+        body [class*="border-cyan-"],
+        body [class*="border-amber-"] {
+            border-color: #b9d8c3;
+        }
+
+        body [class*="bg-blue-50"],
+        body [class*="bg-cyan-50"],
+        body [class*="bg-amber-50"] {
+            background-color: #edf7f0;
+        }
+
+        body [class*="bg-blue-600"],
+        body [class*="bg-blue-700"],
+        body [class*="bg-cyan-600"],
+        body [class*="bg-cyan-700"],
+        body [class*="bg-amber-600"],
+        body [class*="bg-amber-700"] {
+            background-color: #176b45;
+        }
+
+        body [class*="hover:bg-blue-"]:hover,
+        body [class*="hover:bg-cyan-"]:hover,
+        body [class*="hover:bg-amber-"]:hover {
+            background-color: #105737;
+        }
+
+        .platform-header {
+            background: #105737;
+            border-color: #0d4a2e;
+            box-shadow: 0 8px 24px rgba(13, 74, 46, 0.18);
+        }
+
+        .platform-header h1,
+        .platform-header p {
+            color: #fff;
+        }
+
+        .platform-header .brand-accent {
+            color: #d8f3df;
+        }
+
+        .brand-crest {
+            width: 4rem;
+            height: 4rem;
+            object-fit: contain;
+            padding: 0.25rem;
+            border-radius: 9999px;
+            background: #fff;
+            border: 2px solid #d8f3df;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        .brand-crest-fallback[hidden] {
+            display: none !important;
+        }
+
+        .platform-header .countdown-panel {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.28);
+            box-shadow: none;
+        }
+
+        .simulator-panel {
+            border-color: #b9d8c3;
+            box-shadow: 0 12px 32px rgba(20, 75, 48, 0.08);
+        }
+
+        .simulator-panel .simulator-heading {
+            background: #176b45;
+        }
+
+        .simulator-panel .simulator-heading .text-white {
+            color: #fff;
+        }
+
+        .simulator-panel .quiz-launch {
+            background: #176b45;
+            border-color: #176b45;
+        }
+
+        .simulator-panel .quiz-launch:hover {
+            background: #105737;
+        }
+
+        .simulator-panel #quizFilter:focus {
+            border-color: #176b45;
+        }
+
+        .dashboard-panel[hidden],
+        #studySupport.dashboard-panel[hidden] {
+            display: none !important;
+        }
+
+        .dashboard-panel {
+            grid-column: 1 / -1;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .dashboard-home-hero {
+            position: relative;
+            display: grid;
+            min-height: 15rem;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 1.5rem;
+            overflow: hidden;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            color: #fff;
+            background:
+                radial-gradient(ellipse at 78% 20%, rgba(125, 190, 137, .28), transparent 40%),
+                linear-gradient(115deg, #102e20 0%, #176b45 62%, #24794e 100%);
+        }
+
+        .dashboard-home-hero::after {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            content: "";
+            opacity: .11;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .28) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .28) 1px, transparent 1px);
+            background-size: 2rem 2rem;
+            mask-image: linear-gradient(90deg, transparent 15%, #000 100%);
+        }
+
+        .dashboard-home-copy,
+        .dashboard-home-crest {
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-home-title {
+            max-width: 14ch;
+            margin: .4rem 0 .75rem;
+            color: #fff;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            text-transform: uppercase;
+        }
+
+        .dashboard-home-copy p {
+            max-width: 38rem;
+            color: #e2f2e6;
+        }
+
+        .dashboard-home-crest {
+            width: clamp(6rem, 17vw, 10rem);
+            height: clamp(6rem, 17vw, 10rem);
+            padding: .4rem;
+            border: 3px solid rgba(255, 255, 255, .75);
+            border-radius: 1.25rem;
+            background: #fff;
+            object-fit: contain;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .25);
+        }
+
+        .dashboard-shortcuts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .dashboard-shortcut {
+            display: flex;
+            min-height: 5.5rem;
+            align-items: center;
+            gap: .9rem;
+            padding: 1rem;
+            color: #173b2c;
+            text-align: left;
+            background: #fff;
+            border: 1px solid #d7e7dc;
+            border-radius: .9rem;
+            box-shadow: 0 8px 24px rgba(20, 75, 48, .06);
+            cursor: pointer;
+            transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+
+        .dashboard-shortcut:hover,
+        .dashboard-shortcut:focus-visible {
+            border-color: #73ad82;
+            box-shadow: 0 12px 28px rgba(20, 75, 48, .12);
+            transform: translateY(-2px);
+            outline: none;
+        }
+
+        .dashboard-shortcut i {
+            display: grid;
+            width: 2.6rem;
+            height: 2.6rem;
+            flex: none;
+            place-items: center;
+            color: #176b45;
+            background: #edf7f0;
+            border-radius: .75rem;
+        }
+
+        .dashboard-shortcut strong,
+        .dashboard-shortcut small {
+            display: block;
+        }
+
+        .dashboard-shortcut small {
+            margin-top: .2rem;
+            color: #6b7d71;
+        }
+
+        #studySupport[data-support-view="simulations"] > :not(#simulatorPanel):not(#studyGamePanel):not(#progressPanel) {
+            display: none !important;
+        }
+
+        #studySupport[data-support-view="support"] > :not(#editalPanel):not(#notesPanel):not(#resourcesPanel) {
+            display: none !important;
+        }
+
+        #studySupport[data-support-view="support"] #editalPanel {
+            display: block !important;
+        }
+
+        #studySupport.dashboard-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+            align-items: start;
+        }
+
+        #simulatorPanel,
+        #studyGamePanel,
+        #progressPanel {
+            width: 100%;
+        }
+
+        #studyGamePanel,
+        #progressPanel {
+            display: block;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 1rem;
+        }
+
+        .platform-sidebar {
+            display: none;
+        }
+
+        .mobile-dashboard-nav {
+            position: fixed;
+            inset: auto 0 0;
+            z-index: 60;
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            padding: .5rem .25rem calc(.5rem + env(safe-area-inset-bottom));
+            background: #102e20;
+            border-top: 1px solid rgba(216, 243, 223, .2);
+            box-shadow: 0 -8px 24px rgba(13, 45, 31, .18);
+        }
+
+        .dashboard-nav-item {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: .25rem;
+            padding: .35rem .1rem;
+            color: #d4e5d9;
+            font-size: .625rem;
+            font-weight: 700;
+            line-height: 1.1;
+            text-align: center;
+            text-decoration: none;
+            white-space: nowrap;
+            background: transparent;
+            border: 0;
+            border-radius: .65rem;
+        }
+
+        .dashboard-nav-item i {
+            font-size: 1rem;
+        }
+
+        .dashboard-nav-item:hover,
+        .dashboard-nav-item:focus-visible,
+        .dashboard-nav-item.is-active {
+            color: #fff;
+            background: rgba(107, 191, 131, .22);
+            outline: none;
+        }
+
+        .dashboard-nav-item.is-active i {
+            color: #8de0a4;
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                padding-left: 14.5rem;
+            }
+
+            .platform-sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 55;
+                display: flex;
+                width: 14.5rem;
+                flex-direction: column;
+                padding: 1.5rem 1rem;
+                color: #e7f3ea;
+                background: #102e20;
+                border-right: 1px solid rgba(216, 243, 223, .16);
+                box-shadow: 8px 0 28px rgba(13, 45, 31, .12);
+            }
+
+            .sidebar-brand {
+                display: flex;
+                align-items: center;
+                gap: .75rem;
+                padding: .25rem .25rem 1.5rem;
+                margin-bottom: 1.25rem;
+                border-bottom: 1px solid rgba(216, 243, 223, .18);
+            }
+
+            .sidebar-brand .brand-crest {
+                width: 2.75rem;
+                height: 2.75rem;
+                flex: none;
+            }
+
+            .sidebar-brand-title {
+                color: #fff;
+                font-family: 'Oswald', sans-serif;
+                font-size: 1.1rem;
+                line-height: 1.1;
+            }
+
+            .sidebar-brand-caption {
+                display: block;
+                margin-top: .25rem;
+                color: #b8d3c0;
+                font-size: .625rem;
+                font-weight: 700;
+                letter-spacing: .08em;
+                text-transform: uppercase;
+            }
+
+            .sidebar-section-label {
+                padding: 0 .75rem;
+                margin-bottom: .5rem;
+                color: #9dbba6;
+                font-size: .65rem;
+                font-weight: 800;
+                letter-spacing: .14em;
+                text-transform: uppercase;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                gap: .35rem;
+            }
+
+            .sidebar-nav .dashboard-nav-item {
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: .8rem;
+                padding: .75rem;
+                font-size: .85rem;
+                text-align: left;
+            }
+
+            .sidebar-nav .dashboard-nav-item i {
+                width: 1.25rem;
+                font-size: 1rem;
+                text-align: center;
+            }
+
+            .sidebar-caption {
+                margin-top: auto;
+                padding: 1rem .75rem .25rem;
+                color: #b8d3c0;
+                font-size: .72rem;
+                line-height: 1.5;
+                border-top: 1px solid rgba(216, 243, 223, .18);
+            }
+
+            .mobile-dashboard-nav {
+                display: none;
+            }
         }
 
         ::-webkit-scrollbar {
@@ -68,16 +513,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.5);
+            background: #e5eee7;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #1e3a8a;
+            background: #4b8d64;
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #2563eb;
+            background: #176b45;
         }
 
         /* Estilização densa para os PDFs internos */
@@ -91,7 +536,7 @@
         }
 
         .pdf-content h2 {
-            color: #1d4ed8;
+            color: #176b45;
             font-size: 1.4rem;
             font-weight: bold;
             margin-top: 30px;
@@ -120,13 +565,13 @@
 
         .pdf-content strong {
             color: #000;
-            background-color: rgba(59, 130, 246, 0.2);
+            background-color: rgba(23, 107, 69, 0.12);
             padding: 0 4px;
             border-radius: 2px;
         }
 
         .pdf-content blockquote {
-            border-left: 4px solid #1d4ed8;
+            border-left: 4px solid #176b45;
             background-color: #f8fafc;
             padding: 15px;
             margin: 15px 0;
@@ -146,7 +591,7 @@
         }
 
         .pdf-content nav a {
-            color: #1d4ed8;
+            color: #176b45;
             text-decoration: underline;
         }
 
@@ -178,6 +623,12 @@
 
             #studyGameBoard {
                 justify-content: flex-start !important;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            body.skull-bg {
+                padding-bottom: calc(6rem + env(safe-area-inset-bottom));
             }
         }
 
@@ -233,7 +684,7 @@
         }
 
         .study-tab-button[aria-selected="true"] {
-            background: #1d4ed8;
+            background: #176b45;
             color: #fff;
         }
 
@@ -265,24 +716,65 @@
     </style>
 </head>
 
-<body class="skull-bg min-h-screen pb-10 w-full max-w-full">
+<body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home">
 
-    <header class="border-b border-blue-600/30 bg-slate-900/50 sticky top-0 z-50 backdrop-blur-md shadow-lg">
+    <aside class="platform-sidebar" aria-label="Menu principal">
+        <div class="sidebar-brand">
+            <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
+                alt="" class="brand-crest" aria-hidden="true"
+                onerror="this.hidden=true">
+            <div class="sidebar-brand-title">OPERAÇÃO PMPE
+                <span class="sidebar-brand-caption">Área de estudos</span>
+            </div>
+        </div>
+        <p class="sidebar-section-label">Navegação</p>
+        <nav class="sidebar-nav" role="tablist" aria-label="Seções da plataforma">
+            <button class="dashboard-nav-item is-active" id="desktopTab-home" type="button" role="tab" aria-selected="true" aria-controls="dashboardHome" tabindex="0" data-open-dashboard-view="home">
+                <i class="fa-solid fa-house" aria-hidden="true"></i><span>Painel</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-content" type="button" role="tab" aria-selected="false" aria-controls="syllabusSection" tabindex="-1" data-open-dashboard-view="content">
+                <i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Conteúdos</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-missions" type="button" role="tab" aria-selected="false" aria-controls="missionsSection" tabindex="-1" data-open-dashboard-view="missions">
+                <i class="fa-solid fa-list-check" aria-hidden="true"></i><span>Missões diárias</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-simulations" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="simulations">
+                <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span>Simulados</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-support" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="support">
+                <i class="fa-solid fa-toolbox" aria-hidden="true"></i><span>Apoio</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-writing" type="button" role="tab" aria-selected="false" aria-controls="writingPanel" tabindex="-1" data-open-dashboard-view="writing">
+                <i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span>Redação</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-errors" type="button" role="tab" aria-selected="false" aria-controls="errorsPanel" tabindex="-1" data-open-dashboard-view="errors">
+                <i class="fa-solid fa-book-skull" aria-hidden="true"></i><span>Caderno de erros</span>
+            </button>
+        </nav>
+        <p class="sidebar-caption">Estude no seu ritmo. Acompanhe as missões e avance tema por tema.</p>
+    </aside>
+
+    <header class="platform-header sticky top-0 z-50 border-b backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4">
-                <div
-                    class="w-16 h-16 bg-blue-700 rounded-full flex items-center justify-center border-2 border-white shadow-[0_0_15px_rgba(29,78,216,0.6)]">
+                <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
+                    alt="Brasão da Polícia Militar de Pernambuco" class="brand-crest"
+                    onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+                <div hidden
+                    class="brand-crest-fallback w-16 h-16 rounded-full flex items-center justify-center border-2 border-white bg-white/10">
                     <i class="fa-solid fa-shield-halved text-3xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-tactical text-blue-500 tracking-wider">OPERAÇÃO PMPE</h1>
-                    <p class="text-gray-300 font-semibold tracking-widest uppercase text-sm">SD IAN ÍTALO <span
-                            class="text-xs text-blue-400 ml-2"><i class="fa-solid fa-crosshairs"></i> Reta Final
-                            AOCP</span></p>
+                    <h1 class="text-3xl font-tactical text-white tracking-wider">OPERAÇÃO PMPE</h1>
+                    <p class="font-semibold tracking-widest uppercase text-sm">PLATAFORMA DE ESTUDOS
+                        <span class="brand-accent text-xs ml-2">· Preparação PMPE</span>
+                    </p>
                 </div>
             </div>
 
-            <div class="glass-panel px-6 py-2 rounded-xl text-center border-blue-500/50">
+            <div class="countdown-panel glass-panel px-6 py-2 rounded-xl text-center border-blue-500/50">
                 <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">A Farda Te Espera (21 Fev 2027)</p>
                 <div id="countdown" class="font-tactical text-2xl text-white tracking-widest">
                     -- DIAS --:--:--
@@ -293,8 +785,39 @@
 
     <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
 
-        <section class="lg:col-span-12 glass-panel p-5 md:p-7 rounded-xl border border-blue-500/30"
-            aria-labelledby="syllabusTitle">
+        <section id="dashboardHome" class="dashboard-panel" role="tabpanel" aria-labelledby="desktopTab-home">
+            <div class="dashboard-home-hero glass-panel rounded-2xl">
+                <div class="dashboard-home-copy">
+                    <p class="text-xs font-bold tracking-[0.2em] uppercase">Operação PMPE</p>
+                    <h2 class="dashboard-home-title">Soldado Ian de Pernambuco</h2>
+                    <p>Seu espaço de preparação: conteúdos, missões diárias, simulados e redação em um só lugar.</p>
+                </div>
+                <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
+                    alt="Brasão da Polícia Militar de Pernambuco" class="dashboard-home-crest"
+                    onerror="this.hidden=true">
+            </div>
+            <div class="dashboard-shortcuts" aria-label="Acessos rápidos">
+                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="content">
+                    <i class="fa-solid fa-book-open" aria-hidden="true"></i><span><strong>Conteúdos</strong><small>Consulte as matérias do edital</small></span>
+                </button>
+                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="missions">
+                    <i class="fa-solid fa-list-check" aria-hidden="true"></i><span><strong>Missões diárias</strong><small>Continue sua rotina de estudos</small></span>
+                </button>
+                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="simulations">
+                    <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span><strong>Simulados</strong><small>Pratique e acompanhe seu progresso</small></span>
+                </button>
+                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="writing">
+                    <i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span><strong>Redação</strong><small>Treine com o mentor de escrita</small></span>
+                </button>
+                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="errors">
+                    <i class="fa-solid fa-book-skull" aria-hidden="true"></i><span><strong>Caderno de erros</strong><small>Retome seus registros salvos</small></span>
+                </button>
+            </div>
+        </section>
+
+        <section id="syllabusSection" class="dashboard-panel glass-panel p-5 md:p-7 rounded-xl border border-blue-500/30"
+            role="tabpanel" aria-labelledby="desktopTab-content" hidden>
             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-6">
                 <div>
                     <p class="text-xs font-bold tracking-[0.2em] text-blue-400 uppercase">Guia de estudos</p>
@@ -436,7 +959,7 @@
             </div>
 
             <details class="group mt-4 rounded-lg border border-slate-600 bg-slate-950/40 p-4">
-                <summary class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
+                <summary id="redacaoDetails" class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
                     Prova Discursiva · Redação
                     <i class="fa-solid fa-chevron-down text-blue-300 transition-transform group-open:rotate-180"></i>
                 </summary>
@@ -456,7 +979,7 @@
         </section>
 
         <!-- Coluna Esquerda: CASCATA DE MISSÕES (05h às 23h) perfeitamente alinhada -->
-        <div class="lg:col-span-8 space-y-6 w-full max-w-full">
+        <div id="missionsSection" class="dashboard-panel space-y-6 w-full max-w-full" role="tabpanel" aria-labelledby="desktopTab-missions" hidden>
             <div
                 class="flex flex-col items-stretch glass-panel p-4 rounded-t-xl border-b-2 border-blue-600 gap-4 w-full">
                 <h2 class="text-2xl font-tactical text-white"><i
@@ -507,10 +1030,10 @@
         </div>
 
         <!-- Coluna Direita -->
-        <div class="lg:col-span-4 space-y-6 w-full max-w-full">
+        <div id="studySupport" class="dashboard-panel space-y-6 w-full max-w-full" role="tabpanel" aria-labelledby="desktopTab-simulations" data-support-view="simulations" hidden>
 
             <!-- Edital Alvo PMPE -->
-            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg hidden lg:block w-full">
+            <div id="editalPanel" class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg hidden lg:block w-full">
                 <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i
                         class="fa-solid fa-list-check mr-2"></i> Edital Alvo PMPE</h3>
                 <div class="space-y-4 text-sm text-gray-300 h-48 overflow-y-auto pr-2 custom-scrollbar">
@@ -545,18 +1068,18 @@
             </div>
 
             <!-- SIMULADOR GERADOR 60Q -->
-            <div
-                class="glass-panel rounded-xl overflow-hidden border-2 border-red-600 shadow-[0_0_15px_rgba(220,38,38,0.3)] relative group w-full">
-                <div class="bg-red-600 p-3 flex justify-between items-center">
+            <div id="simulatorPanel"
+                class="simulator-panel glass-panel rounded-xl overflow-hidden border-2 relative group w-full">
+                <div class="simulator-heading p-3 flex justify-between items-center">
                     <h3 class="font-tactical text-white text-lg"><i class="fa-solid fa-crosshairs mr-2"></i> SIMULADOR
                         AOCP</h3>
-                    <span class="bg-white text-red-600 text-xs px-2 py-1 rounded font-bold">SIMULADO GERAL · 60Q</span>
+                    <span class="bg-white text-emerald-700 text-xs px-2 py-1 rounded font-bold">SIMULADO GERAL · 60Q</span>
                 </div>
                 <div class="p-5 text-center">
                     <p class="text-sm text-gray-300 mb-4">A bateria diária das missões tem 20 questões (10 por tema).
                         Este painel mantém o simulado geral cumulativo.</p>
                     <select id="quizFilter"
-                        class="w-full bg-slate-800 text-white border border-slate-700 rounded py-2 px-3 mb-4 font-bold outline-none focus:border-red-500 transition-colors max-w-full">
+                        class="w-full bg-slate-800 text-white border border-slate-700 rounded py-2 px-3 mb-4 font-bold outline-none transition-colors max-w-full">
                         <option value="todos">Simulado Geral PMPE (60 Questões Exatas)</option>
                         <option value="Língua Portuguesa">Língua Portuguesa (60q)</option>
                         <option value="História de Pernambuco">História de Pernambuco (60q)</option>
@@ -567,14 +1090,14 @@
                         </option>
                     </select>
                     <button onclick="openQuiz()"
-                        class="w-full bg-slate-900 hover:bg-red-600 text-white border border-red-600 py-3 rounded font-tactical transition-colors text-lg shadow-lg">
+                        class="quiz-launch w-full text-white border py-3 rounded font-tactical transition-colors text-lg shadow-lg">
                         <i class="fa-solid fa-play mr-2"></i> INICIAR BATERIA (60Q)
                     </button>
                 </div>
             </div>
 
             <!-- PAUSA TÁTICA (JOGOS) -->
-            <div class="glass-panel p-5 rounded-xl border border-blue-500/40 shadow-lg w-full">
+            <div id="studyGamePanel" class="glass-panel p-5 rounded-xl border border-blue-500/40 shadow-lg w-full">
                 <h3 class="font-tactical text-blue-400 text-lg mb-2"><i class="fa-solid fa-puzzle-piece mr-2"></i> Pausa
                     Tática (Descompressão)</h3>
                 <p class="text-xs text-gray-400 mb-4">Jogue para relaxar a mente, mas fixando os termos do edital PMPE.
@@ -606,7 +1129,7 @@
             </div>
 
             <!-- Gráfico de Situação -->
-            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg hidden lg:block w-full">
+            <div id="progressPanel" class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg hidden lg:block w-full">
                 <h3 class="font-tactical text-blue-400 text-lg mb-4 border-b border-slate-700 pb-2"><i
                         class="fa-solid fa-chart-radar mr-2"></i> Situação Tática (Radar)</h3>
                 <div class="relative w-full aspect-square">
@@ -621,12 +1144,12 @@
                 </div>
             </div>
 
-            <button onclick="openErrorNotebook()"
+            <button id="errorNotebookLaunch" onclick="openErrorNotebook()"
                 class="w-full bg-red-700 hover:bg-red-600 text-white font-bold py-3 rounded-xl border border-red-500 shadow-lg"><i
                     class="fa-solid fa-book-skull mr-2"></i> ABRIR CADERNO DE ERROS</button>
 
             <!-- CADERNO DE ANOTAÇÕES -->
-            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg w-full">
+            <div id="notesPanel" class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg w-full">
                 <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i
                         class="fa-solid fa-pen-to-square mr-2"></i> Caderno de Anotações</h3>
                 <textarea id="tacticalNotes"
@@ -635,7 +1158,7 @@
             </div>
 
             <!-- LINKS ÚTEIS -->
-            <div class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg w-full">
+            <div id="resourcesPanel" class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg w-full">
                 <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i
                         class="fa-solid fa-link mr-2"></i> Arsenal Externo</h3>
                 <div class="space-y-2 text-sm">
@@ -652,7 +1175,116 @@
             </div>
 
         </div>
+
+        <section id="writingPanel" class="dashboard-panel glass-panel rounded-xl p-6 md:p-10" role="tabpanel" aria-labelledby="desktopTab-writing" hidden>
+            <p class="text-xs font-bold tracking-[0.2em] text-emerald-700 uppercase">Redação</p>
+            <h2 class="mt-2 text-2xl md:text-3xl font-tactical text-emerald-900">Pratique e evolua na escrita</h2>
+            <p class="mt-3 max-w-2xl text-gray-600">Acesse os temas de treino, organize seus rascunhos e peça uma correção orientativa ao mentor de redação.</p>
+            <button type="button" onclick="openMaterialModal('mat_redacao_pmpe')"
+                class="mt-6 rounded-lg bg-emerald-700 hover:bg-emerald-800 px-5 py-3 text-sm font-bold text-white">
+                <i class="fa-solid fa-pen-nib mr-2" aria-hidden="true"></i>ABRIR ÁREA DE REDAÇÃO
+            </button>
+        </section>
+
+        <section id="errorsPanel" class="dashboard-panel glass-panel rounded-xl p-6 md:p-10" role="tabpanel" aria-labelledby="desktopTab-errors" hidden>
+            <p class="text-xs font-bold tracking-[0.2em] text-emerald-700 uppercase">Revisão inteligente</p>
+            <h2 class="mt-2 text-2xl md:text-3xl font-tactical text-emerald-900">Caderno de erros</h2>
+            <p class="mt-3 max-w-2xl text-gray-600">Seus registros ficam separados das anotações gerais e podem ser retomados para revisar o que errou, por que errou e qual é a regra correta.</p>
+            <button type="button" onclick="openErrorNotebook()"
+                class="mt-6 rounded-lg bg-emerald-700 hover:bg-emerald-800 px-5 py-3 text-sm font-bold text-white">
+                <i class="fa-solid fa-book-skull mr-2" aria-hidden="true"></i>ABRIR CADERNO DE ERROS
+            </button>
+        </section>
     </main>
+
+    <nav class="mobile-dashboard-nav" role="tablist" aria-label="Navegação rápida">
+        <button class="dashboard-nav-item is-active" id="mobileTab-home" type="button" role="tab" aria-selected="true" aria-controls="dashboardHome" tabindex="0" data-open-dashboard-view="home">
+            <i class="fa-solid fa-house" aria-hidden="true"></i><span>Painel</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-content" type="button" role="tab" aria-selected="false" aria-controls="syllabusSection" tabindex="-1" data-open-dashboard-view="content">
+            <i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Conteúdo</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-missions" type="button" role="tab" aria-selected="false" aria-controls="missionsSection" tabindex="-1" data-open-dashboard-view="missions">
+            <i class="fa-solid fa-list-check" aria-hidden="true"></i><span>Missões</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-simulations" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="simulations">
+            <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span>Simulado</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-support" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="support">
+            <i class="fa-solid fa-toolbox" aria-hidden="true"></i><span>Apoio</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-writing" type="button" role="tab" aria-selected="false" aria-controls="writingPanel" tabindex="-1" data-open-dashboard-view="writing">
+            <i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span>Redação</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-errors" type="button" role="tab" aria-selected="false" aria-controls="errorsPanel" tabindex="-1" data-open-dashboard-view="errors">
+            <i class="fa-solid fa-book-skull" aria-hidden="true"></i><span>Caderno</span>
+        </button>
+    </nav>
+
+    <script>
+        const dashboardPanels = {
+            home: document.getElementById('dashboardHome'),
+            content: document.getElementById('syllabusSection'),
+            missions: document.getElementById('missionsSection'),
+            simulations: document.getElementById('studySupport'),
+            support: document.getElementById('studySupport'),
+            writing: document.getElementById('writingPanel'),
+            errors: document.getElementById('errorsPanel')
+        };
+
+        const dashboardShortcuts = Array.from(document.querySelectorAll('.dashboard-shortcut[data-open-dashboard-view]'));
+
+        function activateDashboardView(view, focusTab = false) {
+            if (!Object.hasOwn(dashboardPanels, view)) return;
+
+            document.body.dataset.activeView = view;
+            Object.entries(dashboardPanels).forEach(([panelView, panel]) => {
+                const isActive = panelView === view ||
+                    (view === 'simulations' && panelView === 'support');
+                panel.hidden = !isActive;
+            });
+
+            if (view === 'simulations' || view === 'support') {
+                dashboardPanels.simulations.dataset.supportView = view;
+            }
+
+            document.querySelectorAll('[role="tab"][data-open-dashboard-view]').forEach((tab) => {
+                const selected = tab.dataset.openDashboardView === view;
+                tab.classList.toggle('is-active', selected);
+                tab.setAttribute('aria-selected', String(selected));
+                tab.tabIndex = selected ? 0 : -1;
+                if (selected && focusTab) tab.focus();
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        dashboardShortcuts.forEach((shortcut) => {
+            shortcut.addEventListener('click', () => activateDashboardView(shortcut.dataset.openDashboardView));
+        });
+
+        document.querySelectorAll('[role="tablist"]').forEach((tabList) => {
+            const tabs = Array.from(tabList.querySelectorAll('[role="tab"][data-open-dashboard-view]'));
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => activateDashboardView(tab.dataset.openDashboardView));
+                tab.addEventListener('keydown', (event) => {
+                    if (!['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
+                    event.preventDefault();
+                    const currentIndex = tabs.indexOf(tab);
+                    let nextIndex = currentIndex;
+                    if (event.key === 'Home') nextIndex = 0;
+                    else if (event.key === 'End') nextIndex = tabs.length - 1;
+                    else if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                        nextIndex = (currentIndex + 1) % tabs.length;
+                    } else {
+                        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                    }
+                    const nextTab = tabs[nextIndex];
+                    activateDashboardView(nextTab.dataset.openDashboardView, true);
+                });
+            });
+        });
+    </script>
 
     <!-- Modais do Sistema -->
     <div id="customModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[100] backdrop-blur-sm">
@@ -1004,75 +1636,67 @@
                 title: "Informática Básica",
                 content: `
                     <h1>Informática para Segurança Pública (PMPE)</h1>
-                    <p>Domine o hardware, o ecossistema Windows, pacotes de escritório e, principalmente, as ameaças virtuais cibernéticas cobradas nos editais policiais.</p>
+                    <p>Estude os conceitos de sistemas operacionais Windows, ferramentas de escritório, Internet, navegadores, busca e segurança da informação previstos no edital.</p>
 
-                    <h2>1. Hardware (A Máquina Física)</h2>
-                    <p>Hardware é a parte física (tudo que você chuta). A <strong>CPU (Processador)</strong> é o cérebro da máquina, dividida em ULA (faz os cálculos matemáticos), UC (controla o fluxo) e Registradores (memória interna hiperveloz). <br><br>
-                    As <strong>Memórias Secundárias (HD e SSD)</strong> guardam os arquivos de forma Não-Volátil (não apagam sem energia). O HD usa discos magnéticos pesados e frágeis. O SSD usa chips de memória flash (o mesmo do pendrive), sendo dezenas de vezes mais rápido, silencioso e imune a choques mecânicos leves.</p>
+                    <h2>1. Windows: sistema operacional e interface</h2>
+                    <p>O Windows é um sistema operacional: administra recursos, contas, arquivos, dispositivos e a execução de aplicativos. O Explorador de Arquivos organiza pastas e documentos; Configurações reúne opções do sistema; o Gerenciador de Tarefas permite consultar aplicativos e processos. Diferencie sistema operacional de aplicativo e de arquivo.</p>
 
-                    <h2>2. Memória RAM vs ROM</h2>
-                    <p>A <strong>Memória RAM (Random Access Memory)</strong> é a memória principal e de trabalho. Ela é a "mesa de estudos" do processador. O grande foco das provas: A RAM é <strong>VOLÁTIL</strong>, ou seja, se a energia cair ou o PC for desligado, tudo que está nela é apagado instantaneamente. Ela não guarda seus PDFs para amanhã. <br><br>
-                    A <strong>Memória ROM (Read Only Memory)</strong> vem gravada de fábrica na placa-mãe. Ela é <strong>NÃO-VOLÁTIL</strong> e contém os softwares básicos de inicialização da máquina, como a BIOS (que desperta o hardware).</p>
-
-                    <h2>3. Atalhos Essenciais do Windows 10/11</h2>
+                    <h2>2. Atalhos Essenciais do Windows 10/11</h2>
                     <p>A AOCP não pede cliques de mouse, ela exige atalhos de produtividade policial no teclado. Memorize os campeões de prova: <br>
                     <strong>Win + E</strong> (Abre o Explorador de Arquivos / Explorer). <br>
                     <strong>Win + D</strong> (Desktop: Minimiza todas as telas e mostra a Área de Trabalho instantaneamente). <br>
                     <strong>Win + L</strong> (Lock: Bloqueia a sessão do usuário exigindo a senha para voltar). <br>
                     <strong>Ctrl + Shift + Esc</strong> (Abre o Gerenciador de Tarefas DIRETAMENTE, sem passar por tela azul, excelente para matar programas travados).</p>
 
-                    <h2>4. Editores de Texto (Word e Writer)</h2>
+                    <h2>3. Editores de Texto (Word e Writer)</h2>
                     <p>Foco na estruturação de inquéritos e B.O.s. A <strong>Quebra de Página (Ctrl + Enter)</strong> encerra a folha atual e joga o cursor para a próxima folha, mas mantém a formatação e a estrutura idênticas. <br><br>
                     A <strong>Quebra de Seção</strong> (MUITO cobrada) serve para isolar e cortar o vínculo de um documento. É ela que permite que você coloque a página 1 em formato Retrato (em pé) e a página 2 no formato Paisagem (deitada) no mesmo arquivo, ou mude o cabeçalho no meio do documento.</p>
 
-                    <h2>5. Planilhas Eletrônicas (Excel e Calc) e os Sinais Táticos</h2>
+                    <h2>4. Planilhas Eletrônicas (Excel e Calc) e os Sinais Táticos</h2>
                     <p>Nas fórmulas, a leitura errada de um sinal destrói a questão. Toda fórmula deve começar com o sinal de IGUAL (=). <br>
                     O sinal de <strong>Dois Pontos (:)</strong> indica um INTERVALO contínuo (Até). Exemplo: SOMA(A1:A5) vai somar as células A1, A2, A3, A4 e A5. <br>
                     O sinal de <strong>Ponto e Vírgula (;)</strong> indica uma UNIÃO ISOLADA (E). Exemplo: SOMA(A1;A5) vai somar APENAS a célula A1 e a célula A5. <br>
                     O sinal de Cifrão <strong>$</strong> serve para fixar (travar) uma linha ou coluna criando uma Referência Absoluta que não muda ao ser arrastada.</p>
 
-                    <h2>6. O Conceito de Internet, Intranet e Extranet</h2>
+                    <h2>5. O Conceito de Internet, Intranet e Extranet</h2>
                     <p>A <strong>Internet</strong> é a rede mundial e pública. A <strong>Intranet</strong> é a rede corporativa fechada e privada (como a rede exclusiva de despachos do Batalhão da PMPE). A pegadinha letal da prova é: a Intranet usa rigorosamente os MESMOS protocolos da Internet (TCP/IP, HTTP). <br><br>
                     A <strong>Extranet</strong> ocorre quando a corporação permite que um usuário acesse partes da Intranet de forma segura a partir de casa (pela internet pública), utilizando senhas pesadas ou VPN (Rede Privada Virtual criptografada).</p>
 
-                    <h2>7. Protocolos de Navegação e Correio Eletrônico</h2>
+                    <h2>6. Protocolos de Navegação e Correio Eletrônico</h2>
                     <p><strong>HTTP e HTTPS:</strong> Protocolos de navegação web (o HTTPS usa criptografia de segurança TLS/SSL na porta 443, blindando os dados como num site de banco). <br>
                     <strong>SMTP:</strong> Protocolo exclusivo para o ENVIO (saída) de e-mails (Sua Mensagem Tá Partindo). <br>
                     <strong>POP3:</strong> Recebe e pode baixar mensagens para o dispositivo; a permanência no servidor depende da configuração do cliente. <br>
                     <strong>IMAP:</strong> Recebe e sincroniza o e-mail, mantendo todas as mensagens seguras nas nuvens e espelhando nos seus vários dispositivos.</p>
 
-                    <h2>8. O Sigilo do Email (Campo CCO)</h2>
+                    <h2>7. O Sigilo do Email (Campo CCO)</h2>
                     <p>Num envio oficial da PM, o sigilo das operações é vital. <br>
                     <em>Para (To)</em>: É o destinatário alvo que deve cumprir a ordem. <br>
                     <em>CC (Com Cópia)</em>: Pessoas informadas daquela ordem; todos conseguem ver os endereços de todos. <br>
                     <em>CCO (Com Cópia Oculta / BCC)</em>: A pessoa recebe a mensagem normalmente, mas o endereço de e-mail dela fica <strong>invisível</strong> (cego) para os outros destinatários que também receberam a mensagem. É usado para envio em massa mantendo a privacidade.</p>
 
-                    <h2>9. Malwares Clássicos e Engenharia Social</h2>
+                    <h2>8. Malwares Clássicos e Engenharia Social</h2>
                     <p><strong>Vírus:</strong> Um código que precisa obrigatoriamente se anexar a um arquivo hospedeiro e depende da ação humana (clicar, executar) para se ativar e espalhar. <br>
                     <strong>Worm (Verme):</strong> É um programa autônomo. Ele NÃO infecta arquivos e NÃO depende do usuário. Ele varre as brechas da rede da empresa, se multiplica absurdamente sozinho e derruba servidores por congestionamento. <br>
                     <strong>Trojan (Cavalo de Troia):</strong> Um programa disfarçado de presente inofensivo (ex: um jogo pirata). Quando instalado, ele escancara uma porta oculta (backdoor) para o hacker invadir seu PC. <br>
                     <strong>Phishing:</strong> É uma pescaria virtual. Não é um vírus autônomo, é engenharia social. O hacker falsifica a página do seu banco ou cria um e-mail falso idêntico à Receita Federal para induzir você a entregar sua senha voluntariamente.</p>
 
-                    <h2>10. A Ameaça do Ransomware e Políticas de Backup</h2>
+                    <h2>9. A Ameaça do Ransomware e Políticas de Backup</h2>
                     <p>O <strong>Ransomware</strong> é a ameaça policial mais grave da atualidade. Ele invade a máquina policial, <strong>criptografa (tranca/embaralha) todos os inquéritos e PDFs</strong> e o hacker passa a cobrar um Resgate financeiro (geralmente em Bitcoin) para devolver a chave. O único remédio real é não pagar e restaurar um Backup offline. <br><br>
                     Tipos de Cópia: <strong>Backup Full (Completo)</strong> copia absolutamente tudo (é lento). <strong>Backup Incremental</strong> copia apenas as pequenas modificações feitas desde o ÚLTIMO backup realizado, seja ele qual for (é super rápido). <strong>Backup Diferencial</strong> copia todas as modificações feitas apenas desde o último backup COMPLETO.</p>
 
-                    <h2>11. Windows e Linux: conceitos fundamentais</h2>
-                    <p>Sistema operacional administra processador, memória, arquivos, dispositivos e execução de programas; oferece interface ao usuário e controla permissões. Windows e distribuições Linux são sistemas operacionais, mas diferem em interface, ferramentas e modelos de distribuição. No Linux, o <strong>kernel</strong> é o núcleo; distribuições combinam kernel, utilitários, gerenciador de pacotes e ambiente gráfico ou de linha de comando. Diretórios comuns incluem <em>/home</em> (arquivos de usuários), <em>/etc</em> (configurações) e <em>/var</em> (dados variáveis e registros). A barra <em>/</em> inicia caminhos; permissões distinguem leitura, escrita e execução para proprietário, grupo e outros. Não confunda terminal (interface de comandos) com o sistema operacional inteiro.</p>
+                    <h2>10. Windows: arquivos, pastas e permissões</h2>
+                    <p>O Explorador de Arquivos permite localizar, copiar, mover e organizar arquivos e pastas. A extensão pode ajudar a identificar um formato, mas não garante o conteúdo nem a segurança. Contas e permissões controlam quem pode ler ou alterar itens. Em equipamento compartilhado, use conta individual, bloqueie a sessão ao se afastar e não eleve privilégios sem necessidade.</p>
 
-                    <h2>12. Arquivos, pastas e permissões</h2>
-                    <p>Arquivo guarda dados; diretório organiza referências a arquivos e outros diretórios. Extensão ajuda a identificar formato, mas não garante o conteúdo nem a segurança. Caminho absoluto parte da raiz ou unidade; caminho relativo depende da pasta atual. No Windows, a extensão costuma aparecer após o ponto; no Linux, nomes e extensões não determinam sozinhos o tipo do arquivo. Permissões de acesso limitam quem lê, altera ou executa. Em equipamento compartilhado, use conta individual, bloqueie a sessão ao se afastar e não eleve privilégios sem necessidade.</p>
-
-                    <h2>13. Word/Writer: edição e formatação</h2>
+                    <h2>11. Word/Writer: edição e formatação</h2>
                     <p>O processador de texto permite criar, revisar, formatar, salvar e imprimir documentos. Diferencie caractere (fonte, tamanho, negrito), parágrafo (alinhamento, recuo, espaçamento), página (margens e orientação) e seção (formatações independentes em partes do documento). Estilos aplicam formatação consistente e facilitam sumário automático. Cabeçalho e rodapé podem conter elementos repetidos. Revisão ortográfica auxilia, mas não substitui revisão de sentido. Salve no formato nativo e exporte para PDF quando precisar preservar a apresentação; confira o arquivo antes de compartilhar.</p>
 
-                    <h2>14. Excel/Calc: células, referências e funções</h2>
+                    <h2>12. Excel/Calc: células, referências e funções</h2>
                     <p>Planilha organiza dados em células identificadas por coluna e linha. Fórmulas começam com <em>=</em>. Referência relativa (A1) muda ao copiar; absoluta ($A$1) mantém coluna e linha; mista ($A1 ou A$1) fixa apenas uma delas. Intervalo A1:A5 inclui as células entre os extremos; argumentos de função costumam ser separados por ponto e vírgula na configuração regional em português. Funções frequentes incluem <em>SOMA</em>, <em>MÉDIA</em>, <em>MÁXIMO</em>, <em>MÍNIMO</em> e funções condicionais, cuja grafia pode variar conforme idioma e versão. Ordenar e filtrar não são a mesma coisa: ordenar muda a sequência; filtrar oculta temporariamente linhas que não atendem aos critérios.</p>
 
-                    <h2>15. Navegadores, busca e pesquisa na Internet</h2>
+                    <h2>13. Navegadores, busca e pesquisa na Internet</h2>
                     <p>Navegador (browser) solicita e apresenta páginas web; mecanismo de busca indexa conteúdo e retorna resultados. Favoritos guardam endereços, histórico registra páginas visitadas e cache armazena cópias temporárias. HTTPS protege a conexão entre navegador e site, mas não prova que o site é confiável nem que o conteúdo é verdadeiro. Para pesquisar, use termos específicos, aspas para expressão exata e operadores disponibilizados pelo buscador; confira autor, data, domínio e fontes citadas. Compare a informação com fonte primária (lei, órgão público, edital) antes de usar para estudar.</p>
 
-                    <h2>16. Segurança da informação: medidas práticas</h2>
+                    <h2>14. Segurança da informação: medidas práticas</h2>
                     <p>Os objetivos clássicos são <strong>confidencialidade</strong> (acesso apenas por autorizados), <strong>integridade</strong> (dados corretos e não alterados indevidamente) e <strong>disponibilidade</strong> (acesso quando necessário). Autenticação confirma identidade; autorização define permissões. Use senhas únicas e fortes, autenticação multifator quando disponível, atualizações, bloqueio de tela, antivírus e princípio do menor privilégio. Desconfie de urgência, anexos inesperados, links encurtados e pedidos de senha: confirme por canal independente. Faça cópias periódicas, mantenha ao menos uma cópia isolada/offline e teste a restauração. Backup não substitui prevenção, e sincronização em nuvem pode replicar exclusões ou arquivos maliciosos.</p>
 
                     <p><strong>Princípio de prova:</strong> diferencie ameaça (possível causa de dano), vulnerabilidade (fraqueza explorável), risco (probabilidade e impacto) e controle (medida de redução). O conteúdo e os atalhos podem variar entre versões e configurações; leia o enunciado com atenção.</p>
@@ -1160,58 +1784,49 @@
                     <p>A Lei nº 13.869/2019 tipifica condutas de abuso cometidas por agente público no exercício da função ou a pretexto de exercê-la. Além dos elementos de cada tipo penal, o art. 1º, § 1º, exige finalidade específica de prejudicar outrem, beneficiar a si ou a terceiro, ou agir por mero capricho ou satisfação pessoal. O § 2º estabelece que divergência na interpretação da lei ou na avaliação de fatos e provas, por si só, não configura abuso. Não acrescente à lei requisitos que ela não traz, como a palavra “exclusiva”, nem confunda responsabilidade penal com eventual apuração administrativa ou civil.</p>
 
                     <h2>4. Lei de Tortura (Lei 9.455/97) e a Perda da Farda</h2>
-                    <p>A Lei nº 9.455/1997 descreve modalidades de tortura, incluindo constranger alguém com violência ou grave ameaça e intenso sofrimento para obter informação, declaração ou confissão, provocar ação ou omissão criminosa, ou por discriminação; também disciplina tortura-castigo e a omissão de quem tinha dever de evitar ou apurar. A condição de agente público é causa de aumento prevista na lei. A Constituição e a legislação tratam o crime com rigor especial. A condenação pode produzir os efeitos previstos no art. 1º, § 5º, da lei, relativos à perda do cargo, função ou emprego público e à interdição; estude a redação e os requisitos exatos, sem usar “perda automática” como atalho para dispensar análise da sentença e do caso.</p>
+                    <p>A Lei nº 9.455/1997 descreve modalidades de tortura, incluindo constranger alguém com violência ou grave ameaça e intenso sofrimento para obter informação, declaração ou confissão, provocar ação ou omissão criminosa, ou por discriminação; também disciplina tortura-castigo, submissão de pessoa presa e omissão de quem tinha dever de evitar ou apurar. O art. 1º, III, incluído pela Lei nº 15.410/2026, prevê a submissão reiterada de mulher a intenso sofrimento físico ou mental no contexto de violência doméstica e familiar. A condição de agente público é causa de aumento prevista na lei. A condenação pode produzir os efeitos previstos no art. 1º, § 5º, da lei, relativos à perda do cargo, função ou emprego público e à interdição; estude a redação e os requisitos exatos, sem usar “perda automática” como atalho para dispensar análise da sentença e do caso.</p>
 
-                    <h2>5. Estatuto do Desarmamento (Posse vs Porte Ilegal)</h2>
-                    <p>A prova exige que o policial saiba diferenciar o enquadramento na delegacia. <br>
-                    <strong>Posse Irregular (Art. 12):</strong> O PM flagra a arma de uso permitido guardada <strong>DENTRO</strong> da residência do suspeito, ou nas dependências do seu local de trabalho (caso o abordado seja o dono da empresa/CNPJ). A pena é menor (Detenção). <br>
-                    <strong>Porte Ilegal (Art. 14):</strong> O sujeito foi flagrado ostentando ou escondendo a arma circulando nas vias públicas, dentro do carro ou extramuros (para fora do portão). É crime grave (Reclusão). <br>
-                    Cuidado Extremo: Se a arma (qualquer arma) estiver com a <strong>numeração raspada ou suprimida</strong>, o crime salta automaticamente para o Art. 16 (Posse ou Porte de Arma de Fogo de Uso Restrito - Hediondo), seja dentro do banheiro de casa ou no meio da praça.</p>
-
-                    <h2>6. Lei de Drogas (Art. 28 e Tema 506 do STF)</h2>
+                    <h2>5. Lei de Drogas (Art. 28 e Tema 506 do STF)</h2>
                     <p>No Tema 506 (RE 635.659), o STF decidiu que não constitui infração penal adquirir, guardar, depositar, transportar ou trazer consigo cannabis para consumo pessoal. Há presunção relativa de uso pessoal até 40 g ou seis plantas fêmeas. A substância continua proibida e pode ser apreendida; advertência sobre seus efeitos e comparecimento a programa ou curso educativo são aplicados em procedimento não penal, sem registro de antecedentes criminais. Elementos concretos podem afastar a presunção, e a autoridade deve justificar essa conclusão; o juiz também pode reconhecer uso pessoal acima do limite. A decisão trata de cannabis, não legaliza a droga e não se estende automaticamente às demais substâncias. A condução à delegacia e os atos seguintes devem observar a tese e o procedimento vigente; não classifique automaticamente o caso como crime ou TCO.</p>
                     <p><a href="https://noticias.stf.jus.br/postsnoticias/stf-define-40-gramas-de-maconha-como-criterio-para-diferenciar-usuario-de-traficante/" target="_blank" rel="noopener noreferrer">Consulte a notícia oficial do STF sobre o Tema 506 e a tese fixada.</a></p>
                     <p><a href="https://portal.stf.jus.br/jurisprudenciaRepercussao/verAndamentoProcesso.asp?incidente=4034145&amp;numeroProcesso=635659&amp;classeProcesso=RE&amp;numeroTema=506" target="_blank" rel="noopener noreferrer">Consulte o andamento oficial do RE 635.659 no STF.</a></p>
 
-                    <h2>7. Lei de Drogas (Tráfico - Art. 33)</h2>
+                    <h2>6. Lei de Drogas (Tráfico - Art. 33)</h2>
                     <p>O art. 33 reúne vários verbos, entre eles importar, vender, oferecer, transportar, guardar e ter em depósito; portanto, a venda presenciada não é requisito para toda hipótese. O enquadramento exige analisar os elementos legais e o conjunto de circunstâncias e provas, não uma presunção automática baseada em um único objeto ou sinal. Quando se tratar de cannabis para consumo pessoal, observe a presunção relativa e os critérios fixados no Tema 506: quantidade acima de 40 g ou seis plantas fêmeas não transforma, por si só, o caso em tráfico; eventual afastamento da presunção exige elementos concretos e justificativa. Consulte a tese oficial e a redação vigente da Lei nº 11.343/2006.</p>
 
-                    <h2>8. Lei Maria da Penha (Lei 11.340/06) - Tipos de Violência</h2>
-                    <p>A Lei nº 11.340/2006 cria mecanismos para prevenir e coibir a violência doméstica e familiar contra a mulher. O art. 5º define os contextos doméstico, familiar e de relação íntima de afeto; coabitação não é requisito para esta última. O art. 7º descreve cinco formas: física, psicológica, sexual, patrimonial e moral. Estude os exemplos e a redação legal, além das medidas protetivas de urgência e dos deveres de atendimento. A aplicação da lei a situações específicas também depende da interpretação jurisprudencial vigente; não restrinja o estudo a uma fórmula sobre sexo ou identidade de gênero.</p>
+                    <h2>7. Lei Maria da Penha (Lei 11.340/06) - Tipos de Violência</h2>
+                    <p>A Lei nº 11.340/2006 cria mecanismos para prevenir e coibir a violência doméstica e familiar contra a mulher. O art. 5º define os contextos doméstico, familiar e de relação íntima de afeto; coabitação não é requisito para esta última. O art. 7º enumera formas de violência, incluindo a violência vicária no inciso VI do texto vigente, além das formas previstas nos incisos I a V. Estude os exemplos e a redação legal, além das medidas protetivas de urgência e dos deveres de atendimento. A aplicação da lei a situações específicas também depende da interpretação jurisprudencial vigente; não restrinja o estudo a uma fórmula sobre sexo ou identidade de gênero.</p>
 
-                    <h2>9. ECA (Estatuto da Criança e do Adolescente)</h2>
+                    <h2>8. ECA (Estatuto da Criança e do Adolescente)</h2>
                     <p>Para o ECA, criança é a pessoa com até 12 anos incompletos; adolescente, aquela entre 12 e 18 anos. São penalmente inimputáveis e a conduta descrita como crime ou contravenção é tratada como ato infracional. À criança aplicam-se medidas de proteção; ao adolescente autor de ato infracional podem ser aplicadas medidas socioeducativas previstas no Estatuto, observados procedimento, defesa e competência judicial. A internação é excepcional, sujeita aos casos e limites legais, e não equivale a pena criminal. O art. 178 disciplina o transporte do adolescente, vedando condução em compartimento fechado de veículo policial em condições atentatórias à dignidade ou com risco à integridade física ou mental. Não generalize regras de algemação: observe necessidade, legalidade, proteção integral e normas aplicáveis.</p>
 
-                    <h2>10. Estatuto da Pessoa Idosa (Lei nº 10.741/2003)</h2>
+                    <h2>9. Estatuto da Pessoa Idosa (Lei nº 10.741/2003)</h2>
                     <p>A lei assegura direitos às pessoas com idade igual ou superior a 60 anos, disciplina prioridade e prevê medidas de proteção e políticas para efetivar direitos fundamentais. Pessoas maiores de 80 anos têm prioridade especial nas condições legais. Este tema integra o conteúdo programático informado; estude a redação vigente e diferencie prioridade geral de prioridade especial.</p>
 
-                    <h2>11. Direitos Humanos: conceito, evolução e dimensões</h2>
+                    <h2>10. Direitos Humanos: conceito, evolução e dimensões</h2>
                     <p>Direitos Humanos são direitos inerentes à dignidade da pessoa, reconhecidos e protegidos por normas nacionais e internacionais. A trajetória moderna inclui declarações de direitos, constituições e, após as atrocidades da Segunda Guerra, a criação da ONU e a Declaração Universal de 1948; depois vieram tratados que detalham obrigações e mecanismos de proteção. Direitos civis e políticos protegem, entre outros, vida, liberdade, igualdade, participação e garantias judiciais. Direitos econômicos, sociais e culturais incluem trabalho, saúde, educação, moradia e participação cultural. As expressões “gerações” ou “dimensões” são classificações didáticas: os direitos são interdependentes, universais e não devem ser vistos como uma lista em que uns anulam os outros. Conheça também dignidade, igualdade, não discriminação, universalidade e indivisibilidade.</p>
 
-                    <h2>12. Estatuto dos Policiais Militares de Pernambuco</h2>
+                    <h2>11. Estatuto dos Policiais Militares de Pernambuco</h2>
                     <p>A Lei Estadual nº 6.783/1974 dispõe sobre o Estatuto dos Policiais Militares do Estado de Pernambuco. Organize a leitura por temas: situação, deveres e obrigações; ética e disciplina; hierarquia; direitos e prerrogativas; ingresso, carreira e situações funcionais; responsabilidades e regras de afastamento ou desligamento, conforme a redação vigente. Hierarquia ordena autoridade e responsabilidade em níveis; disciplina exige observância das normas e ordens legais. Para questões literais, não substitua a lei por resumos: marque definições, competências, prazos, exceções e efeitos. A norma pode ter sido alterada; consulte o texto consolidado no portal oficial da <a href="https://legis.alepe.pe.gov.br/" target="_blank" rel="noopener noreferrer">Assembleia Legislativa de Pernambuco</a> e eventuais atos estaduais posteriores.</p>
 
-                    <h2>13. Lei Maria da Penha: proteção e medidas</h2>
+                    <h2>12. Lei Maria da Penha: proteção e medidas</h2>
                     <p>Além das formas de violência, estude prevenção, assistência, atendimento policial e judicial, medidas protetivas de urgência e comunicação entre os órgãos da rede de proteção. Medida protetiva não é pena: é instrumento preventivo destinado a reduzir risco e proteger direitos. A lei prevê providências para o agressor e medidas em favor da ofendida e de dependentes, observados os requisitos legais e a decisão competente. Em questões práticas, identifique o contexto da violência, a forma praticada e a medida cabível segundo o texto vigente.</p>
 
-                    <h2>14. ECA: proteção integral e ato infracional</h2>
+                    <h2>13. ECA: proteção integral e ato infracional</h2>
                     <p>O Estatuto adota a doutrina da proteção integral e reconhece crianças e adolescentes como sujeitos de direitos, com prioridade absoluta. Estude direitos fundamentais, prevenção, política de atendimento, Conselho Tutelar, garantias na apuração do ato infracional e medidas de proteção e socioeducativas. As medidas socioeducativas previstas no art. 112 incluem advertência, obrigação de reparar o dano, prestação de serviços à comunidade, liberdade assistida, semiliberdade e internação; cada uma tem pressupostos e regras próprios. A internação é excepcional e sujeita aos princípios e limites do Estatuto, inclusive reavaliação periódica e prazo máximo legal. Distinga medida protetiva aplicada à criança e medida socioeducativa dirigida ao adolescente.</p>
 
-                    <h2>15. Lei de Abuso de Autoridade: como estudar os tipos</h2>
+                    <h2>14. Lei de Abuso de Autoridade: como estudar os tipos</h2>
                     <p>O diploma não transforma toda ilegalidade funcional em crime. Leia os verbos de cada tipo penal, quem pode ser sujeito ativo, a situação de exercício da função e a finalidade específica indicada no art. 1º, § 1º. A lei exige dolo e finalidade especial para os crimes que descreve; divergência interpretativa isolada não basta. Monte uma tabela com artigo, conduta, elemento subjetivo, sujeito passivo, pena e eventual causa de aumento ou efeito da condenação, sempre conferindo a redação atualizada.</p>
 
-                    <h2>16. Estatuto do Desarmamento: distinguir condutas</h2>
-                    <p>A Lei nº 10.826/2003 regula registro, posse e comercialização de armas e munições e tipifica condutas penais. Para diferenciar posse irregular e porte ilegal, compare o local, a autorização exigida, o tipo de arma e os elementos do artigo aplicável. Analise separadamente as figuras dos arts. 12, 14 e 16; uso permitido e uso restrito têm definições legais e regulamentares, que podem mudar. Numeração suprimida ou adulterada é circunstância tratada especificamente pela lei, mas o enquadramento e a classificação dependem dos elementos do caso. Não conclua pela tipificação só pela aparência ou pelo local sem ler o dispositivo.</p>
-
-                    <h2>17. Lei de Tortura: modalidades e omissão</h2>
+                    <h2>15. Lei de Tortura: modalidades e omissão</h2>
                     <p>Compare as modalidades do art. 1º, os meios empregados, o sofrimento exigido, as finalidades especiais quando presentes e a situação de vulnerabilidade ou custódia nos tipos pertinentes. A lei também prevê tortura por omissão de quem tinha dever de evitar ou apurar a conduta, com tratamento penal próprio. Memorize causas de aumento e efeitos previstos no texto legal, distinguindo-os de efeitos constitucionais ou disciplinares. Em questão objetiva, cada elemento do tipo é necessário: não basta um ato violento para concluir automaticamente pela configuração de tortura.</p>
 
-                    <h2>18. Fontes oficiais de consulta</h2>
+                    <h2>16. Fontes oficiais de consulta</h2>
                     <ul>
                         <li><a href="https://www.un.org/en/about-us/universal-declaration-of-human-rights" target="_blank" rel="noopener noreferrer">Declaração Universal dos Direitos Humanos — Nações Unidas</a>.</li>
                         <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13869.htm" target="_blank" rel="noopener noreferrer">Lei nº 13.869/2019 — Abuso de Autoridade</a>.</li>
                         <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l9455.htm" target="_blank" rel="noopener noreferrer">Lei nº 9.455/1997 — Tortura</a>.</li>
-                        <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l10826.htm" target="_blank" rel="noopener noreferrer">Lei nº 10.826/2003 — Estatuto do Desarmamento</a>.</li>
+                        <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15410.htm" target="_blank" rel="noopener noreferrer">Lei nº 15.410/2026 — alteração da Lei de Tortura</a>.</li>
                         <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11340.htm" target="_blank" rel="noopener noreferrer">Lei nº 11.340/2006 — Lei Maria da Penha</a>.</li>
                         <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l8069.htm" target="_blank" rel="noopener noreferrer">Lei nº 8.069/1990 — Estatuto da Criança e do Adolescente</a>.</li>
                         <li><a href="https://www.planalto.gov.br/ccivil_03/decreto/d0678.htm" target="_blank" rel="noopener noreferrer">Decreto nº 678/1992 — Pacto de San José da Costa Rica</a>.</li>
@@ -1352,7 +1967,7 @@
             { sub: "Língua Portuguesa", topic: "Compreensão, Interpretação e Tipologia", quizTopics: ["Compreensão vs Interpretação", "Gêneros e Tipos Textuais"], mat: "mat_mission_1", quiz: "Língua Portuguesa", moduleId: 0 },
             { sub: "História de Pernambuco", topic: "Capitanias Hereditárias e Ciclo do Açúcar", quizTopics: ["Povos indígenas e colonização", "Capitania de Pernambuco", "Açúcar, trabalho e sociedade"], mat: "mat_mission_2", quiz: "História de Pernambuco", moduleId: 1 },
             { sub: "Raciocínio Lógico Matemático", topic: "Proposições Lógicas e Conectivos", quizTopics: ["Proposições Lógicas", "Conectivos e Tabelas"], mat: "mat_mission_3", quiz: "Raciocínio Lógico Matemático", moduleId: 2 },
-            { sub: "Informática Básica", topic: "Hardware, CPU, Memórias e Windows", quizTopics: ["Hardware e SO (Windows)"], mat: "mat_mission_4", quiz: "Informática Básica", moduleId: 3 },
+            { sub: "Informática Básica", topic: "Windows: sistema operacional e arquivos", quizTopics: ["Windows e sistema operacional"], mat: "mat_mission_4", quiz: "Informática Básica", moduleId: 3 },
             { sub: "Direito Constitucional", topic: "Princípio da Legalidade e Domicílio", quizTopics: ["Segurança e Inviolabilidade", "Legalidade administrativa"], mat: "mat_mission_5", quiz: "Direito Constitucional", moduleId: 4 },
             { sub: "Direitos Humanos e Legislação Extravagante", topic: "DUDH e Tratados Internacionais", quizTopics: ["DUDH e Tratados"], mat: "mat_mission_6", quiz: "Direitos Humanos e Legislação Extravagante", moduleId: 5 },
             { sub: "Língua Portuguesa", topic: "Coesão Referencial (Anáfora e Catáfora)", quizTopics: ["Coesão (Anáfora/Catáfora)"], mat: "mat_mission_7", quiz: "Língua Portuguesa", moduleId: 6 },
@@ -1366,7 +1981,7 @@
             { sub: "Raciocínio Lógico Matemático", topic: "Negações e Equivalências (De Morgan, Mané, Neymar)", quizTopics: ["Equivalência e Negação"], mat: "mat_mission_15", quiz: "Raciocínio Lógico Matemático", moduleId: 14 },
             { sub: "Informática Básica", topic: "Segurança, Ransomware e Phishing", quizTopics: ["Redes, Internet e Malwares"], mat: "mat_mission_16", quiz: "Informática Básica", moduleId: 15 },
             { sub: "Direito Constitucional", topic: "Segurança Pública (Art. 144) e Extradição", quizTopics: ["Art. 144 e Atribuições Policiais", "Nacionalidade e Extradição"], mat: "mat_mission_17", quiz: "Direito Constitucional", moduleId: 16 },
-            { sub: "Direitos Humanos e Legislação Extravagante", topic: "Lei de Drogas, Desarmamento e Maria da Penha", quizTopics: ["Lei de Drogas e Desarmamento", "ECA: proteção integral e ato infracional", "Lei Maria da Penha"], mat: "mat_mission_18", quiz: "Direitos Humanos e Legislação Extravagante", moduleId: 17 }
+            { sub: "Direitos Humanos e Legislação Extravagante", topic: "Lei de Drogas, ECA e Maria da Penha", quizTopics: ["Lei de Drogas, ECA e Maria da Penha", "ECA: proteção integral e ato infracional", "Lei Maria da Penha"], mat: "mat_mission_18", quiz: "Direitos Humanos e Legislação Extravagante", moduleId: 17 }
         ];
 
         const operationDays = [];
@@ -1511,15 +2126,33 @@
                 ? courseAssignment.lessons.map(index => fullCourse.lessons[index - 1]).filter(Boolean)
                 : [];
             const moduleQuizQuestions = module.questionBank || [];
-            const lessonHtml = [...guide.lessons, ...distributedLessons.map(([heading, explanation, example, alert]) => [
-                `Trilha completa · ${heading}`, explanation, example, alert
-            ])].map(([heading, explanation, example, alert], index) => `
-                <section class="mb-8">
-                    <h2>${module.completeCourse ? heading : `${index + 1}. ${heading}`}</h2>
+            const cleanHeading = heading => String(heading).replace(/^\d+\.\s*/, '').trim();
+            const lessonSectionHtml = (title, explanation, example, alert, id = "") => `
+                <section class="mb-8"${id ? ` id="${id}"` : ""}>
+                    <h2>${title}</h2>
                     <p>${explanation}</p>
                     <blockquote><strong>Exemplo prático:</strong> ${example}</blockquote>
                     <p class="rounded border-l-4 border-amber-500 bg-amber-50 p-4"><strong>Ponto de atenção:</strong> ${alert}</p>
-                </section>`).join("");
+                </section>`;
+            const lessonAnchor = index => `aula-${module.mat}-${index + 1}`;
+            const escapeText = value => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const deepeningHtml = blocks => (blocks || []).map(([type, value]) => {
+                if (type === "h") return `<h3>${escapeText(value)}</h3>`;
+                if (type === "p") return `<p>${escapeText(value)}</p>`;
+                if (type === "ul" || type === "ol") return `<${type}>${value.map(item => `<li>${escapeText(item)}</li>`).join("")}</${type}>`;
+                return "";
+            }).join("");
+            const trailHtml = distributedLessons.map(([heading, explanation, example, alert], index) => {
+                const deepening = window.PMPE_DEEPENING?.[courseAssignment.course]?.[courseAssignment.lessons[index]];
+                return lessonSectionHtml(`Aula ${index + 1}/${distributedLessons.length} · ${cleanHeading(heading)}`, explanation, example, alert, lessonAnchor(index))
+                    .replace(/<\/section>\s*$/, `${deepeningHtml(deepening)}</section>`);
+            }).join("");
+            const baseHtml = guide.lessons.map(([heading, explanation, example, alert], index) =>
+                lessonSectionHtml(module.completeCourse ? heading : `${distributedLessons.length ? "Aprofundamento " : ""}${index + 1}. ${heading}`, explanation, example, alert)
+            ).join("");
+            const lessonHtml = distributedLessons.length
+                ? `${trailHtml}<h2 class="mt-10 border-t pt-6">Aprofundamento do tema da missão</h2>${baseHtml}`
+                : baseHtml;
             const sourceHtml = (guide.sources || []).map(([label, url]) =>
                 `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></li>`
             ).join("");
@@ -1528,16 +2161,16 @@
             const combinedSourceHtml = sourceLinks.map(([label, url]) =>
                 `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></li>`
             ).join("");
-            const distributedVideoResourcesHtml = distributedLessons.map(([heading]) => {
-                const query = encodeURIComponent(`${module.sub} ${String(heading).replace(/^\d+\.\s*/, '')} PMPE`);
-                return `<li><a href="https://www.youtube.com/results?search_query=${query}" target="_blank" rel="noopener noreferrer">Videoaula: ${heading}</a></li>`;
+            const distributedVideoResourcesHtml = distributedLessons.map(([heading], index) => {
+                const query = encodeURIComponent(`${module.sub} ${cleanHeading(heading)} PMPE`);
+                return `<li>Videoaula ${index + 1}: <a href="https://www.youtube.com/results?search_query=${query}" target="_blank" rel="noopener noreferrer">${cleanHeading(heading)}</a> — leia no PDF: <a href="#${lessonAnchor(index)}">Aula ${index + 1}/${distributedLessons.length}</a></li>`;
             }).join("");
             const distributedTopicsHtml = distributedLessons.length
                 ? `<section class="my-6 rounded-lg border border-indigo-200 bg-indigo-50 p-5 text-slate-900">
-                    <h2 class="mt-0">Capítulos do curso completo incluídos nesta apostila diária</h2>
-                    <p>Estude também estas aulas da trilha integral: elas foram distribuídas para complementar o tema do dia.</p>
-                    <ul>${distributedLessons.map(([heading]) => `<li>${heading}</li>`).join("")}</ul>
-                    <h3>Videoaulas por capítulo</h3>
+                    <h2 class="mt-0">Roteiro do dia: videoaulas e PDF são os mesmos temas</h2>
+                    <p>As ${distributedLessons.length} videoaulas da missão correspondem, na mesma ordem e com o mesmo título, às ${distributedLessons.length} aulas iniciais desta apostila. Assista à videoaula e leia a seção correspondente antes de passar à próxima.</p>
+                    <ol>${distributedLessons.map(([heading], index) => `<li><a href="#${lessonAnchor(index)}">${cleanHeading(heading)}</a></li>`).join("")}</ol>
+                    <h3>Busca das videoaulas no YouTube</h3>
                     <p>Os links abrem buscas no YouTube, não uma curadoria de vídeos. Confira autoria, qualidade e aderência ao edital antes de estudar.</p>
                     <ul>${distributedVideoResourcesHtml}</ul>
                 </section>`
@@ -1654,7 +2287,7 @@
                 id: `d${dayObj.id}_${slot}_${i + 1}`,
                 time: `${time} · aula ${i + 1}/${subjects.length}`,
                 subject: subjectTitle,
-                topic: `${module.sub} · (Ciclo ${cycle}) Videoaula ${i + 1} de ${subjects.length}. A busca do YouTube não é curadoria: confira professor e aderência ao edital.`,
+                topic: `${module.sub} · (Ciclo ${cycle}) Videoaula ${i + 1} de ${subjects.length}${titles.length ? `; leia a seção "Aula ${i + 1}/${subjects.length}" no PDF do dia` : ""}. A busca do YouTube não é curadoria: confira professor e aderência ao edital.`,
                 type: "Teoria",
                 icon: "fa-youtube",
                 action: getYouTubeLinkByCycle(module.sub, subjectTitle, cycle)
@@ -1869,9 +2502,9 @@
             informatica: {
                 title: "Informática Básica",
                 words: [
-                    { answer: "VOLATIL", clue: "Característica da Memória RAM de apagar os dados quando falta energia." },
+                    { answer: "EXPLORADOR", clue: "Ferramenta do Windows para localizar e organizar arquivos e pastas." },
                     { answer: "INTRANET", clue: "Rede privada corporativa, mas que usa os mesmos protocolos da Internet pública." },
-                    { answer: "RANSOMWARE", clue: "Vírus que sequestra os arquivos com criptografia e cobra resgate digital." },
+                    { answer: "RANSOMWARE", clue: "Tipo de malware que bloqueia ou criptografa dados e exige resgate." },
                     { answer: "PHISHING", clue: "Engenharia social focada em pescaria visual (falsificação) para roubar senhas." },
                     { answer: "INCREMENTAL", clue: "Backup ágil que copia apenas o que foi alterado desde a última cópia feita." }
                 ]
@@ -2336,17 +2969,17 @@
                     ]
                 },
                 {
-                    topic: "Hardware e SO (Windows)", trueFact: "A CPU executa instruções, enquanto a memória RAM mantém temporariamente dados e programas em uso e é volátil.", trueFact2: "HD e SSD são armazenamentos não voláteis; o SSD usa memória flash e não depende de discos magnéticos móveis.", trueFact3: "No Windows, Win+E abre o Explorador de Arquivos e Ctrl+Shift+Esc abre o Gerenciador de Tarefas.", falseFacts: ["A RAM mantém todos os arquivos permanentemente mesmo depois de desligar o computador.", "O SSD é memória volátil de trabalho e perde todo seu conteúdo quando o computador é desligado.", "Win+L apaga os arquivos do usuário e formata o disco rígido."], exp: "RAM é área temporária de trabalho; HD/SSD preservam arquivos. Sistema operacional gerencia recursos. Atalhos são ações de navegação/controle, não de apagamento.", questions: [
-                        { prompt: "O que acontece com dados que estavam apenas na RAM quando o computador é desligado?", answer: "A RAM é volátil e perde os dados temporários.", wrong: ["A RAM grava automaticamente todos os dados na ROM.", "O SSD converte a RAM em armazenamento permanente.", "Os dados passam para o processador e ficam salvos."] },
-                        { prompt: "Qual é a função principal da CPU?", answer: "Executar instruções e coordenar operações de processamento.", wrong: ["Armazenar permanentemente arquivos pessoais.", "Exibir imagens para o usuário.", "Conectar o computador à Internet sem rede."] },
-                        { prompt: "Qual característica diferencia tipicamente SSD de HD magnético?", answer: "SSD usa memória flash e não possui discos magnéticos móveis.", wrong: ["SSD é volátil como RAM.", "HD não guarda dados sem energia.", "SSD é apenas uma memória de leitura da placa-mãe."] },
+                    topic: "Windows e sistema operacional", trueFact: "O Windows é um sistema operacional que administra recursos, arquivos, contas e a execução de aplicativos.", trueFact2: "Win+E abre o Explorador de Arquivos e Ctrl+Shift+Esc abre o Gerenciador de Tarefas.", trueFact3: "Win+L bloqueia a sessão sem desligar o computador nem encerrar os programas abertos.", falseFacts: ["O Explorador de Arquivos serve apenas para navegar na Internet.", "Win+L apaga os arquivos do usuário e formata o disco rígido.", "A extensão de um arquivo garante que seu conteúdo seja seguro."], exp: "Associe cada ferramenta à sua função e diferencie bloquear, sair da conta, reiniciar e desligar.", questions: [
+                        { prompt: "Qual é a função de um sistema operacional?", answer: "Administrar recursos, arquivos, contas, dispositivos e execução de aplicativos.", wrong: ["Criar automaticamente todos os documentos.", "Servir apenas como navegador de Internet.", "Substituir os aplicativos instalados."] },
                         { prompt: "Qual atalho abre o Explorador de Arquivos no Windows?", answer: "Win+E.", wrong: ["Win+L.", "Ctrl+P.", "Alt+F4."] },
                         { prompt: "Você precisa bloquear a sessão antes de se afastar. Qual atalho é apropriado?", answer: "Win+L.", wrong: ["Win+D apaga a sessão.", "Ctrl+Shift+Esc desliga o computador.", "Win+E bloqueia o usuário."] },
-                        { prompt: "Qual tecla abre diretamente o Gerenciador de Tarefas do Windows?", answer: "Ctrl+Shift+Esc.", wrong: ["Win+E.", "Win+L.", "Ctrl+Enter."] },
-                        { prompt: "Qual item é um dispositivo de saída?", answer: "Monitor, que apresenta informação ao usuário.", wrong: ["Teclado.", "Mouse.", "Microfone."] },
-                        { prompt: "Para que serve o sistema operacional?", answer: "Gerenciar recursos, arquivos, dispositivos, contas e execução de programas.", wrong: ["Substituir toda a memória física.", "Criar sozinho todos os documentos do usuário.", "Servir apenas como navegador de Internet."] },
-                        { prompt: "No Linux, o termo kernel refere-se a...", answer: "Núcleo que gerencia funções fundamentais do sistema.", wrong: ["Um aplicativo de edição de texto.", "Um tipo de arquivo compactado.", "A pasta pessoal de todos os usuários."] },
-                        { prompt: "A extensão de um arquivo, por si só, garante que seu conteúdo seja seguro e corresponda ao formato?", answer: "Não; é uma indicação, mas não comprova conteúdo nem segurança.", wrong: ["Sim, toda extensão valida o conteúdo automaticamente.", "Sim, desde que o arquivo esteja numa pasta do Windows.", "Não, porque arquivos não possuem nomes nem formatos."] }
+                        { prompt: "Qual atalho abre diretamente o Gerenciador de Tarefas?", answer: "Ctrl+Shift+Esc.", wrong: ["Win+E.", "Win+L.", "Ctrl+Enter."] },
+                        { prompt: "No Explorador de Arquivos, mover um arquivo significa...", answer: "Alterar sua localização, sem criar necessariamente outra cópia.", wrong: ["Apagar o arquivo de forma irreversível.", "Converter o arquivo em um aplicativo.", "Desligar o computador."] },
+                        { prompt: "Qual afirmação sobre extensões de arquivos é correta?", answer: "A extensão pode indicar o formato, mas não comprova conteúdo nem segurança.", wrong: ["A extensão garante que o arquivo seja seguro.", "A extensão substitui as permissões do usuário.", "Todo arquivo com a mesma extensão tem conteúdo idêntico."] },
+                        { prompt: "Bloquear a sessão com Win+L...", answer: "Protege temporariamente o acesso sem desligar o computador.", wrong: ["Encerra todos os aplicativos.", "Apaga os arquivos da área de trabalho.", "Desinstala o usuário do Windows."] },
+                        { prompt: "Qual ferramenta do Windows é usada para organizar arquivos e pastas?", answer: "Explorador de Arquivos.", wrong: ["Gerenciador de Tarefas.", "Lixeira como única ferramenta.", "Editor de Registro para toda operação."] },
+                        { prompt: "Encerrar uma tarefa que não responde pode...", answer: "Fechar o aplicativo e causar perda de trabalho não salvo.", wrong: ["Salvar automaticamente qualquer documento.", "Fazer backup do computador.", "Bloquear a sessão sem encerrar o aplicativo."] },
+                        { prompt: "Qual item é um exemplo de sistema operacional?", answer: "Microsoft Windows.", wrong: ["Uma planilha do Excel.", "Uma página da Internet.", "Um arquivo PDF."] }
                     ]
                 },
                 { topic: "Segurança e Inviolabilidade", trueFact: "A Constituição permite ingresso em domicílio sem consentimento em flagrante, desastre ou para prestar socorro a qualquer hora; por ordem judicial, durante o dia.", trueFact2: "Uma denúncia anônima isolada não constitui automaticamente autorização constitucional para entrar à força em uma casa.", trueFact3: "A atuação administrativa deve respeitar competências, base legal e os direitos fundamentais aplicáveis ao caso.", falseFacts: ["Mandado judicial autoriza ingresso domiciliar a qualquer hora, inclusive de madrugada, sem outra hipótese constitucional.", "Uma boa finalidade operacional torna legal qualquer entrada em residência sem observar as condições constitucionais.", "O aviso prévio de reunião pública equivale a pedido de autorização governamental."], exp: "O art. 5º, XI, estabelece hipóteses e limites específicos. Suspeita genérica ou boa intenção não substituem requisitos legais e controle da atuação." },
@@ -2424,7 +3057,7 @@
                 { topic: "Argumentação e Diagramas", trueFact: "Um argumento é válido quando não existe situação em que todas as premissas sejam verdadeiras e a conclusão seja falsa.", trueFact2: "De 'todo A é B' não se pode concluir automaticamente que 'todo B é A'.", trueFact3: "Na dedução válida a conclusão decorre necessariamente das premissas; indução oferece conclusão provável baseada em casos observados.", falseFacts: ["Validade significa que as premissas são factualmente verdadeiras em qualquer situação do mundo real.", "Se todo policial é servidor, então todo servidor é policial.", "Uma generalização indutiva torna a conclusão logicamente necessária sem exceções possíveis."], exp: "Teste validade procurando contraexemplo. Em diagramas, inclusão não se inverte. Diferencie necessidade dedutiva de probabilidade indutiva e força de analogia." },
                 { topic: "Contagem e Probabilidade", trueFact: "Em etapas sucessivas, o princípio multiplicativo combina as opções de cada etapa quando todas as combinações são possíveis.", trueFact2: "Em espaço amostral finito equiprovável, a probabilidade de A é casos favoráveis divididos pelo total de resultados possíveis.", trueFact3: "A combinação escolhe elementos sem considerar a ordem, enquanto o arranjo considera a ordem.", falseFacts: ["Na combinação, alterar a ordem dos elementos sempre produz uma escolha diferente.", "A probabilidade de um evento pode ser maior que 1 ou menor que 0.", "Amostragens sem reposição mantêm necessariamente as mesmas probabilidades em todas as etapas."], exp: "Pergunte se a ordem importa, se há repetição e se há reposição. Use P(A)=favoráveis/possíveis apenas quando os resultados forem equiprováveis." },
                 { topic: "Aritmética, Geometria e Matrizes", trueFact: "Um aumento de x por cento multiplica o valor inicial por 1+x/100; um desconto de x por cento multiplica por 1−x/100.", trueFact2: "A área do triângulo é base vezes altura dividido por dois, e a área do círculo é πr².", trueFact3: "O produto de matrizes só existe quando o número de colunas da primeira coincide com o número de linhas da segunda.", falseFacts: ["Dois descontos sucessivos sempre equivalem à soma simples dos percentuais aplicada ao valor inicial.", "A área de um retângulo é calculada somando base e altura, sem multiplicação.", "Qualquer par de matrizes pode ser multiplicado independentemente de suas dimensões."], exp: "Controle unidades e base percentual; desenhe as figuras quando necessário. Para multiplicar matrizes, verifique dimensões antes de operar elemento a elemento." },
-                { topic: "Windows e Linux: arquivos e permissões", trueFact: "Sistema operacional administra memória, processador, dispositivos, arquivos, programas e permissões de usuário.", trueFact2: "No Linux, o kernel é o núcleo do sistema e diretórios como /home e /etc têm usos convencionais distintos.", trueFact3: "Permissões de leitura, escrita e execução ajudam a controlar o acesso a arquivos e diretórios.", falseFacts: ["Terminal é o nome de todo o sistema operacional Linux e substitui o kernel.", "A extensão de um arquivo garante que seu conteúdo seja seguro e corresponda ao formato indicado.", "Permissões existem apenas no Windows e não são usadas em ambientes Linux."], exp: "Diferencie sistema, kernel, interface e terminal. Extensão é uma pista, não garantia; permissões limitam operações conforme usuário e grupo." },
+                { topic: "Windows e arquivos", trueFact: "Sistema operacional administra recursos, arquivos, contas e a execução de aplicativos.", trueFact2: "O Explorador de Arquivos permite navegar, copiar, mover e organizar arquivos e pastas no Windows.", trueFact3: "Contas e permissões ajudam a controlar o acesso a arquivos.", falseFacts: ["A extensão de um arquivo garante que seu conteúdo seja seguro e corresponda ao formato indicado.", "O Explorador de Arquivos serve apenas para navegar na Internet.", "O Windows é apenas um editor de texto."], exp: "Diferencie sistema operacional, aplicativo e ferramenta de gerenciamento de arquivos. Extensão é uma pista, não garantia de conteúdo ou segurança." },
                 { topic: "Word e Writer", trueFact: "Estilos de texto permitem aplicar formatação consistente e podem apoiar a criação de sumários automáticos.", trueFact2: "Quebra de seção permite aplicar configurações diferentes a partes do documento, como orientação ou cabeçalho.", trueFact3: "Revisão ortográfica auxilia a escrita, mas não substitui a revisão de sentido e contexto.", falseFacts: ["Quebra de página e quebra de seção são sempre o mesmo recurso e têm os mesmos efeitos.", "Estilo de título não pode ser usado para gerar sumário automático.", "A correção ortográfica garante que o documento não contenha erros de sentido ou informação."], exp: "Caracteres, parágrafos, páginas e seções controlam níveis diferentes de formatação; use estilos e revise o conteúdo antes de compartilhar." },
                 { topic: "Intervalos, argumentos e análise de dados", trueFact: "Em uma planilha, A1:B5 identifica um intervalo retangular que inclui as células entre A1 e B5.", trueFact2: "Em configurações regionais que usam ponto e vírgula, esse sinal separa argumentos de uma função, enquanto os dois-pontos podem indicar um intervalo.", trueFact3: "Antes de analisar resultados, confira se os dados estão no intervalo correto e se a fórmula inclui todas as células pretendidas.", falseFacts: ["A1:B5 representa apenas duas células isoladas e exclui as células entre elas.", "O ponto e vírgula sempre soma os valores das células posicionadas antes e depois dele.", "Uma fórmula produz resultado confiável mesmo quando seu intervalo omite dados relevantes."], exp: "Os dois-pontos podem delimitar intervalos; o separador de argumentos depende das configurações regionais. Revise o intervalo e os argumentos antes de confiar no resultado." },
                 { topic: "Aplicação em documento de serviço", trueFact: "Um documento de serviço deve apresentar informações de forma clara, organizada e adequada ao seu objetivo e destinatário.", trueFact2: "Modelos e estilos podem padronizar títulos, parágrafos e elementos recorrentes em documentos institucionais.", trueFact3: "Antes de compartilhar um documento, é importante revisar conteúdo, formatação, destinatários e eventuais dados pessoais.", falseFacts: ["A formatação visual substitui a necessidade de conferir a exatidão das informações do documento.", "Um modelo institucional deve ser usado sem verificar se corresponde à finalidade do documento.", "Dados pessoais podem ser incluídos em qualquer documento de serviço sem avaliar necessidade ou destinatário."], exp: "Use estrutura compatível com a finalidade, mantenha consistência visual e revise informações e destinatários antes do envio." },
@@ -2433,7 +3066,7 @@
                 { topic: "Nacionalidade e Direitos Políticos", trueFact: "A Constituição distingue brasileiros natos e naturalizados e reserva determinados cargos aos brasileiros natos.", trueFact2: "A soberania popular se exerce por sufrágio e voto, além de plebiscito, referendo e iniciativa popular nas condições constitucionais.", trueFact3: "Alistabilidade refere-se à capacidade eleitoral ativa, enquanto elegibilidade se relaciona à possibilidade de ser votado.", falseFacts: ["Brasileiros natos e naturalizados têm sempre regras idênticas para todos os cargos e hipóteses de extradição.", "Alistabilidade significa poder ser eleito e elegibilidade significa poder votar.", "Plebiscito e referendo são formas de votação sem previsão constitucional."], exp: "Consulte redação constitucional vigente para nacionalidade, cargos, extradição e direitos políticos. Separe capacidade para votar da capacidade para candidatar-se." },
                 { topic: "Direitos Sociais e Organização do Estado", trueFact: "União, Estados, Distrito Federal e Municípios são entes autônomos, mas a soberania pertence à República Federativa do Brasil.", trueFact2: "Educação, saúde, trabalho e moradia figuram entre os direitos sociais previstos no art. 6º, conforme texto vigente.", trueFact3: "Competência comum é administrativa compartilhada; competência concorrente envolve produção legislativa conforme regras constitucionais.", falseFacts: ["Estados e municípios são soberanos e podem contrariar livremente a Constituição Federal.", "Direitos sociais são apenas direitos individuais do art. 5º e não aparecem em outros títulos constitucionais.", "Competência comum e concorrente são termos idênticos e sempre designam a mesma função."], exp: "Autonomia não é soberania. Diferencie atuação administrativa comum de competência legislativa concorrente e consulte o artigo específico em cada questão." },
                 { topic: "Art. 144 e Atribuições Policiais", trueFact: "À Polícia Militar cabem a polícia ostensiva e a preservação da ordem pública, conforme o art. 144 da Constituição.", trueFact2: "A Constituição prevê a segurança pública como dever do Estado, direito e responsabilidade de todos.", trueFact3: "O art. 144 enumera órgãos com atribuições próprias; as competências da Polícia Civil, PF, PRF e PM não são intercambiáveis.", falseFacts: ["A Polícia Militar exerce exclusivamente a função constitucional de polícia judiciária da União.", "A segurança pública é responsabilidade exclusiva da população, não constituindo dever estatal.", "Todos os órgãos listados no art. 144 desempenham exatamente as mesmas atribuições."], exp: "Memorize a finalidade geral e associe cada órgão à atribuição constitucional específica. Para a PM, foco em ostensividade e preservação da ordem." },
-                { topic: "Lei de Drogas e Desarmamento", trueFact: "O art. 33 da Lei 11.343/2006 contém diversos verbos, incluindo guardar, transportar e ter em depósito, e não se limita à venda observada.", trueFact2: "O Estatuto do Desarmamento diferencia tipos penais conforme conduta, local, autorização e classificação legal da arma.", trueFact3: "A análise de porte para consumo pessoal considera critérios legais e circunstâncias do caso, não apenas um número isolado em qualquer situação.", falseFacts: ["O tráfico de drogas só pode ser caracterizado quando a venda for filmada e o dinheiro for apreendido na troca.", "Posse e porte de arma são sempre o mesmo tipo penal e não dependem do local ou autorização.", "A apreensão de qualquer quantidade de substância determina automaticamente o tráfico, sem análise de circunstâncias."], exp: "Leia os verbos dos arts. 28 e 33 e os arts. 12, 14 e 16 do Estatuto. Circunstâncias, autorização, classificação e elementos do tipo importam." },
+                { topic: "Lei de Drogas, ECA e Maria da Penha", trueFact: "O art. 33 da Lei 11.343/2006 contém diversos verbos, incluindo guardar, transportar e ter em depósito, e não se limita à venda observada.", trueFact2: "No ECA, a resposta a ato infracional depende da idade: criança recebe medidas de proteção e adolescente pode receber medida socioeducativa, com garantias legais.", trueFact3: "A Lei Maria da Penha prevê formas de violência e medidas protetivas de urgência, distintas de uma condenação penal definitiva.", falseFacts: ["O tráfico de drogas só pode ser caracterizado quando a venda for filmada e o dinheiro for apreendido na troca.", "Criança recebe medida socioeducativa de internação nas mesmas condições de adolescente.", "A medida protetiva equivale sempre à condenação criminal transitada em julgado."], exp: "Estude os elementos legais de cada diploma e não aplique consequências automáticas: contexto, faixa etária e garantias importam." },
                 { topic: "Lei Maria da Penha", trueFact: "O art. 7º da Lei Maria da Penha reconhece violência física, psicológica, sexual, patrimonial e moral.", trueFact2: "A lei prevê medidas protetivas de urgência com finalidade de proteção, distintas de uma pena criminal definitiva.", trueFact3: "Os contextos doméstico, familiar e de relação íntima de afeto são definidos em lei, e coabitação não é requisito universal.", falseFacts: ["Violência patrimonial não é reconhecida pela Lei Maria da Penha.", "A aplicação da lei exige necessariamente que vítima e agressor residam juntos no mesmo domicílio.", "Medida protetiva equivale sempre à condenação penal transitada em julgado."], exp: "Identifique contexto, forma de violência e medida cabível segundo o texto atualizado. Proteção urgente e responsabilização penal são dimensões distintas." },
                 { topic: "ECA: proteção integral e ato infracional", trueFact: "Para o ECA, criança é a pessoa com até 12 anos incompletos e adolescente é quem tem entre 12 e 18 anos.", trueFact2: "A conduta de adolescente descrita como crime ou contravenção é tratada como ato infracional, e não como crime imputável penalmente.", trueFact3: "A internação é medida socioeducativa excepcional, sujeita às hipóteses e limites previstos no Estatuto.", falseFacts: ["Crianças recebem medida socioeducativa de internação nas mesmas condições legais aplicáveis a adolescentes.", "A internação é automática sempre que um adolescente pratica qualquer ato infracional.", "Ato infracional é sinônimo de condenação criminal adulta e cumprimento de pena no sistema comum."], exp: "A criança está sujeita a medidas de proteção; o adolescente pode receber medidas socioeducativas com garantias. Não confunda proteção integral com impunidade ou pena adulta." },
                 { topic: "Estatuto dos Policiais Militares de Pernambuco", trueFact: "A Lei Estadual 6.783/1974 é o Estatuto dos Policiais Militares de Pernambuco e deve ser estudada em sua redação consolidada vigente.", trueFact2: "Hierarquia organiza autoridade e responsabilidade em níveis, enquanto disciplina se relaciona à observância das normas e ordens legais.", trueFact3: "Para questões literais do Estatuto, devem ser conferidos conceitos, deveres, direitos, competências, prazos e exceções no texto legal atualizado.", falseFacts: ["A disciplina militar obriga o cumprimento de toda ordem, inclusive ordem manifestamente ilegal.", "A Lei 6.783/1974 é uma lei federal que institui o Estatuto nacional de todas as polícias militares.", "Resumos dispensam a consulta da redação vigente e de alterações legislativas posteriores."], exp: "O Estatuto é estadual e pode sofrer alterações. Organize a leitura por situação funcional, deveres, ética, disciplina, direitos e prerrogativas; confirme sempre o texto consolidado." },
@@ -2491,12 +3124,12 @@
             ];
 
             const infoData = [
-                { topic: "Windows e Linux: arquivos e permissões", trueFact: "Sistema operacional administra memória, processador, dispositivos, arquivos, programas e permissões de usuário.", trueFact2: "No Linux, o kernel é o núcleo do sistema e diretórios como /home e /etc têm usos convencionais distintos.", trueFact3: "Permissões de leitura, escrita e execução ajudam a controlar o acesso a arquivos e diretórios.", falseFacts: ["Terminal é o nome de todo o sistema operacional Linux e substitui o kernel.", "A extensão de um arquivo garante que seu conteúdo seja seguro e corresponda ao formato indicado.", "Permissões existem apenas no Windows e não são usadas em ambientes Linux."], exp: "Diferencie sistema, kernel, interface e terminal. Extensão é uma pista, não garantia; permissões limitam operações conforme usuário e grupo." },
+                { topic: "Windows e arquivos", trueFact: "O sistema operacional administra recursos, arquivos, contas e a execução de aplicativos.", trueFact2: "O Explorador de Arquivos permite navegar, copiar, mover e organizar arquivos e pastas no Windows.", trueFact3: "Contas e permissões ajudam a controlar o acesso a arquivos.", falseFacts: ["A extensão de um arquivo garante que seu conteúdo seja seguro e corresponda ao formato indicado.", "O Explorador de Arquivos serve apenas para navegar na Internet.", "O Windows é apenas um editor de texto."], exp: "Diferencie sistema operacional, aplicativo e ferramenta de gerenciamento de arquivos. Extensão é uma pista, não garantia de conteúdo ou segurança." },
                 { topic: "Word e Writer", trueFact: "Estilos de texto permitem aplicar formatação consistente e podem apoiar a criação de sumários automáticos.", trueFact2: "Quebra de seção permite aplicar configurações diferentes a partes do documento, como orientação ou cabeçalho.", trueFact3: "Revisão ortográfica auxilia a escrita, mas não substitui a revisão de sentido e contexto.", falseFacts: ["Quebra de página e quebra de seção são sempre o mesmo recurso e têm os mesmos efeitos.", "Estilo de título não pode ser usado para gerar sumário automático.", "A correção ortográfica garante que o documento não contenha erros de sentido ou informação."], exp: "Caracteres, parágrafos, páginas e seções controlam níveis diferentes de formatação; use estilos e revise o conteúdo antes de compartilhar." },
                 { topic: "Internet e Navegadores", trueFact: "Navegador apresenta páginas web; mecanismo de busca indexa conteúdo e ajuda a localizar páginas na Internet.", trueFact2: "HTTPS protege a conexão entre navegador e site, mas não garante por si só que o site ou seu conteúdo seja confiável.", trueFact3: "A Intranet é uma rede privada que pode utilizar protocolos também empregados na Internet pública.", falseFacts: ["Um navegador e um mecanismo de busca são a mesma ferramenta e têm exatamente a mesma função.", "O cadeado HTTPS prova que uma informação publicada é verdadeira e que o site pertence ao órgão que diz representar.", "Intranet é necessariamente uma rede pública sem controle de acesso."], exp: "Valide domínio, autoria, data e fonte. HTTPS trata da proteção da conexão; navegador exibe páginas; buscador localiza conteúdo." },
                 { topic: "Backup e Segurança da Informação", trueFact: "Confidencialidade, integridade e disponibilidade são objetivos centrais de segurança da informação.", trueFact2: "Backup incremental copia alterações desde o backup anterior; o diferencial copia alterações desde o último backup completo.", trueFact3: "Uma cópia isolada e um teste de restauração ajudam a verificar a utilidade do backup diante de incidentes.", falseFacts: ["Backup incremental copia sempre todos os dados e é idêntico a uma cópia completa.", "Sincronização em nuvem impede que exclusões ou arquivos maliciosos se propaguem para outros dispositivos.", "A existência de antivírus dispensa atualizações, controle de acesso e cópias de segurança."], exp: "Backup é recuperação, não prevenção completa. Combine cópias, isolamento e teste; entenda de que ponto cada tipo incremental/diferencial registra mudanças." },
                 {
-                    topic: "Hardware e SO (Windows)", trueFact: "A Memória RAM é fundamental, principal e volátil, perdendo seu conteúdo assim que a alimentação elétrica da placa for interrompida e cortada.", trueFact2: "O sistema operacional Microsoft Windows, em suas versões atuais, opera obrigatoriamente com o recurso de multitarefa preemptiva de sistema.", trueFact3: "A interrupção de um processo que não responde na interface do Windows pode ser invocada agilmente pelas teclas de atalho Ctrl + Shift + Esc.", falseFacts: ["A Memória RAM do computador atua como o gigantesco depósito não-volátil final onde a CPU armazena arquivos brutos permanentemente e sem riscos.", "O atalho de sistema Win + D envia qualquer arquivo clicado diretamente para a lixeira sem passar pela confirmação na nuvem da Microsoft.", "A Memória ROM pode ser facilmente regravada, modificada e formatada milhares de vezes pelo usuário comum via atalhos no teclado do Windows."], exp: "RAM é a memória de trabalho (mesa), e é Volátil. ROM é a memória de fábrica da placa, quase nunca gravada. SSD/HD é o armazém que guarda os arquivos com força sem energia.", questions: [
+                    topic: "Hardware legado (fora do edital)", trueFact: "O Windows administra recursos, arquivos, contas e a execução de aplicativos.", trueFact2: "Win+E abre o Explorador de Arquivos e Win+L bloqueia a sessão.", trueFact3: "Ctrl+Shift+Esc abre diretamente o Gerenciador de Tarefas.", falseFacts: ["O Explorador de Arquivos serve apenas para navegar na Internet.", "Win+L apaga os arquivos do usuário.", "Um sistema operacional é apenas um editor de texto."], exp: "Banco legado, não utilizado na distribuição das questões diárias; o edital cobre conceitos do Windows, não componentes físicos de computador.", questions: [
                         { prompt: "O que acontece com dados que estavam apenas na RAM quando o computador é desligado?", answer: "A RAM é volátil e perde os dados temporários.", wrong: ["A RAM grava automaticamente todos os dados na ROM.", "O SSD converte a RAM em armazenamento permanente.", "Os dados passam para o processador e ficam salvos."] },
                         { prompt: "Qual é o papel dos registradores da CPU?", answer: "Guardar temporariamente dados e instruções de uso imediato pelo processador.", wrong: ["Armazenar cópias permanentes de arquivos.", "Conectar o computador à rede externa.", "Substituir o sistema operacional."] },
                         { prompt: "A memória cache é usada principalmente para...", answer: "Reduzir o tempo de acesso a dados frequentemente usados pela CPU.", wrong: ["Guardar documentos permanentemente sem energia.", "Substituir a placa-mãe.", "Bloquear todos os programas da inicialização."] },
@@ -2560,16 +3193,16 @@
             ];
 
             const dhData = [
-                { topic: "Legislação Extravagante PM (Abuso e Maria da Penha)", trueFact: "A Lei de Abuso de Autoridade exige, além dos elementos do tipo penal, finalidade específica de prejudicar alguém, beneficiar a si ou terceiro, ou agir por mero capricho ou satisfação pessoal.", trueFact2: "A Lei de Tortura prevê, como efeito da condenação e nos termos do art. 1º, § 5º, perda do cargo, função ou emprego público e interdição pelo prazo legal.", trueFact3: "A Lei Maria da Penha reconhece cinco formas de violência doméstica e familiar: física, psicológica, sexual, patrimonial e moral.", falseFacts: ["A Lei de Abuso de Autoridade criminaliza automaticamente qualquer divergência na interpretação da lei ou na avaliação de fatos e provas.", "A Lei Maria da Penha não inclui violência patrimonial entre as formas de violência doméstica e familiar.", "Para caracterizar qualquer modalidade da Lei Maria da Penha, a vítima e o agressor precisam obrigatoriamente morar juntos."], exp: "Abuso de autoridade exige finalidade específica prevista em lei; divergência interpretativa isolada não basta. A Lei de Tortura disciplina os efeitos da condenação no art. 1º, § 5º. A Lei Maria da Penha inclui cinco formas de violência e prevê contextos que não exigem coabitação." },
+                { topic: "Legislação Extravagante PM (Abuso e Maria da Penha)", trueFact: "A Lei de Abuso de Autoridade exige, além dos elementos do tipo penal, finalidade específica de prejudicar alguém, beneficiar a si ou terceiro, ou agir por mero capricho ou satisfação pessoal.", trueFact2: "A Lei de Tortura prevê, como efeito da condenação e nos termos do art. 1º, § 5º, perda do cargo, função ou emprego público e interdição pelo prazo legal.", trueFact3: "O art. 7º da Lei Maria da Penha inclui a violência vicária no inciso VI do texto vigente, além das formas previstas nos incisos I a V.", falseFacts: ["A Lei de Abuso de Autoridade criminaliza automaticamente qualquer divergência na interpretação da lei ou na avaliação de fatos e provas.", "A Lei Maria da Penha não inclui violência patrimonial entre as formas de violência doméstica e familiar.", "Para caracterizar qualquer modalidade da Lei Maria da Penha, a vítima e o agressor precisam obrigatoriamente morar juntos."], exp: "Abuso de autoridade exige finalidade específica prevista em lei; divergência interpretativa isolada não basta. A Lei de Tortura disciplina os efeitos da condenação no art. 1º, § 5º. A Lei Maria da Penha prevê formas de violência e contextos que não exigem coabitação." },
                 {
-                    topic: "Lei de Drogas e Desarmamento", trueFact: "No Tema 506, o STF decidiu que o porte de cannabis para consumo pessoal não constitui infração penal; até 40 g ou seis plantas fêmeas há presunção relativa de uso pessoal, sem legalização da substância.", trueFact2: "O art. 33 contém vários verbos, como guardar e ter em depósito; o enquadramento depende do contexto e dos elementos legais, e não exige que a venda seja presenciada.", trueFact3: "O Estatuto classifica severamente que a posse de arma sem registro mantida no armário escondida em casa é infração menos pesada do que circular extramuros (Porte Ilegal de rua).", falseFacts: ["O Tema 506 legalizou todas as drogas e estabeleceu que até 40 gramas de qualquer substância é permitido.", "A PM é blindada de prender o traficante por Art. 33 se ele apenas 'guardava' enormes tijolos num terreno. Somente o verbo 'vender' de forma flagrada por câmera caracteriza crime em sede de delegacia regional.", "Pelo novo sistema processual e militar do nordeste, portar um fuzil .556 que seja de uso restrito do Exército não possui qualquer variação se for comparado a portar um canivete ou revólver legalizado com nota."], exp: "Para cannabis destinada ao uso pessoal, o Tema 506 afastou a infração penal e fixou presunção relativa de uso até 40 g ou seis plantas fêmeas; a decisão não legaliza a substância nem abrange automaticamente outras drogas. O art. 33 inclui vários verbos e exige análise do contexto. Consulte a lei vigente para os crimes de armas.", questions: [
-                        { prompt: "Qual artigo da Lei de Drogas trata do porte para consumo pessoal?", answer: "Art. 28 da Lei 11.343/2006.", wrong: ["Art. 33 da Lei 11.343/2006.", "Art. 12 da Lei 10.826/2003.", "Art. 7º da Lei 11.340/2006."] },
+                    topic: "Lei de Drogas, ECA e Maria da Penha", trueFact: "No Tema 506, o STF decidiu que o porte de cannabis para consumo pessoal não constitui infração penal; até 40 g ou seis plantas fêmeas há presunção relativa de uso pessoal, sem legalização da substância.", trueFact2: "O art. 33 contém vários verbos, como guardar e ter em depósito; o enquadramento depende do contexto e dos elementos legais, e não exige que a venda seja presenciada.", trueFact3: "No ECA, criança é a pessoa até 12 anos incompletos; adolescente é a pessoa entre 12 e 18 anos, com aplicação excepcional do Estatuto até 21 anos nas hipóteses legais.", falseFacts: ["O Tema 506 legalizou todas as drogas e estabeleceu que até 40 gramas de qualquer substância é permitido.", "Crianças recebem medidas socioeducativas de internação nas mesmas condições legais dos adolescentes.", "A medida protetiva da Lei Maria da Penha equivale sempre a uma condenação penal definitiva."], exp: "A tese do Tema 506 trata de cannabis para uso pessoal e não legaliza a substância. No ECA, faixa etária e garantias definem a resposta; medidas protetivas não são condenação penal.", questions: [
+                        { prompt: "Qual artigo da Lei de Drogas trata do porte para consumo pessoal?", answer: "Art. 28 da Lei 11.343/2006.", wrong: ["Art. 33 da Lei 11.343/2006.", "Art. 2º do ECA.", "Art. 7º da Lei 11.340/2006."] },
                         { prompt: "Qual afirmação sobre o art. 33 é correta?", answer: "O tipo contém vários verbos, como guardar, transportar e ter em depósito.", wrong: ["Só existe tráfico se houver venda filmada.", "Guardar nunca pode integrar a conduta de tráfico.", "A lei não prevê condutas além da importação."] },
                         { prompt: "A análise de destinação da droga deve considerar...", answer: "Circunstâncias e elementos previstos em lei, não apenas quantidade isolada.", wrong: ["Somente o peso, sem qualquer outro dado.", "Apenas a declaração do agente que fez a abordagem.", "Exclusivamente a presença de dinheiro em espécie."] },
-                        { prompt: "No Estatuto do Desarmamento, qual fator ajuda a distinguir posse e porte?", answer: "Conduta, local, autorização e classificação legal da arma.", wrong: ["Apenas a cor da arma.", "Somente o horário da abordagem.", "A profissão de quem encontrou o objeto."] },
-                        { prompt: "O art. 12 da Lei 10.826/2003 trata, em linhas gerais, de...", answer: "Posse irregular de arma de fogo de uso permitido nas condições legais.", wrong: ["Violência psicológica contra a mulher.", "Tráfico de drogas.", "Ato infracional de adolescente."] },
+                        { prompt: "Qual medida se aplica à criança que pratica ato infracional?", answer: "Medidas de proteção, conforme o ECA.", wrong: ["Medida socioeducativa de internação como regra.", "Pena criminal adulta.", "Prisão preventiva."] },
+                        { prompt: "Uma pessoa de 12 anos completos é considerada, em regra, pelo ECA...", answer: "Adolescente.", wrong: ["Criança até 12 anos completos.", "Pessoa adulta para fins penais.", "Jovem maior de 18 anos."] },
                         { prompt: "A violência patrimonial aparece em qual diploma e artigo citado no material?", answer: "Lei Maria da Penha, art. 7º.", wrong: ["ECA, art. 2º.", "Lei de Tortura, art. 1º.", "Constituição, art. 144."] },
-                        { prompt: "Qual lista contém as cinco formas de violência do art. 7º da Lei Maria da Penha?", answer: "Física, psicológica, sexual, patrimonial e moral.", wrong: ["Física, verbal, digital, econômica e política.", "Psicológica, eleitoral, tributária, moral e processual.", "Física, coletiva, institucional, patrimonial e administrativa."] },
+                        { prompt: "Qual forma foi acrescentada ao art. 7º, inciso VI, da Lei Maria da Penha no texto vigente?", answer: "Violência vicária.", wrong: ["Violência eleitoral.", "Violência tributária.", "Violência administrativa."] },
                         { prompt: "A coabitação é requisito universal para todos os contextos previstos na Lei Maria da Penha?", answer: "Não; não é requisito universal, conforme a lei e a hipótese analisada.", wrong: ["Sim, sem exceção.", "Sim, mas apenas para violência patrimonial.", "Não, porque a lei não define contextos domésticos ou familiares."] },
                         { prompt: "Uma medida protetiva de urgência deve ser entendida como...", answer: "Instrumento de proteção, distinto de condenação penal definitiva.", wrong: ["Pena criminal automática após denúncia.", "Decisão que substitui qualquer investigação.", "Acordo privado sem finalidade de proteção."] },
                         { prompt: "Para classificar uma situação sob essas leis, a abordagem mais segura é...", answer: "Identificar contexto e elementos legais, consultando o texto vigente.", wrong: ["Aplicar uma regra automática baseada só numa palavra do relato.", "Ignorar autorização e circunstâncias do caso.", "Presumir o enquadramento sem conferir o artigo."] }
@@ -2630,8 +3263,8 @@
                 "Argumentação e Diagramas": ["Proposições Lógicas e Conectivos"],
                 "Contagem e Probabilidade": ["Proposições Lógicas e Conectivos"],
                 "Aritmética, Geometria e Matrizes": ["Proposições Lógicas e Conectivos"],
-                "Hardware e SO (Windows)": ["Hardware, CPU, Memórias e Windows"],
-                "Windows e Linux: arquivos e permissões": ["Hardware, CPU, Memórias e Windows"],
+                "Windows e sistema operacional": ["Windows: sistema operacional e arquivos"],
+                "Windows e arquivos": ["Windows: sistema operacional e arquivos"],
                 "Segurança e Inviolabilidade": ["Princípio da Legalidade e Domicílio"],
                 "Legalidade administrativa": ["Princípio da Legalidade e Domicílio"],
                 "DUDH e Tratados": ["DUDH e Tratados Internacionais"],
@@ -2668,10 +3301,9 @@
                 "Art. 144 e Atribuições Policiais": ["Segurança Pública (Art. 144) e Extradição"],
                 "Nacionalidade e Extradição": ["Segurança Pública (Art. 144) e Extradição"],
                 "Extradição e Tribunal do Júri": ["Segurança Pública (Art. 144) e Extradição"],
-                "Lei de Drogas e Desarmamento": ["Lei de Drogas, Desarmamento e Maria da Penha"],
-                "ECA: proteção integral e ato infracional": ["Lei de Drogas, Desarmamento e Maria da Penha"],
-                "Estatuto do Desarmamento": ["Lei de Drogas, Desarmamento e Maria da Penha"],
-                "Lei Maria da Penha": ["Lei de Drogas, Desarmamento e Maria da Penha"]
+                "Lei de Drogas": ["Lei de Drogas, ECA e Maria da Penha"],
+                "ECA: proteção integral e ato infracional": ["Lei de Drogas, ECA e Maria da Penha"],
+                "Lei Maria da Penha": ["Lei de Drogas, ECA e Maria da Penha"]
             };
             const getModuleOwnersForQuestion = questionTopic => {
                 const directOwners = questionSubtopicAliases[questionTopic] || [];
@@ -2688,8 +3320,8 @@
                     ["Argumentação e Diagramas", "Proposições Lógicas e Conectivos"],
                     ["Contagem e Probabilidade", "Proposições Lógicas e Conectivos"],
                     ["Aritmética, Geometria e Matrizes", "Proposições Lógicas e Conectivos"],
-                    ["Hardware e SO (Windows)", "Hardware, CPU, Memórias e Windows"],
-                    ["Windows e Linux: arquivos e permissões", "Hardware, CPU, Memórias e Windows"],
+                    ["Windows e sistema operacional", "Windows: sistema operacional e arquivos"],
+                    ["Windows e arquivos", "Windows: sistema operacional e arquivos"],
                     ["Segurança e Inviolabilidade", "Princípio da Legalidade e Domicílio"],
                     ["Legalidade administrativa", "Princípio da Legalidade e Domicílio"],
                     ["DUDH e Tratados", "DUDH e Tratados Internacionais"],
@@ -2711,9 +3343,10 @@
                     ["Legislação Extravagante PM (Abuso e Maria da Penha)", "Lei de Abuso de Autoridade e Tortura"],
                     ["Art. 144 e Atribuições Policiais", "Segurança Pública (Art. 144) e Extradição"],
                     ["Nacionalidade e Extradição", "Segurança Pública (Art. 144) e Extradição"],
-                    ["Lei de Drogas e Desarmamento", "Lei de Drogas, Desarmamento e Maria da Penha"],
-                    ["ECA: proteção integral e ato infracional", "Lei de Drogas, Desarmamento e Maria da Penha"],
-                    ["Lei Maria da Penha", "Lei de Drogas, Desarmamento e Maria da Penha"]
+                    ["Lei de Drogas, ECA e Maria da Penha", "Lei de Drogas, ECA e Maria da Penha"],
+                    ["Lei de Drogas", "Lei de Drogas, ECA e Maria da Penha"],
+                    ["ECA: proteção integral e ato infracional", "Lei de Drogas, ECA e Maria da Penha"],
+                    ["Lei Maria da Penha", "Lei de Drogas, ECA e Maria da Penha"]
                 ]);
                 const owner = topicOwners.get(questionTopic);
                 return owner ? [owner] : [];
@@ -2837,7 +3470,7 @@
                 "Argumentação e Diagramas": ["Proposições Lógicas e Conectivos"],
                 "Contagem e Probabilidade": ["Proposições Lógicas e Conectivos"],
                 "Aritmética, Geometria e Matrizes": ["Proposições Lógicas e Conectivos"],
-                "Hardware e SO (Windows)": ["Hardware, CPU, Memórias e Windows"],
+                "Windows e sistema operacional": ["Windows: sistema operacional e arquivos"],
                 "Segurança e Inviolabilidade": ["Princípio da Legalidade e Domicílio"],
                 "DUDH e Tratados": ["DUDH e Tratados Internacionais"],
                 "Coesão (Anáfora/Catáfora)": ["Coesão Referencial (Anáfora e Catáfora)"],
@@ -2852,7 +3485,7 @@
                 "Intervalos, argumentos e análise de dados": ["Editores de Texto e Planilhas (Sinais : e ;)"],
                 "Excel e Sinais Lógicos": ["Editores de Texto e Planilhas (Sinais : e ;)"],
                 "Aplicação em documento de serviço": ["Editores de Texto e Planilhas (Sinais : e ;)"],
-                "Windows e Linux: arquivos e permissões": ["Hardware, CPU, Memórias e Windows"],
+                "Windows e arquivos": ["Windows: sistema operacional e arquivos"],
                 "Internet e Navegadores": ["Segurança, Ransomware e Phishing"],
                 "Backup e Segurança da Informação": ["Segurança, Ransomware e Phishing"],
                 "Açúcar, trabalho e sociedade": ["Capitanias Hereditárias e Ciclo do Açúcar"],
@@ -2872,13 +3505,12 @@
                 "Art. 144 e Atribuições Policiais": ["Segurança Pública (Art. 144) e Extradição"],
                 "Nacionalidade e Extradição": ["Segurança Pública (Art. 144) e Extradição"],
                 "Extradição e Tribunal do Júri": ["Segurança Pública (Art. 144) e Extradição"],
-                "Lei de Drogas e Desarmamento": ["Lei de Drogas, Desarmamento e Maria da Penha"],
+                "Lei de Drogas": ["Lei de Drogas, ECA e Maria da Penha"],
                 "Legislação Extravagante PM (Abuso e Maria da Penha)": ["Lei de Abuso de Autoridade e Tortura"],
                 "DUDH e Tratados": ["DUDH e Tratados Internacionais"],
                 "Abuso de Autoridade e Tortura": ["Lei de Abuso de Autoridade e Tortura"],
-                "ECA: proteção integral e ato infracional": ["Lei de Drogas, Desarmamento e Maria da Penha"],
-                "Estatuto do Desarmamento": ["Lei de Drogas, Desarmamento e Maria da Penha"],
-                "Lei Maria da Penha": ["Lei de Drogas, Desarmamento e Maria da Penha"],
+                "ECA: proteção integral e ato infracional": ["Lei de Drogas, ECA e Maria da Penha"],
+                "Lei Maria da Penha": ["Lei de Drogas, ECA e Maria da Penha"],
                 "Estatuto dos Policiais Militares de Pernambuco": ["DUDH e Tratados Internacionais"]
             };
             Object.values(baseQuizTemplates).forEach(pool => pool.forEach(question => {
@@ -2939,7 +3571,11 @@
                             return;
                         }
                         const [heading, explanation, example, alert] = lesson;
-                        [heading, explanation, example, alert].forEach(part => {
+                        if (!window.PMPE_DEEPENING?.[assignment.course]?.[index]?.length) {
+                            issues.push(`aprofundamento ausente da aula ${index}: ${heading}`);
+                        }
+                        const shownHeading = String(heading).replace(/^\d+\.\s*/, '').trim();
+                        [shownHeading, explanation, example, alert].forEach(part => {
                             if (part && !material.includes(part)) issues.push(`aula distribuída ausente do PDF: ${heading}`);
                         });
                     });
