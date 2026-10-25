@@ -6,6 +6,44 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'ianitalocorp@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    function hasValidAccessRequest() {
+      let accessRequest = request.resource.data;
+      return accessRequest.keys().hasAll(['email', 'status', 'requestedAt'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt'])
+        && accessRequest.email is string
+        && accessRequest.email.size() <= 254
+        && accessRequest.email == request.auth.token.email
+        && accessRequest.status == 'pending'
+        && accessRequest.requestedAt == request.time;
+    }
+
+    function isValidAdminReview() {
+      let accessRequest = request.resource.data;
+      return resource.data.status == 'pending'
+        && accessRequest.keys().hasAll(['email', 'status', 'requestedAt', 'reviewedAt'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'reviewedAt'])
+        && accessRequest.status in ['approved', 'rejected']
+        && accessRequest.reviewedAt == request.time
+        && accessRequest.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedAt']);
+    }
+
+    function isValidResubmission() {
+      let accessRequest = request.resource.data;
+      return resource.data.status == 'rejected'
+        && accessRequest.keys().hasAll(['email', 'status', 'requestedAt'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt'])
+        && accessRequest.email == request.auth.token.email
+        && accessRequest.status == 'pending'
+        && accessRequest.requestedAt == request.time
+        && accessRequest.diff(resource.data).affectedKeys().hasOnly(['status', 'requestedAt', 'reviewedAt']);
+    }
+
     function hasValidStudyPreferences(profile) {
       let preferences = profile.studyPreferences;
       return preferences is map
@@ -45,7 +83,20 @@ service cloud.firestore {
 
     match /access/{userId} {
       allow get: if isOwner(userId);
-      allow list, create, update, delete: if false;
+      allow list: if false;
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /accessRequests/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId)
+        && !exists(/databases/$(database)/documents/accessRequests/$(userId))
+        && hasValidAccessRequest();
+      allow update: if (isOwner(userId) && isValidResubmission())
+        || (isAdmin() && isValidAdminReview());
+      allow delete: if false;
     }
 
     match /{document=**} {

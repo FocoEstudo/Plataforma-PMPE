@@ -500,6 +500,160 @@
             box-shadow: 0 16px 40px rgba(20, 75, 48, .12);
         }
 
+        .session-gate-card:has(.payment-gate-card) {
+            width: min(100%, 54rem);
+            padding: 0;
+            overflow: hidden auto;
+        }
+
+        .payment-gate-card {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(17rem, .9fr);
+            color: #173b2c;
+        }
+
+        .payment-gate-intro {
+            grid-column: 1 / -1;
+            padding: 1.6rem 1.8rem;
+            color: #fff;
+            background: linear-gradient(120deg, #0d4a2e, #176b45);
+        }
+
+        .payment-gate-intro p,
+        .payment-gate-intro h2 {
+            color: inherit;
+        }
+
+        .payment-gate-column {
+            padding: 1.5rem 1.8rem;
+        }
+
+        .payment-gate-price {
+            margin: 0;
+            color: #105737;
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: -.04em;
+        }
+
+        .payment-gate-copy {
+            display: flex;
+            min-height: 2.8rem;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+            width: 100%;
+            margin-top: .55rem;
+            padding: .65rem .8rem;
+            color: #173b2c;
+            background: #f3f8f4;
+            border: 1px solid #c8ddce;
+            border-radius: .65rem;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .payment-gate-copy code {
+            overflow-wrap: anywhere;
+        }
+
+        .payment-gate-status {
+            display: flex;
+            align-items: flex-start;
+            gap: .8rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #edf7f0;
+            border: 1px solid #c8ddce;
+            border-radius: .8rem;
+        }
+
+        .payment-gate-status[data-state="error"],
+        .payment-gate-status[data-state="rejected"] {
+            background: #fff5f4;
+            border-color: #f0c5c1;
+        }
+
+        .payment-gate-status-icon {
+            display: grid;
+            width: 2.25rem;
+            height: 2.25rem;
+            flex: 0 0 auto;
+            place-items: center;
+            color: #176b45;
+            background: #d8f3df;
+            border-radius: 9999px;
+        }
+
+        .payment-gate-status[data-state="error"] .payment-gate-status-icon,
+        .payment-gate-status[data-state="rejected"] .payment-gate-status-icon {
+            color: #a52c22;
+            background: #fee4e2;
+        }
+
+        .payment-gate-steps {
+            display: grid;
+            gap: .8rem;
+            margin: 1rem 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .payment-gate-steps li {
+            display: flex;
+            align-items: flex-start;
+            gap: .7rem;
+            color: #52665a;
+            font-size: .84rem;
+            line-height: 1.5;
+        }
+
+        .payment-gate-step-number {
+            display: grid;
+            width: 1.55rem;
+            height: 1.55rem;
+            flex: 0 0 auto;
+            place-items: center;
+            color: #105737;
+            background: #e5f2e8;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 800;
+        }
+
+        .payment-gate-footer {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.8rem;
+            background: #f7faf7;
+            border-top: 1px solid #e2eee5;
+        }
+
+        @media (max-width: 640px) {
+            .session-gate-card:has(.payment-gate-card) {
+                max-height: calc(100vh - 1rem);
+            }
+
+            .payment-gate-card {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .payment-gate-intro,
+            .payment-gate-footer {
+                grid-column: auto;
+            }
+
+            .payment-gate-intro,
+            .payment-gate-column,
+            .payment-gate-footer {
+                padding-right: 1.1rem;
+                padding-left: 1.1rem;
+            }
+        }
+
         .profile-field {
             display: block;
             margin-top: 1rem;
@@ -1245,14 +1399,49 @@
                 <a id="sessionGateLoginLink" href="login.html" class="mt-4 inline-block font-bold text-emerald-800 underline" hidden>Ir para o login</a>
             </div>
             <section id="paymentGate" hidden>
-                <i class="fa-solid fa-lock text-3xl text-emerald-700" aria-hidden="true"></i>
-                <h2 class="mt-3 text-2xl font-extrabold">Libere seu acesso</h2>
-                <p class="mt-2 text-sm leading-relaxed text-gray-600">Pague <strong>R$ 99,90</strong> pelo checkout seguro do Mercado Pago. Você poderá escolher Pix e pagar pelo aplicativo da instituição financeira que preferir.</p>
-                <button id="paymentCheckoutButton" type="button" class="mt-5 block w-full rounded-lg bg-emerald-800 px-5 py-3 text-center font-bold text-white hover:bg-emerald-900">Ir para o checkout seguro</button>
-                <p id="paymentGateMessage" class="mt-3 text-sm text-red-700" role="status" aria-live="polite"></p>
-                <p class="mt-3 text-xs leading-relaxed text-gray-600">Após a confirmação do pagamento pelo Mercado Pago, o acesso será liberado automaticamente. Confira o valor e os dados do recebedor antes de concluir.</p>
-                <button id="checkPaymentAccessButton" type="button" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Verificar meu acesso</button>
-                <button type="button" onclick="signOutCurrentUser()" class="mt-5 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Sair da conta</button>
+                <div class="payment-gate-card">
+                    <header class="payment-gate-intro">
+                        <p class="text-xs font-extrabold uppercase tracking-[.18em] text-emerald-100">Acesso à plataforma</p>
+                        <h2 class="mt-2 text-2xl font-extrabold">Sua preparação começa aqui</h2>
+                        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-50">Finalize o Pix abaixo. A solicitação de acesso é registrada automaticamente nesta conta; você não precisa enviar comprovante nem confirmar o pagamento por botão.</p>
+                    </header>
+                    <div class="payment-gate-column text-center">
+                        <p class="text-xs font-extrabold uppercase tracking-[.14em] text-gray-500">Pix • pagamento único</p>
+                        <p class="payment-gate-price mt-1">R$ 99,90</p>
+                        <p class="mt-1 text-sm text-gray-600">Aponte a câmera do banco para o QR Code</p>
+                        <img src="pix-qr.png" alt="QR Code Pix para pagamento de R$ 99,90" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
+                        <p class="mt-3 text-xs text-gray-500">Se estiver no mesmo aparelho, use a chave Pix ao lado.</p>
+                    </div>
+                    <div class="payment-gate-column">
+                        <h3 class="text-lg font-extrabold">Como liberar seu acesso</h3>
+                        <ol class="payment-gate-steps">
+                            <li><span class="payment-gate-step-number">1</span><span>Faça o Pix de <strong>R$ 99,90</strong> pelo QR Code ou pela chave abaixo.</span></li>
+                            <li><span class="payment-gate-step-number">2</span><span>Confira o valor e os dados do recebedor no aplicativo do seu banco antes de confirmar.</span></li>
+                            <li><span class="payment-gate-step-number">3</span><span>Aguarde a conferência. O acesso será liberado automaticamente nesta conta após a confirmação.</span></li>
+                        </ol>
+                        <div class="mt-5">
+                            <p class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Chave Pix aleatória</p>
+                            <button id="copyPixKeyButton" type="button" class="payment-gate-copy" aria-label="Copiar chave Pix aleatória">
+                                <code id="pixKey" class="text-sm">623c3509-96f1-49f7-8794-41ed9de36bf6</code>
+                                <span class="shrink-0 text-sm font-extrabold text-emerald-800"><i class="fa-regular fa-copy mr-1" aria-hidden="true"></i>Copiar</span>
+                            </button>
+                            <p id="pixCopyMessage" class="mt-2 min-h-5 text-xs text-emerald-800" role="status" aria-live="polite"></p>
+                        </div>
+                        <div id="paymentRequestStatus" class="payment-gate-status" data-state="loading" role="status" aria-live="polite">
+                            <span class="payment-gate-status-icon"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i></span>
+                            <div>
+                                <p id="paymentRequestHeading" class="font-extrabold">Preparando sua solicitação</p>
+                                <p id="paymentRequestDetail" class="mt-1 text-sm leading-relaxed text-gray-600">Vinculando esta etapa à sua conta segura...</p>
+                                <a id="paymentSupportLink" class="mt-2 inline-block text-sm font-bold text-emerald-800 underline" href="mailto:ianitalocorp@gmail.com?subject=Ajuda%20com%20liberacao%20de%20acesso" hidden>Falar com o suporte</a>
+                            </div>
+                        </div>
+                        <p id="paymentGateMessage" class="mt-3 text-sm text-red-700" role="alert" aria-live="polite"></p>
+                    </div>
+                    <footer class="payment-gate-footer">
+                        <span class="text-xs leading-relaxed text-gray-500">A análise é manual e pode levar algum tempo após o pagamento.</span>
+                        <button type="button" onclick="signOutCurrentUser()" class="shrink-0 rounded-lg border border-emerald-200 px-3 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Sair</button>
+                    </footer>
+                </div>
             </section>
             <form id="profileForm" class="mt-4" hidden>
                 <i class="fa-solid fa-circle-user text-3xl text-emerald-700" aria-hidden="true"></i>

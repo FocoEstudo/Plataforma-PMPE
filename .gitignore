@@ -1,5 +1,6 @@
 .dev.vars
 .dev.vars.*
+.wrangler/
 service-account*.json
 *-service-account*.json
 firebase-adminsdk-*.json

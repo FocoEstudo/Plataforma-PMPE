@@ -5,8 +5,13 @@ const gateMessage = document.getElementById("sessionGateMessage");
 const gateLoginLink = document.getElementById("sessionGateLoginLink");
 const paymentGate = document.getElementById("paymentGate");
 const paymentGateMessage = document.getElementById("paymentGateMessage");
-const paymentCheckoutButton = document.getElementById("paymentCheckoutButton");
-const checkPaymentAccessButton = document.getElementById("checkPaymentAccessButton");
+const paymentRequestStatus = document.getElementById("paymentRequestStatus");
+const paymentRequestHeading = document.getElementById("paymentRequestHeading");
+const paymentRequestDetail = document.getElementById("paymentRequestDetail");
+const paymentSupportLink = document.getElementById("paymentSupportLink");
+const pixKey = document.getElementById("pixKey");
+const copyPixKeyButton = document.getElementById("copyPixKeyButton");
+const pixCopyMessage = document.getElementById("pixCopyMessage");
 const profileForm = document.getElementById("profileForm");
 const profileNameInput = document.getElementById("profileName");
 const studyModeInput = document.getElementById("studyMode");
@@ -15,7 +20,6 @@ const studyEndTimeInput = document.getElementById("studyEndTime");
 const profileSaveButton = document.getElementById("profileSaveButton");
 const profileCancelButton = document.getElementById("profileCancelButton");
 const PROFILE_READ_TIMEOUT_MS = 15000;
-const PAYMENT_API_URL = "https://lama-gentil-b7cd.workers.dev";
 const DEFAULT_STUDY_PREFERENCES = {
     mode: "hard",
     days: [0, 1, 2, 3, 4, 5, 6],
@@ -38,7 +42,9 @@ let setDoc;
 let deleteField;
 let serverTimestamp;
 let onSnapshot;
+let runTransaction;
 let stopAccessListener;
+let stopRequestListener;
 let isLoadingGrantedProfile = false;
 
 const normalizeStudyPreferences = preferences => {
@@ -108,25 +114,56 @@ const showPaymentGate = () => {
     gateLoading.hidden = true;
     profileForm.hidden = true;
     paymentGate.hidden = false;
-    paymentCheckoutButton.hidden = !PAYMENT_API_URL;
-    const paymentStatus = new URLSearchParams(window.location.search).get("payment");
-    if (paymentStatus === "success") {
-        paymentGateMessage.textContent = "Pagamento concluído no checkout. Estamos aguardando a confirmação final para liberar seu acesso.";
-        paymentGateMessage.classList.remove("text-red-700");
-    } else if (paymentStatus === "pending") {
-        paymentGateMessage.textContent = "O pagamento está pendente no Mercado Pago. O acesso será liberado quando ele for aprovado.";
-        paymentGateMessage.classList.remove("text-red-700");
-    } else if (paymentStatus === "failure") {
-        paymentGateMessage.textContent = "O pagamento não foi concluído. Você pode tentar novamente pelo checkout.";
-        paymentGateMessage.classList.add("text-red-700");
-    } else if (PAYMENT_API_URL) {
-        paymentGateMessage.textContent = "";
-        paymentGateMessage.classList.remove("text-red-700");
+    paymentGateMessage.textContent = "";
+    paymentGateMessage.classList.remove("text-red-700");
+    paymentRequestStatus.dataset.state = "loading";
+    paymentRequestHeading.textContent = "Preparando sua solicitação";
+    paymentRequestDetail.textContent = "Vinculando esta etapa à sua conta segura...";
+    paymentRequestStatus.querySelector(".payment-gate-status-icon").innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>';
+    document.body.dataset.sessionState = "checking";
+};
+
+const setPaymentRequestStatus = (state, heading, detail) => {
+    paymentRequestStatus.dataset.state = state;
+    paymentRequestHeading.textContent = heading;
+    paymentRequestDetail.textContent = detail;
+    const icon = state === "pending"
+        ? "fa-clock"
+        : state === "rejected" || state === "error"
+            ? "fa-circle-exclamation"
+            : "fa-spinner fa-spin";
+    paymentRequestStatus.querySelector(".payment-gate-status-icon").innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i>`;
+};
+
+const showPaymentRequestStatus = status => {
+    paymentGateMessage.textContent = "";
+    paymentGateMessage.classList.remove("text-red-700");
+    paymentSupportLink.hidden = status !== "rejected";
+    if (status === "pending") {
+        setPaymentRequestStatus(
+            "pending",
+            "Aguardando conferência do Pix",
+            "Sua solicitação está vinculada a esta conta. Após a confirmação no extrato, o acesso será liberado automaticamente aqui."
+        );
+    } else if (status === "rejected") {
+        setPaymentRequestStatus(
+            "rejected",
+            "Não foi possível confirmar o pagamento",
+            "Se você já fez o Pix, fale com o suporte informando o email desta conta para verificarmos."
+        );
     } else {
-        paymentGateMessage.textContent = "O checkout ainda não foi configurado. Fale com o responsável pela plataforma.";
+        setPaymentRequestStatus(
+            "error",
+            "Não foi possível registrar sua solicitação",
+            "Confira sua conexão e recarregue a página. Se o problema continuar, entre em contato com o suporte."
+        );
+        paymentGateMessage.textContent = status?.code === "permission-denied"
+            ? "O Firebase recusou o registro. Confira se as regras publicadas incluem a coleção accessRequests."
+            : status?.code === "profile/timeout" || status?.code === "unavailable"
+                ? "O Firestore não respondeu. Confira sua conexão e tente recarregar a página."
+                : "Não foi possível salvar sua solicitação no Firebase. Tente recarregar a página.";
         paymentGateMessage.classList.add("text-red-700");
     }
-    document.body.dataset.sessionState = "checking";
 };
 
 const showGrantedProfile = async user => {
@@ -134,9 +171,11 @@ const showGrantedProfile = async user => {
     isLoadingGrantedProfile = true;
     stopAccessListener?.();
     stopAccessListener = undefined;
+    stopRequestListener?.();
+    stopRequestListener = undefined;
     paymentGate.hidden = true;
     gateLoading.hidden = false;
-    gateLoadingMessage.textContent = "Pagamento confirmed. Carregando seu perfil...";
+    gateLoadingMessage.textContent = "Pagamento confirmado. Carregando seu perfil...";
     try {
         await showProfileForUser(user);
     } finally {
@@ -144,64 +183,13 @@ const showGrantedProfile = async user => {
     }
 };
 
-paymentCheckoutButton.addEventListener("click", async () => {
-    if (!PAYMENT_API_URL) {
-        paymentGateMessage.textContent = "O checkout ainda não foi configurado. Fale com o responsável pela plataforma.";
-        paymentGateMessage.classList.add("text-red-700");
-        return;
-    }
-
-    paymentCheckoutButton.disabled = true;
-    paymentCheckoutButton.textContent = "Preparando checkout...";
-    paymentGateMessage.textContent = "";
+copyPixKeyButton.addEventListener("click", async () => {
     try {
-        const idToken = await currentUser.getIdToken();
-        const response = await fetch(`${PAYMENT_API_URL.replace(/\/+$/, "")}/checkout`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${idToken}`,
-                "Content-Type": "application/json"
-            },
-            body: "{}"
-        });
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.error || "Não foi possível iniciar o checkout.");
-        }
-        const checkoutUrl = new URL(result.checkoutUrl);
-        if (checkoutUrl.protocol !== "https:"
-            || (checkoutUrl.hostname !== "mercadopago.com.br" && !checkoutUrl.hostname.endsWith(".mercadopago.com.br"))) {
-            throw new Error("O endereço seguro do checkout não é válido.");
-        }
-        window.location.assign(checkoutUrl.href);
+        await navigator.clipboard.writeText(pixKey.textContent.trim());
+        pixCopyMessage.textContent = "Chave Pix copiada.";
     } catch (error) {
-        console.error("Não foi possível iniciar o checkout do Mercado Pago.", error);
-        paymentGateMessage.textContent = error.message || "Não foi possível iniciar o checkout. Tente novamente.";
-        paymentGateMessage.classList.add("text-red-700");
-    } finally {
-        paymentCheckoutButton.disabled = false;
-        paymentCheckoutButton.textContent = "Ir para o checkout seguro";
-    }
-});
-
-checkPaymentAccessButton.addEventListener("click", async () => {
-    checkPaymentAccessButton.disabled = true;
-    checkPaymentAccessButton.textContent = "Verificando...";
-    try {
-        const accessSnapshot = await withTimeout(getDoc(doc(db, "access", currentUser.uid)), PROFILE_READ_TIMEOUT_MS);
-        if (accessSnapshot.data()?.active === true) {
-            await showGrantedProfile(currentUser);
-        } else {
-            paymentGateMessage.textContent = "O Mercado Pago ainda não confirmou o pagamento. Aguarde alguns instantes e tente novamente.";
-            paymentGateMessage.classList.remove("text-red-700");
-        }
-    } catch (error) {
-        console.error("Não foi possível verificar a liberação do acesso.", error);
-        paymentGateMessage.textContent = firebaseErrorMessage(error);
-        paymentGateMessage.classList.add("text-red-700");
-    } finally {
-        checkPaymentAccessButton.disabled = false;
-        checkPaymentAccessButton.textContent = "Verificar meu acesso";
+        console.error("Não foi possível copiar a chave Pix.", error);
+        pixCopyMessage.textContent = "Não foi possível copiar automaticamente. Selecione e copie a chave exibida.";
     }
 });
 
@@ -381,7 +369,7 @@ try {
     auth = firebaseModule.auth;
     db = firebaseModule.db;
     ({ onAuthStateChanged, signOut, updateProfile } = authModule);
-    ({ doc, getDoc, setDoc, deleteField, serverTimestamp, onSnapshot } = firestoreModule);
+    ({ doc, getDoc, setDoc, deleteField, serverTimestamp, onSnapshot, runTransaction } = firestoreModule);
 
     onAuthStateChanged(auth, async user => {
         if (!user) {
@@ -403,6 +391,32 @@ try {
                 return;
             }
             showPaymentGate();
+            stopRequestListener?.();
+            stopRequestListener = onSnapshot(doc(db, "accessRequests", user.uid), snapshot => {
+                if (snapshot.exists()) {
+                    showPaymentRequestStatus(snapshot.data()?.status);
+                }
+            }, error => {
+                console.error("Não foi possível acompanhar a solicitação de acesso.", error);
+                showPaymentRequestStatus(error);
+            });
+            try {
+                const requestReference = doc(db, "accessRequests", user.uid);
+                const requestStatus = await withTimeout(runTransaction(db, async transaction => {
+                    const requestSnapshot = await transaction.get(requestReference);
+                    if (requestSnapshot.exists()) return requestSnapshot.data()?.status;
+                    transaction.set(requestReference, {
+                        email: user.email || "",
+                        status: "pending",
+                        requestedAt: serverTimestamp()
+                    });
+                    return "pending";
+                }), PROFILE_READ_TIMEOUT_MS);
+                showPaymentRequestStatus(requestStatus);
+            } catch (error) {
+                console.error("Não foi possível registrar automaticamente a solicitação de acesso.", error);
+                showPaymentRequestStatus(error);
+            }
             stopAccessListener?.();
             stopAccessListener = onSnapshot(doc(db, "access", user.uid), snapshot => {
                 if (snapshot.data()?.active === true) {

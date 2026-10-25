@@ -1,4 +1,4 @@
-name = "pmpe-payments"
+name = "gentle-mud-b7cd"
 main = "backend/worker.mjs"
 compatibility_date = "2025-01-01"
 workers_dev = true

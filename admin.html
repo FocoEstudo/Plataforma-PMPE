@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#105737">
+    <title>Administração | Operação PMPE</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Inter, Arial, sans-serif;
+            color: #173b2c;
+            background: #f3f8f4;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            background: radial-gradient(ellipse at top left, rgba(154, 205, 166, .35), transparent 42rem), #f3f8f4;
+        }
+
+        main { width: min(100%, 52rem); margin: 2rem auto; }
+        header, .panel, .request-card { background: #fff; border: 1px solid #d7e7dc; border-radius: 1rem; }
+        header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem; }
+        h1 { margin: 0; font-size: clamp(1.3rem, 4vw, 1.8rem); }
+        h2 { margin: 0; font-size: 1.15rem; }
+        p { line-height: 1.55; }
+        .eyebrow { margin: 0 0 .35rem; color: #176b45; font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+        .panel { margin-top: 1rem; padding: 1.25rem; }
+        .muted { color: #617267; }
+        .status { min-height: 1.5rem; margin: .6rem 0 0; color: #176b45; }
+        .status[data-error="true"] { color: #b42318; }
+        .request-list { display: grid; gap: .75rem; margin-top: 1rem; }
+        .request-card { padding: 1rem; }
+        .request-card p { margin: .35rem 0; overflow-wrap: anywhere; }
+        .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .9rem; }
+        button, .link-button {
+            min-height: 2.7rem;
+            padding: .65rem .9rem;
+            border: 1px solid #bfd2c4;
+            border-radius: .6rem;
+            background: #fff;
+            color: #105737;
+            font: inherit;
+            font-weight: 750;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .primary { border-color: #176b45; background: #176b45; color: #fff; }
+        .danger { border-color: #f0c5c1; color: #a52c22; }
+        button:disabled { cursor: wait; opacity: .65; }
+        [hidden] { display: none !important; }
+
+        @media (max-width: 540px) {
+            body { padding: .6rem; }
+            main { margin: .5rem auto; }
+            header { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <div>
+                <p class="eyebrow">Operação PMPE</p>
+                <h1>Solicitações de acesso</h1>
+            </div>
+            <button id="signOutButton" type="button" hidden>Sair da conta</button>
+        </header>
+
+        <section class="panel" aria-labelledby="adminStatusHeading">
+            <h2 id="adminStatusHeading">Área administrativa</h2>
+            <p id="adminStatus" class="status" role="status" aria-live="polite">Verificando sua conta...</p>
+            <a id="loginLink" class="link-button primary" href="login.html?next=admin" hidden>Entrar como administrador</a>
+            <div id="verificationActions" class="actions" hidden>
+                <button id="sendVerificationButton" class="primary" type="button">Enviar email de verificação</button>
+                <button id="refreshVerificationButton" type="button">Já verifiquei — atualizar</button>
+            </div>
+        </section>
+
+        <section id="requestsPanel" class="panel" aria-labelledby="requestsHeading" hidden>
+            <h2 id="requestsHeading">Aguardando conferência</h2>
+            <p class="muted">A fila pode incluir pessoas que ainda não pagaram, pois a solicitação é aberta ao acessar esta tela. Confira no extrato se o Pix de R$ 99,90 caiu antes de aprovar. A aprovação libera o acesso na conta indicada.</p>
+            <div id="requestList" class="request-list"></div>
+        </section>
+    </main>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
