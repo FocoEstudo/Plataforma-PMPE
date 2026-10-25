@@ -8,7 +8,6 @@ const paymentGateMessage = document.getElementById("paymentGateMessage");
 const paymentRequestStatus = document.getElementById("paymentRequestStatus");
 const paymentRequestHeading = document.getElementById("paymentRequestHeading");
 const paymentRequestDetail = document.getElementById("paymentRequestDetail");
-const paymentSupportLink = document.getElementById("paymentSupportLink");
 const pixKey = document.getElementById("pixKey");
 const copyPixKeyButton = document.getElementById("copyPixKeyButton");
 const pixCopyMessage = document.getElementById("pixCopyMessage");
@@ -117,8 +116,8 @@ const showPaymentGate = () => {
     paymentGateMessage.textContent = "";
     paymentGateMessage.classList.remove("text-red-700");
     paymentRequestStatus.dataset.state = "loading";
-    paymentRequestHeading.textContent = "Preparando sua solicitação";
-    paymentRequestDetail.textContent = "Vinculando esta etapa à sua conta segura...";
+    paymentRequestHeading.textContent = "Preparando sua área de estudos";
+    paymentRequestDetail.textContent = "Sua experiência será vinculada a esta conta.";
     paymentRequestStatus.querySelector(".payment-gate-status-icon").innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>';
     document.body.dataset.sessionState = "checking";
 };
@@ -138,31 +137,24 @@ const setPaymentRequestStatus = (state, heading, detail) => {
 const showPaymentRequestStatus = status => {
     paymentGateMessage.textContent = "";
     paymentGateMessage.classList.remove("text-red-700");
-    paymentSupportLink.hidden = status !== "rejected";
     if (status === "pending") {
         setPaymentRequestStatus(
             "pending",
-            "Aguardando conferência do Pix",
-            "Sua solicitação está vinculada a esta conta. Após a confirmação no extrato, o acesso será liberado automaticamente aqui."
+            "Sua área está sendo preparada",
+            "Conclua as etapas acima. O status da sua conta será atualizado nesta tela."
         );
     } else if (status === "rejected") {
         setPaymentRequestStatus(
             "rejected",
-            "Não foi possível confirmar o pagamento",
-            "Se você já fez o Pix, fale com o suporte informando o email desta conta para verificarmos."
+            "Não foi possível atualizar sua conta",
+            "Se acredita que houve um engano, tente novamente mais tarde."
         );
     } else {
         setPaymentRequestStatus(
             "error",
-            "Não foi possível registrar sua solicitação",
-            "Confira sua conexão e recarregue a página. Se o problema continuar, entre em contato com o suporte."
+            "Não foi possível carregar sua área",
+            "Confira sua conexão e recarregue a página."
         );
-        paymentGateMessage.textContent = status?.code === "permission-denied"
-            ? "O Firebase recusou o registro. Confira se as regras publicadas incluem a coleção accessRequests."
-            : status?.code === "profile/timeout" || status?.code === "unavailable"
-                ? "O Firestore não respondeu. Confira sua conexão e tente recarregar a página."
-                : "Não foi possível salvar sua solicitação no Firebase. Tente recarregar a página.";
-        paymentGateMessage.classList.add("text-red-700");
     }
 };
 

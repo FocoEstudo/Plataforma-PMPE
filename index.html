@@ -1403,7 +1403,7 @@
                     <header class="payment-gate-intro">
                         <p class="text-xs font-extrabold uppercase tracking-[.18em] text-emerald-100">Acesso à plataforma</p>
                         <h2 class="mt-2 text-2xl font-extrabold">Sua preparação começa aqui</h2>
-                        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-50">Finalize o Pix abaixo. A solicitação de acesso é registrada automaticamente nesta conta; você não precisa enviar comprovante nem confirmar o pagamento por botão.</p>
+                        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-50">Dê o primeiro passo para começar sua preparação. Escolha uma das opções de pagamento abaixo e confira os dados antes de concluir.</p>
                     </header>
                     <div class="payment-gate-column text-center">
                         <p class="text-xs font-extrabold uppercase tracking-[.14em] text-gray-500">Pix • pagamento único</p>
@@ -1413,14 +1413,14 @@
                         <p class="mt-3 text-xs text-gray-500">Se estiver no mesmo aparelho, use a chave Pix ao lado.</p>
                     </div>
                     <div class="payment-gate-column">
-                        <h3 class="text-lg font-extrabold">Como liberar seu acesso</h3>
+                        <h3 class="text-lg font-extrabold">Pagamento seguro</h3>
                         <ol class="payment-gate-steps">
-                            <li><span class="payment-gate-step-number">1</span><span>Faça o Pix de <strong>R$ 99,90</strong> pelo QR Code ou pela chave abaixo.</span></li>
-                            <li><span class="payment-gate-step-number">2</span><span>Confira o valor e os dados do recebedor no aplicativo do seu banco antes de confirmar.</span></li>
-                            <li><span class="payment-gate-step-number">3</span><span>Aguarde a conferência. O acesso será liberado automaticamente nesta conta após a confirmação.</span></li>
+                            <li><span class="payment-gate-step-number">1</span><span>Abra o aplicativo do seu banco e escolha Pix.</span></li>
+                            <li><span class="payment-gate-step-number">2</span><span>Escaneie o QR Code ou copie a chave Pix.</span></li>
+                            <li><span class="payment-gate-step-number">3</span><span>Confira o valor e os dados do recebedor antes de concluir.</span></li>
                         </ol>
                         <div class="mt-5">
-                            <p class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Chave Pix aleatória</p>
+                            <p class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Chave Pix</p>
                             <button id="copyPixKeyButton" type="button" class="payment-gate-copy" aria-label="Copiar chave Pix aleatória">
                                 <code id="pixKey" class="text-sm">623c3509-96f1-49f7-8794-41ed9de36bf6</code>
                                 <span class="shrink-0 text-sm font-extrabold text-emerald-800"><i class="fa-regular fa-copy mr-1" aria-hidden="true"></i>Copiar</span>
@@ -1430,15 +1430,14 @@
                         <div id="paymentRequestStatus" class="payment-gate-status" data-state="loading" role="status" aria-live="polite">
                             <span class="payment-gate-status-icon"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i></span>
                             <div>
-                                <p id="paymentRequestHeading" class="font-extrabold">Preparando sua solicitação</p>
-                                <p id="paymentRequestDetail" class="mt-1 text-sm leading-relaxed text-gray-600">Vinculando esta etapa à sua conta segura...</p>
-                                <a id="paymentSupportLink" class="mt-2 inline-block text-sm font-bold text-emerald-800 underline" href="mailto:ianitalocorp@gmail.com?subject=Ajuda%20com%20liberacao%20de%20acesso" hidden>Falar com o suporte</a>
+                                <p id="paymentRequestHeading" class="font-extrabold">Preparando sua área de estudos</p>
+                                <p id="paymentRequestDetail" class="mt-1 text-sm leading-relaxed text-gray-600">Sua experiência será vinculada a esta conta.</p>
                             </div>
                         </div>
                         <p id="paymentGateMessage" class="mt-3 text-sm text-red-700" role="alert" aria-live="polite"></p>
                     </div>
                     <footer class="payment-gate-footer">
-                        <span class="text-xs leading-relaxed text-gray-500">A análise é manual e pode levar algum tempo após o pagamento.</span>
+                        <span class="text-xs leading-relaxed text-gray-500">Sua experiência de estudos estará vinculada a esta conta.</span>
                         <button type="button" onclick="signOutCurrentUser()" class="shrink-0 rounded-lg border border-emerald-200 px-3 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Sair</button>
                     </footer>
                 </div>
