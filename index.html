@@ -514,9 +514,15 @@
 
         .payment-gate-intro {
             grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(14rem, .8fr);
+            align-items: center;
+            gap: 1.5rem;
             padding: 1.6rem 1.8rem;
             color: #fff;
-            background: linear-gradient(120deg, #0d4a2e, #176b45);
+            background:
+                radial-gradient(ellipse at top right, rgba(71, 147, 96, .24), transparent 48%),
+                linear-gradient(120deg, #0b3020, #145b39);
         }
 
         .payment-gate-intro p,
@@ -524,8 +530,92 @@
             color: inherit;
         }
 
+        .payment-gate-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            color: #c6edd0 !important;
+            font-size: .68rem !important;
+            font-weight: 900;
+            letter-spacing: .16em;
+        }
+
+        .payment-gate-title {
+            max-width: 16ch;
+            font-size: clamp(1.7rem, 3vw, 2.35rem);
+            line-height: 1.02;
+            letter-spacing: -.035em;
+        }
+
+        .payment-gate-lead {
+            max-width: 34rem;
+            color: #e1eee4 !important;
+            font-size: .91rem !important;
+            line-height: 1.65;
+        }
+
+        .payment-gate-offer {
+            position: relative;
+            display: flex;
+            min-height: 10.5rem;
+            align-items: flex-end;
+            overflow: hidden;
+            padding: 1rem 1.15rem;
+            isolation: isolate;
+            background: #183b29;
+            border: 1px solid rgba(255, 255, 255, .25);
+            border-radius: .9rem;
+        }
+
+        .payment-gate-offer::after {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(5, 25, 15, .94), rgba(5, 25, 15, .06) 100%);
+            content: "";
+        }
+
+        .payment-gate-offer img {
+            position: absolute;
+            z-index: -2;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 42%;
+        }
+
+        .payment-gate-offer-label {
+            display: block;
+            color: #dcf4e1;
+            font-size: .65rem;
+            font-weight: 850;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        .payment-gate-offer-price {
+            display: block;
+            margin-top: .1rem;
+            color: #fff;
+            font-size: clamp(1.8rem, 3vw, 2.35rem);
+            font-weight: 950;
+            letter-spacing: -.055em;
+            line-height: 1.1;
+        }
+
+        .payment-gate-offer-note {
+            margin: .2rem 0 0 !important;
+            color: #e1eee4 !important;
+            font-size: .75rem !important;
+        }
+
         .payment-gate-column {
             padding: 1.5rem 1.8rem;
+        }
+
+        .payment-gate-column:first-of-type {
+            background: linear-gradient(180deg, #fbfdfb, #fff);
         }
 
         .payment-gate-price {
@@ -535,6 +625,40 @@
             font-weight: 900;
             letter-spacing: -.04em;
         }
+
+        .payment-gate-benefits {
+            display: grid;
+            gap: .65rem;
+            margin: .85rem 0 1.25rem;
+            padding: 0;
+            list-style: none;
+        }
+
+        .payment-gate-benefits li {
+            display: flex;
+            align-items: flex-start;
+            gap: .6rem;
+            color: #405c49;
+            font-size: .8rem;
+            line-height: 1.45;
+        }
+
+        .payment-gate-benefits i {
+            margin-top: .1rem;
+            color: #176b45;
+        }
+
+        .payment-gate-secure-note {
+            display: flex;
+            align-items: flex-start;
+            gap: .55rem;
+            margin-top: .85rem;
+            color: #718176;
+            font-size: .7rem;
+            line-height: 1.5;
+        }
+
+        .payment-gate-secure-note i { margin-top: .1rem; color: #176b45; }
 
         .payment-gate-copy {
             display: flex;
@@ -641,7 +765,6 @@
                 grid-template-columns: minmax(0, 1fr);
             }
 
-            .payment-gate-intro,
             .payment-gate-footer {
                 grid-column: auto;
             }
@@ -651,6 +774,30 @@
             .payment-gate-footer {
                 padding-right: 1.1rem;
                 padding-left: 1.1rem;
+            }
+
+            .payment-gate-intro {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 1rem;
+                padding-top: 1.35rem;
+                padding-bottom: 1.25rem;
+            }
+
+            .payment-gate-offer {
+                min-height: 8.5rem;
+            }
+
+            .payment-gate-column {
+                padding-top: 1.25rem;
+                padding-bottom: 1.25rem;
+            }
+
+            .payment-gate-column:first-of-type {
+                border-bottom: 1px solid #e2eee5;
+            }
+
+            .payment-gate-footer {
+                flex-wrap: wrap;
             }
         }
 
@@ -1401,25 +1548,41 @@
             <section id="paymentGate" hidden>
                 <div class="payment-gate-card">
                     <header class="payment-gate-intro">
-                        <p class="text-xs font-extrabold uppercase tracking-[.18em] text-emerald-100">Acesso à plataforma</p>
-                        <h2 class="mt-2 text-2xl font-extrabold">Sua preparação começa aqui</h2>
-                        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-emerald-50">Dê o primeiro passo para começar sua preparação. Escolha uma das opções de pagamento abaixo e confira os dados antes de concluir.</p>
+                        <div>
+                            <p class="payment-gate-kicker"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> OPERAÇÃO PMPE · ACESSO DO ESTUDANTE</p>
+                            <h2 class="payment-gate-title mt-2 font-extrabold">Seu próximo passo começa com estratégia.</h2>
+                            <p class="payment-gate-lead mt-2">Uma plataforma de preparação PMPE para organizar sua rotina, praticar e acompanhar sua evolução — sem mensalidade.</p>
+                        </div>
+                        <div class="payment-gate-offer" aria-label="Acesso à plataforma por R$ 99,90 em pagamento único">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5P0BSF4Hcf3SFa3XBXmKrt8p5GZf5Mx-Hgu-SiyMIEQ&amp;s=10" alt="" loading="eager" decoding="async">
+                            <div>
+                                <span class="payment-gate-offer-label">Pagamento único</span>
+                                <strong class="payment-gate-offer-price">R$ 99,90</strong>
+                                <p class="payment-gate-offer-note">Sem cobrança mensal recorrente.</p>
+                            </div>
+                        </div>
                     </header>
                     <div class="payment-gate-column text-center">
-                        <p class="text-xs font-extrabold uppercase tracking-[.14em] text-gray-500">Pix • pagamento único</p>
-                        <p class="payment-gate-price mt-1">R$ 99,90</p>
-                        <p class="mt-1 text-sm text-gray-600">Aponte a câmera do banco para o QR Code</p>
-                        <img src="pix-qr.png" alt="QR Code Pix para pagamento de R$ 99,90" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
-                        <p class="mt-3 text-xs text-gray-500">Se estiver no mesmo aparelho, use a chave Pix ao lado.</p>
+                        <p class="text-xs font-extrabold uppercase tracking-[.14em] text-emerald-800">Prepare-se com mais direção</p>
+                        <h3 class="mt-2 text-lg font-extrabold">Tudo para avançar missão após missão</h3>
+                        <ul class="payment-gate-benefits text-left">
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Plano de estudos ajustado ao seu ritmo.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Conteúdos organizados em seis frentes.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Simulados, questões e oficina de redação.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Revisão, caderno de erros e acompanhamento do progresso.</span></li>
+                        </ul>
+                        <p class="payment-gate-secure-note text-left"><i class="fa-solid fa-lock" aria-hidden="true"></i><span>O pagamento é feito diretamente pelo Pix. Confira o valor e os dados do recebedor no aplicativo do seu banco antes de concluir.</span></p>
                     </div>
                     <div class="payment-gate-column">
-                        <h3 class="text-lg font-extrabold">Pagamento seguro</h3>
+                        <h3 class="text-lg font-extrabold">Escolha como pagar com Pix</h3>
+                        <p class="mt-1 text-sm text-gray-600">Aponte a câmera do banco para o QR Code ou copie a chave.</p>
+                        <img src="pix-qr.png" alt="QR Code Pix para pagamento de R$ 99,90" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
                         <ol class="payment-gate-steps">
-                            <li><span class="payment-gate-step-number">1</span><span>Abra o aplicativo do seu banco e escolha Pix.</span></li>
-                            <li><span class="payment-gate-step-number">2</span><span>Escaneie o QR Code ou copie a chave Pix.</span></li>
-                            <li><span class="payment-gate-step-number">3</span><span>Confira o valor e os dados do recebedor antes de concluir.</span></li>
+                            <li><span class="payment-gate-step-number">1</span><span>Abra o Pix no aplicativo do seu banco.</span></li>
+                            <li><span class="payment-gate-step-number">2</span><span>Leia o QR Code ou copie a chave abaixo.</span></li>
+                            <li><span class="payment-gate-step-number">3</span><span>Confira os dados e o valor de R$ 99,90 antes de pagar.</span></li>
                         </ol>
-                        <div class="mt-5">
+                        <div class="mt-4">
                             <p class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Chave Pix</p>
                             <button id="copyPixKeyButton" type="button" class="payment-gate-copy" aria-label="Copiar chave Pix aleatória">
                                 <code id="pixKey" class="text-sm">623c3509-96f1-49f7-8794-41ed9de36bf6</code>

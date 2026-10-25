@@ -25,6 +25,7 @@ let serverTimestamp;
 let where;
 let writeBatch;
 let isPreparingRequests = false;
+let requestRenderVersion = 0;
 
 const setStatus = (message, isError = false) => {
     adminStatus.textContent = message;
@@ -46,7 +47,15 @@ const formatRequestDate = timestamp => {
     return timestamp.toDate().toLocaleString("pt-BR");
 };
 
-const buildRequestCard = requestSnapshot => {
+const appendIdentityDetail = (details, label, value) => {
+    const term = document.createElement("dt");
+    term.textContent = label;
+    const description = document.createElement("dd");
+    description.textContent = value;
+    details.append(term, description);
+};
+
+const buildRequestCard = (requestSnapshot, profile, profileError) => {
     const requestData = requestSnapshot.data();
     const card = document.createElement("article");
     card.className = "request-card";
@@ -56,6 +65,24 @@ const buildRequestCard = requestSnapshot => {
     const requestedAt = document.createElement("p");
     requestedAt.className = "muted";
     requestedAt.textContent = `Solicitado em ${formatRequestDate(requestData.requestedAt)}`;
+    const identityHeading = document.createElement("h3");
+    identityHeading.className = "identity-heading";
+    identityHeading.textContent = "Dados informados no cadastro";
+    const identityDetails = document.createElement("dl");
+    identityDetails.className = "identity-details";
+    if (profileError) {
+        appendIdentityDetail(identityDetails, "Cadastro", "Não foi possível carregar os dados. Atualize a página.");
+    } else if (profile) {
+        appendIdentityDetail(identityDetails, "Nome completo", profile.displayName || "Não informado");
+        appendIdentityDetail(identityDetails, "Idade", Number.isInteger(profile.age) ? `${profile.age} anos` : "Não informada");
+        appendIdentityDetail(identityDetails, "Sexo", profile.sex || "Não informado");
+        appendIdentityDetail(identityDetails, "Naturalidade", [profile.birthplaceCity, profile.birthplaceState].filter(Boolean).join(" / ") || "Não informada");
+    } else {
+        appendIdentityDetail(identityDetails, "Cadastro", "Dados de identificação não disponíveis.");
+    }
+    const identityNote = document.createElement("p");
+    identityNote.className = "identity-note";
+    identityNote.textContent = "Dados autodeclarados; não substituem conferência de identidade.";
     const status = document.createElement("p");
     status.className = "status";
     status.setAttribute("role", "status");
@@ -76,7 +103,7 @@ const buildRequestCard = requestSnapshot => {
     rejectButton.addEventListener("click", () => reviewRequest(requestSnapshot.id, "rejected", card));
 
     actions.append(approveButton, rejectButton);
-    card.append(email, requestedAt, status, actions);
+    card.append(email, identityHeading, identityDetails, identityNote, requestedAt, status, actions);
     return card;
 };
 
@@ -85,8 +112,9 @@ const startRequestsListener = () => {
     requestsPanel.hidden = false;
     const pendingRequests = query(collection(db, "accessRequests"), where("status", "==", "pending"));
     activeRequestsListener = onSnapshot(pendingRequests, snapshot => {
-        requestList.replaceChildren();
+        const renderVersion = ++requestRenderVersion;
         if (snapshot.empty) {
+            requestList.replaceChildren();
             const emptyMessage = document.createElement("p");
             emptyMessage.className = "muted";
             emptyMessage.textContent = "Não há solicitações pendentes.";
@@ -98,7 +126,22 @@ const startRequestsListener = () => {
             const rightTime = right.data().requestedAt?.toMillis?.() || 0;
             return rightTime - leftTime;
         });
-        requests.forEach(requestSnapshot => requestList.append(buildRequestCard(requestSnapshot)));
+        void Promise.all(requests.map(async requestSnapshot => {
+            try {
+                const profileSnapshot = await getDoc(doc(db, "users", requestSnapshot.id));
+                return buildRequestCard(
+                    requestSnapshot,
+                    profileSnapshot.exists() ? profileSnapshot.data() : null,
+                    false
+                );
+            } catch (error) {
+                console.error(`Não foi possível carregar os dados cadastrais da solicitação ${requestSnapshot.id}.`, error);
+                return buildRequestCard(requestSnapshot, null, true);
+            }
+        })).then(cards => {
+            if (renderVersion !== requestRenderVersion) return;
+            requestList.replaceChildren(...cards);
+        });
     }, error => {
         console.error("Não foi possível carregar as solicitações de acesso.", error);
         setStatus("Falha ao carregar a lista. Confira as regras do Firestore e tente novamente.", true);

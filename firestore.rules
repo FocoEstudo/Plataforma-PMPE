@@ -61,21 +61,46 @@ service cloud.firestore {
         && preferences.endTime > preferences.startTime;
     }
 
+    function hasValidIdentity(profile) {
+      let identityFields = ['age', 'birthplaceCity', 'birthplaceState', 'identityConsentAt'];
+      return (!profile.keys().hasAny(identityFields) && !profile.keys().hasAny(['sex']))
+        || (
+          profile.keys().hasAll(identityFields)
+          && profile.age is int
+          && profile.age >= 14
+          && profile.age <= 100
+          && profile.birthplaceCity is string
+          && profile.birthplaceCity.size() >= 2
+          && profile.birthplaceCity.size() <= 80
+          && profile.birthplaceState in [
+            'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+            'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+            'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+          ]
+          && profile.identityConsentAt is timestamp
+          && (!profile.keys().hasAny(['sex']) || profile.sex in ['feminino', 'masculino'])
+        );
+    }
+
     function hasValidProfile() {
       let profile = request.resource.data;
       return profile.keys().hasAll(['displayName', 'email', 'updatedAt'])
-        && profile.keys().hasOnly(['displayName', 'email', 'studyPreferences', 'updatedAt'])
+        && profile.keys().hasOnly([
+          'displayName', 'email', 'studyPreferences', 'updatedAt',
+          'age', 'sex', 'birthplaceCity', 'birthplaceState', 'identityConsentAt'
+        ])
         && profile.displayName is string
         && profile.displayName.size() > 0
         && profile.displayName.size() <= 80
         && profile.email is string
         && profile.email == request.auth.token.email
+        && hasValidIdentity(profile)
         && (!profile.keys().hasAny(['studyPreferences']) || hasValidStudyPreferences(profile))
         && profile.updatedAt == request.time;
     }
 
     match /users/{userId} {
-      allow get: if isOwner(userId);
+      allow get: if isOwner(userId) || isAdmin();
       allow list: if false;
       allow create, update: if isOwner(userId) && hasValidProfile();
       allow delete: if false;
