@@ -36,6 +36,11 @@
         .request-list { display: grid; gap: .75rem; margin-top: 1rem; }
         .request-card { padding: 1rem; }
         .request-card p { margin: .35rem 0; overflow-wrap: anywhere; }
+        .identity-heading { margin: .9rem 0 .45rem; font-size: .9rem; }
+        .identity-details { display: grid; grid-template-columns: minmax(7rem, .35fr) minmax(0, 1fr); gap: .35rem .8rem; margin: 0; padding: .8rem; background: #f5f9f6; border: 1px solid #e2eee5; border-radius: .65rem; font-size: .84rem; }
+        .identity-details dt { color: #617267; font-weight: 700; }
+        .identity-details dd { margin: 0; overflow-wrap: anywhere; }
+        .identity-note { color: #617267; font-size: .75rem; }
         .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .9rem; }
         button, .link-button {
             min-height: 2.7rem;
@@ -75,6 +80,7 @@
             <h2 id="adminStatusHeading">Área administrativa</h2>
             <p id="adminStatus" class="status" role="status" aria-live="polite">Verificando sua conta...</p>
             <a id="loginLink" class="link-button primary" href="login.html?next=admin" hidden>Entrar como administrador</a>
+            <button id="switchAccountButton" class="primary" type="button" hidden>Trocar de conta e entrar como administrador</button>
             <div id="verificationActions" class="actions" hidden>
                 <button id="sendVerificationButton" class="primary" type="button">Enviar email de verificação</button>
                 <button id="refreshVerificationButton" type="button">Já verifiquei — atualizar</button>
@@ -83,7 +89,7 @@
 
         <section id="requestsPanel" class="panel" aria-labelledby="requestsHeading" hidden>
             <h2 id="requestsHeading">Aguardando conferência</h2>
-            <p class="muted">A fila pode incluir pessoas que ainda não pagaram, pois a solicitação é aberta ao acessar esta tela. Confira no extrato se o Pix de R$ 99,90 caiu antes de aprovar. A aprovação libera o acesso na conta indicada.</p>
+            <p class="muted">A fila pode incluir pessoas que ainda não pagaram, pois a solicitação é aberta ao acessar esta tela. Confira no extrato se o Pix de R$ 99,90 caiu antes de aprovar. Os dados cadastrais são autodeclarados e não comprovam a identidade do pagador.</p>
             <div id="requestList" class="request-list"></div>
         </section>
     </main>

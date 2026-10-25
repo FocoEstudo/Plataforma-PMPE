@@ -7,11 +7,13 @@ The application currently uses direct Pix plus a Firebase-protected manual appro
 ## Active Pix approval flow
 
 1. Publish `index.html`, `session-guard.js`, `pix-qr.png`, `admin.html`, `admin.js`, and `login.html` to the website.
-2. Publish `firestore.rules` in the Firestore Rules tab of the `estudos-pmpe` project. The rules authorize the verified Firebase account `ianitalocorp@gmail.com` to review requests and grant access; clients cannot grant access to themselves.
-3. Confirm that `ianitalocorp@gmail.com` is a Firebase Authentication account and verify its email address. Open `/admin.html` on the published site, sign in with that account, and review each request only after confirming the Pix in the bank statement.
+2. Publish `firestore.rules` in the Firestore Rules tab of the `estudos-pmpe` project. The rules authorize the verified Firebase account `ianitalocorp@gmail.com` to review requests and grant access; clients cannot grant access to themselves. The authorized admin can read a requesting user's profile, but cannot list all user profiles.
+3. Confirm that `ianitalocorp@gmail.com` is a Firebase Authentication account and verify its email address. The owner should use the saved private administrator address and sign in with that account. If the browser is signed in as a student, use **Trocar de conta e entrar como administrador** on the admin page first. Review each request only after confirming the Pix in the bank statement.
 4. When a student reaches the payment gate, a pending request is automatically linked to their signed-in account. The student pays using the QR code or Pix key and does not need to click a payment-confirmation button or send a receipt. The admin queue can therefore include accounts that have not paid yet: confirm the matching deposit in the bank statement before approving. Approval updates the access document for that UID; an online student is admitted immediately, otherwise they can sign in later.
 
 The Pix QR and key do not provide an automatic bank confirmation. Approval must be based on the recipient's bank statement, not a screenshot sent by the payer.
+
+New registrations request full name, age, optional sex, and birthplace (city and state/country). Students must consent to this use; these entries are self-declared and do not prove identity. The administration queue displays these details alongside the account email. Do not request identity documents or CPF through the public registration form.
 
 ## Worker Mercado Pago opcional (inativo)
 

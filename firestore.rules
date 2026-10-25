@@ -72,11 +72,9 @@ service cloud.firestore {
           && profile.birthplaceCity is string
           && profile.birthplaceCity.size() >= 2
           && profile.birthplaceCity.size() <= 80
-          && profile.birthplaceState in [
-            'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
-            'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
-            'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
-          ]
+          && profile.birthplaceState is string
+          && profile.birthplaceState.size() >= 2
+          && profile.birthplaceState.size() <= 80
           && profile.identityConsentAt is timestamp
           && (!profile.keys().hasAny(['sex']) || profile.sex in ['feminino', 'masculino'])
         );

@@ -827,6 +827,209 @@
             outline: 3px solid rgba(23, 107, 69, .18);
         }
 
+        .session-gate-card:has(#profileForm:not([hidden])) {
+            width: min(100%, 46rem);
+            padding: 0;
+            overflow: hidden auto;
+            border-color: #c9ddce;
+            border-radius: 1.15rem;
+        }
+
+        .profile-form-header {
+            position: relative;
+            overflow: hidden;
+            padding: 1.6rem 1.8rem;
+            color: #fff;
+            background:
+                linear-gradient(90deg, rgba(8, 35, 22, .97), rgba(17, 78, 47, .93)),
+                url("https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png") center 42% / cover,
+                #123b29;
+        }
+
+        .profile-form-header::after {
+            position: absolute;
+            top: -5rem;
+            right: 1.5rem;
+            width: 13rem;
+            height: 13rem;
+            border: 1px solid rgba(255, 255, 255, .13);
+            border-radius: 50%;
+            box-shadow: 0 0 0 1.4rem rgba(255, 255, 255, .025), 0 0 0 2.8rem rgba(255, 255, 255, .02);
+            content: "";
+            pointer-events: none;
+        }
+
+        .profile-form-kicker {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            margin: 0;
+            color: #bde7c7;
+            font-size: .68rem;
+            font-weight: 900;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .profile-form-header h2 {
+            position: relative;
+            z-index: 1;
+            margin: .55rem 0 .35rem;
+            color: #fff;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(1.65rem, 4vw, 2.2rem);
+            letter-spacing: .015em;
+            line-height: 1.05;
+            text-transform: uppercase;
+        }
+
+        .profile-form-header > p:last-child {
+            position: relative;
+            z-index: 1;
+            max-width: 38rem;
+            margin: 0;
+            color: #e0eee3;
+            font-size: .87rem;
+            line-height: 1.6;
+        }
+
+        .profile-form-content { padding: .25rem 1.8rem 1.6rem; }
+
+        .profile-section {
+            margin: 1rem 0 0;
+            padding: 1rem;
+            background: #fbfdfb;
+            border: 1px solid #dfeae1;
+            border-radius: .85rem;
+        }
+
+        .profile-section legend {
+            padding: 0 .45rem;
+            color: #145b39;
+            font-size: .87rem;
+            font-weight: 900;
+        }
+
+        .profile-section-hint {
+            margin: .1rem 0 .75rem;
+            color: #718176;
+            font-size: .74rem;
+            line-height: 1.5;
+        }
+
+        .profile-mode-select {
+            display: block;
+            width: 100%;
+            min-height: 2.9rem;
+            padding: .65rem .75rem;
+            color: #173b2c;
+            background: #fff;
+            border: 1px solid #bfd2c4;
+            border-radius: .6rem;
+            font: inherit;
+            font-size: .86rem;
+        }
+
+        .profile-day-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .55rem;
+        }
+
+        .profile-day-option {
+            position: relative;
+            display: flex;
+            min-height: 2.8rem;
+            align-items: center;
+            gap: .55rem;
+            padding: .6rem .7rem;
+            color: #3f5948;
+            background: #fff;
+            border: 1px solid #d7e5d9;
+            border-radius: .65rem;
+            font-size: .8rem;
+            font-weight: 750;
+            cursor: pointer;
+            transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+        }
+
+        .profile-day-option:hover { transform: translateY(-1px); border-color: #8bb99a; }
+
+        .profile-day-option:has(input:checked) {
+            color: #fff;
+            background: #145b39;
+            border-color: #145b39;
+            box-shadow: 0 4px 12px rgba(20, 91, 57, .16);
+        }
+
+        .profile-day-option input {
+            width: 1rem;
+            height: 1rem;
+            flex: 0 0 auto;
+            margin: 0;
+            accent-color: #23804d;
+        }
+
+        .profile-day-option:has(input:checked) input { accent-color: #a9e2b8; }
+
+        .profile-day-option:focus-within {
+            outline: 3px solid rgba(23, 107, 69, .24);
+            outline-offset: 2px;
+        }
+
+        .profile-time-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: end;
+            gap: .75rem;
+        }
+
+        .profile-time-field {
+            display: block;
+            color: #3f5948;
+            font-size: .75rem;
+            font-weight: 850;
+        }
+
+        .profile-time-field span { display: flex; align-items: center; gap: .4rem; }
+        .profile-time-field i { color: #176b45; }
+
+        .profile-time-field input {
+            display: block;
+            width: 100%;
+            min-height: 3.1rem;
+            margin-top: .4rem;
+            padding: .55rem .7rem;
+            color: #173b2c;
+            background: #fff;
+            border: 1px solid #bfd2c4;
+            border-radius: .65rem;
+            font: inherit;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .profile-time-arrow { padding-bottom: .9rem; color: #9aab9e; }
+        .profile-validation-message { min-height: 1.1rem; margin: .55rem 0 0; font-size: .75rem; }
+
+        .profile-form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .7rem;
+            margin-top: 1.15rem;
+        }
+
+        .profile-form-actions button { min-height: 2.9rem; }
+
+        @media (max-width: 540px) {
+            .session-gate-card:has(#profileForm:not([hidden])) { max-height: calc(100vh - 1rem); }
+            .profile-form-header { padding: 1.35rem 1.15rem; }
+            .profile-form-content { padding: .1rem 1.05rem 1.1rem; }
+            .profile-section { padding: .8rem; }
+            .profile-day-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .profile-time-grid { gap: .45rem; }
+        }
+
         #profileSaveButton:disabled {
             cursor: wait;
             opacity: .7;
@@ -1605,53 +1808,63 @@
                     </footer>
                 </div>
             </section>
-            <form id="profileForm" class="mt-4" hidden>
-                <i class="fa-solid fa-circle-user text-3xl text-emerald-700" aria-hidden="true"></i>
-                <h2 id="profileSetupHeading" class="mt-3 text-2xl font-extrabold">Complete seu perfil</h2>
-                <p id="profileSetupDescription" class="mt-2 text-sm leading-relaxed text-gray-600">Informe seu nome para personalizar seu painel.</p>
-                <label class="profile-field" for="profileName">
-                    Nome
-                    <input id="profileName" name="displayName" type="text" autocomplete="name" maxlength="80" required>
-                </label>
-                <fieldset class="profile-field">
-                    <legend>Ritmo de estudo</legend>
-                    <label class="mt-2 block text-sm font-medium" for="studyMode">Modo</label>
-                    <select id="studyMode" name="studyMode" class="mt-1 w-full rounded-lg border border-emerald-200 bg-white p-2 text-emerald-950">
-                        <option value="light">Leve — cada missão dividida em 3 etapas</option>
-                        <option value="moderate">Moderado — cada missão dividida em 2 etapas</option>
-                        <option value="hard">Hard — missão completa, como atualmente</option>
-                    </select>
-                    <p id="studyModeHint" class="mt-2 text-xs leading-relaxed text-gray-500">Leve e Moderado dividem a missão em etapas menores. Hard mantém a missão completa. Nenhuma matéria ou tarefa é removida.</p>
-                </fieldset>
-                <fieldset class="profile-field">
-                    <legend>Dias em que pretende estudar</legend>
-                    <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="1"> Segunda</label>
-                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="2"> Terça</label>
-                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="3"> Quarta</label>
-                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="4"> Quinta</label>
-                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="5"> Sexta</label>
-                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="6"> Sábado</label>
-                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="0"> Domingo</label>
+            <form id="profileForm" hidden>
+                <header class="profile-form-header">
+                    <p class="profile-form-kicker"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> CENTRAL DE PLANEJAMENTO</p>
+                    <h2 id="profileSetupHeading">Complete seu perfil</h2>
+                    <p id="profileSetupDescription">Defina seu ritmo operacional e monte um cronograma de estudos que funcione para sua rotina.</p>
+                </header>
+                <div class="profile-form-content">
+                    <label class="profile-field" for="profileName">
+                        Nome
+                        <input id="profileName" name="displayName" type="text" autocomplete="name" maxlength="80" required>
+                    </label>
+                    <fieldset class="profile-section">
+                        <legend><i class="fa-solid fa-gauge-high mr-1" aria-hidden="true"></i> Ritmo da missão</legend>
+                        <p class="profile-section-hint">Escolha como as tarefas diárias serão distribuídas.</p>
+                        <label class="sr-only" for="studyMode">Modo</label>
+                        <select id="studyMode" name="studyMode" class="profile-mode-select">
+                            <option value="light">Leve — cada missão dividida em 3 etapas</option>
+                            <option value="moderate">Moderado — cada missão dividida em 2 etapas</option>
+                            <option value="hard">Hard — missão completa, como atualmente</option>
+                        </select>
+                        <p id="studyModeHint" class="profile-section-hint mt-2 mb-0">Leve e Moderado dividem a missão em etapas menores. Hard mantém a missão completa. Nenhuma matéria ou tarefa é removida.</p>
+                    </fieldset>
+                    <fieldset class="profile-section">
+                        <legend><i class="fa-solid fa-calendar-days mr-1" aria-hidden="true"></i> Dias de operação</legend>
+                        <p class="profile-section-hint">Selecione os dias em que você pretende cumprir suas missões.</p>
+                        <div class="profile-day-grid">
+                            <label class="profile-day-option"><input type="checkbox" name="studyDays" value="1"><span>Segunda</span></label>
+                            <label class="profile-day-option"><input type="checkbox" name="studyDays" value="2"><span>Terça</span></label>
+                            <label class="profile-day-option"><input type="checkbox" name="studyDays" value="3"><span>Quarta</span></label>
+                            <label class="profile-day-option"><input type="checkbox" name="studyDays" value="4"><span>Quinta</span></label>
+                            <label class="profile-day-option"><input type="checkbox" name="studyDays" value="5"><span>Sexta</span></label>
+                            <label class="profile-day-option"><input type="checkbox" name="studyDays" value="6"><span>Sábado</span></label>
+                            <label class="profile-day-option"><input type="checkbox" name="studyDays" value="0"><span>Domingo</span></label>
+                        </div>
+                        <p id="studyDaysError" class="profile-validation-message text-red-700" role="status" aria-live="polite"></p>
+                    </fieldset>
+                    <fieldset class="profile-section">
+                        <legend><i class="fa-solid fa-clock mr-1" aria-hidden="true"></i> Janela de estudos</legend>
+                        <p class="profile-section-hint">Informe o período em que você costuma ter disponibilidade.</p>
+                        <div class="profile-time-grid">
+                            <label class="profile-time-field" for="studyStartTime">
+                                <span><i class="fa-solid fa-sun" aria-hidden="true"></i> Início</span>
+                                <input id="studyStartTime" name="studyStartTime" type="time" value="05:00" required>
+                            </label>
+                            <i class="profile-time-arrow fa-solid fa-arrow-right" aria-hidden="true"></i>
+                            <label class="profile-time-field" for="studyEndTime">
+                                <span><i class="fa-solid fa-moon" aria-hidden="true"></i> Fim</span>
+                                <input id="studyEndTime" name="studyEndTime" type="time" value="23:00" required>
+                            </label>
+                        </div>
+                        <p id="studyTimeError" class="profile-validation-message text-red-700" role="status" aria-live="polite"></p>
+                    </fieldset>
+                    <p id="sessionGateMessage" class="mt-3 text-sm text-red-700" role="status" aria-live="polite"></p>
+                    <div class="profile-form-actions">
+                        <button id="profileSaveButton" type="submit" class="rounded-lg bg-emerald-800 px-5 py-3 font-bold text-white hover:bg-emerald-900"><i class="fa-solid fa-flag-checkered mr-2" aria-hidden="true"></i>Salvar plano</button>
+                        <button id="profileCancelButton" type="button" class="rounded-lg border border-emerald-200 px-5 py-3 font-bold text-emerald-800 hover:bg-emerald-50" hidden>Cancelar</button>
                     </div>
-                    <p id="studyDaysError" class="mt-2 text-xs text-red-700" role="status" aria-live="polite"></p>
-                </fieldset>
-                <fieldset class="profile-field">
-                    <legend>Horário disponível para estudar</legend>
-                    <div class="mt-2 grid grid-cols-2 gap-3">
-                        <label class="text-sm font-medium" for="studyStartTime">Início
-                            <input id="studyStartTime" name="studyStartTime" type="time" value="05:00" required>
-                        </label>
-                        <label class="text-sm font-medium" for="studyEndTime">Fim
-                            <input id="studyEndTime" name="studyEndTime" type="time" value="23:00" required>
-                        </label>
-                    </div>
-                    <p id="studyTimeError" class="mt-2 text-xs text-red-700" role="status" aria-live="polite"></p>
-                </fieldset>
-                <p id="sessionGateMessage" class="mt-3 text-sm text-red-700" role="status" aria-live="polite"></p>
-                <div class="mt-5 flex flex-wrap gap-3">
-                    <button id="profileSaveButton" type="submit" class="rounded-lg bg-emerald-800 px-5 py-3 font-bold text-white hover:bg-emerald-900">Salvar perfil</button>
-                    <button id="profileCancelButton" type="button" class="rounded-lg border border-emerald-200 px-5 py-3 font-bold text-emerald-800 hover:bg-emerald-50" hidden>Cancelar</button>
                 </div>
             </form>
         </div>

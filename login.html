@@ -959,15 +959,15 @@
                                 <p class="identity-fields-note">Informe seus dados autodeclarados para identificação da conta. Não envie CPF nem documentos por este formulário.</p>
                                 <label class="field" for="registrationFirstName">
                                     <span>Nome</span>
-                                    <input id="registrationFirstName" name="given-name" type="text" autocomplete="given-name" maxlength="39" required>
+                                    <input id="registrationFirstName" name="given-name" type="text" autocomplete="given-name" maxlength="39" data-register-required>
                                 </label>
                                 <label class="field" for="registrationLastName">
                                     <span>Sobrenome</span>
-                                    <input id="registrationLastName" name="family-name" type="text" autocomplete="family-name" maxlength="39" required>
+                                    <input id="registrationLastName" name="family-name" type="text" autocomplete="family-name" maxlength="39" data-register-required>
                                 </label>
                                 <label class="field" for="registrationAge">
                                     <span>Idade</span>
-                                    <input id="registrationAge" name="age" type="number" inputmode="numeric" min="14" max="100" step="1" required>
+                                    <input id="registrationAge" name="age" type="number" inputmode="numeric" min="14" max="100" step="1" data-register-required>
                                 </label>
                                 <label class="field" for="registrationSex">
                                     <span>Sexo <small>(opcional)</small></span>
@@ -979,25 +979,14 @@
                                 </label>
                                 <label class="field" for="birthplaceCity">
                                     <span>Naturalidade · cidade</span>
-                                    <input id="birthplaceCity" name="address-level2" type="text" autocomplete="address-level2" maxlength="80" required>
+                                    <input id="birthplaceCity" name="address-level2" type="text" autocomplete="address-level2" maxlength="80" data-register-required>
                                 </label>
                                 <label class="field" for="birthplaceState">
-                                    <span>UF</span>
-                                    <select id="birthplaceState" name="address-level1" autocomplete="address-level1" required>
-                                        <option value="">Selecione</option>
-                                        <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
-                                        <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
-                                        <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
-                                        <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
-                                        <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
-                                        <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
-                                        <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
-                                        <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
-                                        <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
-                                    </select>
+                                    <span>Estado/UF ou país</span>
+                                    <input id="birthplaceState" name="address-level1" type="text" autocomplete="address-level1" maxlength="80" data-register-required>
                                 </label>
                                 <label class="identity-consent" for="identityConsent">
-                                    <input id="identityConsent" name="identityConsent" type="checkbox" required>
+                                    <input id="identityConsent" name="identityConsent" type="checkbox" data-register-required>
                                     <span>Autorizo o uso desses dados para identificação e atendimento da minha conta. Entendo que os dados serão exibidos à equipe administrativa e são autodeclarados, sem comprovar minha identidade.</span>
                                 </label>
                             </fieldset>
@@ -1298,7 +1287,7 @@
             confirmationField.hidden = !registering;
             confirmationInput.required = registering;
             identityFields.hidden = !registering;
-            identityFields.querySelectorAll("[required]").forEach(input => {
+            identityFields.querySelectorAll("[data-register-required]").forEach(input => {
                 input.required = registering;
             });
             passwordInput.autocomplete = registering ? "new-password" : "current-password";
@@ -1310,6 +1299,7 @@
 
         loginModeButton.addEventListener("click", () => setMode("login"));
         registerModeButton.addEventListener("click", () => setMode("register"));
+        setMode("login");
         document.querySelectorAll("[data-create-account]").forEach(button => {
             button.addEventListener("click", () => {
                 setMode("register");
@@ -1363,6 +1353,18 @@
                 confirmationInput.focus();
                 return;
             }
+            if (mode === "register") {
+                [
+                    ["registrationFirstName", 1, "Informe seu nome."],
+                    ["registrationLastName", 1, "Informe seu sobrenome."],
+                    ["birthplaceCity", 2, "Informe sua cidade de naturalidade."],
+                    ["birthplaceState", 2, "Informe seu estado, UF ou país de naturalidade."]
+                ].forEach(([id, minimumLength, message]) => {
+                    const input = document.getElementById(id);
+                    input.setCustomValidity(input.value.trim().length >= minimumLength ? "" : message);
+                });
+                if (!form.reportValidity()) return;
+            }
             const identity = mode === "register" ? {
                 displayName: `${document.getElementById("registrationFirstName").value.trim()} ${document.getElementById("registrationLastName").value.trim()}`.replace(/\s+/g, " "),
                 age: Number(document.getElementById("registrationAge").value),
@@ -1371,6 +1373,11 @@
                 birthplaceState: document.getElementById("birthplaceState").value,
                 consent: document.getElementById("identityConsent").checked
             } : null;
+            if (mode === "register" && !identity.consent) {
+                setStatus("Confirme o uso dos dados para concluir o cadastro.");
+                document.getElementById("identityConsent").focus();
+                return;
+            }
 
             submitButton.disabled = true;
             submitButton.textContent = mode === "register" ? "Criando conta..." : "Entrando...";
@@ -1398,7 +1405,7 @@
             } catch (error) {
                 console.error("Falha ao autenticar usuário pelo Firebase.", error);
                 setStatus(mode === "register" && pendingCreatedUser
-                    ? "A conta foi criada, mas não foi possível salvar os dados. Confira os campos e tente novamente para concluir o cadastro."
+                    ? "A conta foi criada, mas não foi possível salvar os dados. Tente novamente; se o erro persistir, confirme se as regras atualizadas do Firestore foram publicadas."
                     : authErrorMessage(error));
             } finally {
                 registrationInProgress = false;

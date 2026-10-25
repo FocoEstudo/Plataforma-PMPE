@@ -1,6 +1,7 @@
 const ADMIN_EMAIL = "ianitalocorp@gmail.com";
 const adminStatus = document.getElementById("adminStatus");
 const loginLink = document.getElementById("loginLink");
+const switchAccountButton = document.getElementById("switchAccountButton");
 const verificationActions = document.getElementById("verificationActions");
 const sendVerificationButton = document.getElementById("sendVerificationButton");
 const refreshVerificationButton = document.getElementById("refreshVerificationButton");
@@ -27,18 +28,33 @@ let writeBatch;
 let isPreparingRequests = false;
 let requestRenderVersion = 0;
 
+const stopRequestsListener = () => {
+    activeRequestsListener?.();
+    activeRequestsListener = undefined;
+    requestRenderVersion += 1;
+    requestsPanel.hidden = true;
+    requestList.replaceChildren();
+};
+
 const setStatus = (message, isError = false) => {
     adminStatus.textContent = message;
     adminStatus.dataset.error = String(isError);
 };
 
 const showLoginPrompt = () => {
+    stopRequestsListener();
+    signOutButton.hidden = true;
+    verificationActions.hidden = true;
     setStatus("Entre com a conta administrativa autorizada para acessar esta página.");
     loginLink.hidden = false;
+    switchAccountButton.hidden = true;
 };
 
 const showVerificationPrompt = () => {
+    stopRequestsListener();
     setStatus("Esta conta precisa confirmar o email antes de administrar liberações.", true);
+    loginLink.hidden = true;
+    switchAccountButton.hidden = true;
     verificationActions.hidden = false;
 };
 
@@ -189,9 +205,15 @@ const activateAdminPage = async user => {
     }
     signOutButton.hidden = false;
     if ((user.email || "").toLowerCase() !== ADMIN_EMAIL) {
-        setStatus("Esta conta não está autorizada a administrar acessos.", true);
+        stopRequestsListener();
+        verificationActions.hidden = true;
+        setStatus("Esta sessão está conectada a uma conta sem autorização administrativa. Troque de conta para continuar.", true);
+        loginLink.hidden = true;
+        switchAccountButton.hidden = false;
         return;
     }
+    loginLink.hidden = true;
+    switchAccountButton.hidden = true;
     currentAdmin = user;
     if (!user.emailVerified) {
         showVerificationPrompt();
@@ -248,6 +270,18 @@ signOutButton.addEventListener("click", async () => {
         console.error("Não foi possível encerrar a sessão administrativa.", error);
         setStatus("Não foi possível sair da conta. Tente novamente.", true);
         signOutButton.disabled = false;
+    }
+});
+
+switchAccountButton.addEventListener("click", async () => {
+    switchAccountButton.disabled = true;
+    try {
+        await signOut(auth);
+        window.location.replace(new URL("login.html?next=admin", window.location.href));
+    } catch (error) {
+        console.error("Não foi possível trocar a conta antes de acessar a administração.", error);
+        setStatus("Não foi possível sair da conta atual. Tente novamente.", true);
+        switchAccountButton.disabled = false;
     }
 });
 

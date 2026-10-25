@@ -347,7 +347,7 @@ profileForm.addEventListener("submit", async event => {
     } finally {
         if (isProfileModalOpen) {
             profileSaveButton.disabled = false;
-            if (profileSaveButton.textContent === "Salvando...") profileSaveButton.textContent = "Salvar perfil";
+            if (profileSaveButton.textContent === "Salvando...") profileSaveButton.textContent = "Salvar plano";
         }
     }
 });
