@@ -15,6 +15,7 @@
     <script src="aprofundamento-constitucional.js"></script>
     <script src="aprofundamento-dh-1.js"></script>
     <script src="aprofundamento-dh-2.js"></script>
+    <script type="module" src="session-guard.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -351,6 +352,60 @@
             border-radius: .75rem;
         }
 
+        .dashboard-shortcut-content {
+            align-items: flex-start;
+            min-height: 0;
+        }
+
+        .dashboard-shortcut-content > i {
+            margin-top: .1rem;
+        }
+
+        .dashboard-progress {
+            width: 100%;
+            padding: 0 1rem 1rem;
+        }
+
+        .dashboard-progress-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+            margin-bottom: .45rem;
+            color: #52665a;
+            font-size: .75rem;
+            font-weight: 700;
+        }
+
+        .dashboard-progress-value {
+            color: #176b45;
+            font-size: .875rem;
+            font-weight: 900;
+        }
+
+        .dashboard-progress-track {
+            display: block;
+            height: .65rem;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #c8ddce;
+            border-radius: 9999px;
+        }
+
+        .dashboard-progress-fill {
+            display: block;
+            width: 0;
+            height: 100%;
+            background-color: #21804c !important;
+            border-radius: inherit;
+            transition: width .35s ease;
+        }
+
+        .dashboard-shortcut:focus-visible .dashboard-progress-track {
+            outline: 2px solid #176b45;
+            outline-offset: 2px;
+        }
+
         .dashboard-shortcut strong,
         .dashboard-shortcut small {
             display: block;
@@ -359,6 +414,424 @@
         .dashboard-shortcut small {
             margin-top: .2rem;
             color: #6b7d71;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .header-popover-wrap {
+            position: relative;
+        }
+
+        .header-action-button {
+            display: grid;
+            width: 2.75rem;
+            height: 2.75rem;
+            place-items: center;
+            color: #fff;
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .32);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background .18s ease, transform .18s ease;
+        }
+
+        .header-action-button:hover,
+        .header-action-button:focus-visible {
+            background: rgba(255, 255, 255, .24);
+            outline: 2px solid #d8f3df;
+            outline-offset: 2px;
+        }
+
+        .header-action-button i {
+            font-size: 1.1rem;
+        }
+
+        .header-popover {
+            position: absolute;
+            top: calc(100% + .75rem);
+            right: 0;
+            z-index: 70;
+            width: min(20rem, calc(100vw - 2rem));
+            padding: 1rem;
+            color: #173b2c;
+            background: #fff;
+            border: 1px solid #c8ddce;
+            border-radius: .9rem;
+            box-shadow: 0 16px 36px rgba(13, 45, 31, .2);
+        }
+
+        .header-popover[hidden] {
+            display: none !important;
+        }
+
+        body:not([data-session-state="ready"]) > :not(#sessionGate) {
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        #sessionGate {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: grid;
+            padding: 1.5rem;
+            place-items: center;
+            color: #173b2c;
+            background: #f3f8f4;
+        }
+
+        #sessionGate[hidden] {
+            display: none !important;
+        }
+
+        .session-gate-card {
+            width: min(100%, 32rem);
+            max-height: calc(100vh - 3rem);
+            overflow-y: auto;
+            padding: 2rem;
+            text-align: left;
+            background: #fff;
+            border: 1px solid #d7e7dc;
+            border-radius: 1rem;
+            box-shadow: 0 16px 40px rgba(20, 75, 48, .12);
+        }
+
+        .profile-field {
+            display: block;
+            margin-top: 1rem;
+            color: #294b37;
+            font-size: .9rem;
+            font-weight: 700;
+        }
+
+        .profile-field input {
+            display: block;
+            width: 100%;
+            min-height: 2.8rem;
+            margin-top: .4rem;
+            padding: .65rem .75rem;
+            color: #173b2c;
+            background: #fff;
+            border: 1px solid #bfd2c4;
+            border-radius: .6rem;
+            font: inherit;
+        }
+
+        .profile-field input:focus-visible {
+            border-color: #176b45;
+            outline: 3px solid rgba(23, 107, 69, .18);
+        }
+
+        #profileSaveButton:disabled {
+            cursor: wait;
+            opacity: .7;
+        }
+
+        .header-popover a {
+            color: #176b45;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        #syllabusSection .grid > article {
+            min-width: 0;
+            align-self: start;
+            overflow: visible;
+        }
+
+        #syllabusSection details > ul {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .official-sources-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #173b2c;
+            background: linear-gradient(135deg, #edf7f0, #fff);
+            border: 1px solid #9bc7a8;
+            border-left: 5px solid #176b45;
+            border-radius: .85rem;
+            box-shadow: 0 8px 20px rgba(20, 75, 48, .08);
+        }
+
+        .official-sources-icon {
+            display: grid;
+            width: 2.75rem;
+            height: 2.75rem;
+            flex: none;
+            place-items: center;
+            color: #176b45;
+            background: #d9efdf;
+            border-radius: .75rem;
+        }
+
+        .official-sources-card p {
+            margin-top: .25rem;
+            color: #52665a;
+            font-size: .875rem;
+            line-height: 1.5;
+        }
+
+        .official-sources-button {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            min-height: 2.5rem;
+            flex: none;
+            padding: .6rem .85rem;
+            color: #fff;
+            font-size: .8rem;
+            font-weight: 800;
+            background: #176b45;
+            border-radius: .6rem;
+            transition: background .18s ease, transform .18s ease;
+        }
+
+        .official-sources-button:hover,
+        .official-sources-button:focus-visible {
+            background: #105737;
+            outline: 2px solid #85c99a;
+            outline-offset: 2px;
+        }
+
+        .syllabus-essay-card {
+            padding: 1.1rem 1.25rem;
+            background: linear-gradient(135deg, #edf7f0, #fff);
+            border: 1px solid #9bc7a8;
+            border-left: 5px solid #176b45;
+            border-radius: .85rem;
+            box-shadow: 0 8px 20px rgba(20, 75, 48, .08);
+        }
+
+        .syllabus-essay-card summary {
+            min-height: 2.5rem;
+            align-items: center;
+            color: #173b2c;
+            font-size: 1.05rem;
+        }
+
+        .syllabus-essay-card summary i {
+            color: #176b45;
+        }
+
+        .syllabus-essay-card ul {
+            color: #405448;
+        }
+
+        #studySupport[data-support-view="simulations"].dashboard-panel {
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr)) !important;
+            grid-auto-flow: row;
+            grid-auto-rows: min-content;
+            align-items: start;
+            gap: 1.25rem !important;
+        }
+
+        #studySupport[data-support-view="simulations"].dashboard-panel > * {
+            min-width: 0;
+            width: 100%;
+            align-self: start;
+        }
+
+        #simulatorPanel,
+        #studyGamePanel,
+        #progressPanel {
+            position: relative;
+            min-width: 0;
+        }
+
+        #studyGamePanel #studyGameBoard {
+            min-height: 1.8rem;
+        }
+
+        #studySupport[data-support-view="support"].dashboard-panel {
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr)) !important;
+            grid-auto-flow: row;
+            grid-auto-rows: min-content;
+            align-items: start;
+            gap: 1.25rem !important;
+        }
+
+        #studySupport[data-support-view="support"].dashboard-panel > * {
+            min-width: 0;
+            width: 100%;
+            align-self: start;
+        }
+
+        #resourcesPanel {
+            grid-column: 1 / -1;
+        }
+
+        .resource-link {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: .85rem;
+            padding: .85rem 1rem;
+            color: #244b35 !important;
+            white-space: normal;
+            background: #f4f8f5;
+            border: 1px solid #d7e7dc;
+            border-radius: .7rem;
+            transition: background .18s ease, border-color .18s ease, transform .18s ease;
+        }
+
+        .resource-link:hover,
+        .resource-link:focus-visible {
+            color: #105737 !important;
+            background: #e8f4eb;
+            border-color: #9bc7a8;
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        .resource-link i {
+            display: grid;
+            width: 2.4rem;
+            height: 2.4rem;
+            flex: none;
+            place-items: center;
+            color: #176b45;
+            background: #d9efdf;
+            border-radius: .65rem;
+        }
+
+        .resource-link span,
+        .resource-link strong,
+        .resource-link small {
+            display: block;
+            min-width: 0;
+        }
+
+        .resource-link small {
+            margin-top: .2rem;
+            color: #6b7d71;
+            font-size: .75rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .official-sources-card {
+                flex-direction: column;
+            }
+
+            .official-sources-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .mission-task-card {
+            border-left-color: #176b45 !important;
+            transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease;
+        }
+
+        .mission-task-card:hover {
+            border-left-color: #0f5132 !important;
+            box-shadow: 0 12px 28px rgba(20, 75, 48, .13);
+            transform: translateY(-1px);
+        }
+
+        .mission-check {
+            display: inline-flex;
+            border-radius: .55rem;
+        }
+
+        .mission-check input:focus-visible + span {
+            outline: 3px solid #85c99a;
+            outline-offset: 3px;
+        }
+
+        .mission-check input + span {
+            width: 2rem;
+            height: 2rem;
+            color: transparent;
+            background: #f4f8f5;
+            border: 2px solid #9ab5a1;
+            border-radius: .55rem;
+            box-shadow: inset 0 1px 2px rgba(20, 75, 48, .08);
+            transition: color .16s ease, background .16s ease, border-color .16s ease, transform .16s ease;
+        }
+
+        .mission-check input:checked + span {
+            color: #fff;
+            background: #176b45;
+            border-color: #176b45;
+            transform: scale(1.04);
+        }
+
+        .mission-check input + span i {
+            opacity: 0;
+            transition: opacity .16s ease;
+        }
+
+        .mission-check input:checked + span i {
+            color: #fff;
+            opacity: 1;
+        }
+
+        #studyGameBoard button.study-word-cell {
+            color: #173b2c !important;
+            background-color: #edf7f0 !important;
+            border: 1px solid #8db89a !important;
+            font-size: .8rem;
+            line-height: 1;
+        }
+
+        #studyGameBoard button.study-word-cell:hover {
+            background-color: #d6ebdc !important;
+        }
+
+        #studyGameBoard button.study-word-cell.is-found {
+            color: #fff !important;
+            background-color: #176b45 !important;
+            border-color: #105737 !important;
+        }
+
+        #studyGameBoard button.study-word-cell.is-selected {
+            color: #fff !important;
+            background-color: #287b50 !important;
+            outline: 2px solid #105737;
+            outline-offset: 1px;
+        }
+
+        .writing-section-card {
+            display: flex;
+            min-height: 13rem;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.25rem;
+            background: #fff;
+            border: 1px solid #d7e7dc;
+            border-radius: .9rem;
+            box-shadow: 0 8px 24px rgba(20, 75, 48, .06);
+        }
+
+        .writing-section-card > i {
+            display: grid;
+            width: 2.75rem;
+            height: 2.75rem;
+            margin-bottom: .9rem;
+            place-items: center;
+            color: #176b45;
+            background: #edf7f0;
+            border-radius: .75rem;
+        }
+
+        .writing-section-card p {
+            flex: 1;
+        }
+
+        .writing-section-card button {
+            margin-top: 1rem;
         }
 
         #studySupport[data-support-view="simulations"] > :not(#simulatorPanel):not(#studyGamePanel):not(#progressPanel) {
@@ -634,6 +1107,19 @@
             overflow: auto;
         }
 
+        #essayInstructions,
+        #essayExamples,
+        #essayWorkshopHeading {
+            scroll-margin-top: 6rem;
+        }
+
+        @media (max-width: 767px) {
+            .header-actions {
+                justify-content: flex-end;
+                width: 100%;
+            }
+        }
+
         @media (max-width: 640px) {
             .pdf-content {
                 padding: 1.25rem !important;
@@ -750,7 +1236,81 @@
     </style>
 </head>
 
-<body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home">
+<body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home" data-session-state="checking">
+    <div id="sessionGate" role="dialog" aria-modal="true" aria-label="Perfil do estudante">
+        <div class="session-gate-card">
+            <div id="sessionGateLoading" class="text-center">
+                <i class="fa-solid fa-shield-halved text-3xl text-emerald-700" aria-hidden="true"></i>
+                <p id="sessionGateLoadingMessage" class="mt-4">Verificando sua sessão segura...</p>
+                <a id="sessionGateLoginLink" href="login.html" class="mt-4 inline-block font-bold text-emerald-800 underline" hidden>Ir para o login</a>
+            </div>
+            <section id="paymentGate" hidden>
+                <i class="fa-solid fa-lock text-3xl text-emerald-700" aria-hidden="true"></i>
+                <h2 class="mt-3 text-2xl font-extrabold">Libere seu acesso</h2>
+                <p class="mt-2 text-sm leading-relaxed text-gray-600">Faça o pagamento único de <strong>R$ 99,90 via Pix</strong> usando o QR Code ou a chave abaixo. Você pode pagar pelo aplicativo de qualquer banco ou instituição que ofereça Pix.</p>
+                <img src="pix-qr.png" alt="QR Code Pix de R$ 99,90 para Ian Italo Gomes Andrade" class="mx-auto mt-5 w-full max-w-xs rounded-lg border border-emerald-100">
+                <div class="mt-4 rounded-lg bg-emerald-50 p-3 text-left">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-600">Chave Pix aleatória</p>
+                    <code id="pixKey" class="mt-1 block break-all text-sm text-emerald-950">623c3509-96f1-49f7-8794-41ed9de36bf6</code>
+                    <button id="copyPixKeyButton" type="button" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-100">Copiar chave Pix</button>
+                    <p id="pixCopyMessage" class="mt-2 text-xs text-emerald-800" role="status" aria-live="polite"></p>
+                </div>
+                <p id="paymentGateMessage" class="mt-3 text-sm text-red-700" role="status" aria-live="polite"></p>
+                <p class="mt-3 text-xs leading-relaxed text-gray-600">Depois de pagar, aguarde a confirmação manual e informe ao responsável pelo acesso que o pagamento foi feito.</p>
+                <button id="checkPaymentAccessButton" type="button" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Já paguei — verificar liberação</button>
+                <button type="button" onclick="signOutCurrentUser()" class="mt-5 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Sair da conta</button>
+            </section>
+            <form id="profileForm" class="mt-4" hidden>
+                <i class="fa-solid fa-circle-user text-3xl text-emerald-700" aria-hidden="true"></i>
+                <h2 id="profileSetupHeading" class="mt-3 text-2xl font-extrabold">Complete seu perfil</h2>
+                <p id="profileSetupDescription" class="mt-2 text-sm leading-relaxed text-gray-600">Informe seu nome para personalizar seu painel.</p>
+                <label class="profile-field" for="profileName">
+                    Nome
+                    <input id="profileName" name="displayName" type="text" autocomplete="name" maxlength="80" required>
+                </label>
+                <fieldset class="profile-field">
+                    <legend>Ritmo de estudo</legend>
+                    <label class="mt-2 block text-sm font-medium" for="studyMode">Modo</label>
+                    <select id="studyMode" name="studyMode" class="mt-1 w-full rounded-lg border border-emerald-200 bg-white p-2 text-emerald-950">
+                        <option value="light">Leve — cada missão dividida em 3 etapas</option>
+                        <option value="moderate">Moderado — cada missão dividida em 2 etapas</option>
+                        <option value="hard">Hard — missão completa, como atualmente</option>
+                    </select>
+                    <p id="studyModeHint" class="mt-2 text-xs leading-relaxed text-gray-500">Leve e Moderado dividem a missão em etapas menores. Hard mantém a missão completa. Nenhuma matéria ou tarefa é removida.</p>
+                </fieldset>
+                <fieldset class="profile-field">
+                    <legend>Dias em que pretende estudar</legend>
+                    <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="1"> Segunda</label>
+                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="2"> Terça</label>
+                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="3"> Quarta</label>
+                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="4"> Quinta</label>
+                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="5"> Sexta</label>
+                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="6"> Sábado</label>
+                        <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" name="studyDays" value="0"> Domingo</label>
+                    </div>
+                    <p id="studyDaysError" class="mt-2 text-xs text-red-700" role="status" aria-live="polite"></p>
+                </fieldset>
+                <fieldset class="profile-field">
+                    <legend>Horário disponível para estudar</legend>
+                    <div class="mt-2 grid grid-cols-2 gap-3">
+                        <label class="text-sm font-medium" for="studyStartTime">Início
+                            <input id="studyStartTime" name="studyStartTime" type="time" value="05:00" required>
+                        </label>
+                        <label class="text-sm font-medium" for="studyEndTime">Fim
+                            <input id="studyEndTime" name="studyEndTime" type="time" value="23:00" required>
+                        </label>
+                    </div>
+                    <p id="studyTimeError" class="mt-2 text-xs text-red-700" role="status" aria-live="polite"></p>
+                </fieldset>
+                <p id="sessionGateMessage" class="mt-3 text-sm text-red-700" role="status" aria-live="polite"></p>
+                <div class="mt-5 flex flex-wrap gap-3">
+                    <button id="profileSaveButton" type="submit" class="rounded-lg bg-emerald-800 px-5 py-3 font-bold text-white hover:bg-emerald-900">Salvar perfil</button>
+                    <button id="profileCancelButton" type="button" class="rounded-lg border border-emerald-200 px-5 py-3 font-bold text-emerald-800 hover:bg-emerald-50" hidden>Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <aside class="platform-sidebar" aria-label="Menu principal">
         <div class="sidebar-brand">
@@ -808,10 +1368,52 @@
                 </div>
             </div>
 
-            <div class="countdown-panel glass-panel px-6 py-2 rounded-xl text-center border-blue-500/50">
-                <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">A Farda Te Espera (21 Fev 2027)</p>
-                <div id="countdown" class="font-tactical text-2xl text-white tracking-widest">
-                    -- DIAS --:--:--
+            <div class="header-actions">
+                <div class="countdown-panel glass-panel px-6 py-2 rounded-xl text-center border-blue-500/50">
+                    <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">A Farda Te Espera (21 Fev 2027)</p>
+                    <div id="countdown" class="font-tactical text-2xl text-white tracking-widest">
+                        -- DIAS --:--:--
+                    </div>
+                </div>
+                <div class="header-popover-wrap">
+                    <button type="button" class="header-action-button" aria-label="Abrir perfil do estudante"
+                        aria-expanded="false" aria-controls="profilePopover"
+                        onclick="toggleHeaderPopover('profilePopover')">
+                        <i id="profileHeaderFallback" class="fa-solid fa-circle-user" aria-hidden="true"></i>
+                    </button>
+                    <div id="profilePopover" class="header-popover" hidden>
+                        <div class="flex items-center gap-3">
+                            <span id="profilePopoverFallback" class="grid h-12 w-12 flex-none place-items-center rounded-full bg-emerald-100 text-emerald-800">
+                                <i class="fa-solid fa-user text-xl" aria-hidden="true"></i>
+                            </span>
+                            <div>
+                                <strong id="profileDisplayName" class="block">Conta do estudante</strong>
+                                <span id="profileEmail" class="text-sm text-gray-600">Carregando conta...</span>
+                            </div>
+                        </div>
+                        <p id="profileActionStatus" class="mt-2 text-sm text-red-700" role="status" aria-live="polite"></p>
+                        <button type="button" onclick="editStudentProfile()" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">
+                            <i class="fa-solid fa-user-pen mr-2" aria-hidden="true"></i>Editar perfil
+                        </button>
+                        <button type="button" onclick="signOutCurrentUser()" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">
+                            <i class="fa-solid fa-arrow-right-from-bracket mr-2" aria-hidden="true"></i>Sair da conta
+                        </button>
+                    </div>
+                </div>
+                <div class="header-popover-wrap">
+                    <button type="button" class="header-action-button" aria-label="Abrir avisos do concurso PMPE"
+                        aria-expanded="false" aria-controls="contestNotifications"
+                        onclick="toggleHeaderPopover('contestNotifications')">
+                        <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                    </button>
+                    <div id="contestNotifications" class="header-popover" hidden>
+                        <strong class="block">Acompanhamento do concurso PMPE</strong>
+                        <p class="mt-2 text-sm text-gray-600">Este painel ainda não recebe alertas automáticos. Para evitar avisos desatualizados, confira edital, retificações e convocações nas páginas oficiais:</p>
+                        <ul class="mt-3 space-y-2 text-sm">
+                            <li><a href="https://www.institutoaocp.org.br/concurso.jsp?id=611" target="_blank" rel="noopener noreferrer">Instituto AOCP — concurso PMPE</a></li>
+                            <li><a href="https://www.pm.pe.gov.br/" target="_blank" rel="noopener noreferrer">Polícia Militar de Pernambuco</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -823,7 +1425,7 @@
             <div class="dashboard-home-hero glass-panel rounded-2xl">
                 <div class="dashboard-home-copy">
                     <p class="text-xs font-bold tracking-[0.2em] uppercase">Operação PMPE</p>
-                    <h2 class="dashboard-home-title">Soldado Ian de Pernambuco</h2>
+                    <h2 id="dashboardWelcomeTitle" class="dashboard-home-title">Soldado Ian de Pernambuco</h2>
                     <p>Seu espaço de preparação: conteúdos, missões diárias, simulados e redação em um só lugar.</p>
                     <a class="dashboard-home-credit" href="https://penoticias.com.br/blog/pmpe-mobiliza-mais-de-4-mil-policiais-para-garantir-seguranca-de-folioes-e-torcedores-em-pernambuco/"
                         target="_blank" rel="noopener noreferrer">Imagem de fundo: PE Notícias</a>
@@ -833,31 +1435,60 @@
                     alt="Brasão da Polícia Militar de Pernambuco" class="dashboard-home-crest"
                     onerror="this.hidden=true">
             </div>
-            <div class="dashboard-shortcuts" aria-label="Acessos rápidos">
-                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="content">
+            <div class="dashboard-shortcuts" aria-label="Progresso por matéria">
+                <button class="dashboard-shortcut" type="button" data-open-subject-mission="Língua Portuguesa">
                     <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
                         alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
-                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span><strong>Conteúdos</strong><small>Consulte as matérias do edital</small></span></span>
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-spell-check" aria-hidden="true"></i><span><strong>Língua Portuguesa</strong><small>Continue de onde parou nesta matéria</small></span></span>
+                    <span class="dashboard-progress">
+                        <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Língua Portuguesa">0%</span></span>
+                        <span class="dashboard-progress-track" role="progressbar" aria-label="Progresso de Língua Portuguesa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-subject-progress-track="Língua Portuguesa"><span class="dashboard-progress-fill" data-subject-progress-fill="Língua Portuguesa"></span></span>
+                    </span>
                 </button>
-                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="missions">
+                <button class="dashboard-shortcut" type="button" data-open-subject-mission="História de Pernambuco">
                     <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
                         alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
-                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-list-check" aria-hidden="true"></i><span><strong>Missões diárias</strong><small>Continue sua rotina de estudos</small></span></span>
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-landmark" aria-hidden="true"></i><span><strong>História de Pernambuco</strong><small>Continue de onde parou nesta matéria</small></span></span>
+                    <span class="dashboard-progress">
+                        <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="História de Pernambuco">0%</span></span>
+                        <span class="dashboard-progress-track" role="progressbar" aria-label="Progresso de História de Pernambuco" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-subject-progress-track="História de Pernambuco"><span class="dashboard-progress-fill" data-subject-progress-fill="História de Pernambuco"></span></span>
+                    </span>
                 </button>
-                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="simulations">
+                <button class="dashboard-shortcut" type="button" data-open-subject-mission="Raciocínio Lógico Matemático">
                     <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
                         alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
-                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span><strong>Simulados</strong><small>Pratique e acompanhe seu progresso</small></span></span>
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-brain" aria-hidden="true"></i><span><strong>Raciocínio Lógico</strong><small>Continue de onde parou nesta matéria</small></span></span>
+                    <span class="dashboard-progress">
+                        <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Raciocínio Lógico Matemático">0%</span></span>
+                        <span class="dashboard-progress-track" role="progressbar" aria-label="Progresso de Raciocínio Lógico" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-subject-progress-track="Raciocínio Lógico Matemático"><span class="dashboard-progress-fill" data-subject-progress-fill="Raciocínio Lógico Matemático"></span></span>
+                    </span>
                 </button>
-                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="writing">
+                <button class="dashboard-shortcut" type="button" data-open-subject-mission="Informática Básica">
                     <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
                         alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
-                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span><strong>Redação</strong><small>Treine com o mentor de escrita</small></span></span>
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-computer" aria-hidden="true"></i><span><strong>Informática</strong><small>Continue de onde parou nesta matéria</small></span></span>
+                    <span class="dashboard-progress">
+                        <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Informática Básica">0%</span></span>
+                        <span class="dashboard-progress-track" role="progressbar" aria-label="Progresso de Informática" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-subject-progress-track="Informática Básica"><span class="dashboard-progress-fill" data-subject-progress-fill="Informática Básica"></span></span>
+                    </span>
                 </button>
-                <button class="dashboard-shortcut" type="button" data-open-dashboard-view="errors">
+                <button class="dashboard-shortcut" type="button" data-open-subject-mission="Direito Constitucional">
                     <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
                         alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
-                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-book-skull" aria-hidden="true"></i><span><strong>Caderno de erros</strong><small>Retome seus registros salvos</small></span></span>
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><span><strong>Direito Constitucional</strong><small>Continue de onde parou nesta matéria</small></span></span>
+                    <span class="dashboard-progress">
+                        <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Direito Constitucional">0%</span></span>
+                        <span class="dashboard-progress-track" role="progressbar" aria-label="Progresso de Direito Constitucional" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-subject-progress-track="Direito Constitucional"><span class="dashboard-progress-fill" data-subject-progress-fill="Direito Constitucional"></span></span>
+                    </span>
+                </button>
+                <button class="dashboard-shortcut" type="button" data-open-subject-mission="Direitos Humanos e Legislação Extravagante">
+                    <img class="dashboard-shortcut-image" src="https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png"
+                        alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <span class="dashboard-shortcut-content"><i class="fa-solid fa-scale-unbalanced-flip" aria-hidden="true"></i><span><strong>Direitos Humanos e Legislação Extravagante</strong><small>Continue de onde parou nesta matéria</small></span></span>
+                    <span class="dashboard-progress">
+                        <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Direitos Humanos e Legislação Extravagante">0%</span></span>
+                        <span class="dashboard-progress-track" role="progressbar" aria-label="Progresso de Direitos Humanos e Legislação Extravagante" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-subject-progress-track="Direitos Humanos e Legislação Extravagante"><span class="dashboard-progress-fill" data-subject-progress-fill="Direitos Humanos e Legislação Extravagante"></span></span>
+                    </span>
                 </button>
             </div>
         </section>
@@ -877,7 +1508,7 @@
                 <article class="rounded-lg border border-blue-500/30 bg-slate-950/40 p-4">
                     <h3 class="font-tactical text-lg text-blue-300 mb-3">Bloco I · Linguagens e Raízes <span
                             class="text-sm text-gray-400">(20 questões)</span></h3>
-                    <details class="group border-t border-slate-700 py-3">
+                    <details class="group border-t border-slate-700 py-3" open>
                         <summary class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">Língua
                             Portuguesa <span class="text-blue-300">(10 questões) <i
                                     class="fa-solid fa-chevron-down text-xs ml-1 transition-transform group-open:rotate-180"></i></span>
@@ -895,7 +1526,7 @@
                             <li>Redação oficial conforme o Manual de Redação da Presidência da República.</li>
                         </ul>
                     </details>
-                    <details class="group border-t border-slate-700 py-3">
+                    <details class="group border-t border-slate-700 py-3" open>
                         <summary class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
                             História de Pernambuco <span class="text-blue-300">(10 questões) <i
                                     class="fa-solid fa-chevron-down text-xs ml-1 transition-transform group-open:rotate-180"></i></span>
@@ -922,7 +1553,7 @@
                 <article class="rounded-lg border border-cyan-500/30 bg-slate-950/40 p-4">
                     <h3 class="font-tactical text-lg text-cyan-300 mb-3">Bloco II · Lógica e Tecnologia <span
                             class="text-sm text-gray-400">(20 questões)</span></h3>
-                    <details class="group border-t border-slate-700 py-3">
+                    <details class="group border-t border-slate-700 py-3" open>
                         <summary class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
                             Raciocínio Lógico <span class="text-cyan-300">(10 questões) <i
                                     class="fa-solid fa-chevron-down text-xs ml-1 transition-transform group-open:rotate-180"></i></span>
@@ -935,7 +1566,7 @@
                             <li>Sequências numéricas e de figuras.</li>
                         </ul>
                     </details>
-                    <details class="group border-t border-slate-700 py-3">
+                    <details class="group border-t border-slate-700 py-3" open>
                         <summary class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
                             Informática <span class="text-cyan-300">(10 questões) <i
                                     class="fa-solid fa-chevron-down text-xs ml-1 transition-transform group-open:rotate-180"></i></span>
@@ -958,7 +1589,7 @@
                 <article class="rounded-lg border border-amber-500/30 bg-slate-950/40 p-4">
                     <h3 class="font-tactical text-lg text-amber-300 mb-3">Bloco III · Jurídico <span
                             class="text-sm text-gray-400">(20 questões)</span></h3>
-                    <details class="group border-t border-slate-700 py-3">
+                    <details class="group border-t border-slate-700 py-3" open>
                         <summary class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
                             Direito Constitucional <span class="text-amber-300">(10 questões) <i
                                     class="fa-solid fa-chevron-down text-xs ml-1 transition-transform group-open:rotate-180"></i></span>
@@ -972,7 +1603,7 @@
                             <li>Defesa do Estado e das instituições democráticas, incluindo Segurança Pública.</li>
                         </ul>
                     </details>
-                    <details class="group border-t border-slate-700 py-3">
+                    <details class="group border-t border-slate-700 py-3" open>
                         <summary class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
                             Direitos Humanos e Legislação Extravagante <span class="text-amber-300">(10 questões) <i
                                     class="fa-solid fa-chevron-down text-xs ml-1 transition-transform group-open:rotate-180"></i></span>
@@ -998,13 +1629,20 @@
                     <button onclick="openSubjectGuide('Direitos Humanos e Legislação Extravagante')"
                         class="mt-2 w-full rounded bg-amber-700 hover:bg-amber-600 px-4 py-2 text-sm font-bold text-white"><i
                             class="fa-solid fa-book-open mr-2"></i>Estudar Direitos Humanos e Legislação</button>
-                    <button onclick="openMaterialModal('mat_dh_ext_pmpe')"
-                        class="mt-2 w-full rounded bg-slate-700 hover:bg-slate-600 px-4 py-2 text-sm font-bold text-white"><i
-                            class="fa-solid fa-scale-balanced mr-2"></i>Consultar leis secas e fontes oficiais</button>
+                    <div class="official-sources-card">
+                        <span class="official-sources-icon" aria-hidden="true"><i class="fa-solid fa-scale-balanced text-lg"></i></span>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-bold text-emerald-950">Lei seca e fontes oficiais</h4>
+                            <p>Consulte a legislação consolidada e os canais oficiais para estudar com referências atualizadas.</p>
+                        </div>
+                        <button type="button" onclick="openMaterialModal('mat_dh_ext_pmpe')" class="official-sources-button">
+                            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> CONSULTAR FONTES
+                        </button>
+                    </div>
                 </article>
             </div>
 
-            <details class="group mt-4 rounded-lg border border-slate-600 bg-slate-950/40 p-4">
+            <details class="syllabus-essay-card group mt-4" open>
                 <summary id="redacaoDetails" class="cursor-pointer list-none font-bold text-white flex justify-between gap-3">
                     Prova Discursiva · Redação
                     <i class="fa-solid fa-chevron-down text-blue-300 transition-transform group-open:rotate-180"></i>
@@ -1029,7 +1667,7 @@
             <div
                 class="flex flex-col items-stretch glass-panel p-4 rounded-t-xl border-b-2 border-blue-600 gap-4 w-full">
                 <h2 class="text-2xl font-tactical text-white"><i
-                        class="fa-solid fa-calendar-check text-blue-500 mr-2"></i> Dias Operacionais (05h às 23h)</h2>
+                        class="fa-solid fa-calendar-check text-blue-500 mr-2"></i> Plano de estudo personalizado</h2>
                 <select id="missionSelector"
                     class="bg-slate-900 text-blue-400 border border-blue-500/50 rounded px-4 py-2 font-bold outline-none focus:ring-2 focus:ring-blue-500 w-full min-w-0 max-w-full truncate">
                     <!-- Gerado dinamicamente -->
@@ -1037,10 +1675,11 @@
             </div>
 
             <p class="glass-panel px-4 py-3 rounded-lg text-sm text-gray-300 w-full">
-                <strong class="text-blue-400">Disciplina de Ferro:</strong> O Dia de Operação 02 só será destrancado
-                quando as tarefas do Dia 01 estiverem 100% cumpridas. Se parar, o dia seguinte não abre. Faça por Júlia.
+                <strong class="text-blue-400">Progressão:</strong> A próxima etapa só será liberada quando todas as tarefas
+                da etapa atual estiverem concluídas. O conteúdo segue a ordem da missão. Faça por Júlia.
                 Faça por Jailene.
             </p>
+            <p id="studyPlanSummary" class="glass-panel px-4 py-3 rounded-lg text-sm text-gray-300 w-full" aria-live="polite"></p>
 
             <div class="relative min-h-[500px] w-full">
                 <!-- TELA DE BLOQUEIO (Glassmorphism) -->
@@ -1208,15 +1847,12 @@
                 <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i
                         class="fa-solid fa-link mr-2"></i> Arsenal Externo</h3>
                 <div class="space-y-2 text-sm">
-                    <a href="https://www.institutoaocp.org.br/concurso.jsp?id=611" target="_blank"
-                        class="block bg-slate-800 hover:bg-slate-700 p-3 rounded text-white font-bold transition-colors border-l-4 border-red-500"><i
-                            class="fa-solid fa-download mr-2 text-red-400"></i> BAIXAR PROVA PMPE 2024 (AOCP)</a>
-                    <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank"
-                        class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i
-                            class="fa-solid fa-scale-balanced mr-2 text-blue-400"></i> Constituição Federal</a>
-                    <a href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11343.htm" target="_blank"
-                        class="block bg-slate-800 hover:bg-slate-700 p-2 rounded text-gray-300 hover:text-white transition-colors"><i
-                            class="fa-solid fa-capsules mr-2 text-green-400"></i> Lei de Drogas (Planalto)</a>
+                    <a href="https://www.institutoaocp.org.br/concurso.jsp?id=611" target="_blank" rel="noopener noreferrer"
+                        class="resource-link"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i><span><strong>Prova PMPE 2024 · Instituto AOCP</strong><small>Acesse a página oficial do concurso e os documentos disponíveis</small></span></a>
+                    <a href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" rel="noopener noreferrer"
+                        class="resource-link"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><span><strong>Constituição Federal</strong><small>Texto constitucional no portal oficial do Planalto</small></span></a>
+                    <a href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11343.htm" target="_blank" rel="noopener noreferrer"
+                        class="resource-link"><i class="fa-solid fa-capsules" aria-hidden="true"></i><span><strong>Lei de Drogas · Lei nº 11.343/2006</strong><small>Texto da legislação no portal oficial do Planalto</small></span></a>
                 </div>
             </div>
 
@@ -1226,10 +1862,35 @@
             <p class="text-xs font-bold tracking-[0.2em] text-emerald-700 uppercase">Redação</p>
             <h2 class="mt-2 text-2xl md:text-3xl font-tactical text-emerald-900">Pratique e evolua na escrita</h2>
             <p class="mt-3 max-w-2xl text-gray-600">Acesse os temas de treino, organize seus rascunhos e peça uma correção orientativa ao mentor de redação.</p>
-            <button type="button" onclick="openMaterialModal('mat_redacao_pmpe')"
-                class="mt-6 rounded-lg bg-emerald-700 hover:bg-emerald-800 px-5 py-3 text-sm font-bold text-white">
-                <i class="fa-solid fa-pen-nib mr-2" aria-hidden="true"></i>ABRIR ÁREA DE REDAÇÃO
-            </button>
+            <div class="mt-6 grid gap-4 md:grid-cols-3">
+                <article class="writing-section-card">
+                    <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                    <h3 class="text-lg font-bold text-emerald-900">Como fazer a redação</h3>
+                    <p class="mt-2 text-sm text-gray-600">Estude planejamento, tese, desenvolvimento, conclusão e revisão em um guia separado da área de escrita.</p>
+                    <button type="button" onclick="openWritingSection('essayInstructions')"
+                        class="rounded-lg bg-emerald-700 hover:bg-emerald-800 px-4 py-2 text-sm font-bold text-white">
+                        LER ORIENTAÇÕES
+                    </button>
+                </article>
+                <article class="writing-section-card">
+                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                    <h3 class="text-lg font-bold text-emerald-900">Escreva sua redação</h3>
+                    <p class="mt-2 text-sm text-gray-600">Escolha um tema, escreva, salve versões e receba uma análise orientativa local. Seus rascunhos permanecem neste navegador.</p>
+                    <button type="button" onclick="openWritingSection('essayWorkshopHeading')"
+                        class="rounded-lg bg-emerald-700 hover:bg-emerald-800 px-4 py-2 text-sm font-bold text-white">
+                        ABRIR ÁREA DE ESCRITA
+                    </button>
+                </article>
+                <article class="writing-section-card">
+                    <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                    <h3 class="text-lg font-bold text-emerald-900">Exemplos de redação</h3>
+                    <p class="mt-2 text-sm text-gray-600">Consulte modelos autorais para observar estrutura e argumentação. São referências didáticas, sem promessa de nota máxima.</p>
+                    <button type="button" onclick="openWritingSection('essayExamples')"
+                        class="rounded-lg bg-emerald-700 hover:bg-emerald-800 px-4 py-2 text-sm font-bold text-white">
+                        VER MODELOS
+                    </button>
+                </article>
+            </div>
         </section>
 
         <section id="errorsPanel" class="dashboard-panel glass-panel rounded-xl p-6 md:p-10" role="tabpanel" aria-labelledby="desktopTab-errors" hidden>
@@ -1278,7 +1939,7 @@
             errors: document.getElementById('errorsPanel')
         };
 
-        const dashboardShortcuts = Array.from(document.querySelectorAll('.dashboard-shortcut[data-open-dashboard-view]'));
+        const dashboardShortcuts = Array.from(document.querySelectorAll('.dashboard-shortcut[data-open-subject-mission]'));
 
         function activateDashboardView(view, focusTab = false) {
             if (!Object.hasOwn(dashboardPanels, view)) return;
@@ -1306,7 +1967,7 @@
         }
 
         dashboardShortcuts.forEach((shortcut) => {
-            shortcut.addEventListener('click', () => activateDashboardView(shortcut.dataset.openDashboardView));
+            shortcut.addEventListener('click', () => window.openSubjectMission(shortcut.dataset.openSubjectMission));
         });
 
         document.querySelectorAll('[role="tablist"]').forEach((tabList) => {
@@ -1468,6 +2129,14 @@
         // 1. DADOS LOCAIS (PROGRESSO E ANOTAÇÕES)
         // =========================================================================
         let userProgress = {};
+        const DEFAULT_STUDY_PREFERENCES = {
+            mode: "hard",
+            days: [0, 1, 2, 3, 4, 5, 6],
+            startTime: "05:00",
+            endTime: "23:00"
+        };
+        let studyPreferences = window.PMPE_STUDY_PREFERENCES || DEFAULT_STUDY_PREFERENCES;
+        let missionsInitialized = false;
         try {
             const savedProgress = localStorage.getItem('pmpe_ian_v7');
             if (savedProgress) userProgress = JSON.parse(savedProgress);
@@ -1893,7 +2562,7 @@
                     <h1>Redação: método de planejamento, escrita e revisão</h1>
                     <p>O edital informado prevê texto dissertativo-argumentativo em prosa, de 15 a 20 linhas, com 40 pontos e nota mínima de 12. Confirme esses critérios no edital e em retificações oficiais antes da prova. O objetivo deste módulo é treinar estrutura, clareza e controle do texto — não memorizar redações prontas.</p>
 
-                    <h2>1. O que a banca espera</h2>
+                    <h2 id="essayInstructions" tabindex="-1">1. O que a banca espera</h2>
                     <p>O texto dissertativo-argumentativo apresenta um tema, assume uma tese clara e a sustenta com argumentos. Não é relato pessoal nem lista de opiniões. O desenvolvimento precisa explicar por que a tese faz sentido, usando relações de causa e consequência, comparação, exemplos pertinentes ou referência a princípios e políticas públicas. A conclusão retoma a ideia central sem introduzir uma nova discussão.</p>
 
                     <h2>2. Planejamento em poucos minutos</h2>
@@ -1927,7 +2596,7 @@
                     <h2>7. Treino guiado</h2>
                     <p><strong>Tema para praticar:</strong> desafios para conciliar segurança pública e respeito aos direitos fundamentais. Em cinco minutos, escreva uma tese e dois argumentos. Em seguida, produza a redação no limite de linhas previsto e use o checklist. Ao corrigir, marque uma evidência concreta de cada argumento e anote três alterações que melhorariam o texto. Repita o exercício com outro tema; não reutilize a mesma redação decorada.</p>
 
-                    <h2>8. Modelos autorais para estudar estrutura</h2>
+                    <h2 id="essayExamples" tabindex="-1">8. Modelos autorais para estudar estrutura</h2>
                     <p>Os textos abaixo são exemplos didáticos originais, não redações oficiais nem garantia de nota máxima. Observe a tese, a progressão dos argumentos e a conclusão; adapte o raciocínio ao comando real, sem decorar ou copiar o modelo.</p>
                     <details class="my-4 rounded border border-slate-300 p-4">
                         <summary class="cursor-pointer font-bold">Modelo 1 — Segurança pública e direitos fundamentais</summary>
@@ -1950,7 +2619,7 @@
                         </div>
                     </details>
 
-                    <h2>9. Oficina de redação e mentor automático</h2>
+                    <h2 id="essayWorkshopHeading" tabindex="-1">9. Oficina de redação e mentor automático</h2>
                     <p>Escolha um tema, escreva, salve versões e peça uma análise local. A correção automática atribui uma <strong>estimativa didática de 0 a 40</strong> por sinais verificáveis de adequação temática, coesão, estrutura e escrita. Ela não é uma IA generativa, não compreende integralmente o argumento, não substitui professor ou banca e não pode garantir nota ou aprovação. Seu texto fica neste navegador e não é enviado a um serviço externo.</p>
                     <div id="essayWorkshop" class="my-6 rounded-xl border border-blue-300 bg-slate-100 p-5 text-slate-900">
                         <div class="grid gap-4 md:grid-cols-2">
@@ -2031,6 +2700,69 @@
         ];
 
         const operationDays = [];
+        const STUDY_MODE_CONFIG = {
+            light: { label: "Leve", sessions: 3 },
+            moderate: { label: "Moderado", sessions: 2 },
+            hard: { label: "Hard", sessions: 1 }
+        };
+        const WEEKDAY_LABELS = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+
+        function addAvailableStudyDays(date, count) {
+            const result = new Date(date);
+            const direction = count < 0 ? -1 : 1;
+            let remaining = Math.abs(count);
+            while (remaining > 0) {
+                result.setDate(result.getDate() + direction);
+                if (studyPreferences.days.includes(result.getDay())) remaining--;
+            }
+            return result;
+        }
+
+        function getMissionScheduledDate(dayIndex, firstIncomplete) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            while (!studyPreferences.days.includes(today.getDay())) today.setDate(today.getDate() + 1);
+            return addAvailableStudyDays(today, dayIndex - firstIncomplete);
+        }
+
+        function getTaskTimeForPreferences(timeLabel, taskIndex, taskCount) {
+            if (studyPreferences.mode === "hard" && studyPreferences.startTime === "05:00" && studyPreferences.endTime === "23:00") {
+                return timeLabel;
+            }
+            const match = timeLabel.match(/^(\d{2}):(\d{2}) - (\d{2}):(\d{2})(.*)$/);
+            if (!match) return timeLabel;
+
+            const startWindow = Number(studyPreferences.startTime.slice(0, 2)) * 60 + Number(studyPreferences.startTime.slice(3));
+            const endWindow = Number(studyPreferences.endTime.slice(0, 2)) * 60 + Number(studyPreferences.endTime.slice(3));
+            const interval = (endWindow - startWindow) / taskCount;
+            const formatTime = minutes => `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+            const start = Math.round(startWindow + taskIndex * interval);
+            const end = Math.round(startWindow + (taskIndex + 1) * interval);
+            const slotStart = Math.min(endWindow - 1, start);
+            const slotEnd = Math.min(endWindow, Math.max(slotStart + 1, end));
+            return `${formatTime(slotStart)} - ${formatTime(slotEnd)}${match[5]}`;
+        }
+
+        function updateStudyPlanSummary() {
+            const summary = document.getElementById("studyPlanSummary");
+            if (!summary) return;
+            const mode = STUDY_MODE_CONFIG[studyPreferences.mode] || STUDY_MODE_CONFIG.hard;
+            const days = studyPreferences.days.map(day => WEEKDAY_LABELS[day]).join(", ");
+            const pace = mode.sessions === 1 ? "missão completa por dia escolhido" : `cada missão dividida em ${mode.sessions} etapas, uma por dia escolhido`;
+            summary.textContent = `Plano ${mode.label}: ${pace} (${days}), entre ${studyPreferences.startTime} e ${studyPreferences.endTime}. Todas as matérias e tarefas são mantidas.`;
+        }
+
+        window.addEventListener("pmpe:study-preferences-changed", event => {
+            studyPreferences = event.detail || DEFAULT_STUDY_PREFERENCES;
+            updateStudyPlanSummary();
+            if (!missionsInitialized) return;
+            const selector = document.getElementById("missionSelector");
+            populateDaySelector();
+            const dayIndex = getFirstIncompleteDay();
+            if (selector) selector.value = String(dayIndex);
+            renderDay(dayIndex);
+        });
+
         const modulesBySubject = [
             editalModules.filter(module => module.sub === "Língua Portuguesa"),
             editalModules.filter(module => module.sub === "História de Pernambuco"),
@@ -2370,26 +3102,107 @@
             return tasks;
         }
 
-        function getFirstIncompleteDay() {
-            for (let i = 0; i < operationDays.length; i++) {
-                let d = operationDays[i];
-                let tasks = generateTasksForDay(d);
-                let allDone = true;
-                for (let t of tasks) {
-                    if (!userProgress[t.id]) { allDone = false; break; }
+        function getStudySessions() {
+            const sessions = [];
+            const parts = STUDY_MODE_CONFIG[studyPreferences.mode]?.sessions || 1;
+            operationDays.forEach((day, dayIndex) => {
+                const tasks = generateTasksForDay(day);
+                const partCount = Math.min(parts, tasks.length);
+                const tasksPerPart = Math.ceil(tasks.length / partCount);
+                for (let partIndex = 0; partIndex < partCount; partIndex++) {
+                    sessions.push({
+                        day,
+                        dayIndex,
+                        tasks: tasks.slice(partIndex * tasksPerPart, (partIndex + 1) * tasksPerPart),
+                        partIndex,
+                        partCount
+                    });
                 }
-                if (!allDone) return i;
-            }
-            return operationDays.length - 1;
+            });
+            return sessions;
         }
+
+        function getFirstIncompleteDay() {
+            const sessions = getStudySessions();
+            for (let i = 0; i < sessions.length; i++) {
+                if (sessions[i].tasks.some(task => !userProgress[task.id])) return i;
+            }
+            return sessions.length - 1;
+        }
+
+        function getSubjectStudyTasksForDay(dayObj, subject) {
+            const tasks = generateTasksForDay(dayObj);
+            const subjectTasks = [];
+            if (dayObj.mod1.sub === subject) {
+                subjectTasks.push(...tasks.filter(task =>
+                    task.id.startsWith(`d${dayObj.id}_v1_`) || task.id === `d${dayObj.id}_pdf1`
+                ));
+            }
+            if (dayObj.mod2.sub === subject) {
+                subjectTasks.push(...tasks.filter(task =>
+                    task.id.startsWith(`d${dayObj.id}_v2_`) || task.id === `d${dayObj.id}_pdf2`
+                ));
+            }
+            return subjectTasks;
+        }
+
+        function updateSubjectProgressCards() {
+            document.querySelectorAll('[data-subject-progress-value]').forEach(valueElement => {
+                const subject = valueElement.dataset.subjectProgressValue;
+                const subjectTasks = operationDays.flatMap(day => getSubjectStudyTasksForDay(day, subject));
+                const completedTasks = subjectTasks.filter(task => userProgress[task.id]).length;
+                const percent = subjectTasks.length
+                    ? Math.round(completedTasks / subjectTasks.length * 100)
+                    : 0;
+                const track = document.querySelector(`[data-subject-progress-track="${CSS.escape(subject)}"]`);
+                const fill = document.querySelector(`[data-subject-progress-fill="${CSS.escape(subject)}"]`);
+                const card = valueElement.closest('.dashboard-shortcut');
+
+                valueElement.textContent = `${percent}%`;
+                if (track) track.setAttribute('aria-valuenow', String(percent));
+                if (fill) fill.style.width = `${percent}%`;
+                if (card) card.setAttribute('aria-label', `${subject}: ${percent}% concluído. Abrir a missão desta matéria.`);
+            });
+        }
+
+        window.openSubjectMission = subject => {
+            const sessions = getStudySessions();
+            const daysForSubject = sessions
+                .map((session, index) => ({
+                    session,
+                    index,
+                    tasks: session.tasks.filter(task =>
+                        getSubjectStudyTasksForDay(session.day, subject).some(subjectTask => subjectTask.id === task.id)
+                    )
+                }))
+                .filter(entry => entry.tasks.length > 0);
+
+            if (!daysForSubject.length) {
+                showModal("Atenção", `Não foi possível localizar missões para ${subject}.`, "fa-circle-exclamation");
+                return;
+            }
+
+            const nextPending = daysForSubject.find(entry => entry.tasks.some(task => !userProgress[task.id]));
+            const target = nextPending || daysForSubject[daysForSubject.length - 1];
+            const selector = document.getElementById('missionSelector');
+            if (!selector) {
+                showModal("Atenção", "Não foi possível abrir a lista de missões.", "fa-circle-exclamation");
+                return;
+            }
+
+            window.activateDashboardView('missions');
+            selector.value = String(target.index);
+            renderDay(target.index);
+        };
 
         function populateDaySelector() {
             const selector = document.getElementById('missionSelector');
             if (!selector) return;
             selector.innerHTML = '';
             const firstInc = getFirstIncompleteDay();
+            const sessions = getStudySessions();
 
-            operationDays.forEach((d, index) => {
+            sessions.forEach((session, index) => {
                 let opt = document.createElement('option');
                 opt.value = index;
 
@@ -2398,11 +3211,15 @@
                 else if (index === firstInc) statusIcon = "🔥 ATIVO - ";
                 else statusIcon = "🔒 TRANCADO - ";
 
-                opt.text = `${statusIcon} Dia Operacional ${String(d.id).padStart(2, '0')} (${d.mod1.sub} e ${d.mod2.sub})`;
+                const scheduledDate = getMissionScheduledDate(index, firstInc);
+                const dateLabel = scheduledDate.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+                const partLabel = session.partCount > 1 ? ` · Etapa ${session.partIndex + 1}/${session.partCount}` : "";
+                opt.text = `${statusIcon} Dia Operacional ${String(session.day.id).padStart(2, '0')}${partLabel} · ${WEEKDAY_LABELS[scheduledDate.getDay()]} ${dateLabel} (${session.day.mod1.sub} e ${session.day.mod2.sub})`;
 
                 selector.appendChild(opt);
             });
             selector.value = firstInc;
+            updateStudyPlanSummary();
         }
 
         function renderDay(dayIndex) {
@@ -2410,13 +3227,14 @@
             const lockScreen = document.getElementById('lockScreen');
             container.innerHTML = '';
 
-            const dayObj = operationDays[dayIndex];
-            if (!dayObj) {
+            const session = getStudySessions()[dayIndex];
+            if (!session) {
                 container.innerHTML = '<p class="p-4 text-red-700">A missão selecionada não foi encontrada. Recarregue a página.</p>';
                 return;
             }
             const firstInc = getFirstIncompleteDay();
-            const tasks = generateTasksForDay(dayObj);
+            const dayObj = session.day;
+            const tasks = session.tasks;
 
             if (dayIndex > firstInc) {
                 container.classList.add('locked-mission');
@@ -2429,24 +3247,26 @@
             }
 
             const themeCard = document.createElement('div');
-            themeCard.className = 'glass-panel p-5 rounded-xl border-l-4 border-yellow-500 w-full';
+            themeCard.className = 'glass-panel p-5 rounded-xl border-l-4 border-emerald-600 w-full';
             const themeTitle = document.createElement('h4');
             themeTitle.className = 'font-bold text-white mb-2';
-            themeTitle.textContent = 'Temas de hoje';
+            themeTitle.textContent = session.partCount > 1
+                ? `Etapa ${session.partIndex + 1} de ${session.partCount} · Dia Operacional ${String(dayObj.id).padStart(2, "0")}`
+                : 'Temas de hoje';
             themeCard.appendChild(themeTitle);
             [dayObj.mod1, dayObj.mod2].forEach(mod => {
                 const scope = window.PMPE_DAILY_COURSE_DISTRIBUTION?.[mod.moduleId]?.syllabusScope || [mod.topic];
                 const p = document.createElement('p');
                 p.className = 'text-sm text-gray-300 mt-1';
                 const b = document.createElement('b');
-                b.className = 'text-yellow-300';
+                b.className = 'text-emerald-700';
                 b.textContent = `${mod.sub}: `;
                 p.append(b, document.createTextNode(scope.join('; ')));
                 themeCard.appendChild(p);
             });
             container.appendChild(themeCard);
 
-            tasks.forEach(task => {
+            tasks.forEach((task, taskIndex) => {
                 const isChecked = userProgress[task.id] ? 'checked' : '';
                 const completedClass = isChecked ? 'opacity-50 line-through' : '';
 
@@ -2458,19 +3278,19 @@
                 }
 
                 const html = `
-                    <div class="glass-panel p-5 rounded-xl flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between border-l-4 border-blue-600 transition-all duration-300 group w-full overflow-hidden">
+                    <div class="mission-task-card glass-panel p-5 rounded-xl flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between border-l-4 border-blue-600 transition-all duration-300 group w-full overflow-hidden">
                         <div class="flex items-start gap-4 flex-1 min-w-0 w-full">
                             <div class="mt-1 flex-shrink-0">
-                                <label class="flex items-center cursor-pointer relative">
-                                    <input type="checkbox" class="peer sr-only" onchange="toggleTask('${task.id}', this, ${dayIndex})" ${isChecked}>
-                                    <div class="w-8 h-8 rounded border-2 border-slate-500 flex items-center justify-center peer-checked:bg-blue-600 peer-checked:border-blue-600 transition-colors bg-slate-900 shadow-inner">
-                                        <i class="fa-solid fa-check text-white opacity-0 peer-checked:opacity-100 transition-opacity font-bold"></i>
-                                    </div>
+                                <label class="mission-check cursor-pointer" title="Marcar missão como concluída">
+                                    <input type="checkbox" class="sr-only" aria-label="Marcar missão como concluída" onchange="toggleTask('${task.id}', this, ${dayIndex})" ${isChecked}>
+                                    <span class="flex items-center justify-center">
+                                        <i class="fa-solid fa-check font-bold" aria-hidden="true"></i>
+                                    </span>
                                 </label>
                             </div>
                             <div class="${completedClass} flex-1 min-w-0" id="text-${task.id}">
                                 <div class="flex flex-wrap gap-2 mb-2">
-                                    <span class="bg-slate-800 text-gray-300 text-xs px-2 py-1 rounded font-mono border border-slate-600 shadow-sm"><i class="fa-regular fa-clock mr-1 text-blue-400"></i>${task.time}</span>
+                                    <span class="bg-slate-800 text-gray-300 text-xs px-2 py-1 rounded font-mono border border-slate-600 shadow-sm"><i class="fa-regular fa-clock mr-1 text-blue-400"></i>${getTaskTimeForPreferences(task.time, taskIndex, tasks.length)}</span>
                                     <span class="text-xs uppercase tracking-wider font-bold text-slate-900 bg-blue-500 px-2 py-1 rounded shadow-sm break-words">${task.type}</span>
                                 </div>
                                 <h4 class="font-bold text-lg text-white tracking-wide break-words"><i class="fa-solid ${task.icon} mr-2 text-gray-400"></i>${task.subject}</h4>
@@ -2506,6 +3326,7 @@
 
             populateDaySelector();
             document.getElementById('missionSelector').value = dayIndex;
+            updateSubjectProgressCards();
             updateChart();
         };
 
@@ -2706,12 +3527,12 @@
                 cell.dataset.gameRow = rowIndex;
                 cell.dataset.gameCol = colIndex;
                 cell.textContent = letter;
-                cell.className = "w-[1.8rem] h-[1.8rem] rounded bg-slate-800 hover:bg-slate-600 text-white text-xs font-bold border border-slate-700 transition-colors";
+                cell.className = "study-word-cell w-[1.8rem] h-[1.8rem] rounded text-xs font-bold transition-colors";
 
                 const foundPlacement = studyGameState.placements.some(p => studyGameState.found.has(p.answer) && p.cells.some(pos => pos.row === rowIndex && pos.col === colIndex));
-                if (foundPlacement) cell.className = "w-[1.8rem] h-[1.8rem] rounded bg-green-600 text-white text-xs font-bold shadow-lg";
+                if (foundPlacement) cell.classList.add("is-found");
                 else if (studyGameState.selectedStart?.row === rowIndex && studyGameState.selectedStart?.col === colIndex) {
-                    cell.className = "w-[1.8rem] h-[1.8rem] rounded bg-blue-500 text-white text-xs font-bold ring-2 ring-white";
+                    cell.classList.add("is-selected");
                 }
                 board.appendChild(cell);
             }));
@@ -3781,7 +4602,7 @@
             }
 
             const selector = document.getElementById('missionSelector');
-            const day = operationDays[Number(selector?.value)];
+            const day = getStudySessions()[Number(selector?.value)]?.day;
             const modules = day && day.type === 'teoria' ? [day.mod1, day.mod2] : [];
             if (modules.length !== 2 || modules.some(module => !module) || modules[0] === modules[1]) {
                 showModal('Bateria indisponível', 'Não foi possível identificar os dois temas desta missão.', 'fa-circle-exclamation');
@@ -4274,7 +5095,7 @@
                 ...editalModules.filter(module => module.sub === subject),
                 ...supplementalModules
             ];
-            const activeDay = operationDays[Number(document.getElementById('missionSelector').value)];
+            const activeDay = getStudySessions()[Number(document.getElementById('missionSelector').value)]?.day;
             const activeModuleIndex = modulesForSubject.findIndex(module =>
                 module === activeDay?.mod1 || module === activeDay?.mod2
             );
@@ -4557,6 +5378,46 @@
             }
         };
 
+        window.toggleHeaderPopover = id => {
+            const target = document.getElementById(id);
+            if (!target) return;
+            const shouldOpen = target.hidden;
+            document.querySelectorAll('.header-popover').forEach(popover => {
+                popover.hidden = true;
+                document.querySelector(`[aria-controls="${popover.id}"]`)?.setAttribute('aria-expanded', 'false');
+            });
+            if (shouldOpen) {
+                target.hidden = false;
+                document.querySelector(`[aria-controls="${id}"]`)?.setAttribute('aria-expanded', 'true');
+            }
+        };
+
+        document.addEventListener('click', event => {
+            if (!(event.target instanceof Element) || event.target.closest('.header-popover-wrap')) return;
+            document.querySelectorAll('.header-popover').forEach(popover => {
+                popover.hidden = true;
+                document.querySelector(`[aria-controls="${popover.id}"]`)?.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key !== 'Escape') return;
+            document.querySelectorAll('.header-popover').forEach(popover => {
+                popover.hidden = true;
+                document.querySelector(`[aria-controls="${popover.id}"]`)?.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        window.openWritingSection = sectionId => {
+            window.openMaterialModal('mat_redacao_pmpe');
+            window.setTimeout(() => {
+                const section = document.getElementById(sectionId);
+                if (!section) return;
+                section.focus({ preventScroll: true });
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 0);
+        };
+
         window.openMaterialModal = (materialKey, preserveGuidePicker = false) => {
             const material = materialsDatabase[materialKey];
             if (material) {
@@ -4621,11 +5482,14 @@
                     }
                 });
                 window.PMPE_DAILY_QUIZ_AUDIT = ensureTopicQuestionCoverage();
+                studyPreferences = window.PMPE_STUDY_PREFERENCES || studyPreferences;
+                missionsInitialized = true;
                 populateDaySelector();
                 const firstInc = getFirstIncompleteDay();
                 const selector = document.getElementById('missionSelector');
                 if (selector) selector.value = firstInc;
                 renderDay(firstInc);
+                updateSubjectProgressCards();
                 updateChart();
                 startStudyGame();
             } catch (error) {

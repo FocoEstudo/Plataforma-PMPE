@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#105737">
+    <title>Acesso | Operação PMPE</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Inter, Arial, sans-serif;
+            color: #173b2c;
+            background: #f3f8f4;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            display: grid;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.25rem;
+            place-items: center;
+            background:
+                radial-gradient(ellipse at top left, rgba(154, 205, 166, .4), transparent 42rem),
+                #f3f8f4;
+        }
+
+        .login-layout {
+            display: grid;
+            width: min(100%, 58rem);
+            min-height: 34rem;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #d7e7dc;
+            border-radius: 1.5rem;
+            box-shadow: 0 24px 70px rgba(20, 75, 48, .15);
+        }
+
+        .login-brand {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(2rem, 5vw, 3.5rem);
+            color: #fff;
+            background:
+                linear-gradient(145deg, rgba(10, 39, 25, .92), rgba(16, 87, 55, .94)),
+                url("https://penoticias.com.br/blog/wp-content/uploads/2024/07/Policia-Militar.jpg") center / cover;
+        }
+
+        .brand-crest {
+            width: 4.5rem;
+            height: 4.5rem;
+            padding: .3rem;
+            object-fit: contain;
+            background: #fff;
+            border: 2px solid rgba(255, 255, 255, .75);
+            border-radius: 1rem;
+        }
+
+        .brand-title {
+            max-width: 12ch;
+            margin: 1.5rem 0 .75rem;
+            font-family: "Arial Narrow", Impact, sans-serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1.02;
+            text-transform: uppercase;
+        }
+
+        .brand-copy { color: #e2f2e6; line-height: 1.65; }
+        .brand-footnote { color: #c7e2ce; font-size: .8rem; }
+
+        .login-main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(1.5rem, 5vw, 3.5rem);
+        }
+
+        .eyebrow {
+            margin: 0 0 .5rem;
+            color: #176b45;
+            font-size: .75rem;
+            font-weight: 800;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+        h2 { margin: 0; font-size: 1.85rem; }
+
+        .intro {
+            margin: .65rem 0 1.5rem;
+            color: #5e7064;
+            line-height: 1.55;
+        }
+
+        .mode-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .35rem;
+            padding: .3rem;
+            margin-bottom: 1.25rem;
+            background: #edf4ef;
+            border-radius: .75rem;
+        }
+
+        .mode-switch button,
+        .secondary-action,
+        .submit-button {
+            min-height: 2.75rem;
+            font: inherit;
+            font-weight: 750;
+            cursor: pointer;
+            border: 0;
+            border-radius: .6rem;
+        }
+
+        .mode-switch button {
+            color: #52665a;
+            background: transparent;
+        }
+
+        .mode-switch button[aria-selected="true"] {
+            color: #105737;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(20, 75, 48, .1);
+        }
+
+        .field { display: block; margin-top: 1rem; }
+        .field span { display: block; margin-bottom: .4rem; font-size: .85rem; font-weight: 750; }
+
+        .field input {
+            width: 100%;
+            min-height: 2.85rem;
+            padding: .7rem .8rem;
+            color: #173b2c;
+            background: #fff;
+            border: 1px solid #bfd2c4;
+            border-radius: .6rem;
+            font: inherit;
+        }
+
+        .field input:focus-visible {
+            border-color: #176b45;
+            outline: 3px solid rgba(23, 107, 69, .18);
+        }
+
+        .submit-button {
+            width: 100%;
+            margin-top: 1.25rem;
+            color: #fff;
+            background: #176b45;
+            transition: background .15s ease;
+        }
+
+        .submit-button:hover { background: #105737; }
+        .submit-button:disabled { cursor: wait; opacity: .7; }
+
+        .secondary-action {
+            width: 100%;
+            margin-top: .7rem;
+            color: #176b45;
+            background: transparent;
+        }
+
+        .secondary-action:hover { background: #edf7f0; }
+
+        .status {
+            min-height: 1.4rem;
+            margin: .9rem 0 0;
+            color: #9b271e;
+            font-size: .85rem;
+            line-height: 1.45;
+        }
+
+        .status[data-state="success"] { color: #176b45; }
+
+        .privacy-note {
+            margin: 1rem 0 0;
+            color: #6b7d71;
+            font-size: .75rem;
+            line-height: 1.5;
+        }
+
+        [hidden] { display: none !important; }
+
+        @media (max-width: 700px) {
+            body { padding: .75rem; }
+            .login-layout { max-width: 28rem; min-height: 0; grid-template-columns: 1fr; }
+            .login-brand { min-height: 12rem; padding: 1.5rem; }
+            .brand-crest { width: 3.5rem; height: 3.5rem; }
+            .brand-title { margin: 1rem 0 .35rem; font-size: 2rem; }
+            .brand-copy, .brand-footnote { display: none; }
+            .login-main { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <main class="login-layout">
+        <section class="login-brand" aria-label="Operação PMPE">
+            <div>
+                <img class="brand-crest"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
+                    alt="Brasão da Polícia Militar de Pernambuco">
+                <h1 class="brand-title">Operação PMPE</h1>
+                <p class="brand-copy">Sua preparação para o concurso em um só lugar: conteúdo, missões, simulados e redação.</p>
+            </div>
+            <p class="brand-footnote">Acesso seguro à sua área de estudos.</p>
+        </section>
+
+        <section class="login-main" aria-labelledby="loginHeading">
+            <p class="eyebrow">Área do estudante</p>
+            <h2 id="loginHeading">Entre para continuar</h2>
+            <p class="intro">Crie sua conta ou entre para acessar a plataforma. O pagamento é único: R$ 99,90 via PIX para liberar o acesso permanente.</p>
+
+            <div class="mode-switch" role="tablist" aria-label="Tipo de acesso">
+                <button id="loginMode" type="button" role="tab" aria-selected="true">Entrar</button>
+                <button id="registerMode" type="button" role="tab" aria-selected="false">Criar conta</button>
+            </div>
+
+            <form id="authForm">
+                <label class="field" for="email">
+                    <span>Email</span>
+                    <input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
+                </label>
+                <label class="field" for="password">
+                    <span>Senha</span>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6">
+                </label>
+                <label id="passwordConfirmField" class="field" for="passwordConfirm" hidden>
+                    <span>Confirme sua senha</span>
+                    <input id="passwordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" minlength="6">
+                </label>
+                <button id="submitButton" class="submit-button" type="submit">Entrar</button>
+            </form>
+            <button id="resetPasswordButton" class="secondary-action" type="button">Esqueci minha senha</button>
+            <p id="authStatus" class="status" role="status" aria-live="polite"></p>
+            <p class="privacy-note">Após entrar, siga as instruções para fazer o pagamento. O acesso será liberado depois da confirmação manual do pagamento.</p>
+        </section>
+    </main>
+
+    <script type="module">
+        const form = document.getElementById("authForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const confirmationField = document.getElementById("passwordConfirmField");
+        const confirmationInput = document.getElementById("passwordConfirm");
+        const submitButton = document.getElementById("submitButton");
+        const status = document.getElementById("authStatus");
+        const loginModeButton = document.getElementById("loginMode");
+        const registerModeButton = document.getElementById("registerMode");
+        const resetPasswordButton = document.getElementById("resetPasswordButton");
+        let mode = "login";
+        let authApi;
+
+        const setStatus = (message, state = "error") => {
+            status.textContent = message;
+            status.dataset.state = state;
+        };
+
+        const authErrorMessage = error => {
+            const messages = {
+                "auth/email-already-in-use": "Já existe uma conta com este email. Tente entrar.",
+                "auth/invalid-email": "Informe um endereço de email válido.",
+                "auth/invalid-credential": "Email ou senha incorretos.",
+                "auth/user-not-found": "Não encontramos uma conta com esse email.",
+                "auth/wrong-password": "Senha incorreta. Confira os dados e tente novamente.",
+                "auth/weak-password": "A senha precisa ter pelo menos 6 caracteres.",
+                "auth/too-many-requests": "Muitas tentativas. Aguarde um pouco e tente novamente.",
+                "auth/network-request-failed": "Falha de conexão. Verifique sua internet e tente novamente.",
+                "auth/operation-not-allowed": "O acesso por email e senha ainda não foi ativado no Firebase Authentication.",
+                "auth/unauthorized-domain": "Este domínio ainda não está autorizado no Firebase Authentication."
+            };
+            return messages[error.code] || "Não foi possível concluir o acesso. Verifique os dados e tente novamente.";
+        };
+
+        const setMode = nextMode => {
+            mode = nextMode;
+            const registering = mode === "register";
+            loginModeButton.setAttribute("aria-selected", String(!registering));
+            registerModeButton.setAttribute("aria-selected", String(registering));
+            confirmationField.hidden = !registering;
+            confirmationInput.required = registering;
+            passwordInput.autocomplete = registering ? "new-password" : "current-password";
+            submitButton.textContent = registering ? "Criar conta" : "Entrar";
+            resetPasswordButton.hidden = registering;
+            document.getElementById("loginHeading").textContent = registering ? "Crie sua conta" : "Entre para continuar";
+            setStatus("");
+        };
+
+        loginModeButton.addEventListener("click", () => setMode("login"));
+        registerModeButton.addEventListener("click", () => setMode("register"));
+
+        try {
+            const [{ auth }, { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword }] = await Promise.all([
+                import("./firebase-config.js"),
+                import("https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js")
+            ]);
+
+            authApi = { auth, createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword };
+            onAuthStateChanged(auth, user => {
+                if (user) window.location.replace(new URL("index.html", window.location.href));
+            }, error => {
+                console.error("Não foi possível verificar a sessão no Firebase Authentication.", error);
+                setStatus(authErrorMessage(error));
+            });
+        } catch (error) {
+            console.error("Não foi possível carregar o Firebase Authentication.", error);
+            setStatus("Não foi possível carregar o serviço de autenticação. Verifique sua conexão e recarregue a página.");
+        }
+
+        form.addEventListener("submit", async event => {
+            event.preventDefault();
+            setStatus("");
+            if (!authApi) {
+                setStatus("O serviço de autenticação não está disponível. Recarregue a página e tente novamente.");
+                return;
+            }
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            if (mode === "register" && password !== confirmationInput.value) {
+                setStatus("As senhas não coincidem.");
+                confirmationInput.focus();
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = mode === "register" ? "Criando conta..." : "Entrando...";
+            try {
+                if (mode === "register") {
+                    await authApi.createUserWithEmailAndPassword(authApi.auth, email, password);
+                } else {
+                    await authApi.signInWithEmailAndPassword(authApi.auth, email, password);
+                }
+                setStatus("Login confirmado. Verificando a liberação do seu acesso...", "success");
+            } catch (error) {
+                console.error("Falha ao autenticar usuário pelo Firebase.", error);
+                setStatus(authErrorMessage(error));
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = mode === "register" ? "Criar conta" : "Entrar";
+            }
+        });
+
+        resetPasswordButton.addEventListener("click", async () => {
+            setStatus("");
+            if (!authApi) {
+                setStatus("O serviço de autenticação não está disponível. Recarregue a página e tente novamente.");
+                return;
+            }
+            if (!emailInput.reportValidity()) return;
+
+            resetPasswordButton.disabled = true;
+            try {
+                await authApi.sendPasswordResetEmail(authApi.auth, emailInput.value.trim());
+                setStatus("Se houver uma conta associada a este email, você receberá instruções para redefinir a senha.", "success");
+            } catch (error) {
+                console.error("Falha ao solicitar redefinição de senha pelo Firebase.", error);
+                setStatus(authErrorMessage(error));
+            } finally {
+                resetPasswordButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
