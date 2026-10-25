@@ -5,9 +5,7 @@ const gateMessage = document.getElementById("sessionGateMessage");
 const gateLoginLink = document.getElementById("sessionGateLoginLink");
 const paymentGate = document.getElementById("paymentGate");
 const paymentGateMessage = document.getElementById("paymentGateMessage");
-const pixKey = document.getElementById("pixKey");
-const copyPixKeyButton = document.getElementById("copyPixKeyButton");
-const pixCopyMessage = document.getElementById("pixCopyMessage");
+const paymentCheckoutButton = document.getElementById("paymentCheckoutButton");
 const checkPaymentAccessButton = document.getElementById("checkPaymentAccessButton");
 const profileForm = document.getElementById("profileForm");
 const profileNameInput = document.getElementById("profileName");
@@ -17,6 +15,7 @@ const studyEndTimeInput = document.getElementById("studyEndTime");
 const profileSaveButton = document.getElementById("profileSaveButton");
 const profileCancelButton = document.getElementById("profileCancelButton");
 const PROFILE_READ_TIMEOUT_MS = 15000;
+const PAYMENT_API_URL = "https://lama-gentil-b7cd.workers.dev";
 const DEFAULT_STUDY_PREFERENCES = {
     mode: "hard",
     days: [0, 1, 2, 3, 4, 5, 6],
@@ -38,6 +37,9 @@ let getDoc;
 let setDoc;
 let deleteField;
 let serverTimestamp;
+let onSnapshot;
+let stopAccessListener;
+let isLoadingGrantedProfile = false;
 
 const normalizeStudyPreferences = preferences => {
     const days = Array.isArray(preferences?.days)
@@ -106,18 +108,79 @@ const showPaymentGate = () => {
     gateLoading.hidden = true;
     profileForm.hidden = true;
     paymentGate.hidden = false;
-    paymentGateMessage.textContent = "";
-    paymentGateMessage.classList.remove("text-red-700");
+    paymentCheckoutButton.hidden = !PAYMENT_API_URL;
+    const paymentStatus = new URLSearchParams(window.location.search).get("payment");
+    if (paymentStatus === "success") {
+        paymentGateMessage.textContent = "Pagamento concluído no checkout. Estamos aguardando a confirmação final para liberar seu acesso.";
+        paymentGateMessage.classList.remove("text-red-700");
+    } else if (paymentStatus === "pending") {
+        paymentGateMessage.textContent = "O pagamento está pendente no Mercado Pago. O acesso será liberado quando ele for aprovado.";
+        paymentGateMessage.classList.remove("text-red-700");
+    } else if (paymentStatus === "failure") {
+        paymentGateMessage.textContent = "O pagamento não foi concluído. Você pode tentar novamente pelo checkout.";
+        paymentGateMessage.classList.add("text-red-700");
+    } else if (PAYMENT_API_URL) {
+        paymentGateMessage.textContent = "";
+        paymentGateMessage.classList.remove("text-red-700");
+    } else {
+        paymentGateMessage.textContent = "O checkout ainda não foi configurado. Fale com o responsável pela plataforma.";
+        paymentGateMessage.classList.add("text-red-700");
+    }
     document.body.dataset.sessionState = "checking";
 };
 
-copyPixKeyButton.addEventListener("click", async () => {
+const showGrantedProfile = async user => {
+    if (isLoadingGrantedProfile) return;
+    isLoadingGrantedProfile = true;
+    stopAccessListener?.();
+    stopAccessListener = undefined;
+    paymentGate.hidden = true;
+    gateLoading.hidden = false;
+    gateLoadingMessage.textContent = "Pagamento confirmed. Carregando seu perfil...";
     try {
-        await navigator.clipboard.writeText(pixKey.textContent.trim());
-        pixCopyMessage.textContent = "Chave Pix copiada.";
+        await showProfileForUser(user);
+    } finally {
+        isLoadingGrantedProfile = false;
+    }
+};
+
+paymentCheckoutButton.addEventListener("click", async () => {
+    if (!PAYMENT_API_URL) {
+        paymentGateMessage.textContent = "O checkout ainda não foi configurado. Fale com o responsável pela plataforma.";
+        paymentGateMessage.classList.add("text-red-700");
+        return;
+    }
+
+    paymentCheckoutButton.disabled = true;
+    paymentCheckoutButton.textContent = "Preparando checkout...";
+    paymentGateMessage.textContent = "";
+    try {
+        const idToken = await currentUser.getIdToken();
+        const response = await fetch(`${PAYMENT_API_URL.replace(/\/+$/, "")}/checkout`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${idToken}`,
+                "Content-Type": "application/json"
+            },
+            body: "{}"
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.error || "Não foi possível iniciar o checkout.");
+        }
+        const checkoutUrl = new URL(result.checkoutUrl);
+        if (checkoutUrl.protocol !== "https:"
+            || (checkoutUrl.hostname !== "mercadopago.com.br" && !checkoutUrl.hostname.endsWith(".mercadopago.com.br"))) {
+            throw new Error("O endereço seguro do checkout não é válido.");
+        }
+        window.location.assign(checkoutUrl.href);
     } catch (error) {
-        console.error("Não foi possível copiar a chave Pix.", error);
-        pixCopyMessage.textContent = "Não foi possível copiar automaticamente. Selecione e copie a chave exibida.";
+        console.error("Não foi possível iniciar o checkout do Mercado Pago.", error);
+        paymentGateMessage.textContent = error.message || "Não foi possível iniciar o checkout. Tente novamente.";
+        paymentGateMessage.classList.add("text-red-700");
+    } finally {
+        paymentCheckoutButton.disabled = false;
+        paymentCheckoutButton.textContent = "Ir para o checkout seguro";
     }
 });
 
@@ -127,13 +190,10 @@ checkPaymentAccessButton.addEventListener("click", async () => {
     try {
         const accessSnapshot = await withTimeout(getDoc(doc(db, "access", currentUser.uid)), PROFILE_READ_TIMEOUT_MS);
         if (accessSnapshot.data()?.active === true) {
-            paymentGate.hidden = true;
-            gateLoading.hidden = false;
-            gateLoadingMessage.textContent = "Acesso confirmado. Carregando seu perfil...";
-            await showProfileForUser(currentUser);
+            await showGrantedProfile(currentUser);
         } else {
-            paymentGateMessage.textContent = "A liberação ainda não consta na plataforma. Aguarde a confirmação do responsável e tente novamente.";
-            paymentGateMessage.classList.add("text-red-700");
+            paymentGateMessage.textContent = "O Mercado Pago ainda não confirmou o pagamento. Aguarde alguns instantes e tente novamente.";
+            paymentGateMessage.classList.remove("text-red-700");
         }
     } catch (error) {
         console.error("Não foi possível verificar a liberação do acesso.", error);
@@ -141,7 +201,7 @@ checkPaymentAccessButton.addEventListener("click", async () => {
         paymentGateMessage.classList.add("text-red-700");
     } finally {
         checkPaymentAccessButton.disabled = false;
-        checkPaymentAccessButton.textContent = "Já paguei — verificar liberação";
+        checkPaymentAccessButton.textContent = "Verificar meu acesso";
     }
 });
 
@@ -321,7 +381,7 @@ try {
     auth = firebaseModule.auth;
     db = firebaseModule.db;
     ({ onAuthStateChanged, signOut, updateProfile } = authModule);
-    ({ doc, getDoc, setDoc, deleteField, serverTimestamp } = firestoreModule);
+    ({ doc, getDoc, setDoc, deleteField, serverTimestamp, onSnapshot } = firestoreModule);
 
     onAuthStateChanged(auth, async user => {
         if (!user) {
@@ -343,6 +403,14 @@ try {
                 return;
             }
             showPaymentGate();
+            stopAccessListener?.();
+            stopAccessListener = onSnapshot(doc(db, "access", user.uid), snapshot => {
+                if (snapshot.data()?.active === true) {
+                    void showGrantedProfile(user);
+                }
+            }, error => {
+                console.error("Não foi possível acompanhar a confirmação do pagamento.", error);
+            });
         } catch (error) {
             console.error("Não foi possível verificar a liberação de acesso no Firestore.", error);
             gateLoadingMessage.textContent = firebaseErrorMessage(error);

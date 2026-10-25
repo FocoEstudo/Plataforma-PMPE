@@ -1247,17 +1247,11 @@
             <section id="paymentGate" hidden>
                 <i class="fa-solid fa-lock text-3xl text-emerald-700" aria-hidden="true"></i>
                 <h2 class="mt-3 text-2xl font-extrabold">Libere seu acesso</h2>
-                <p class="mt-2 text-sm leading-relaxed text-gray-600">Faça o pagamento único de <strong>R$ 99,90 via Pix</strong> usando o QR Code ou a chave abaixo. Você pode pagar pelo aplicativo de qualquer banco ou instituição que ofereça Pix.</p>
-                <img src="pix-qr.png" alt="QR Code Pix de R$ 99,90 para Ian Italo Gomes Andrade" class="mx-auto mt-5 w-full max-w-xs rounded-lg border border-emerald-100">
-                <div class="mt-4 rounded-lg bg-emerald-50 p-3 text-left">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-600">Chave Pix aleatória</p>
-                    <code id="pixKey" class="mt-1 block break-all text-sm text-emerald-950">623c3509-96f1-49f7-8794-41ed9de36bf6</code>
-                    <button id="copyPixKeyButton" type="button" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-100">Copiar chave Pix</button>
-                    <p id="pixCopyMessage" class="mt-2 text-xs text-emerald-800" role="status" aria-live="polite"></p>
-                </div>
+                <p class="mt-2 text-sm leading-relaxed text-gray-600">Pague <strong>R$ 99,90</strong> pelo checkout seguro do Mercado Pago. Você poderá escolher Pix e pagar pelo aplicativo da instituição financeira que preferir.</p>
+                <button id="paymentCheckoutButton" type="button" class="mt-5 block w-full rounded-lg bg-emerald-800 px-5 py-3 text-center font-bold text-white hover:bg-emerald-900">Ir para o checkout seguro</button>
                 <p id="paymentGateMessage" class="mt-3 text-sm text-red-700" role="status" aria-live="polite"></p>
-                <p class="mt-3 text-xs leading-relaxed text-gray-600">Depois de pagar, aguarde a confirmação manual e informe ao responsável pelo acesso que o pagamento foi feito.</p>
-                <button id="checkPaymentAccessButton" type="button" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Já paguei — verificar liberação</button>
+                <p class="mt-3 text-xs leading-relaxed text-gray-600">Após a confirmação do pagamento pelo Mercado Pago, o acesso será liberado automaticamente. Confira o valor e os dados do recebedor antes de concluir.</p>
+                <button id="checkPaymentAccessButton" type="button" class="mt-3 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Verificar meu acesso</button>
                 <button type="button" onclick="signOutCurrentUser()" class="mt-5 w-full rounded-lg border border-emerald-200 px-4 py-2 text-sm font-bold text-emerald-800 hover:bg-emerald-50">Sair da conta</button>
             </section>
             <form id="profileForm" class="mt-4" hidden>
