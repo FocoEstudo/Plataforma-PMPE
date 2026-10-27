@@ -97,11 +97,86 @@ service cloud.firestore {
         && profile.updatedAt == request.time;
     }
 
+    function hasAccess() {
+      return exists(/databases/$(database)/documents/access/$(request.auth.uid))
+        && get(/databases/$(database)/documents/access/$(request.auth.uid)).data.active == true;
+    }
+
+    function isValidSyncDoc(syncId) {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['key', 'value', 'deleted', 't'])
+        && data.keys().hasAll(['key', 'deleted', 't'])
+        && data.key is string
+        && data.key == syncId
+        && data.key.matches('^pmpe[A-Za-z0-9_]{0,100}$')
+        && data.deleted is bool
+        && data.t is number
+        && (!data.keys().hasAny(['value']) || data.value == null || (data.value is string && data.value.size() <= 900000));
+    }
+
+    function isValidTicket() {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['uid', 'email', 'name', 'type', 'subject', 'message', 'protocol', 'status', 'createdAt'])
+        && data.keys().hasAll(['uid', 'email', 'name', 'type', 'subject', 'message', 'protocol', 'status', 'createdAt'])
+        && data.uid == request.auth.uid
+        && data.email == request.auth.token.email
+        && data.name is string && data.name.size() <= 80
+        && data.type in ['duvida', 'suporte', 'sugestao', 'reclamacao', 'elogio', 'denuncia']
+        && data.subject is string && data.subject.size() >= 3 && data.subject.size() <= 120
+        && data.message is string && data.message.size() >= 10 && data.message.size() <= 3000
+        && data.protocol is string && data.protocol.size() >= 8 && data.protocol.size() <= 32
+        && data.status == 'open'
+        && data.createdAt == request.time;
+    }
+
+    function isValidTicketReview() {
+      let data = request.resource.data;
+      return data.diff(resource.data).affectedKeys().hasOnly(['status', 'reply', 'repliedAt'])
+        && data.status in ['open', 'answered', 'closed']
+        && (!data.keys().hasAny(['reply']) || (data.reply is string && data.reply.size() <= 3000));
+    }
+
+    function isValidFeedback() {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['uid', 'email', 'name', 'rating', 'category', 'liked', 'improve', 'createdAt'])
+        && data.keys().hasAll(['uid', 'email', 'name', 'rating', 'category', 'liked', 'improve', 'createdAt'])
+        && data.uid == request.auth.uid
+        && data.email == request.auth.token.email
+        && data.name is string && data.name.size() <= 80
+        && data.rating is int && data.rating >= 1 && data.rating <= 5
+        && data.category in ['geral', 'conteudo', 'videoaulas', 'flashcards', 'mapas', 'simulados', 'interface', 'desempenho']
+        && data.liked is string && data.liked.size() <= 1500
+        && data.improve is string && data.improve.size() <= 1500
+        && (data.liked.size() > 0 || data.improve.size() > 0)
+        && data.createdAt == request.time;
+    }
+
     match /users/{userId} {
       allow get: if isOwner(userId) || isAdmin();
       allow list: if false;
       allow create, update: if isOwner(userId) && hasValidProfile();
       allow delete: if false;
+
+      match /sync/{syncId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidSyncDoc(syncId);
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    match /tickets/{ticketId} {
+      allow get: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
+      allow list: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
+      allow create: if request.auth != null && hasAccess() && isValidTicket();
+      allow update: if isAdmin() && isValidTicketReview();
+      allow delete: if false;
+    }
+
+    match /feedbacks/{feedbackId} {
+      allow get: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
+      allow list: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
+      allow create: if request.auth != null && hasAccess() && isValidFeedback();
+      allow update, delete: if false;
     }
 
     match /access/{userId} {

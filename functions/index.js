@@ -2,6 +2,7 @@ const crypto = require("node:crypto");
 const { initializeApp } = require("firebase-admin/app");
 const { FieldValue, Timestamp, getFirestore } = require("firebase-admin/firestore");
 const { HttpsError, onCall, onRequest } = require("firebase-functions/v2/https");
+const { onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
 
 initializeApp();
@@ -302,6 +303,27 @@ const mercadoPagoWebhook = onRequest(
     });
 
     response.status(200).send("OK");
+  }
+);
+
+const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+
+// Enfileira um e-mail (extensão "Trigger Email" lê a coleção `mail`) quando a equipe responde um atendimento.
+exports.notifyTicketReply = onDocumentWritten(
+  { document: "tickets/{ticketId}", region: "southamerica-east1", maxInstances: 5 },
+  async event => {
+    const after = event.data?.after?.data();
+    if (!after || !after.reply || !after.email) return;
+    const before = event.data.before?.data();
+    if (before?.reply === after.reply) return;
+    await getFirestore().collection("mail").doc(`ticket-${event.params.ticketId}-${Date.now()}`).set({
+      to: [after.email],
+      message: {
+        subject: `Resposta ao seu atendimento ${after.protocol || ""}`.trim(),
+        text: `Olá, ${after.name || "aluno"}!\n\nSua solicitação "${after.subject}" foi respondida:\n\n${after.reply}\n\nVocê também pode ver a resposta na aba de atendimento do app.`,
+        html: `<p>Olá, ${escapeHtml(after.name || "aluno")}!</p><p>Sua solicitação <b>${escapeHtml(after.subject)}</b> foi respondida:</p><blockquote>${escapeHtml(after.reply).replace(/\n/g, "<br>")}</blockquote><p>Você também pode ver a resposta na aba de atendimento do app.</p>`
+      }
+    });
   }
 );
 

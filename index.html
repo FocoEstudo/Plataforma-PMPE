@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operação PMPE | Plataforma de Estudos</title>
+    <script src="cloud-sync.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dados-topicos.js"></script>
@@ -1444,7 +1445,8 @@
             inset: auto 0 0;
             z-index: 60;
             display: grid;
-            grid-template-columns: repeat(9, minmax(0, 1fr));
+            grid-template-columns: repeat(13, minmax(4.2rem, 1fr));
+            overflow-x: auto;
             padding: .5rem .25rem calc(.5rem + env(safe-area-inset-bottom));
             background: #102e20;
             border-top: 1px solid rgba(216, 243, 223, .2);
@@ -2230,6 +2232,108 @@
         #missionsSection img[src*="brasao-pmpe"] {
             height: 2.25rem;
         }
+
+        /* Flashcards e mapas mentais */
+        .study-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: .6rem; margin-bottom: 1rem; }
+        .study-stat { background: linear-gradient(160deg, #fff, #eef7f0); border: 1px solid #cfe3d6; border-radius: .75rem; padding: .55rem .8rem; color: #103a28; }
+        .study-stat strong { display: block; font-size: 1.35rem; line-height: 1.1; color: #176b45; }
+        .study-stat span { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: #4b6b58; }
+        .study-filters { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-end; margin-bottom: 1rem; }
+        .study-filters label { display: flex; flex-direction: column; gap: .2rem; font-size: .72rem; font-weight: 700; color: #35634a; text-transform: uppercase; letter-spacing: .05em; min-width: 11rem; flex: 1 1 11rem; }
+        .study-filters select, .study-filters input { background: #fff; color: #103a28; border: 1px solid #b9d3c1; border-radius: .5rem; padding: .5rem .6rem; font-size: .85rem; font-weight: 500; text-transform: none; letter-spacing: 0; width: 100%; }
+        .study-filter-buttons { display: flex; gap: .5rem; flex-wrap: wrap; }
+        .study-btn { background: linear-gradient(180deg, #fff, #e9f4ed); color: #176b45; border: 1px solid #a9cdb6; border-radius: .5rem; padding: .45rem .9rem; font-size: .8rem; font-weight: 700; cursor: pointer; }
+        .study-btn:hover { border-color: var(--pm-gold); background: #fff8e1; }
+        .study-btn-danger { color: #9b2c2c; border-color: #e3b5b5; }
+        .fc-stage { max-width: 46rem; margin: 0 auto; }
+        .fc-meta { display: flex; justify-content: space-between; align-items: center; font-size: .8rem; color: #35634a; margin-bottom: .5rem; font-weight: 700; }
+        .fc-badge { background: #fff4cc; color: #7a5a00; border: 1px solid #e0c35a; border-radius: 999px; padding: .1rem .6rem; font-size: .7rem; }
+        .fc-card { position: relative; min-height: 17rem; perspective: 1200px; cursor: pointer; outline-offset: 3px; }
+        .fc-face { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .8rem; text-align: center; padding: 1.5rem 1.4rem; border-radius: 1rem; backface-visibility: hidden; transition: transform .5s ease; overflow-y: auto; }
+        .fc-face p { font-size: 1.05rem; line-height: 1.55; font-weight: 600; max-width: 100%; white-space: pre-line; }
+        .fc-face small { font-size: .7rem; opacity: .75; }
+        .fc-front { background: linear-gradient(145deg, rgba(8, 38, 24, .86), rgba(23, 107, 69, .72)), var(--fc-photo, none) center / cover no-repeat, #0f3a26; color: #f4fff7; border: 2px solid var(--pm-gold); box-shadow: 0 14px 30px rgba(13, 45, 31, .22); }
+        .fc-front p { text-shadow: 0 2px 8px rgba(0, 0, 0, .55); }
+        .fc-front::after { content: ""; position: absolute; right: .8rem; top: .8rem; width: 2.6rem; height: 2.6rem; background: url('assets/brasao-pmpe.png') center / contain no-repeat; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); }
+        .fc-back { background: linear-gradient(145deg, rgba(255, 253, 243, .95), rgba(241, 248, 243, .93)), url('assets/brasao-pmpe.png') center / 9rem no-repeat, #fffdf3; color: #103a28; border: 2px solid #176b45; transform: rotateY(180deg); box-shadow: 0 14px 30px rgba(13, 45, 31, .16); }
+        .fc-card.is-flipped .fc-front { transform: rotateY(-180deg); }
+        .fc-card.is-flipped .fc-back { transform: rotateY(0); }
+        .fc-tag { font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; padding: .15rem .6rem; border-radius: 999px; background: rgba(255, 255, 255, .18); border: 1px solid rgba(212, 175, 55, .7); }
+        .fc-back .fc-tag { background: #e6f3ea; color: #176b45; }
+        .fc-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin-top: 1rem; }
+        .fc-actions[hidden] { display: none; }
+        .fc-btn { border-radius: .6rem; padding: .65rem .5rem; font-weight: 800; font-size: .85rem; color: #fff; border: 0; cursor: pointer; }
+        .fc-btn kbd { font-size: .65rem; opacity: .75; margin-left: .25rem; }
+        .fc-miss { background: linear-gradient(180deg, #d24a4a, #a62f2f); }
+        .fc-almost { background: linear-gradient(180deg, #d9a21c, #b07c0a); }
+        .fc-hit { background: linear-gradient(180deg, #2c9d63, #176b45); }
+        .fc-tools { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1rem; }
+        .fc-empty { padding: 2rem 1rem; text-align: center; color: #35634a; }
+
+        .mm-canvas { overflow-x: auto; padding: 1rem .5rem 1.5rem; background: linear-gradient(160deg, #fff, #f0f8f3); border: 1px solid #cfe3d6; border-radius: .9rem; }
+        .mm-root { display: inline-block; min-width: 100%; }
+        .mm-tree, .mm-tree ul { list-style: none; margin: 0; padding: 0 0 0 1.5rem; position: relative; }
+        .mm-tree ul { margin-left: .9rem; border-left: 2px solid var(--mm-color, #176b45); }
+        .mm-tree li { position: relative; padding: .28rem 0 .28rem 1rem; }
+        .mm-tree ul > li::before { content: ""; position: absolute; left: 0; top: 1.15rem; width: .9rem; border-top: 2px solid var(--mm-color, #176b45); }
+        .mm-node { display: inline-block; max-width: 44rem; text-align: left; border-radius: .6rem; padding: .35rem .75rem; font-size: .85rem; line-height: 1.4; border: 1.5px solid var(--mm-color, #176b45); background: #fff; color: #153a29; }
+        .mm-node.has-children { cursor: pointer; font-weight: 700; }
+        .mm-node.has-children::after { content: " ▸"; color: var(--mm-color, #176b45); }
+        li.is-open > .mm-node.has-children::after { content: " ▾"; }
+        li:not(.is-open) > ul { display: none; }
+        .mm-node.mm-root-node { background: linear-gradient(135deg, #0f3a26, #176b45); color: #fff; border: 2px solid var(--pm-gold); font-size: 1rem; font-weight: 800; padding: .6rem 1rem; }
+        .mm-node.mm-root-node::after { color: var(--pm-gold); }
+        .mm-node.mm-branch { background: var(--mm-color); color: #fff; font-weight: 700; }
+        .mm-node.mm-branch::after { color: #fff; }
+        .mm-node.mm-leaf-trap { background: #fff1f0; border-color: #c0392b; }
+        .mm-node.mm-leaf-ex { background: #eef6ff; border-color: #2f6fb1; }
+        .mm-node.mm-leaf-core { background: #f3faf5; }
+        .mm-leaf-label { display: block; font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; opacity: .8; }
+        /* Atendimento e feedback */
+        .desk-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
+        .desk-card { background: linear-gradient(160deg, #fff, #f1f8f3); border: 1px solid #cfe3d6; border-radius: .9rem; padding: 1rem 1.1rem; color: #153a29; display: flex; flex-direction: column; gap: .8rem; }
+        .desk-card h3 { font-size: 1.05rem; font-weight: 800; color: #103a28; }
+        .desk-card label { display: flex; flex-direction: column; gap: .25rem; font-size: .72rem; font-weight: 700; color: #35634a; text-transform: uppercase; letter-spacing: .05em; }
+        .desk-card input, .desk-card select, .desk-card textarea { background: #fff; color: #103a28; border: 1px solid #b9d3c1; border-radius: .5rem; padding: .55rem .65rem; font-size: .9rem; font-weight: 500; text-transform: none; letter-spacing: 0; width: 100%; }
+        .desk-card textarea { resize: vertical; }
+        .desk-foot { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
+        .desk-count { font-size: .72rem; color: #5b7a67; }
+        .desk-send { background: linear-gradient(180deg, #2c9d63, #176b45); color: #fff; border: 1px solid var(--pm-gold); border-radius: .6rem; padding: .6rem 1.1rem; font-weight: 800; font-size: .85rem; cursor: pointer; }
+        .desk-send:disabled { opacity: .6; cursor: wait; }
+        .desk-status { min-height: 1.2rem; font-size: .82rem; font-weight: 700; color: #176b45; }
+        .desk-status[data-error="true"] { color: #a52c22; }
+        .desk-note { font-size: .72rem; color: #5b7a67; }
+        .desk-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+        .desk-pill { display: inline-block; margin-left: .3rem; background: #fff4cc; color: #7a5a00; border: 1px solid #e0c35a; border-radius: 999px; padding: 0 .55rem; font-size: .72rem; }
+        .desk-list { display: flex; flex-direction: column; gap: .6rem; max-height: 32rem; overflow-y: auto; }
+        .desk-empty { color: #5b7a67; font-size: .85rem; padding: .5rem 0; }
+        .desk-item { background: #fff; border: 1px solid #d7e7dc; border-left: 4px solid #d9a21c; border-radius: .6rem; padding: .6rem .8rem; font-size: .85rem; }
+        .desk-item.is-answered { border-left-color: #176b45; }
+        .desk-item.is-closed { border-left-color: #8a8a8a; }
+        .desk-item header { display: flex; justify-content: space-between; gap: .5rem; flex-wrap: wrap; font-size: .7rem; color: #5b7a67; font-weight: 700; }
+        .desk-item strong { display: block; margin: .2rem 0; color: #103a28; }
+        .desk-item p { white-space: pre-line; overflow-wrap: anywhere; }
+        .desk-reply { margin-top: .5rem; padding: .5rem .7rem; background: #eef8f1; border: 1px solid #b9dcc6; border-radius: .5rem; }
+        .desk-reply b { color: #176b45; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; }
+        .desk-faq details { border-top: 1px solid #d7e7dc; padding: .55rem 0; }
+        .desk-faq summary { cursor: pointer; font-weight: 700; color: #103a28; font-size: .9rem; }
+        .desk-faq p { margin-top: .4rem; font-size: .85rem; color: #35634a; }
+        .fb-label { display: block; font-size: .72rem; font-weight: 700; color: #35634a; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .25rem; }
+        .fb-stars { display: flex; gap: .25rem; }
+        .fb-star { background: none; border: 0; font-size: 2rem; line-height: 1; color: #c9d8cf; cursor: pointer; padding: 0 .1rem; }
+        .fb-star.is-on { color: #d9a21c; text-shadow: 0 2px 6px rgba(217, 162, 28, .4); }
+        .fb-stars-static { color: #d9a21c; letter-spacing: .1em; }
+
+        @media print {
+            body.printing-mindmap > *:not(main), body.printing-mindmap main > *:not(#mindmapsPanel) { display: none !important; }
+            body.printing-mindmap #mindmapsPanel .study-filters, body.printing-mindmap #mindmapsPanel .police-banner { display: none !important; }
+            body.printing-mindmap li > ul { display: block !important; }
+            body.printing-mindmap .mm-canvas { overflow: visible; border: 0; }
+        }
+        @media (max-width: 767px) {
+            .mobile-dashboard-nav .dashboard-nav-item { min-width: 4.2rem; }
+            .fc-card { min-height: 20rem; }
+        }
     </style>
 </head>
 
@@ -2389,6 +2493,18 @@
             </button>
             <button class="dashboard-nav-item" id="desktopTab-pdfs" type="button" role="tab" aria-selected="false" aria-controls="pdfsPanel" tabindex="-1" data-open-dashboard-view="pdfs">
                 <i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>PDFs</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-flashcards" type="button" role="tab" aria-selected="false" aria-controls="flashcardsPanel" tabindex="-1" data-open-dashboard-view="flashcards">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>Flashcards</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-mindmaps" type="button" role="tab" aria-selected="false" aria-controls="mindmapsPanel" tabindex="-1" data-open-dashboard-view="mindmaps">
+                <i class="fa-solid fa-diagram-project" aria-hidden="true"></i><span>Mapas mentais</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-supportdesk" type="button" role="tab" aria-selected="false" aria-controls="supportDeskPanel" tabindex="-1" data-open-dashboard-view="supportdesk">
+                <i class="fa-solid fa-headset" aria-hidden="true"></i><span>Atendimento</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-feedback" type="button" role="tab" aria-selected="false" aria-controls="feedbackPanel" tabindex="-1" data-open-dashboard-view="feedback">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><span>Feedback</span>
             </button>
             <button class="dashboard-nav-item" id="desktopTab-simulations" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="simulations">
                 <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span>Simulados</span>
@@ -2751,6 +2867,7 @@
                     </div>
                     <p id="videoPlayerStatus" class="mt-2 text-sm text-gray-300" role="status" aria-live="polite"></p>
                     <a id="videoLessonExternalLink" class="mt-3 inline-block text-sm font-bold text-emerald-300 underline underline-offset-2" href="#" target="_blank" rel="noopener noreferrer">Abrir vídeo no YouTube</a>
+                    <p class="mt-3 text-sm text-gray-300">Cansado de anúncios nos vídeos? <a class="font-bold text-emerald-300 underline underline-offset-2" href="https://www.youtube.com/premium" target="_blank" rel="noopener noreferrer">Conheça o YouTube Premium</a> e assista sem interrupções.</p>
                 </div>
                 <aside class="video-notes-panel rounded-lg border border-slate-700 bg-slate-900/80 p-4" aria-labelledby="videoNotesHeading">
                     <h3 id="videoNotesHeading" class="font-bold text-white"><i class="fa-solid fa-pen-to-square mr-2 text-emerald-400" aria-hidden="true"></i>Anotações da aula</h3>
@@ -3033,6 +3150,170 @@
                 </div>
             </div>
         </section>
+
+        <section id="flashcardsPanel" class="dashboard-panel glass-panel p-4 md:p-6 rounded-xl border border-slate-700" role="tabpanel" aria-labelledby="desktopTab-flashcards" hidden>
+            <div class="police-banner mb-5">
+                <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
+                <div class="police-banner-body">
+                    <span class="police-banner-eyebrow">Memorização ativa</span>
+                    <h2 class="police-banner-title"><i class="fa-solid fa-layer-group mr-2" aria-hidden="true"></i>Flashcards</h2>
+                    <p class="police-banner-text">Cartões gerados do conteúdo da plataforma: conceitos, exemplos, pegadinhas e questões. A revisão espaçada traz de volta o que você erra.</p>
+                </div>
+            </div>
+            <div class="study-stats" id="fcStats" aria-live="polite"></div>
+            <div class="study-filters">
+                <label>Disciplina<select id="fcSubject"></select></label>
+                <label>Tema<select id="fcTheme"></select></label>
+                <label>Tipo<select id="fcType"></select></label>
+                <label>Modo<select id="fcMode">
+                    <option value="due">Para revisar (novos + em aprendizado)</option>
+                    <option value="missed">Só os que errei</option>
+                    <option value="mastered">Dominados</option>
+                    <option value="all">Todos</option>
+                </select></label>
+                <label class="study-filter-search">Buscar<input id="fcSearch" type="search" placeholder="Palavra-chave..."></label>
+            </div>
+            <div class="fc-stage">
+                <div class="fc-meta"><span id="fcCounter"></span><span id="fcBadge" class="fc-badge"></span></div>
+                <div id="fcCard" class="fc-card" role="button" tabindex="0" aria-label="Virar cartão">
+                    <div class="fc-face fc-front"><span class="fc-tag" id="fcFrontTag"></span><p id="fcFrontText"></p><small>Clique ou pressione Espaço para virar</small></div>
+                    <div class="fc-face fc-back"><span class="fc-tag" id="fcBackTag">Resposta</span><p id="fcBackText"></p><small id="fcSource"></small></div>
+                </div>
+                <div class="fc-actions" id="fcActions" hidden>
+                    <button type="button" data-fc-grade="0" class="fc-btn fc-miss"><i class="fa-solid fa-xmark"></i> Errei <kbd>1</kbd></button>
+                    <button type="button" data-fc-grade="1" class="fc-btn fc-almost"><i class="fa-solid fa-minus"></i> Quase <kbd>2</kbd></button>
+                    <button type="button" data-fc-grade="2" class="fc-btn fc-hit"><i class="fa-solid fa-check"></i> Acertei <kbd>3</kbd></button>
+                </div>
+                <div class="fc-tools">
+                    <button type="button" id="fcPrev" class="study-btn">Anterior</button>
+                    <button type="button" id="fcShuffle" class="study-btn">Embaralhar</button>
+                    <button type="button" id="fcOpenPdf" class="study-btn">Ver no PDF</button>
+                    <button type="button" id="fcReset" class="study-btn study-btn-danger">Zerar progresso</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="mindmapsPanel" class="dashboard-panel glass-panel p-4 md:p-6 rounded-xl border border-slate-700" role="tabpanel" aria-labelledby="desktopTab-mindmaps" hidden>
+            <div class="police-banner mb-5">
+                <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
+                <div class="police-banner-body">
+                    <span class="police-banner-eyebrow">Visão de conjunto</span>
+                    <h2 class="police-banner-title"><i class="fa-solid fa-diagram-project mr-2" aria-hidden="true"></i>Mapas mentais</h2>
+                    <p class="police-banner-text">Cada disciplina do edital organizada em ramos: tópicos do edital, temas, lições, exemplos e pegadinhas. Clique nos ramos para abrir ou fechar.</p>
+                </div>
+            </div>
+            <div class="study-filters">
+                <label>Disciplina<select id="mmSubject"></select></label>
+                <label>Mapa<select id="mmTheme"></select></label>
+                <div class="study-filter-buttons">
+                    <button type="button" id="mmExpand" class="study-btn">Expandir tudo</button>
+                    <button type="button" id="mmCollapse" class="study-btn">Recolher</button>
+                    <button type="button" id="mmPrint" class="study-btn">Imprimir</button>
+                </div>
+            </div>
+            <div id="mmCanvas" class="mm-canvas" aria-live="polite"></div>
+        </section>
+
+        <section id="supportDeskPanel" class="dashboard-panel glass-panel p-4 md:p-6 rounded-xl border border-slate-700" role="tabpanel" aria-labelledby="desktopTab-supportdesk" hidden>
+            <div class="police-banner mb-5">
+                <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
+                <div class="police-banner-body">
+                    <span class="police-banner-eyebrow">Canal oficial</span>
+                    <h2 class="police-banner-title"><i class="fa-solid fa-headset mr-2" aria-hidden="true"></i>Central de atendimento e ouvidoria</h2>
+                    <p class="police-banner-text">Tire dúvidas, peça suporte, envie sugestões, elogios, reclamações ou denúncias. Cada mensagem gera um protocolo e a resposta aparece aqui.</p>
+                </div>
+            </div>
+            <div class="desk-grid">
+                <form id="deskForm" class="desk-card" onsubmit="return false" novalidate>
+                    <h3>Novo atendimento</h3>
+                    <label>Tipo de contato
+                        <select id="deskType">
+                            <option value="duvida">Dúvida sobre a plataforma ou o conteúdo</option>
+                            <option value="suporte">Suporte técnico (erro, acesso, pagamento)</option>
+                            <option value="sugestao">Sugestão de melhoria</option>
+                            <option value="elogio">Elogio</option>
+                            <option value="reclamacao">Reclamação (ouvidoria)</option>
+                            <option value="denuncia">Denúncia (ouvidoria)</option>
+                        </select>
+                    </label>
+                    <label>Assunto
+                        <input id="deskSubject" type="text" maxlength="120" placeholder="Resuma em poucas palavras">
+                    </label>
+                    <label>Mensagem
+                        <textarea id="deskMessage" rows="6" maxlength="3000" placeholder="Descreva com detalhes. Se for um erro, diga em qual aba e o que aconteceu."></textarea>
+                    </label>
+                    <div class="desk-foot">
+                        <span id="deskCount" class="desk-count">0 / 3000</span>
+                        <button type="submit" id="deskSend" class="desk-send"><i class="fa-solid fa-paper-plane mr-1"></i> Enviar atendimento</button>
+                    </div>
+                    <p id="deskStatus" class="desk-status" role="status" aria-live="polite"></p>
+                    <p class="desk-note">Suas mensagens ficam vinculadas à sua conta e só você e a administração conseguem lê-las.</p>
+                </form>
+                <div class="desk-card">
+                    <div class="desk-head"><h3>Meus atendimentos <span id="deskTotal" class="desk-pill">0</span></h3><button type="button" id="deskRefresh" class="study-btn">Atualizar</button></div>
+                    <div id="deskList" class="desk-list" aria-live="polite"><p class="desk-empty">Carregando...</p></div>
+                </div>
+            </div>
+            <div class="desk-card mt-4">
+                <h3>Perguntas frequentes</h3>
+                <div class="desk-faq">
+                    <details><summary>Meu progresso sumiu em outro aparelho. E agora?</summary><p>O progresso é salvo na sua conta. Entre com o mesmo e-mail e aguarde a mensagem "Sincronizando seu progresso". Se usou antes um aparelho sem essa atualização, abra a plataforma primeiro nele para enviar os dados.</p></details>
+                    <details><summary>O vídeo da aula não abre.</summary><p>Abra a plataforma por um endereço https (não pelo arquivo no computador) e confira a internet. Se persistir, abra um atendimento de suporte informando o número da aula.</p></details>
+                    <details><summary>Paguei e o acesso não foi liberado.</summary><p>A liberação é conferida manualmente. Abra um atendimento de suporte com o comprovante do Pix e o e-mail cadastrado.</p></details>
+                    <details><summary>Como funcionam os flashcards?</summary><p>Vire o cartão, marque Errei, Quase ou Acertei. Os que você erra voltam antes. Três acertos seguidos deixam o cartão como dominado.</p></details>
+                    <details><summary>Posso alterar meu plano de estudos?</summary><p>Sim. Edite seu perfil pelo ícone da conta, no topo, e ajuste dias, horários e intensidade.</p></details>
+                    <details><summary>O que a ouvidoria atende?</summary><p>Reclamações, denúncias e elogios sobre a plataforma, o conteúdo ou o atendimento. Você recebe um protocolo e a resposta aqui.</p></details>
+                </div>
+            </div>
+        </section>
+
+        <section id="feedbackPanel" class="dashboard-panel glass-panel p-4 md:p-6 rounded-xl border border-slate-700" role="tabpanel" aria-labelledby="desktopTab-feedback" hidden>
+            <div class="police-banner mb-5">
+                <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
+                <div class="police-banner-body">
+                    <span class="police-banner-eyebrow">Sua opinião move a missão</span>
+                    <h2 class="police-banner-title"><i class="fa-solid fa-star mr-2" aria-hidden="true"></i>Feedback</h2>
+                    <p class="police-banner-text">Avalie a plataforma e diga o que funciona e o que pode melhorar. Leva menos de um minuto.</p>
+                </div>
+            </div>
+            <div class="desk-grid">
+                <form id="fbForm" class="desk-card" onsubmit="return false" novalidate>
+                    <h3>Avaliar a plataforma</h3>
+                    <div>
+                        <span class="fb-label">Sua nota</span>
+                        <div id="fbStars" class="fb-stars" role="radiogroup" aria-label="Nota de 1 a 5"></div>
+                        <span id="fbRatingText" class="desk-count">Selecione de 1 a 5 estrelas</span>
+                    </div>
+                    <label>Sobre o quê?
+                        <select id="fbCategory">
+                            <option value="geral">Plataforma em geral</option>
+                            <option value="conteudo">Conteúdo e PDFs</option>
+                            <option value="videoaulas">Videoaulas</option>
+                            <option value="flashcards">Flashcards</option>
+                            <option value="mapas">Mapas mentais</option>
+                            <option value="simulados">Simulados e questões</option>
+                            <option value="interface">Visual e facilidade de uso</option>
+                            <option value="desempenho">Velocidade e estabilidade</option>
+                        </select>
+                    </label>
+                    <label>O que você mais gostou?
+                        <textarea id="fbLiked" rows="3" maxlength="1500" placeholder="Opcional se preencher o campo abaixo"></textarea>
+                    </label>
+                    <label>O que podemos melhorar?
+                        <textarea id="fbImprove" rows="3" maxlength="1500" placeholder="Ideias, erros encontrados, conteúdos que faltam..."></textarea>
+                    </label>
+                    <div class="desk-foot">
+                        <span></span>
+                        <button type="submit" id="fbSend" class="desk-send"><i class="fa-solid fa-paper-plane mr-1"></i> Enviar feedback</button>
+                    </div>
+                    <p id="fbStatus" class="desk-status" role="status" aria-live="polite"></p>
+                </form>
+                <div class="desk-card">
+                    <div class="desk-head"><h3>Meus feedbacks <span id="fbTotal" class="desk-pill">0</span></h3></div>
+                    <div id="fbList" class="desk-list" aria-live="polite"><p class="desk-empty">Carregando...</p></div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <nav class="mobile-dashboard-nav" role="tablist" aria-label="Navegação rápida">
@@ -3050,6 +3331,18 @@
         </button>
         <button class="dashboard-nav-item" id="mobileTab-pdfs" type="button" role="tab" aria-selected="false" aria-controls="pdfsPanel" tabindex="-1" data-open-dashboard-view="pdfs">
             <i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>PDFs</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-flashcards" type="button" role="tab" aria-selected="false" aria-controls="flashcardsPanel" tabindex="-1" data-open-dashboard-view="flashcards">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>Cards</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-mindmaps" type="button" role="tab" aria-selected="false" aria-controls="mindmapsPanel" tabindex="-1" data-open-dashboard-view="mindmaps">
+            <i class="fa-solid fa-diagram-project" aria-hidden="true"></i><span>Mapas</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-supportdesk" type="button" role="tab" aria-selected="false" aria-controls="supportDeskPanel" tabindex="-1" data-open-dashboard-view="supportdesk">
+            <i class="fa-solid fa-headset" aria-hidden="true"></i><span>Atend.</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-feedback" type="button" role="tab" aria-selected="false" aria-controls="feedbackPanel" tabindex="-1" data-open-dashboard-view="feedback">
+            <i class="fa-solid fa-star" aria-hidden="true"></i><span>Feedback</span>
         </button>
         <button class="dashboard-nav-item" id="mobileTab-simulations" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="simulations">
             <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span>Simulado</span>
@@ -3075,7 +3368,11 @@
             simulations: document.getElementById('studySupport'),
             support: document.getElementById('studySupport'),
             writing: document.getElementById('writingPanel'),
-            errors: document.getElementById('errorsPanel')
+            errors: document.getElementById('errorsPanel'),
+            flashcards: document.getElementById('flashcardsPanel'),
+            mindmaps: document.getElementById('mindmapsPanel'),
+            supportdesk: document.getElementById('supportDeskPanel'),
+            feedback: document.getElementById('feedbackPanel')
         };
 
         const dashboardShortcuts = Array.from(document.querySelectorAll('.dashboard-shortcut[data-open-subject-mission]'));
@@ -4235,6 +4532,7 @@
             { sub: "Direito Constitucional", topic: "Segurança Pública (Art. 144) e Extradição", quizTopics: ["Art. 144 e Atribuições Policiais", "Nacionalidade e Extradição"], mat: "mat_mission_17", quiz: "Direito Constitucional", moduleId: 16 },
             { sub: "Direitos Humanos e Legislação Extravagante", topic: "Lei de Drogas, ECA e Maria da Penha", quizTopics: ["Lei de Drogas, ECA e Maria da Penha", "ECA: proteção integral e ato infracional", "Lei Maria da Penha"], mat: "mat_mission_18", quiz: "Direitos Humanos e Legislação Extravagante", moduleId: 17 }
         ];
+                    window.PMPE_EDITAL_MODULES = editalModules;
 
         const operationDays = [];
         const STUDY_MODE_CONFIG = {
@@ -5538,6 +5836,7 @@
         // 5. MOTOR PROCEDURAL DA AOCP (GERAÇÃO BLINDADA COM 30 FORMATOS)
         // =========================================================================
         const baseQuizTemplates = { "Língua Portuguesa": [], "História de Pernambuco": [], "Raciocínio Lógico Matemático": [], "Informática Básica": [], "Direito Constitucional": [], "Direitos Humanos e Legislação Extravagante": [] };
+        window.PMPE_QUIZ_POOLS = baseQuizTemplates;
 
         function populateMassiveDatabase() {
             Object.values(baseQuizTemplates).forEach(pool => pool.splice(0, pool.length));
@@ -7394,6 +7693,534 @@
                 if (container) container.innerHTML = '<div class="bg-red-100 text-red-900 p-4 rounded">Não foi possível carregar as missões. Confira o console do navegador.</div>';
             }
         });
+    </script>
+    <script>
+        (function () {
+            const FC_KEY = 'pmpeFlashcardsV1';
+            const TYPES = { concept: 'Conceito', example: 'Exemplo prático', trap: 'Pegadinha da banca', question: 'Questão' };
+            const FC_PHOTOS = ['assets/fotos/viaturas-pacto-pela-vida.jpg', 'assets/fotos/cavalaria-olinda.jpg', 'assets/fotos/policia-militar.jpg'];
+            const PALETTE = ['#176b45', '#2f6fb1', '#a8641a', '#7a3e9d', '#b0392f', '#0f7f86', '#6b7a1c', '#8a4a2b'];
+            const $ = id => document.getElementById(id);
+            const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+            const clean = s => String(s || '').replace(/^\s*\d+\s*[.)-]\s*/, '').trim();
+            const clip = (s, n) => (s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s);
+            const hash = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+
+            let deck = null;
+            let themes = null;
+            let progress = {};
+            let queue = [];
+            let idx = 0;
+            let uiReady = false;
+
+            try { progress = JSON.parse(localStorage.getItem(FC_KEY) || '{}') || {}; } catch (e) { progress = {}; }
+            const save = () => { try { localStorage.setItem(FC_KEY, JSON.stringify(progress)); } catch (e) { /* armazenamento indisponível */ } };
+
+            function collectThemes() {
+                const guides = window.PMPE_TOPIC_GUIDES || {};
+                const list = [];
+                const seen = new Set();
+                const push = (topic, subject, mat) => {
+                    const guide = guides[topic];
+                    if (!guide || seen.has(topic) || !subject) return;
+                    seen.add(topic);
+                    list.push({ topic, subject, mat: guide.materialKey || mat || '', guide });
+                };
+                (window.PMPE_EDITAL_MODULES || []).forEach(m => push(m.topic, m.sub, m.mat));
+                Object.entries(guides).forEach(([topic, guide]) => push(topic, guide.subject, guide.materialKey));
+                return list;
+            }
+
+            function buildDeck() {
+                themes = collectThemes();
+                const cards = [];
+                const seenFront = new Set();
+                const add = (subject, theme, type, front, back, mat) => {
+                    front = String(front || '').trim();
+                    back = String(back || '').trim();
+                    if (!front || !back) return;
+                    const key = norm(front) + '|' + type;
+                    if (seenFront.has(key)) return;
+                    seenFront.add(key);
+                    cards.push({ id: 'c' + hash(type + '|' + front), subject, theme, type, front, back, mat });
+                };
+                themes.forEach(({ topic, subject, mat, guide }) => {
+                    (guide.lessons || []).forEach(l => {
+                        if (!Array.isArray(l)) return;
+                        const title = clean(l[0]);
+                        add(subject, topic, 'concept', title, l[1], mat);
+                        add(subject, topic, 'example', 'Dê um exemplo prático de: ' + title, l[2], mat);
+                        add(subject, topic, 'trap', 'Qual é a pegadinha ou ponto de atenção em: ' + title + '?', l[3], mat);
+                    });
+                    (guide.practice || []).forEach((q, i) => add(subject, topic, 'question', q, (guide.answers || [])[i], mat));
+                });
+                const matByTheme = new Map(themes.map(t => [t.topic, t.mat]));
+                Object.entries(window.PMPE_QUIZ_POOLS || {}).forEach(([subject, pool]) => {
+                    pool.forEach(q => {
+                        const prefix = `Tópico: ${q.topic}. `;
+                        if (!q.text || !q.text.startsWith(prefix)) return;
+                        const theme = (q.moduleTopics && q.moduleTopics[0]) || q.topic;
+                        const answer = q.options && q.options[q.correct];
+                        add(subject, theme, 'question', q.text.slice(prefix.length), answer ? `${answer}${q.exp ? '\n\n' + q.exp : ''}` : '', matByTheme.get(theme) || '');
+                    });
+                });
+                deck = cards;
+            }
+
+            const entry = id => progress[id] || { b: 0, s: 0, l: null };
+            const isMastered = id => entry(id).b >= 3;
+
+            function fillSelect(sel, options, keep) {
+                const prev = keep ? sel.value : '';
+                sel.textContent = '';
+                options.forEach(([value, label]) => { const o = document.createElement('option'); o.value = value; o.textContent = label; sel.appendChild(o); });
+                if (prev && options.some(o => o[0] === prev)) sel.value = prev;
+            }
+
+            function fillFilters() {
+                const subjects = [...new Set(deck.map(c => c.subject))];
+                fillSelect($('fcSubject'), [['', `Todas as disciplinas (${deck.length})`], ...subjects.map(s => [s, `${s} (${deck.filter(c => c.subject === s).length})`])], true);
+                fillThemes();
+                fillSelect($('fcType'), [['', 'Todos os tipos'], ...Object.entries(TYPES)], true);
+            }
+
+            function fillThemes() {
+                const subject = $('fcSubject').value;
+                const pool = deck.filter(c => !subject || c.subject === subject);
+                const names = [...new Set(pool.map(c => c.theme))];
+                fillSelect($('fcTheme'), [['', `Todos os temas (${pool.length})`], ...names.map(t => [t, `${clean(t)} (${pool.filter(c => c.theme === t).length})`])], true);
+            }
+
+            function scopeCards() {
+                const subject = $('fcSubject').value;
+                const theme = $('fcTheme').value;
+                return deck.filter(c => (!subject || c.subject === subject) && (!theme || c.theme === theme));
+            }
+
+            function renderStats() {
+                const scope = scopeCards();
+                const fresh = scope.filter(c => !progress[c.id]).length;
+                const mastered = scope.filter(c => isMastered(c.id)).length;
+                const missed = scope.filter(c => entry(c.id).l === 0 && !isMastered(c.id)).length;
+                const learning = scope.length - fresh - mastered;
+                const items = [[scope.length, 'Cartões'], [fresh, 'Novos'], [learning, 'Aprendendo'], [mastered, 'Dominados'], [missed, 'Para reforçar']];
+                const box = $('fcStats');
+                box.textContent = '';
+                items.forEach(([n, label]) => {
+                    const d = document.createElement('div'); d.className = 'study-stat';
+                    const s = document.createElement('strong'); s.textContent = n;
+                    const l = document.createElement('span'); l.textContent = label;
+                    d.append(s, l); box.appendChild(d);
+                });
+            }
+
+            function shuffle(arr) {
+                for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+                return arr;
+            }
+
+            function buildQueue(reshuffle) {
+                const type = $('fcType').value;
+                const mode = $('fcMode').value;
+                const term = norm($('fcSearch').value);
+                let list = scopeCards().filter(c => (!type || c.type === type) && (!term || norm(c.front + ' ' + c.back).includes(term)));
+                if (mode === 'due') list = list.filter(c => !isMastered(c.id));
+                else if (mode === 'missed') list = list.filter(c => entry(c.id).l === 0 && !isMastered(c.id));
+                else if (mode === 'mastered') list = list.filter(c => isMastered(c.id));
+                if (mode === 'due' || mode === 'missed' || reshuffle) {
+                    shuffle(list);
+                    if (mode === 'due' || mode === 'missed') list.sort((a, b) => entry(a.id).b - entry(b.id).b);
+                }
+                queue = list;
+                idx = 0;
+                renderCard();
+                renderStats();
+            }
+
+            function renderCard() {
+                const card = $('fcCard');
+                card.classList.remove('is-flipped');
+                $('fcActions').hidden = true;
+                const c = queue[idx];
+                if (!c) {
+                    $('fcCounter').textContent = queue.length ? 'Rodada concluída' : 'Nenhum cartão neste filtro';
+                    $('fcBadge').textContent = '';
+                    $('fcFrontTag').textContent = queue.length ? 'Missão cumprida' : 'Sem cartões';
+                    $('fcFrontText').textContent = queue.length ? 'Você percorreu todos os cartões desta rodada. Clique em "Embaralhar" para começar outra.' : 'Ajuste os filtros ou o modo de estudo para encontrar cartões.';
+                    $('fcBackText').textContent = '';
+                    $('fcSource').textContent = '';
+                    return;
+                }
+                $('fcCounter').textContent = `Cartão ${idx + 1} de ${queue.length}`;
+                $('fcBadge').textContent = `${clean(c.theme)}`;
+                $('fcFrontTag').textContent = TYPES[c.type];
+                const photo = FC_PHOTOS[parseInt(hash(c.id), 36) % FC_PHOTOS.length];
+                $('fcCard').style.setProperty('--fc-photo', `url("${photo}")`);
+                $('fcFrontText').textContent = c.front;
+                $('fcBackText').textContent = c.back;
+                $('fcSource').textContent = c.subject;
+            }
+
+            function flip() {
+                if (!queue[idx]) return;
+                const flipped = $('fcCard').classList.toggle('is-flipped');
+                $('fcActions').hidden = !flipped;
+            }
+
+            function grade(g) {
+                const c = queue[idx];
+                if (!c || !$('fcCard').classList.contains('is-flipped')) return;
+                const e = entry(c.id);
+                e.s += 1; e.l = g;
+                e.b = g === 0 ? 0 : g === 1 ? Math.max(e.b, 1) : Math.min(e.b + 1, 4);
+                progress[c.id] = e;
+                save();
+                idx += 1;
+                renderCard();
+                renderStats();
+            }
+
+            function setupFlashcards() {
+                ['fcSubject', 'fcTheme', 'fcType', 'fcMode'].forEach(id => $(id).addEventListener('change', () => {
+                    if (id === 'fcSubject') fillThemes();
+                    buildQueue(false);
+                }));
+                $('fcSearch').addEventListener('input', () => buildQueue(false));
+                $('fcCard').addEventListener('click', flip);
+                $('fcActions').addEventListener('click', e => { const b = e.target.closest('[data-fc-grade]'); if (b) grade(Number(b.dataset.fcGrade)); });
+                $('fcShuffle').addEventListener('click', () => buildQueue(true));
+                $('fcPrev').addEventListener('click', () => { if (idx > 0) { idx -= 1; renderCard(); } });
+                $('fcOpenPdf').addEventListener('click', () => {
+                    const c = queue[idx];
+                    if (c && c.mat && window.openMaterialModal) window.openMaterialModal(c.mat);
+                });
+                $('fcReset').addEventListener('click', () => {
+                    if (!window.confirm('Zerar todo o progresso dos flashcards neste navegador?')) return;
+                    progress = {}; save(); buildQueue(false);
+                });
+                document.addEventListener('keydown', e => {
+                    if ($('flashcardsPanel').hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+                    if (/^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) return;
+                    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
+                    else if (['1', '2', '3'].includes(e.key)) grade(Number(e.key) - 1);
+                    else if (e.key === 'ArrowRight' && idx < queue.length) { idx += 1; renderCard(); }
+                    else if (e.key === 'ArrowLeft' && idx > 0) { idx -= 1; renderCard(); }
+                });
+            }
+
+            /* ---------------- Mapas mentais ---------------- */
+            function syllabusBySubject() {
+                const map = new Map();
+                document.querySelectorAll('#syllabusSection details').forEach(d => {
+                    const summary = d.querySelector('summary');
+                    if (!summary) return;
+                    const name = norm(summary.firstChild ? summary.textContent.split('(')[0] : '');
+                    const items = [...d.querySelectorAll('li')].map(li => li.textContent.trim()).filter(Boolean);
+                    if (name && items.length) map.set(name, items);
+                });
+                return map;
+            }
+
+            function node(text, opts = {}) {
+                const li = document.createElement('li');
+                const box = document.createElement('div');
+                box.className = 'mm-node ' + (opts.cls || '');
+                if (opts.label) { const l = document.createElement('span'); l.className = 'mm-leaf-label'; l.textContent = opts.label; box.appendChild(l); }
+                box.appendChild(document.createTextNode(text));
+                li.appendChild(box);
+                if (opts.color) li.style.setProperty('--mm-color', opts.color);
+                if (opts.children && opts.children.length) {
+                    const ul = document.createElement('ul');
+                    opts.children.forEach(c => ul.appendChild(c));
+                    li.appendChild(ul);
+                    box.classList.add('has-children');
+                    if (opts.open) li.classList.add('is-open');
+                }
+                return li;
+            }
+
+            function lessonNodes(guide) {
+                return (guide.lessons || []).filter(Array.isArray).map(l => node(clean(l[0]), {
+                    cls: 'mm-branch',
+                    children: [
+                        l[1] && node(clip(l[1], 340), { cls: 'mm-leaf-core', label: 'Conceito' }),
+                        l[2] && node(clip(l[2], 340), { cls: 'mm-leaf-ex', label: 'Exemplo' }),
+                        l[3] && node(clip(l[3], 340), { cls: 'mm-leaf-trap', label: 'Pegadinha' })
+                    ].filter(Boolean)
+                }));
+            }
+
+            function themeBranch(t, color) {
+                const scope = (t.guide.scope || []).map(s => node(clip(String(s), 260), { cls: 'mm-leaf-core' }));
+                const children = [];
+                if (scope.length) children.push(node('Escopo cobrado', { cls: 'mm-branch', children: scope }));
+                children.push(...lessonNodes(t.guide));
+                const qa = (t.guide.practice || []).map((q, i) => node(clip(String(q), 220), {
+                    cls: 'mm-leaf-ex', label: 'Pergunta',
+                    children: [node(clip(String((t.guide.answers || [])[i] || ''), 300), { cls: 'mm-leaf-core', label: 'Resposta' })]
+                }));
+                if (qa.length) children.push(node('Treino rápido', { cls: 'mm-branch', children: qa }));
+                return node(clean(t.topic), { cls: 'mm-branch', color, children });
+            }
+
+            function renderMap() {
+                const subject = $('mmSubject').value;
+                const themeName = $('mmTheme').value;
+                const canvas = $('mmCanvas');
+                canvas.textContent = '';
+                const subjectThemes = themes.filter(t => t.subject === subject);
+                let root;
+                if (themeName) {
+                    const t = subjectThemes.find(x => x.topic === themeName);
+                    if (!t) return;
+                    const color = PALETTE[subjectThemes.indexOf(t) % PALETTE.length];
+                    const branch = themeBranch(t, color);
+                    root = node(clean(t.topic), { cls: 'mm-root-node', color, open: true, children: [...branch.querySelector('ul').children] });
+                    [...root.querySelector('ul').children].forEach((c, i) => c.style.setProperty('--mm-color', PALETTE[i % PALETTE.length]));
+                } else {
+                    const children = [];
+                    const edital = syllabusBySubject();
+                    const key = [...edital.keys()].find(k => k === norm(subject) || norm(subject).startsWith(k) || k.startsWith(norm(subject)));
+                    if (key) children.push(node('Tópicos do edital', { cls: 'mm-branch', color: PALETTE[0], open: true, children: edital.get(key).map(i => node(clip(i, 220), { cls: 'mm-leaf-core' })) }));
+                    subjectThemes.forEach((t, i) => children.push(themeBranch(t, PALETTE[(i + 1) % PALETTE.length])));
+                    root = node(subject, { cls: 'mm-root-node', open: true, children });
+                }
+                const tree = document.createElement('ul');
+                tree.className = 'mm-tree mm-root';
+                tree.appendChild(root);
+                canvas.appendChild(tree);
+            }
+
+            function fillMapThemes() {
+                const subject = $('mmSubject').value;
+                fillSelect($('mmTheme'), [['', 'Visão geral da disciplina'], ...themes.filter(t => t.subject === subject).map(t => [t.topic, clean(t.topic)])], false);
+            }
+
+            function setAllOpen(open) {
+                document.querySelectorAll('#mmCanvas li').forEach(li => {
+                    if (!li.querySelector(':scope > ul')) return;
+                    if (open || li.querySelector(':scope > .mm-root-node')) li.classList.add('is-open');
+                    else li.classList.remove('is-open');
+                });
+            }
+
+            function setupMindmaps() {
+                const subjects = [...new Set(themes.map(t => t.subject))];
+                fillSelect($('mmSubject'), subjects.map(s => [s, s]), false);
+                fillMapThemes();
+                $('mmSubject').addEventListener('change', () => { fillMapThemes(); renderMap(); });
+                $('mmTheme').addEventListener('change', renderMap);
+                $('mmCanvas').addEventListener('click', e => {
+                    const box = e.target.closest('.mm-node.has-children');
+                    if (box) box.parentElement.classList.toggle('is-open');
+                });
+                $('mmExpand').addEventListener('click', () => setAllOpen(true));
+                $('mmCollapse').addEventListener('click', () => setAllOpen(false));
+                $('mmPrint').addEventListener('click', () => {
+                    setAllOpen(true);
+                    document.body.classList.add('printing-mindmap');
+                    window.addEventListener('afterprint', () => document.body.classList.remove('printing-mindmap'), { once: true });
+                    window.print();
+                });
+                renderMap();
+            }
+
+            function ensure(which) {
+                if (!deck || !deck.length) buildDeck();
+                if (!uiReady) {
+                    uiReady = true;
+                    fillFilters();
+                    setupFlashcards();
+                    setupMindmaps();
+                    buildQueue(false);
+                }
+                if (which === 'flashcards') renderStats();
+            }
+
+            [['flashcardsPanel', 'flashcards'], ['mindmapsPanel', 'mindmaps']].forEach(([id, which]) => {
+                const panel = $(id);
+                if (!panel) return;
+                new MutationObserver(() => { if (!panel.hidden) { try { ensure(which); } catch (err) { console.error('Falha ao montar estudo ativo:', err); } } })
+                    .observe(panel, { attributes: true, attributeFilter: ['hidden'] });
+            });
+        })();
+    </script>
+    <script>
+        (function () {
+            const $ = id => document.getElementById(id);
+            const TYPE_LABEL = { duvida: 'Dúvida', suporte: 'Suporte técnico', sugestao: 'Sugestão', elogio: 'Elogio', reclamacao: 'Reclamação', denuncia: 'Denúncia' };
+            const STATUS_LABEL = { open: 'Aguardando resposta', answered: 'Respondido', closed: 'Encerrado' };
+            const CAT_LABEL = { geral: 'Plataforma em geral', conteudo: 'Conteúdo e PDFs', videoaulas: 'Videoaulas', flashcards: 'Flashcards', mapas: 'Mapas mentais', simulados: 'Simulados e questões', interface: 'Visual e facilidade de uso', desempenho: 'Velocidade e estabilidade' };
+            const RATING_TEXT = ['Selecione de 1 a 5 estrelas', 'Muito ruim', 'Ruim', 'Regular', 'Bom', 'Excelente'];
+            let rating = 0;
+            let session = null;
+
+            const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
+            const fmtDate = ts => { try { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : 'agora'; } catch (e) { return ''; } };
+            const setStatus = (id, msg, error) => { const n = $(id); n.textContent = msg; n.dataset.error = String(Boolean(error)); };
+            const cloud = () => window.PMPE_CLOUD;
+            const user = () => cloud() && cloud().auth && cloud().auth.currentUser;
+            const sortDesc = list => list.sort((a, b) => ((b.createdAt && b.createdAt.seconds) || 9e12) - ((a.createdAt && a.createdAt.seconds) || 9e12));
+            const errMsg = e => (e && e.code === 'permission-denied')
+                ? 'Sem permissão para enviar. Confirme se o acesso está liberado e se as regras do banco foram publicadas.'
+                : 'Não foi possível concluir agora. Verifique a conexão e tente novamente.';
+
+            async function fetchMine(collectionName) {
+                const c = cloud(); const u = user();
+                if (!c || !u) throw new Error('sessão indisponível');
+                const { collection, query, where, getDocs } = c.fs;
+                const snap = await getDocs(query(collection(c.db, collectionName), where('uid', '==', u.uid)));
+                return sortDesc(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+            }
+
+            function displayName() {
+                return (document.getElementById('profileDisplayName')?.textContent || '').trim().slice(0, 80) || 'Estudante';
+            }
+
+            function protocol() {
+                const d = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                const rnd = Math.random().toString(36).slice(2, 6).toUpperCase();
+                return `PMPE-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${rnd}`;
+            }
+
+            /* ---- Atendimento ---- */
+            async function loadTickets() {
+                const box = $('deskList');
+                try {
+                    const items = await fetchMine('tickets');
+                    $('deskTotal').textContent = items.length;
+                    box.textContent = '';
+                    if (!items.length) { box.appendChild(el('p', 'desk-empty', 'Você ainda não abriu nenhum atendimento.')); return; }
+                    items.forEach(t => {
+                        const item = el('article', 'desk-item' + (t.status === 'answered' ? ' is-answered' : t.status === 'closed' ? ' is-closed' : ''));
+                        const head = el('header');
+                        head.append(el('span', '', `${t.protocol} · ${TYPE_LABEL[t.type] || t.type}`), el('span', '', `${STATUS_LABEL[t.status] || t.status} · ${fmtDate(t.createdAt)}`));
+                        item.append(head, el('strong', '', t.subject), el('p', '', t.message));
+                        if (t.reply) {
+                            const r = el('div', 'desk-reply');
+                            r.append(el('b', '', 'Resposta da equipe'), el('p', '', t.reply));
+                            item.appendChild(r);
+                        }
+                        box.appendChild(item);
+                    });
+                } catch (e) {
+                    console.error(e);
+                    box.textContent = '';
+                    box.appendChild(el('p', 'desk-empty', 'Não foi possível carregar seus atendimentos agora.'));
+                }
+            }
+
+            async function sendTicket() {
+                const subject = $('deskSubject').value.trim();
+                const message = $('deskMessage').value.trim();
+                if (subject.length < 3) return setStatus('deskStatus', 'Informe um assunto com pelo menos 3 caracteres.', true);
+                if (message.length < 10) return setStatus('deskStatus', 'Descreva melhor: a mensagem precisa de pelo menos 10 caracteres.', true);
+                const c = cloud(); const u = user();
+                if (!c || !u) return setStatus('deskStatus', 'Sua sessão ainda está carregando. Tente em instantes.', true);
+                const btn = $('deskSend'); btn.disabled = true;
+                setStatus('deskStatus', 'Enviando...', false);
+                const proto = protocol();
+                try {
+                    const { collection, addDoc, serverTimestamp } = c.fs;
+                    await addDoc(collection(c.db, 'tickets'), {
+                        uid: u.uid, email: u.email || '', name: displayName(), type: $('deskType').value,
+                        subject, message, protocol: proto, status: 'open', createdAt: serverTimestamp()
+                    });
+                    $('deskSubject').value = ''; $('deskMessage').value = ''; updateCount();
+                    setStatus('deskStatus', `Atendimento enviado! Protocolo ${proto}.`, false);
+                    void loadTickets();
+                } catch (e) {
+                    console.error(e);
+                    setStatus('deskStatus', errMsg(e), true);
+                } finally { btn.disabled = false; }
+            }
+
+            function updateCount() { $('deskCount').textContent = `${$('deskMessage').value.length} / 3000`; }
+
+            /* ---- Feedback ---- */
+            function buildStars() {
+                const box = $('fbStars');
+                for (let i = 1; i <= 5; i++) {
+                    const b = el('button', 'fb-star', '★');
+                    b.type = 'button'; b.dataset.value = i;
+                    b.setAttribute('role', 'radio'); b.setAttribute('aria-label', `${i} de 5 estrelas`);
+                    box.appendChild(b);
+                }
+                box.addEventListener('click', e => { const b = e.target.closest('.fb-star'); if (b) setRating(Number(b.dataset.value)); });
+            }
+
+            function setRating(n) {
+                rating = n;
+                document.querySelectorAll('#fbStars .fb-star').forEach(b => {
+                    const on = Number(b.dataset.value) <= n;
+                    b.classList.toggle('is-on', on);
+                    b.setAttribute('aria-checked', String(Number(b.dataset.value) === n));
+                });
+                $('fbRatingText').textContent = RATING_TEXT[n];
+            }
+
+            async function loadFeedbacks() {
+                const box = $('fbList');
+                try {
+                    const items = await fetchMine('feedbacks');
+                    $('fbTotal').textContent = items.length;
+                    box.textContent = '';
+                    if (!items.length) { box.appendChild(el('p', 'desk-empty', 'Você ainda não enviou feedback.')); return; }
+                    items.forEach(f => {
+                        const item = el('article', 'desk-item is-answered');
+                        const head = el('header');
+                        head.append(el('span', '', CAT_LABEL[f.category] || f.category), el('span', '', fmtDate(f.createdAt)));
+                        item.append(head, el('strong', 'fb-stars-static', '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating)));
+                        if (f.liked) item.appendChild(el('p', '', 'Gostei: ' + f.liked));
+                        if (f.improve) item.appendChild(el('p', '', 'Melhorar: ' + f.improve));
+                        box.appendChild(item);
+                    });
+                } catch (e) {
+                    console.error(e);
+                    box.textContent = '';
+                    box.appendChild(el('p', 'desk-empty', 'Não foi possível carregar seus feedbacks agora.'));
+                }
+            }
+
+            async function sendFeedback() {
+                const liked = $('fbLiked').value.trim();
+                const improve = $('fbImprove').value.trim();
+                if (!rating) return setStatus('fbStatus', 'Escolha uma nota de 1 a 5 estrelas.', true);
+                if (!liked && !improve) return setStatus('fbStatus', 'Escreva pelo menos um comentário.', true);
+                const c = cloud(); const u = user();
+                if (!c || !u) return setStatus('fbStatus', 'Sua sessão ainda está carregando. Tente em instantes.', true);
+                const btn = $('fbSend'); btn.disabled = true;
+                setStatus('fbStatus', 'Enviando...', false);
+                try {
+                    const { collection, addDoc, serverTimestamp } = c.fs;
+                    await addDoc(collection(c.db, 'feedbacks'), {
+                        uid: u.uid, email: u.email || '', name: displayName(), rating, category: $('fbCategory').value,
+                        liked, improve, createdAt: serverTimestamp()
+                    });
+                    $('fbLiked').value = ''; $('fbImprove').value = ''; setRating(0);
+                    setStatus('fbStatus', 'Obrigado! Seu feedback foi enviado.', false);
+                    void loadFeedbacks();
+                } catch (e) {
+                    console.error(e);
+                    setStatus('fbStatus', errMsg(e), true);
+                } finally { btn.disabled = false; }
+            }
+
+            function init() {
+                buildStars();
+                $('deskForm').addEventListener('submit', e => { e.preventDefault(); void sendTicket(); });
+                $('deskMessage').addEventListener('input', updateCount);
+                $('deskRefresh').addEventListener('click', () => void loadTickets());
+                $('fbForm').addEventListener('submit', e => { e.preventDefault(); void sendFeedback(); });
+                [['supportDeskPanel', loadTickets], ['feedbackPanel', loadFeedbacks]].forEach(([id, loader]) => {
+                    const panel = $(id);
+                    new MutationObserver(() => { if (!panel.hidden) void loader(); }).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
+                });
+            }
+
+            init();
+        })();
     </script>
 </body>
 

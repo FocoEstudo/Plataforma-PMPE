@@ -893,6 +893,47 @@
             .hero-grid { width: min(calc(100% - 1.4rem), 38rem); }
             .hero-title { font-size: clamp(2.2rem, 9.5vw, 3.5rem); }
         }
+
+        /* Tema Polícia Militar: azul-marinho, dourado e vermelho */
+        :root { --pm-navy: #0b2447; --pm-blue: #19376d; --pm-gold: #e0b43c; --pm-red: #b3202a; }
+
+        .site-header::after, .motivation-band::before {
+            position: absolute;
+            inset: auto 0 0;
+            height: .3rem;
+            background: linear-gradient(90deg, var(--pm-blue) 0 33%, var(--pm-gold) 33% 66%, var(--pm-red) 66% 100%);
+            content: "";
+        }
+        .hero {
+            background:
+                linear-gradient(90deg, rgba(5, 18, 40, .96) 0%, rgba(11, 36, 71, .88) 47%, rgba(25, 55, 109, .55) 100%),
+                url("https://penoticias.com.br/blog/wp-content/uploads/2024/07/Policia-Militar.jpg") center 38% / cover,
+                var(--pm-navy);
+        }
+        .hero-title span { color: var(--pm-gold); }
+        .hero-kicker { color: var(--pm-gold); }
+        .hero-note i { color: var(--pm-gold); }
+        .hero-cta { background: var(--pm-gold); color: #0b2447; }
+        .hero-cta:hover { background: #f0c653; }
+
+        .auth-card { border-top: .3rem solid var(--pm-gold); }
+        .auth-card-icon { background: var(--pm-navy); color: var(--pm-gold); }
+        .auth-card-top h2 { color: var(--pm-navy); }
+        .submit-button { background: var(--pm-navy); }
+        .submit-button:hover { background: var(--pm-blue); }
+        .auth-card-foot i, .identity-consent a { color: var(--pm-blue); }
+
+        .section-kicker { color: var(--pm-red); }
+        .feature-icon { background: var(--pm-navy); color: var(--pm-gold); }
+        .feature-card { border-top: .22rem solid var(--pm-gold); }
+        .motivation-band {
+            background:
+                linear-gradient(100deg, rgba(5, 18, 40, .97), rgba(25, 55, 109, .9)),
+                url("https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png") center / cover,
+                var(--pm-navy);
+        }
+        .motivation-band .section-kicker { color: var(--pm-gold); }
+        .login-layout { box-shadow: 0 24px 70px rgba(11, 36, 71, .2); }
     </style>
 </head>
 <body>
@@ -1103,6 +1144,24 @@
                             <h3>Tudo conectado</h3>
                             <p>Conteúdo, treino, redação e revisão ficam reunidos em uma única área de estudos, pronta para acompanhar sua rotina.</p>
                         </article>
+                        <article class="feature-card">
+                            <span class="feature-number">10 / ASSISTIR E LER</span>
+                            <span class="feature-icon"><i class="fa-solid fa-circle-play" aria-hidden="true"></i></span>
+                            <h3>Videoaulas e PDFs</h3>
+                            <p>Assista às videoaulas dentro da plataforma, faça anotações salvas no navegador e consulte os PDFs de apoio sem sair da área de estudos.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">11 / MEMORIZAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-clone" aria-hidden="true"></i></span>
+                            <h3>Flashcards e mapas mentais</h3>
+                            <p>Fixe conceitos com flashcards e visualize a conexão entre os assuntos nos mapas mentais para revisar com mais clareza.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">12 / SUPORTE</span>
+                            <span class="feature-icon"><i class="fa-solid fa-headset" aria-hidden="true"></i></span>
+                            <h3>Atendimento e avaliação</h3>
+                            <p>Envie dúvidas, sugestões ou reclamações pela central de atendimento, acompanhe a resposta da equipe na própria plataforma e avalie sua experiência.</p>
+                        </article>
                     </div>
                 </div>
             </section>
@@ -1117,6 +1176,8 @@
                             <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Plano de estudo com dias, horários e ritmo escolhidos por você.</span></li>
                             <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Atalhos por matéria e acompanhamento visual das tarefas.</span></li>
                             <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Simulado, redação e revisão a poucos passos da sua rotina.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Videoaulas, PDFs, flashcards e mapas mentais reunidos no mesmo painel.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Central de atendimento com resposta da equipe dentro da plataforma.</span></li>
                         </ul>
                         <a class="hero-cta" href="#acesso" data-create-account>Quero organizar meus estudos <span aria-hidden="true">→</span></a>
                     </div>

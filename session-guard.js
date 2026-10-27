@@ -42,6 +42,8 @@ let deleteField;
 let serverTimestamp;
 let onSnapshot;
 let runTransaction;
+let collection;
+let getDocs;
 let stopAccessListener;
 let stopRequestListener;
 let isLoadingGrantedProfile = false;
@@ -197,6 +199,11 @@ const showProfileForUser = async user => {
             : null;
 
         paymentGate.hidden = true;
+        if (window.PMPE_SYNC) {
+            gateLoadingMessage.textContent = "Sincronizando seu progresso...";
+            await withTimeout(window.PMPE_SYNC.start({ uid: user.uid, db, fs: { doc, setDoc, getDocs, collection, onSnapshot } }), PROFILE_READ_TIMEOUT_MS)
+                .catch(error => console.warn("Sincronização inicial não concluída; usando dados locais.", error));
+        }
         if (!profile) {
             openProfileForm({ profile: profileData, required: true, editable: true });
             return;
@@ -235,6 +242,7 @@ const finishProfileSetup = () => {
     isProfileModalOpen = false;
     gate.hidden = true;
     document.body.dataset.sessionState = "ready";
+    window.dispatchEvent(new CustomEvent("pmpe:session-ready", { detail: { uid: currentUser?.uid, email: currentUser?.email || "", name: currentProfile?.displayName || "" } }));
 };
 
 const openProfileForm = ({ profile, required, editable }) => {
@@ -363,7 +371,8 @@ try {
     auth = firebaseModule.auth;
     db = firebaseModule.db;
     ({ onAuthStateChanged, signOut, updateProfile } = authModule);
-    ({ doc, getDoc, setDoc, deleteField, serverTimestamp, onSnapshot, runTransaction } = firestoreModule);
+    ({ doc, getDoc, setDoc, deleteField, serverTimestamp, onSnapshot, runTransaction, collection, getDocs } = firestoreModule);
+    window.PMPE_CLOUD = { auth, db, fs: firestoreModule };
 
     onAuthStateChanged(auth, async user => {
         if (!user) {
@@ -436,6 +445,7 @@ try {
     window.signOutCurrentUser = async () => {
         const status = document.getElementById("profileActionStatus");
         try {
+            await window.PMPE_SYNC?.stopAndClear();
             await signOut(auth);
             window.location.replace(new URL("login.html", window.location.href));
         } catch (error) {
