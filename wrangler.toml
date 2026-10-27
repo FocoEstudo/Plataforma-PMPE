@@ -6,5 +6,5 @@ workers_dev = true
 [vars]
 FIREBASE_PROJECT_ID = "estudos-pmpe"
 FIREBASE_WEB_API_KEY = "AIzaSyCPpJn9eAYrmoZNf4jNeTDyBhy_0BlgSxg"
-ALLOWED_ORIGINS = "http://127.0.0.1:5500,https://operacaoindustria-boop.github.io"
-APP_BASE_URL = "https://operacaoindustria-boop.github.io/SoldadoIan"
+ALLOWED_ORIGINS = "http://127.0.0.1:5500,https://focoestudo.github.io"
+APP_BASE_URL = "https://focoestudo.github.io/Plataforma-PMPE"

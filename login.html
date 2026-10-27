@@ -1477,6 +1477,25 @@
             }
         });
 
+        let resetCooldownTimer;
+        const startResetCooldown = seconds => {
+            let remaining = seconds;
+            clearInterval(resetCooldownTimer);
+            resetPasswordButton.disabled = true;
+            const tick = () => {
+                if (remaining <= 0) {
+                    clearInterval(resetCooldownTimer);
+                    resetPasswordButton.disabled = false;
+                    resetPasswordButton.textContent = "Esqueci minha senha";
+                    return;
+                }
+                resetPasswordButton.textContent = `Reenviar e-mail em ${remaining}s`;
+                remaining -= 1;
+            };
+            tick();
+            resetCooldownTimer = setInterval(tick, 1000);
+        };
+
         resetPasswordButton.addEventListener("click", async () => {
             setStatus("");
             if (!authApi) {
@@ -1486,13 +1505,26 @@
             if (!emailInput.reportValidity()) return;
 
             resetPasswordButton.disabled = true;
+            const email = emailInput.value.trim();
             try {
-                await authApi.sendPasswordResetEmail(authApi.auth, emailInput.value.trim());
-                setStatus("Se houver uma conta associada a este email, você receberá instruções para redefinir a senha.", "success");
+                authApi.auth.languageCode = "pt-BR";
+                const canRedirect = ["http:", "https:"].includes(window.location.protocol);
+                const settings = canRedirect ? { url: new URL("login.html", window.location.href).href, handleCodeInApp: false } : undefined;
+                try {
+                    await authApi.sendPasswordResetEmail(authApi.auth, email, settings);
+                } catch (error) {
+                    // Domínio ainda não autorizado no Firebase: envia o e-mail padrão sem o link de retorno.
+                    if (settings && ["auth/unauthorized-continue-uri", "auth/invalid-continue-uri"].includes(error?.code)) {
+                        await authApi.sendPasswordResetEmail(authApi.auth, email);
+                    } else {
+                        throw error;
+                    }
+                }
+                setStatus("Se houver uma conta com este e-mail, enviamos as instruções para redefinir a senha. Confira também a caixa de spam e o lixo eletrônico.", "success");
+                startResetCooldown(60);
             } catch (error) {
                 console.error("Falha ao solicitar redefinição de senha pelo Firebase.", error);
                 setStatus(authErrorMessage(error));
-            } finally {
                 resetPasswordButton.disabled = false;
             }
         });

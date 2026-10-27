@@ -16,6 +16,7 @@
     <script src="aprofundamento-constitucional.js"></script>
     <script src="aprofundamento-dh-1.js"></script>
     <script src="aprofundamento-dh-2.js"></script>
+    <script src="aprofundamento-dh-3.js"></script>
     <script type="module" src="session-guard.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap"
         rel="stylesheet">
@@ -4749,23 +4750,67 @@
                 </section>`;
             const lessonAnchor = index => `aula-${module.mat}-${index + 1}`;
             const escapeText = value => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            const deepeningHtml = blocks => (blocks || []).map(([type, value]) => {
-                if (type === "h") return `<h3>${escapeText(value)}</h3>`;
-                if (type === "p") return `<p>${escapeText(value)}</p>`;
-                if (type === "ul" || type === "ol") return `<${type}>${value.map(item => `<li>${escapeText(item)}</li>`).join("")}</${type}>`;
-                return "";
-            }).join("");
+            const deepeningHtml = blocks => {
+                const list = blocks || [];
+                const renderBlock = ([type, value]) => {
+                    if (type === "h") return `<h3>${escapeText(value)}</h3>`;
+                    if (type === "p") return `<p>${escapeText(value)}</p>`;
+                    if (type === "ul" || type === "ol") return `<${type}>${value.map(item => `<li>${escapeText(item)}</li>`).join("")}</${type}>`;
+                    return "";
+                };
+                // O resumo de revisão sobe para o topo da aula como "Essencial", sem remover nenhum bloco.
+                const start = list.findIndex(([type, value]) => type === "h" && /^\s*(\d+\.\s*)?resumo/i.test(value));
+                if (start < 0) return list.map(renderBlock).join("");
+                let end = list.findIndex(([type], i) => i > start && type === "h");
+                if (end < 0) end = list.length;
+                const summary = list.slice(start + 1, end);
+                const rest = [...list.slice(0, start), ...list.slice(end)];
+                if (!summary.length) return list.map(renderBlock).join("");
+                return `<div class="my-4 rounded-lg border-l-4 border-emerald-600 bg-emerald-50 p-4"><p><strong>Essencial desta aula · ${escapeText(list[start][1])}</strong></p>${summary.map(renderBlock).join("")}</div>${rest.map(renderBlock).join("")}`;
+            };
             const trailHtml = distributedLessons.map(([heading, explanation, example, alert], index) => {
                 const deepening = window.PMPE_DEEPENING?.[courseAssignment.course]?.[courseAssignment.lessons[index]];
                 return lessonSectionHtml(`Aula ${index + 1}/${distributedLessons.length} · ${cleanHeading(heading)}`, explanation, example, alert, lessonAnchor(index))
                     .replace(/<\/section>\s*$/, `${deepeningHtml(deepening)}</section>`);
             }).join("");
             const baseHtml = guide.lessons.map(([heading, explanation, example, alert], index) =>
-                lessonSectionHtml(module.completeCourse ? heading : `${distributedLessons.length ? "Aprofundamento " : ""}${index + 1}. ${heading}`, explanation, example, alert)
+                lessonSectionHtml(module.completeCourse ? heading : `${distributedLessons.length ? "Visão geral " : ""}${index + 1}. ${heading}`, explanation, example, alert)
             ).join("");
+            // Apostilas complementares e cursos completos recebem o aprofundamento das aulas correspondentes.
+            const supplementLessonMap = {
+                mat_extra_portugues_norma: ["Curso completo de Língua Portuguesa", [2, 3, 4, 13]],
+                mat_extra_portugues_sintaxe: ["Curso completo de Língua Portuguesa", [5, 6, 7, 8, 9, 14, 15]],
+                mat_extra_portugues_redacao: ["Curso completo de Língua Portuguesa", [10, 16]],
+                mat_extra_historia_revolucoes: ["Curso completo de História de Pernambuco", [6, 7, 8, 9, 16]],
+                mat_extra_historia_cultura: ["Curso completo de História de Pernambuco", [10, 17]],
+                mat_extra_logica_argumentos: ["Curso completo de Raciocínio Lógico", [6, 7, 8, 12, 14]],
+                mat_extra_logica_sequencias: ["Curso completo de Raciocínio Lógico", [9, 10, 14]],
+                mat_extra_informatica_office: ["Curso completo de Informática", [1, 2, 3, 4, 5, 10, 11]],
+                mat_extra_informatica_internet: ["Curso completo de Informática", [6, 7, 8, 9, 12, 13]],
+                mat_extra_const_direitos: ["Curso completo de Direito Constitucional", [1, 2, 3, 4, 5, 13]],
+                mat_extra_const_organizacao: ["Curso completo de Direito Constitucional", [7, 8, 9, 10, 11, 12, 14, 15, 16, 17]],
+                mat_extra_dh_pacto: ["Curso completo de Direitos Humanos e Legislação", [4, 19]],
+                mat_extra_leis_hediondos_preconceito: ["Curso completo de Direitos Humanos e Legislação", [13, 26, 39, 11, 24, 37]],
+                mat_extra_leis_ambientais: ["Curso completo de Direitos Humanos e Legislação", [12, 25, 38]],
+                mat_extra_pmpe_estatuto: ["Curso completo de Direitos Humanos e Legislação", [15, 28, 41]],
+                mat_extra_estatutos_idoso_juventude: ["Curso completo de Direitos Humanos e Legislação", [16, 17, 29, 30, 42, 43]]
+            };
+            const supplementEntry = module.completeCourse
+                ? [module.topic, guide.lessons.map((_, i) => i + 1)]
+                : supplementLessonMap[module.mat];
+            const supplementCourseGuide = supplementEntry ? window.PMPE_TOPIC_GUIDES?.[supplementEntry[0]] : null;
+            const supplementDeepHtml = supplementEntry
+                ? supplementEntry[1].map(lessonNumber => {
+                    const blocks = window.PMPE_DEEPENING?.[supplementEntry[0]]?.[lessonNumber];
+                    const lesson = supplementCourseGuide?.lessons?.[lessonNumber - 1];
+                    if (!blocks?.length || !lesson) return "";
+                    const title = `Aprofundamento · ${cleanHeading(lesson[0])}`;
+                    return `<section class="mb-8"><h2>${title}</h2>${!module.completeCourse ? `<p>${lesson[1]}</p>` : ""}${deepeningHtml(blocks)}</section>`;
+                }).join("")
+                : "";
             const lessonHtml = distributedLessons.length
-                ? `${trailHtml}<h2 class="mt-10 border-t pt-6">Aprofundamento do tema da missão</h2>${baseHtml}`
-                : baseHtml;
+                ? `<h2 class="mt-2">Visão geral do tema da missão</h2><p>Comece por esta visão geral curta: ela apresenta os conceitos centrais antes das aulas detalhadas.</p>${baseHtml}<h2 class="mt-10 border-t pt-6">Aulas detalhadas (na ordem das videoaulas)</h2>${trailHtml}`
+                : `${baseHtml}${supplementDeepHtml}`;
             const sourceHtml = (guide.sources || []).map(([label, url]) =>
                 `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></li>`
             ).join("");
@@ -4778,14 +4823,57 @@
                 const query = encodeURIComponent(`${module.sub} ${cleanHeading(heading)} PMPE`);
                 return `<li>Videoaula ${index + 1}: <a href="https://www.youtube.com/results?search_query=${query}" target="_blank" rel="noopener noreferrer">${cleanHeading(heading)}</a> — leia no PDF: <a href="#${lessonAnchor(index)}">Aula ${index + 1}/${distributedLessons.length}</a></li>`;
             }).join("");
+            const lessonThemeMaps = {
+                "Curso completo de Direitos Humanos e Legislação": [
+                    ["Fundamentos, DUDH e Pacto de San José", [1, 2, 3, 4, 5, 18, 19]],
+                    ["ECA", [6, 7, 20, 32, 33]],
+                    ["Abuso de Autoridade", [8, 21, 34]],
+                    ["Tortura", [9, 22, 35]],
+                    ["Maria da Penha", [10, 23, 36]],
+                    ["Crimes de preconceito (Lei 7.716/1989)", [11, 24, 37]],
+                    ["Crimes Ambientais", [12, 25, 38]],
+                    ["Crimes Hediondos", [13, 26, 39]],
+                    ["Lei de Drogas", [14, 27, 40]],
+                    ["Estatuto da PMPE", [15, 28, 41]],
+                    ["Estatuto da Pessoa Idosa", [16, 29, 42]],
+                    ["Estatuto da Juventude", [17, 30, 43]],
+                    ["Revisão comparativa", [31]]
+                ],
+                "Curso completo de Direito Constitucional": [
+                    ["Como ler a Constituição e princípios", [1, 2]],
+                    ["Direitos e garantias", [3, 4, 5, 13]],
+                    ["Partidos políticos", [6]],
+                    ["Organização do Estado e federalismo", [7, 14]],
+                    ["Administração pública e militares dos Estados", [8, 9]],
+                    ["Organização dos Poderes", [10, 15]],
+                    ["Defesa do Estado", [11, 16]],
+                    ["Segurança pública", [12, 17]]
+                ]
+            };
+            const themeGroupsHtml = (() => {
+                const map = lessonThemeMaps[courseAssignment?.course];
+                if (!map) return "";
+                const items = map.map(([theme, numbers]) => {
+                    const links = numbers
+                        .map(number => courseAssignment.lessons.indexOf(number))
+                        .filter(position => position >= 0)
+                        .map(position => `<a href="#${lessonAnchor(position)}">Aula ${position + 1}</a>`);
+                    return links.length ? `<li><strong>${theme}:</strong> ${links.join(", ")}</li>` : "";
+                }).join("");
+                const count = (items.match(/<li>/g) || []).length;
+                return count > 1
+                    ? `<h3>Estude por tema</h3><p>As aulas seguem a ordem das videoaulas, que revisitam o mesmo assunto em rodadas (conceito, roteiro integral, comparação). Para estudar um assunto de uma vez só, siga a lista abaixo.</p><ul>${items}</ul>`
+                    : "";
+            })();
             const distributedTopicsHtml = distributedLessons.length
                 ? `<section class="my-6 rounded-lg border border-indigo-200 bg-indigo-50 p-5 text-slate-900">
                     <h2 class="mt-0">Roteiro do dia: videoaulas e PDF são os mesmos temas</h2>
-                    <p>As ${distributedLessons.length} videoaulas da missão correspondem, na mesma ordem e com o mesmo título, às ${distributedLessons.length} aulas iniciais desta apostila. Assista à videoaula e leia a seção correspondente antes de passar à próxima.</p>
+                    <p>As ${distributedLessons.length} videoaulas da missão correspondem, na mesma ordem e com o mesmo título, às ${distributedLessons.length} aulas detalhadas desta apostila. Leia primeiro a visão geral, assista à videoaula e leia a seção correspondente antes de passar à próxima.</p>
                     <ol>${distributedLessons.map(([heading], index) => `<li><a href="#${lessonAnchor(index)}">${cleanHeading(heading)}</a></li>`).join("")}</ol>
-                    <h3>Busca das videoaulas no YouTube</h3>
-                    <p>Os links abrem buscas no YouTube, não uma curadoria de vídeos. Confira autoria, qualidade e aderência ao edital antes de estudar.</p>
-                    <ul>${distributedVideoResourcesHtml}</ul>
+                    ${themeGroupsHtml}
+                    <details class="mt-3"><summary>Buscas complementares no YouTube</summary>
+                    <p>Os links abrem buscas no YouTube, não uma curadoria de vídeos. Confira autoria, qualidade e aderência ao edital antes de estudar. As videoaulas oficiais da plataforma ficam na aba Videoaulas.</p>
+                    <ul>${distributedVideoResourcesHtml}</ul></details>
                 </section>`
                 : "";
             const distributedScopeHtml = (courseAssignment?.syllabusScope || []).map(item => `<li>${item}</li>`).join("");
@@ -4917,7 +5005,6 @@
             "https://www.youtube.com/live/W07-5dqmAps?si=molN3Dwfjl-M9a-a",
             "https://youtu.be/qkmXPTeDxNA?si=HCQz4AhGaSScVXqX",
             "https://youtu.be/erYMz7g0FMs?si=GUi0NYqN2STw_1d8",
-            "https://youtu.be/g6yM8U3qRg8?si=qyRkfMlVtP49j6qL",
             "https://youtu.be/3PyTML2-fh0?si=BH8PHHOkPGQvOEy5",
             "https://youtu.be/Xzn5YmXlz2c?si=WAfX8gi_dpg5BDbE",
             "https://youtu.be/uBvdlyutXMY?si=w7M7n1CBKZf1WTat",
@@ -4928,12 +5015,10 @@
             "https://www.youtube.com/live/uagsuY9H53w?si=IvbzAQMCBjW6TXuG",
             "https://www.youtube.com/live/Zyv1VXLe11w?si=tRqbJBmqD2BXNoW7",
             "https://youtu.be/AnzihbKCYFE?si=l_ttUtnbGH4wNbab",
-            "https://www.youtube.com/live/r1KnF41rHc?si=-6oDmUmqE37k_Xu",
             "https://youtu.be/3fyN4DrdcOo?si=4EQd2ZvpSm5EnUk8",
             "https://youtu.be/Ix7IlFM9xCE?si=vEcHJkdwk8TznBiM",
             "https://youtu.be/0IpJZOvOuUs?si=_jjTGkRoET5sgrGI",
             "https://youtu.be/w0sI3unOczM?si=2tsawgK38Sx55PAW",
-            "https://youtu.be/lCU4sxHZUyg?si=d8ZB72lr6YQ6AEPO",
             "https://youtu.be/1-haLZcq4pA?si=SawCrbNmJvSNaYf2",
             "https://www.youtube.com/live/3Vska6BGz4c?si=Xqp2aMPSyqVlHwsX",
             "https://youtu.be/LGCQ0HZpTDw?si=-v_C3wNo0WogKG7U",
@@ -4972,15 +5057,12 @@
             "https://youtu.be/80NM-4LJpPc?si=AS_h7XmtnPSm9a1D",
             "https://youtu.be/OfZXNB-4mZc?si=LswxWQezad9AhaHa",
             "https://youtu.be/GRU_vYzzMVg?si=jSwM2RqFdr5JCjPU",
-            "https://youtu.be/fZpjxOWKA-Y?si=4AiMbMbOyU-MphXY",
             "https://youtu.be/4CKYiVhmxZ0?si=yPX8m9XOL6tKetVT",
             "https://youtu.be/5qG2Wnd-hAs?si=YWZ0OWu59aeD5n9y",
             "https://www.youtube.com/live/mXPD6SGKDV8?si=wXMT6kipCnR_Rwvy",
             "https://youtu.be/Yn9EguapweY?si=RvQWn8HuEnYafCnO",
             "https://youtu.be/HQleRxdXkIU?si=SQEXFTUira6H0rpD",
-            "https://youtu.be/5NPPjMh_ulo?si=sL_E2CyZyrjvxly8",
             "https://youtu.be/o75TOZjN9EI?si=4mI6AJ_00-HsabdV",
-            "https://www.youtube.com/live/W07-5dqmAps?si=QjSY5zi83K6jX0xm",
             "https://youtu.be/4wbtxlz-M7c?si=qrzFgUyvDErPXkTv",
             "https://youtu.be/MAdH6y00ylM?si=dNK5mAqoKPx7OocW",
             "https://youtu.be/NeBmQo0z3eY?si=9tw9MJc7_ME5VnRc",
@@ -5010,7 +5092,6 @@
             "https://youtu.be/FAS3lo7UGlE?si=_X7AmcKEvOKkTFhy",
             "https://youtu.be/kZlZJVye3Uc?si=Aeoc_UqaE0Ro6T1d",
             "https://youtu.be/yI5c8tmkkNc?si=TpcXQ65Ak7EVd01Y",
-            "https://www.youtube.com/live/txH7KK8gyoE?si=l5WT11s-NjgtzCmD",
             "https://youtu.be/huwACN1L-Ck?si=SfYdRaqGhL29ORUv",
             "https://youtu.be/Xe8gVda6WiQ?si=hHmqIx4vd7dfM2BA",
             "https://youtu.be/fbpaGkxJvnI?si=JsgRcQuQ06USTlZN",
@@ -5018,8 +5099,45 @@
             "https://youtu.be/53S2jPGXluw?si=8NMBi8LR_JPm8jxX",
             "https://youtu.be/YaXpMue6kH0?si=Rngl5Ajl7v9qDHZO",
             "https://youtu.be/myKIT2VxMXo?si=BEwWiVo-AiZUWEWL",
-            "https://youtu.be/PcXqyBgGjJA?si=F3SWR7qBc7TZuz2u"
+            "https://youtu.be/97ozWnsSq0A?si=qKjprr69t6KDyeZm",
+            "https://youtu.be/5uMooAjtVis?si=4u8gQ2cjcpVPawrt",
+            "https://youtu.be/1IRO-p95oo0?si=vfTi8znBmuq_5vGE",
+            "https://www.youtube.com/live/mSAdDgQgHcM?si=voHkmzhR7GtxeOm3",
+            "https://www.youtube.com/live/rcUJ6gwsjQo?si=tglzi9co0KUOOG2G",
+            "https://youtu.be/Y_mYgLkuEl4?si=mqC6S_TK-qoJyAvQ",
+            "https://youtu.be/6pquf3Bl5q8?si=5ulWrjHiFlYYrIgk",
+            "https://youtu.be/mE6_YVkTDr0?si=HdQqzEEwOAv4kFT2",
+            "https://youtu.be/2R0DpIdEd00?si=z-JioraRfdb1mNZw",
+            "https://www.youtube.com/live/His_TJESk6c?si=PIXn2WR9sWwg6E9h"
         ];
+        // Cada aula aponta explicitamente para o nº (base 1) do vídeo em EMBEDDED_VIDEO_URL_SEQUENCE.
+        // Aulas sem vídeo equivalente ficam de fora até que um vídeo com o tema correto seja adicionado.
+        const EMBEDDED_VIDEO_BY_LESSON = {
+            "module-0-lesson-1": 1, "module-0-lesson-2": 2, "module-0-lesson-3": 3, "module-0-lesson-4": 4, "module-0-lesson-5": 5, "module-0-lesson-6": 6,
+            "module-1-lesson-1": 7, "module-1-lesson-2": 8, "module-1-lesson-3": 9, "module-1-lesson-4": 10, "module-1-lesson-5": 11,
+            "module-2-lesson-1": 12, "module-2-lesson-2": 13, "module-2-lesson-3": 14, "module-2-lesson-4": 15,
+            "module-3-lesson-1": 16, "module-3-lesson-2": 17, "module-3-lesson-3": 18,
+            "module-4-lesson-1": 113, "module-4-lesson-2": 19, "module-4-lesson-3": 20,
+            "module-5-lesson-1": 21, "module-5-lesson-2": 22, "module-5-lesson-3": 23, "module-5-lesson-4": 24, "module-5-lesson-5": 25, "module-5-lesson-6": 26, "module-5-lesson-7": 27,
+            "module-6-lesson-1": 28, "module-6-lesson-2": [114, 115], "module-6-lesson-3": 29, "module-6-lesson-4": 30,
+            "module-7-lesson-1": 31, "module-7-lesson-2": 32, "module-7-lesson-3": 116, "module-7-lesson-4": 33,
+            "module-8-lesson-1": 34, "module-8-lesson-2": 35, "module-8-lesson-3": 36, "module-8-lesson-4": 37, "module-8-lesson-5": 38, "module-8-lesson-6": 39,
+            "module-9-lesson-1": 40, "module-9-lesson-2": 41, "module-9-lesson-3": 42, "module-9-lesson-4": 43,
+            "module-10-lesson-1": 44, "module-10-lesson-2": 45,
+            "module-11-lesson-1": 46, "module-11-lesson-2": 47, "module-11-lesson-3": 48, "module-11-lesson-4": 49, "module-11-lesson-5": 50, "module-11-lesson-6": 51,
+            "module-11-lesson-7": 56, "module-11-lesson-8": 52, "module-11-lesson-9": 53, "module-11-lesson-10": 54, "module-11-lesson-11": 55,
+            "module-11-lesson-12": 56, "module-11-lesson-13": 57, "module-11-lesson-14": 58, "module-11-lesson-15": 59,
+            "module-12-lesson-1": 60, "module-12-lesson-2": 61, "module-12-lesson-3": 62, "module-12-lesson-4": 63, "module-12-lesson-5": 64, "module-12-lesson-6": 65,
+            "module-13-lesson-1": 67, "module-13-lesson-2": 68, "module-13-lesson-3": 66, "module-13-lesson-4": 69, "module-13-lesson-5": 70,             "module-13-lesson-6": 71, "module-13-lesson-7": 117, "module-13-lesson-8": 72,
+                        "module-14-lesson-1": 73, "module-14-lesson-2": 74, "module-14-lesson-3": 75, "module-14-lesson-4": [118, 119, 120],
+                        "module-15-lesson-1": 76, "module-15-lesson-2": 121, "module-15-lesson-3": 77, "module-15-lesson-4": 78, "module-15-lesson-5": 79, "module-15-lesson-6": 80,
+            "module-16-lesson-1": 81, "module-16-lesson-2": 82, "module-16-lesson-3": 83, "module-16-lesson-4": 84, "module-16-lesson-5": 85, "module-16-lesson-6": 86,
+            "module-16-lesson-7": 87, "module-16-lesson-8": 88, "module-16-lesson-9": 89, "module-16-lesson-10": 90, "module-16-lesson-11": 91, "module-16-lesson-12": 92,
+            "module-17-lesson-1": 93, "module-17-lesson-2": 94, "module-17-lesson-3": 95, "module-17-lesson-4": 96, "module-17-lesson-5": 97, "module-17-lesson-6": 98,
+            "module-17-lesson-7": 99, "module-17-lesson-8": 100, "module-17-lesson-9": 101, "module-17-lesson-10": 102, "module-17-lesson-11": 103, "module-17-lesson-12": 104,
+            "module-17-lesson-13": 105, "module-17-lesson-14": 122, "module-17-lesson-15": 106, "module-17-lesson-16": 107, "module-17-lesson-17": 108, "module-17-lesson-18": 109,
+            "module-17-lesson-19": 110, "module-17-lesson-20": 111, "module-17-lesson-21": 112
+        };
         const getYouTubeVideoId = videoUrl => {
             try {
                 const url = new URL(videoUrl);
@@ -5050,24 +5168,26 @@
                     });
                 }
             });
-            if (sequence.length !== EMBEDDED_VIDEO_URL_SEQUENCE.length) {
-                console.warn("Quantidade de links de videoaulas diferente da sequência de aulas da missão.", {
-                    aulasNaMissao: sequence.length,
-                    linksInformados: EMBEDDED_VIDEO_URL_SEQUENCE.length
-                });
+            const missingVideos = sequence.filter(lesson => !EMBEDDED_VIDEO_BY_LESSON[lesson.id]);
+            if (missingVideos.length) {
+                console.warn("Aulas sem videoaula vinculada:", missingVideos.map(lesson => lesson.id));
             }
-            return sequence.reduce((acc, lesson, index) => {
-                const url = EMBEDDED_VIDEO_URL_SEQUENCE[index];
-                if (!url) return acc;
-                const videoId = getYouTubeVideoId(url);
-                if (!videoId) return acc;
+            return sequence.reduce((acc, lesson) => {
+                const mapped = EMBEDDED_VIDEO_BY_LESSON[lesson.id];
+                const videos = [].concat(mapped || [])
+                    .map(position => EMBEDDED_VIDEO_URL_SEQUENCE[position - 1])
+                    .filter(Boolean)
+                    .map(url => ({ url, videoId: getYouTubeVideoId(url) }))
+                    .filter(video => video.videoId);
+                if (!videos.length) return acc;
                 acc[lesson.id] = {
                     id: lesson.id,
                     legacyId: EMBEDDED_VIDEO_LEGACY_IDS[lesson.id] || "",
                     subject: `${lesson.module.sub} · ${lesson.module.topic}`,
                     title: `Aula ${lesson.lessonIndex + 1}/${lesson.totalLessons} · ${lesson.lessonTitle}`,
-                    videoId,
-                    url
+                    videoId: videos[0].videoId,
+                    url: videos[0].url,
+                    videos
                 };
                 return acc;
             }, {});
@@ -5081,9 +5201,10 @@
         let videoNotesStorageReadFailed = false;
         let selectedVideoLessonId = "";
 
-        function renderSelectedVideoLesson(lessonId) {
+        function renderSelectedVideoLesson(lessonId, partIndex = 0) {
             const lesson = EMBEDDED_VIDEO_LESSONS[lessonId];
             if (!lesson) return;
+            const part = lesson.videos[partIndex] || lesson.videos[0];
             selectedVideoLessonId = lesson.id;
             document.getElementById("videoLessonSubject").textContent = lesson.subject;
             document.getElementById("videoLessonTitle").textContent = lesson.title;
@@ -5091,7 +5212,24 @@
             const emptyState = document.getElementById("videoPlayerEmpty");
             const playerStatus = document.getElementById("videoPlayerStatus");
             const externalLink = document.getElementById("videoLessonExternalLink");
-            externalLink.href = lesson.url;
+            externalLink.href = part.url;
+            let partPicker = document.getElementById("videoPartPicker");
+            if (!partPicker) {
+                partPicker = document.createElement("div");
+                partPicker.id = "videoPartPicker";
+                partPicker.className = "mt-3 flex flex-wrap gap-2";
+                playerStatus.before(partPicker);
+            }
+            partPicker.replaceChildren();
+            partPicker.hidden = lesson.videos.length < 2;
+            lesson.videos.forEach((video, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.textContent = `Parte ${index + 1}`;
+                button.className = `rounded-lg px-3 py-1.5 text-sm font-bold ${video === part ? "bg-emerald-400 text-emerald-950" : "bg-white/10 text-white"}`;
+                button.addEventListener("click", () => renderSelectedVideoLesson(lesson.id, index));
+                partPicker.appendChild(button);
+            });
             if (!["http:", "https:"].includes(window.location.protocol)) {
                 frame.removeAttribute("src");
                 frame.hidden = true;
@@ -5099,7 +5237,7 @@
                 emptyState.textContent = "Para assistir dentro da plataforma, abra-a por um endereço HTTP ou HTTPS. Uma página aberta diretamente do computador não envia a identificação de origem exigida pelo YouTube.";
                 playerStatus.textContent = "Você ainda pode abrir o vídeo diretamente no YouTube pelo link abaixo.";
             } else {
-                const embedUrl = new URL(`https://www.youtube.com/embed/${lesson.videoId}`);
+                const embedUrl = new URL(`https://www.youtube.com/embed/${part.videoId}`);
                 embedUrl.searchParams.set("rel", "0");
                 embedUrl.searchParams.set("origin", window.location.origin);
                 frame.src = embedUrl.toString();
