@@ -215,6 +215,69 @@
             min-width: 0;
         }
 
+        .video-study-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(17rem, 22rem);
+            align-items: start;
+            gap: 1.25rem;
+        }
+
+        .video-player-shell {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #07130c;
+            border: 1px solid #355342;
+            border-radius: .85rem;
+        }
+
+        .video-player-shell iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .video-player-shell iframe[hidden] {
+            display: none;
+        }
+
+        .video-player-empty {
+            display: grid;
+            position: absolute;
+            inset: 0;
+            padding: 1.25rem;
+            place-items: center;
+            color: #d4e5d9;
+            text-align: center;
+        }
+
+        .video-notes-panel {
+            position: sticky;
+            top: 6rem;
+        }
+
+        #videoLessonNotes {
+            color: #173b2c;
+        }
+
+        #videoLessonNotes::placeholder {
+            color: #617267;
+            opacity: 1;
+        }
+
+        @media (max-width: 900px) {
+            .video-study-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .video-notes-panel {
+                position: static;
+            }
+        }
+
         .dashboard-home-hero {
             position: relative;
             display: grid;
@@ -1381,7 +1444,7 @@
             inset: auto 0 0;
             z-index: 60;
             display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
+            grid-template-columns: repeat(9, minmax(0, 1fr));
             padding: .5rem .25rem calc(.5rem + env(safe-area-inset-bottom));
             background: #102e20;
             border-top: 1px solid rgba(216, 243, 223, .2);
@@ -1737,6 +1800,436 @@
                 box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
             }
         }
+
+        /* ===== Tema policial, degradês e novas ferramentas ===== */
+        :root {
+            --pm-gold: #c9a227;
+            --pm-green-1: #0b3a24;
+            --pm-green-2: #176b45;
+            --pm-green-3: #2f9a66;
+        }
+
+        body.skull-bg {
+            background:
+                radial-gradient(1100px 520px at 8% -8%, rgba(47, 154, 102, .22), transparent 60%),
+                radial-gradient(900px 480px at 100% 0%, rgba(201, 162, 39, .14), transparent 55%),
+                linear-gradient(180deg, #eaf5ee 0%, #f6faf7 38%, #e4f0e8 100%);
+            background-attachment: fixed;
+        }
+
+        header.platform-header {
+            background: linear-gradient(100deg, #0b3a24 0%, #105737 45%, #1f8553 100%);
+            border-bottom: 3px solid var(--pm-gold);
+        }
+
+        aside.platform-sidebar {
+            background: linear-gradient(180deg, #0b3a24 0%, #0f4d31 55%, #102e20 100%);
+        }
+
+        .dashboard-nav-item.is-active {
+            background: linear-gradient(90deg, rgba(201, 162, 39, .28), rgba(107, 191, 131, .2));
+            box-shadow: inset 3px 0 0 var(--pm-gold);
+        }
+
+        .mobile-dashboard-nav {
+            background: linear-gradient(180deg, #0f4d31, #0b2a1b);
+            border-top: 2px solid var(--pm-gold);
+        }
+
+        .mobile-dashboard-nav .dashboard-nav-item span {
+            font-size: .6rem;
+        }
+
+        .glass-panel {
+            background: linear-gradient(160deg, #ffffff 0%, #f3faf5 100%);
+            border-color: #cfe5d6;
+        }
+
+        body .bg-blue-600,
+        body .bg-blue-700 {
+            background-image: linear-gradient(135deg, #176b45, #2f9a66);
+        }
+
+        .police-banner {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            border-radius: .9rem;
+            border: 1px solid var(--pm-gold);
+            border-left: 6px solid var(--pm-gold);
+            overflow: hidden;
+            background:
+                linear-gradient(100deg, rgba(8, 44, 28, .94) 0%, rgba(16, 87, 55, .88) 55%, rgba(16, 87, 55, .55) 100%),
+                url("https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png") center / cover no-repeat,
+                #0b3a24;
+            box-shadow: 0 10px 26px rgba(11, 58, 36, .25);
+        }
+
+        .police-banner::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0 0;
+            height: 4px;
+            background: repeating-linear-gradient(135deg, var(--pm-gold) 0 14px, #0b3a24 14px 28px);
+            opacity: .85;
+        }
+
+        .police-banner-crest {
+            flex: none;
+            height: 5.2rem;
+            width: auto;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .45));
+        }
+
+        .police-banner-body {
+            min-width: 0;
+        }
+
+        .police-banner-eyebrow {
+            display: block;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: #f1d675;
+        }
+
+        .police-banner-title {
+            margin: .2rem 0 0;
+            font-size: 1.6rem;
+            line-height: 1.15;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .police-banner-text {
+            margin: .4rem 0 0;
+            font-size: .85rem;
+            color: #dff3e6;
+        }
+
+        .police-banner--compact {
+            border-radius: 0;
+            border-width: 0 0 1px;
+            border-left-width: 0;
+            padding: .6rem 1.25rem;
+        }
+
+        .police-banner--compact .police-banner-crest {
+            height: 2.6rem;
+        }
+
+        .police-banner--compact .police-banner-title {
+            font-size: 1rem;
+        }
+
+        .pdf-subject {
+            border: 1px solid #cfe5d6;
+            border-radius: .8rem;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .pdf-subject-head {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            align-items: center;
+            justify-content: space-between;
+            padding: .75rem 1rem;
+            background: linear-gradient(90deg, #e3f3e8, #f6fbf8);
+            border-bottom: 2px solid var(--pm-gold);
+        }
+
+        .pdf-subject-head h3 {
+            font-weight: 800;
+            color: #0f4d31;
+        }
+
+        .pdf-open-guide {
+            border-radius: .5rem;
+            padding: .4rem .8rem;
+            font-size: .8rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #176b45, #2f9a66);
+        }
+
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+            gap: .6rem;
+            padding: .9rem;
+        }
+
+        .pdf-card {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            text-align: left;
+            padding: .7rem .85rem;
+            border: 1px solid #cfe5d6;
+            border-radius: .6rem;
+            background: #fbfdfc;
+            color: #173b2c;
+            font-size: .85rem;
+            font-weight: 600;
+            transition: transform .15s, box-shadow .15s, border-color .15s;
+        }
+
+        .pdf-card:hover,
+        .pdf-card:focus-visible {
+            transform: translateY(-2px);
+            border-color: var(--pm-gold);
+            box-shadow: 0 6px 14px rgba(16, 87, 55, .15);
+        }
+
+        .pdf-card i {
+            font-size: 1.4rem;
+            color: #b42318;
+        }
+
+        /* Editor de anotações */
+        .rich-toolbar,
+        .pdf-tools {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .rich-toolbar {
+            margin-top: .9rem;
+            padding: .4rem;
+            border: 1px solid #cfe5d6;
+            border-bottom: 0;
+            border-radius: .5rem .5rem 0 0;
+            background: #eef7f1;
+        }
+
+        .rich-toolbar.is-disabled {
+            opacity: .5;
+            pointer-events: none;
+        }
+
+        .rich-btn {
+            min-width: 2rem;
+            height: 2rem;
+            padding: 0 .6rem;
+            border: 1px solid #b9d6c4;
+            border-radius: .4rem;
+            background: #fff;
+            color: #173b2c;
+            font-size: .8rem;
+            font-weight: 700;
+        }
+
+        .rich-btn:hover,
+        .rich-btn.is-active {
+            background: #176b45;
+            color: #fff;
+        }
+
+        .rich-swatch {
+            width: 1.6rem;
+            height: 1.6rem;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #8bb59b;
+        }
+
+        .rich-swatch.is-active {
+            box-shadow: 0 0 0 3px #176b45;
+        }
+
+        .rich-editor {
+            min-height: 9rem;
+            max-height: 28rem;
+            overflow-y: auto;
+            padding: .75rem;
+            border: 1px solid #cfe5d6;
+            border-radius: 0 0 .5rem .5rem;
+            background: #fff;
+            color: #173b2c;
+            font-size: .9rem;
+            line-height: 1.55;
+            outline: none;
+            overflow-wrap: anywhere;
+        }
+
+        .rich-editor:focus {
+            border-color: #176b45;
+        }
+
+        .rich-editor:empty::before {
+            content: attr(data-placeholder);
+            color: #617267;
+        }
+
+        .video-notes-editor {
+            min-height: 18rem;
+            max-height: 32rem;
+        }
+
+        .pdf-tools {
+            padding-top: .5rem;
+        }
+
+        .pdf-tools[hidden] {
+            display: none;
+        }
+
+        .pdf-tools-label,
+        .pdf-tools-hint {
+            font-size: .75rem;
+            font-weight: 700;
+            color: #334e41;
+        }
+
+        .pdf-tools-hint {
+            font-weight: 500;
+        }
+
+        .pdf-highlight {
+            color: inherit;
+            border-radius: 2px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        #materialModal[data-hl-mode="mark"] #materialContent {
+            cursor: text;
+        }
+
+        #materialModal[data-hl-mode="eraser"] .pdf-highlight {
+            cursor: pointer;
+            outline: 1px dashed #b42318;
+        }
+
+        .pdf-content .study-tabs {
+            top: 6.6rem;
+        }
+
+        /* Sino */
+        .header-action-button {
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -.35rem;
+            right: -.35rem;
+            min-width: 1.15rem;
+            height: 1.15rem;
+            padding: 0 .25rem;
+            border-radius: 999px;
+            background: #d92d20;
+            color: #fff;
+            font-size: .65rem;
+            font-weight: 800;
+            line-height: 1.15rem;
+            text-align: center;
+        }
+
+        .notification-badge[hidden] {
+            display: none;
+        }
+
+        .notification-popover {
+            width: min(22rem, 92vw);
+        }
+
+        .notification-list {
+            max-height: 18rem;
+            overflow-y: auto;
+            display: grid;
+            gap: .5rem;
+        }
+
+        .notification-item {
+            padding: .55rem .7rem;
+            border-left: 4px solid var(--pm-gold);
+            border-radius: .4rem;
+            background: #f3faf5;
+        }
+
+        .notification-item.is-new {
+            background: #fff7d6;
+        }
+
+        .notification-item p {
+            margin: .15rem 0;
+            font-size: .85rem;
+            color: #173b2c;
+        }
+
+        .notification-item small {
+            color: #617267;
+        }
+
+        .notification-tag {
+            font-size: .65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: #176b45;
+        }
+
+        @media print {
+            #pdfTools {
+                display: none !important;
+            }
+        }
+
+        /* Brasão pequeno em todas as abas */
+        .dashboard-home-crest {
+            width: clamp(6rem, 17vw, 10rem);
+            height: clamp(6rem, 17vw, 10rem);
+            padding: .4rem;
+            border-width: 3px;
+            border-radius: 1.25rem;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .25);
+        }
+
+        .dashboard-home-hero,
+        .dashboard-home-hero.glass-panel {
+            background:
+                linear-gradient(90deg, rgba(10, 39, 25, .94) 0%, rgba(13, 63, 37, .78) 48%, rgba(15, 75, 43, .45) 100%),
+                url('https://penoticias.com.br/blog/wp-content/uploads/2024/07/Policia-Militar.jpg') center 35% / cover no-repeat,
+                linear-gradient(115deg, #102e20 0%, #176b45 62%, #24794e 100%);
+            border: 1px solid var(--pm-gold);
+            min-height: 15rem;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+        }
+
+        .police-banner {
+            gap: .75rem;
+            padding: .6rem 1rem;
+        }
+
+        .police-banner-crest {
+            height: 2.4rem;
+        }
+
+        .police-banner-title {
+            font-size: 1.15rem;
+        }
+
+        .police-banner-text {
+            margin-top: .15rem;
+            font-size: .78rem;
+        }
+
+        .police-banner--compact .police-banner-crest {
+            height: 1.8rem;
+        }
+
+        #missionsSection img[src*="brasao-pmpe"] {
+            height: 2.25rem;
+        }
     </style>
 </head>
 
@@ -1873,7 +2366,7 @@
     <aside class="platform-sidebar" aria-label="Menu principal">
         <div class="sidebar-brand">
             <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
+                src="assets/brasao-pmpe.png"
                 alt="" class="brand-crest" aria-hidden="true"
                 onerror="this.hidden=true">
             <div class="sidebar-brand-title">OPERAÇÃO PMPE
@@ -1890,6 +2383,12 @@
             </button>
             <button class="dashboard-nav-item" id="desktopTab-missions" type="button" role="tab" aria-selected="false" aria-controls="missionsSection" tabindex="-1" data-open-dashboard-view="missions">
                 <i class="fa-solid fa-list-check" aria-hidden="true"></i><span>Missões diárias</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-videos" type="button" role="tab" aria-selected="false" aria-controls="videoLessonsPanel" tabindex="-1" data-open-dashboard-view="videos">
+                <i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>Videoaulas</span>
+            </button>
+            <button class="dashboard-nav-item" id="desktopTab-pdfs" type="button" role="tab" aria-selected="false" aria-controls="pdfsPanel" tabindex="-1" data-open-dashboard-view="pdfs">
+                <i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>PDFs</span>
             </button>
             <button class="dashboard-nav-item" id="desktopTab-simulations" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="simulations">
                 <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span>Simulados</span>
@@ -1911,7 +2410,7 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4">
                 <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
+                    src="assets/brasao-pmpe.png"
                     alt="Brasão da Polícia Militar de Pernambuco" class="brand-crest"
                     onerror="this.hidden=true;this.nextElementSibling.hidden=false">
                 <div hidden
@@ -1963,11 +2462,16 @@
                         aria-expanded="false" aria-controls="contestNotifications"
                         onclick="toggleHeaderPopover('contestNotifications')">
                         <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                        <span id="notificationBadge" class="notification-badge" hidden>0</span>
                     </button>
-                    <div id="contestNotifications" class="header-popover" hidden>
-                        <strong class="block">Acompanhamento do concurso PMPE</strong>
-                        <p class="mt-2 text-sm text-gray-600">Este painel ainda não recebe alertas automáticos. Para evitar avisos desatualizados, confira edital, retificações e convocações nas páginas oficiais:</p>
-                        <ul class="mt-3 space-y-2 text-sm">
+                    <div id="contestNotifications" class="header-popover notification-popover" hidden>
+                        <div class="flex items-center justify-between gap-2">
+                            <strong class="block">Central de apoio</strong>
+                            <button type="button" id="notificationMarkRead" class="text-xs font-bold text-emerald-800 underline">Marcar como lidas</button>
+                        </div>
+                        <ul id="notificationList" class="notification-list mt-3"></ul>
+                        <p class="mt-3 text-xs text-gray-600">Confira edital, retificações e convocações nas páginas oficiais:</p>
+                        <ul class="mt-2 space-y-2 text-sm">
                             <li><a href="https://www.institutoaocp.org.br/concurso.jsp?id=611" target="_blank" rel="noopener noreferrer">Instituto AOCP — concurso PMPE</a></li>
                             <li><a href="https://www.pm.pe.gov.br/" target="_blank" rel="noopener noreferrer">Polícia Militar de Pernambuco</a></li>
                         </ul>
@@ -1989,7 +2493,7 @@
                         target="_blank" rel="noopener noreferrer">Imagem de fundo: PE Notícias</a>
                 </div>
                 <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDteBvSN9G6xJDjbsWTI_-2HgiTB39DBxk8JEFegNteQ&amp;s=10"
+                    src="assets/brasao-pmpe.png"
                     alt="Brasão da Polícia Militar de Pernambuco" class="dashboard-home-crest"
                     onerror="this.hidden=true">
             </div>
@@ -2220,6 +2724,55 @@
                     AOCP</a>.</p>
         </section>
 
+        <section id="videoLessonsPanel" class="dashboard-panel glass-panel p-4 md:p-6 rounded-xl border border-slate-700" role="tabpanel" aria-labelledby="desktopTab-videos" hidden>
+            <div class="police-banner mb-5">
+                <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
+                <div class="police-banner-body">
+                    <span class="police-banner-eyebrow">Estudo integrado</span>
+                    <h2 class="police-banner-title"><i class="fa-solid fa-circle-play mr-2" aria-hidden="true"></i>Videoaulas</h2>
+                    <p class="police-banner-text">Assista à aula e registre suas anotações ao lado. Elas ficam salvas neste navegador e separadas por aula.</p>
+                </div>
+            </div>
+            <label for="videoLessonPicker" class="mb-5 block text-sm font-bold text-gray-200">
+                Aula do plano
+                <select id="videoLessonPicker" class="mt-2 w-full rounded border border-slate-600 bg-slate-900 p-3 text-white focus:border-emerald-500">
+                    <option value="">Carregando aulas...</option>
+                </select>
+            </label>
+            <div class="video-study-layout">
+                <div class="min-w-0">
+                    <div class="mb-3">
+                        <p id="videoLessonSubject" class="text-xs font-bold uppercase tracking-wider text-emerald-400"></p>
+                        <h3 id="videoLessonTitle" class="mt-1 text-xl font-bold text-white">Selecione uma aula</h3>
+                    </div>
+                    <div class="video-player-shell">
+                        <iframe id="lessonVideoFrame" title="Videoaula selecionada" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div id="videoPlayerEmpty" class="video-player-empty" hidden></div>
+                    </div>
+                    <p id="videoPlayerStatus" class="mt-2 text-sm text-gray-300" role="status" aria-live="polite"></p>
+                    <a id="videoLessonExternalLink" class="mt-3 inline-block text-sm font-bold text-emerald-300 underline underline-offset-2" href="#" target="_blank" rel="noopener noreferrer">Abrir vídeo no YouTube</a>
+                </div>
+                <aside class="video-notes-panel rounded-lg border border-slate-700 bg-slate-900/80 p-4" aria-labelledby="videoNotesHeading">
+                    <h3 id="videoNotesHeading" class="font-bold text-white"><i class="fa-solid fa-pen-to-square mr-2 text-emerald-400" aria-hidden="true"></i>Anotações da aula</h3>
+                    <p class="mt-1 text-xs text-gray-400">Escreva conceitos, exemplos e dúvidas. O salvamento é automático.</p>
+                    <div id="videoLessonNotes" class="video-notes-editor mt-4" data-placeholder="Suas anotações desta aula..." aria-label="Anotações da aula"></div>
+                    <p id="videoNotesStatus" class="mt-2 min-h-5 text-xs text-gray-400" role="status" aria-live="polite"></p>
+                </aside>
+            </div>
+        </section>
+
+        <section id="pdfsPanel" class="dashboard-panel glass-panel p-4 md:p-6 rounded-xl border border-slate-700" role="tabpanel" aria-labelledby="desktopTab-pdfs" hidden>
+            <div class="police-banner mb-5">
+                <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
+                <div class="police-banner-body">
+                    <span class="police-banner-eyebrow">Biblioteca da missão</span>
+                    <h2 class="police-banner-title"><i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i>PDFs</h2>
+                    <p class="police-banner-text">Todos os PDFs das missões, organizados por disciplina. Dentro de cada PDF você pode grifar com marca-texto e apagar com a borracha.</p>
+                </div>
+            </div>
+            <div id="pdfLibrary" class="space-y-6"></div>
+        </section>
+
         <!-- Coluna Esquerda: CASCATA DE MISSÕES (05h às 23h) perfeitamente alinhada -->
         <div id="missionsSection" class="dashboard-panel space-y-6 w-full max-w-full" role="tabpanel" aria-labelledby="desktopTab-missions" hidden>
             <div
@@ -2234,8 +2787,7 @@
 
             <p class="glass-panel px-4 py-3 rounded-lg text-sm text-gray-300 w-full">
                 <strong class="text-blue-400">Progressão:</strong> A próxima etapa só será liberada quando todas as tarefas
-                da etapa atual estiverem concluídas. O conteúdo segue a ordem da missão. Faça por Júlia.
-                Faça por Jailene.
+                da etapa atual estiverem concluídas. O conteúdo segue a ordem da missão.
             </p>
             <p id="studyPlanSummary" class="glass-panel px-4 py-3 rounded-lg text-sm text-gray-300 w-full" aria-live="polite"></p>
 
@@ -2262,10 +2814,10 @@
 
             <div
                 class="glass-panel p-6 rounded-xl mt-8 flex flex-col md:flex-row items-center gap-6 border-l-4 border-l-blue-600 w-full">
-                <i class="fa-solid fa-skull text-5xl text-gray-400"></i>
+                <img src="assets/brasao-pmpe.png" alt="Brasão da PMPE" class="h-20 w-auto flex-none drop-shadow-md">
                 <div class="min-w-0">
                     <h3 class="font-tactical text-xl text-blue-400 mb-2">Sem Atalhos. Apenas Guerra.</h3>
-                    <p class="text-gray-300 text-sm break-words">Ian, acorde às 05:00 e cumpra as ordens de cima a
+                    <p class="text-gray-300 text-sm break-words"><span data-student-first-name>Soldado</span>, acorde às 05:00 e cumpra as ordens de cima a
                         baixo. A cada caixa marcada, você está um passo mais perto de tirar sua família de qualquer
                         dificuldade. Não pare por nada.</p>
                 </div>
@@ -2395,9 +2947,7 @@
             <div id="notesPanel" class="glass-panel p-5 rounded-xl border border-slate-700 shadow-lg w-full">
                 <h3 class="font-tactical text-blue-400 text-lg mb-3 border-b border-slate-700 pb-2"><i
                         class="fa-solid fa-pen-to-square mr-2"></i> Caderno de Anotações</h3>
-                <textarea id="tacticalNotes"
-                    class="w-full h-32 bg-slate-900 border border-slate-600 rounded p-3 text-sm text-gray-200 outline-none focus:border-blue-500 resize-none"
-                    placeholder="Suas anotações, mnemônicos e justificativas das questões que errou são salvas automaticamente aqui..."></textarea>
+                <div id="tacticalNotes" class="notes-editor" data-placeholder="Suas anotações, mnemônicos e justificativas das questões que errou são salvas automaticamente aqui..." aria-label="Caderno de anotações"></div>
             </div>
 
             <!-- LINKS ÚTEIS -->
@@ -2455,10 +3005,33 @@
             <p class="text-xs font-bold tracking-[0.2em] text-emerald-700 uppercase">Revisão inteligente</p>
             <h2 class="mt-2 text-2xl md:text-3xl font-tactical text-emerald-900">Caderno de erros</h2>
             <p class="mt-3 max-w-2xl text-gray-600">Seus registros ficam separados das anotações gerais e podem ser retomados para revisar o que errou, por que errou e qual é a regra correta.</p>
-            <button type="button" onclick="openErrorNotebook()"
-                class="mt-6 rounded-lg bg-emerald-700 hover:bg-emerald-800 px-5 py-3 text-sm font-bold text-white">
-                <i class="fa-solid fa-book-skull mr-2" aria-hidden="true"></i>ABRIR CADERNO DE ERROS
-            </button>
+            <div id="errorNotebookInline" class="mt-6 grid md:grid-cols-2 gap-6">
+                <form id="errorNotebookForm" class="space-y-3" onsubmit="return false">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-white" id="errorFormTitle">Novo registro</h4>
+                        <span class="text-xs text-gray-400" id="errorSaveStatus">Rascunho salvo automaticamente.</span>
+                    </div>
+                    <input id="errSubject" type="text" maxlength="120" placeholder="Matéria / tema (ex.: Direito Constitucional - Art. 5º)"
+                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500">
+                    <textarea id="errQuestion" rows="3" maxlength="2000" placeholder="Questão ou situação em que errei..."
+                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
+                    <textarea id="errCause" rows="2" maxlength="1000" placeholder="Por que errei? (desatenção, não sabia, confundi conceitos...)"
+                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
+                    <textarea id="errRule" rows="4" maxlength="3000" placeholder="Regra correta / resposta certa com minhas palavras..."
+                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="saveErrorEntry()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-4 py-2 rounded text-sm"><i class="fa-solid fa-floppy-disk mr-1"></i> SALVAR NO CADERNO</button>
+                        <button type="button" onclick="newErrorEntry()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded text-sm">NOVO REGISTRO</button>
+                    </div>
+                </form>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-white">Registros salvos (<span id="errCount">0</span>)</h4>
+                        <input id="errFilter" type="search" placeholder="Filtrar..." class="bg-slate-950 border border-slate-600 rounded p-1 text-sm text-gray-200 w-36">
+                    </div>
+                    <div id="errList" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1"></div>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -2471,6 +3044,12 @@
         </button>
         <button class="dashboard-nav-item" id="mobileTab-missions" type="button" role="tab" aria-selected="false" aria-controls="missionsSection" tabindex="-1" data-open-dashboard-view="missions">
             <i class="fa-solid fa-list-check" aria-hidden="true"></i><span>Missões</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-videos" type="button" role="tab" aria-selected="false" aria-controls="videoLessonsPanel" tabindex="-1" data-open-dashboard-view="videos">
+            <i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>Aulas</span>
+        </button>
+        <button class="dashboard-nav-item" id="mobileTab-pdfs" type="button" role="tab" aria-selected="false" aria-controls="pdfsPanel" tabindex="-1" data-open-dashboard-view="pdfs">
+            <i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>PDFs</span>
         </button>
         <button class="dashboard-nav-item" id="mobileTab-simulations" type="button" role="tab" aria-selected="false" aria-controls="studySupport" tabindex="-1" data-open-dashboard-view="simulations">
             <i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span>Simulado</span>
@@ -2491,6 +3070,8 @@
             home: document.getElementById('dashboardHome'),
             content: document.getElementById('syllabusSection'),
             missions: document.getElementById('missionsSection'),
+            videos: document.getElementById('videoLessonsPanel'),
+            pdfs: document.getElementById('pdfsPanel'),
             simulations: document.getElementById('studySupport'),
             support: document.getElementById('studySupport'),
             writing: document.getElementById('writingPanel'),
@@ -2551,7 +3132,436 @@
         });
     </script>
 
-    <!-- Modais do Sistema -->
+    <script>
+        // Editor de anotações com negrito, itálico e marca-texto, e grifo para PDFs.
+        (() => {
+            const HL_COLORS = [
+                { name: 'Amarelo', value: '#fde047' },
+                { name: 'Verde', value: '#86efac' },
+                { name: 'Rosa', value: '#f9a8d4' },
+                { name: 'Azul', value: '#93c5fd' }
+            ];
+            const ALLOWED_TAGS = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'BR', 'DIV', 'P', 'SPAN']);
+            const COLOR_RE = /^(?:rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*(?:0|1|0?\.\d+)\s*)?\)|#[0-9a-f]{3,8})$/i;
+
+            const escapeHtml = text => String(text).replace(/[&<>"']/g, ch =>
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+            const textToHtml = text => escapeHtml(text).replace(/\r?\n/g, '<br>');
+
+            const cleanInto = (source, target) => {
+                source.childNodes.forEach(child => {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        target.appendChild(document.createTextNode(child.nodeValue));
+                        return;
+                    }
+                    if (child.nodeType !== Node.ELEMENT_NODE) return;
+                    const tag = child.tagName;
+                    if (tag === 'SCRIPT' || tag === 'STYLE') return;
+                    if (!ALLOWED_TAGS.has(tag)) { cleanInto(child, target); return; }
+                    if (tag === 'SPAN') {
+                        const bg = (child.style.backgroundColor || '').trim();
+                        if (!COLOR_RE.test(bg)) { cleanInto(child, target); return; }
+                        const span = document.createElement('span');
+                        span.style.backgroundColor = bg;
+                        cleanInto(child, span);
+                        target.appendChild(span);
+                        return;
+                    }
+                    const name = tag === 'STRONG' ? 'b' : tag === 'EM' ? 'i' : tag.toLowerCase();
+                    const element = document.createElement(name);
+                    if (name !== 'br') cleanInto(child, element);
+                    target.appendChild(element);
+                });
+            };
+
+            const sanitizeHtml = html => {
+                const body = new DOMParser().parseFromString(String(html || ''), 'text/html').body;
+                const holder = document.createElement('div');
+                cleanInto(body, holder);
+                return holder.innerHTML;
+            };
+
+            const makeButton = (className, label, html) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = className;
+                button.title = label;
+                button.setAttribute('aria-label', label);
+                button.innerHTML = html;
+                button.addEventListener('mousedown', event => event.preventDefault());
+                return button;
+            };
+
+            const mount = (editor, { onChange } = {}) => {
+                const toolbar = document.createElement('div');
+                toolbar.className = 'rich-toolbar';
+                toolbar.setAttribute('role', 'toolbar');
+                toolbar.setAttribute('aria-label', 'Formatação do texto');
+                editor.classList.add('rich-editor');
+                editor.contentEditable = 'true';
+                editor.setAttribute('role', 'textbox');
+                editor.setAttribute('aria-multiline', 'true');
+
+                const ensureFocus = () => {
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount || !editor.contains(selection.anchorNode)) editor.focus();
+                };
+                const run = command => {
+                    ensureFocus();
+                    document.execCommand('styleWithCSS', false, false);
+                    document.execCommand(command);
+                    notify();
+                };
+                const highlight = color => {
+                    ensureFocus();
+                    document.execCommand('styleWithCSS', false, true);
+                    document.execCommand('hiliteColor', false, color);
+                    document.execCommand('styleWithCSS', false, false);
+                    notify();
+                };
+                const notify = () => { if (onChange) onChange(sanitizeHtml(editor.innerHTML)); };
+
+                const bold = makeButton('rich-btn', 'Negrito', '<b>N</b>');
+                bold.addEventListener('click', () => run('bold'));
+                const italic = makeButton('rich-btn', 'Itálico', '<i>I</i>');
+                italic.addEventListener('click', () => run('italic'));
+                toolbar.append(bold, italic);
+                HL_COLORS.forEach(color => {
+                    const swatch = makeButton('rich-swatch', `Marca-texto ${color.name.toLowerCase()}`, '');
+                    swatch.style.backgroundColor = color.value;
+                    swatch.addEventListener('click', () => highlight(color.value));
+                    toolbar.appendChild(swatch);
+                });
+                const eraser = makeButton('rich-btn', 'Remover marca-texto', '<i class="fa-solid fa-eraser" aria-hidden="true"></i>');
+                eraser.addEventListener('click', () => highlight('transparent'));
+                toolbar.appendChild(eraser);
+                editor.parentNode.insertBefore(toolbar, editor);
+
+                editor.addEventListener('input', notify);
+                editor.addEventListener('paste', event => {
+                    event.preventDefault();
+                    const text = (event.clipboardData || window.clipboardData).getData('text/plain');
+                    document.execCommand('insertText', false, text);
+                });
+                editor.addEventListener('blur', () => {
+                    const clean = sanitizeHtml(editor.innerHTML);
+                    if (clean !== editor.innerHTML) editor.innerHTML = clean;
+                });
+
+                return {
+                    setHtml(html) { editor.innerHTML = sanitizeHtml(html); },
+                    getHtml: () => sanitizeHtml(editor.innerHTML),
+                    setDisabled(disabled) {
+                        editor.contentEditable = disabled ? 'false' : 'true';
+                        toolbar.classList.toggle('is-disabled', disabled);
+                    }
+                };
+            };
+
+            window.PMPERichNotes = { mount, sanitizeHtml, textToHtml, escapeHtml };
+
+            // ---------- Grifo nos PDFs ----------
+            const PDF_HL_KEY = 'pmpePdfHighlightsV1';
+            const palette = HL_COLORS.map(color => color.value);
+            const pdf = { root: null, key: '', list: [], mode: null };
+
+            const readAll = () => {
+                try {
+                    const parsed = JSON.parse(localStorage.getItem(PDF_HL_KEY) || '{}');
+                    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+                } catch (error) {
+                    return {};
+                }
+            };
+            const persist = () => {
+                const all = readAll();
+                if (pdf.list.length) all[pdf.key] = pdf.list; else delete all[pdf.key];
+                try { localStorage.setItem(PDF_HL_KEY, JSON.stringify(all)); } catch (error) {
+                    console.error('Não foi possível salvar os grifos do PDF.', error);
+                }
+            };
+            const textNodes = root => {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+                    acceptNode: node => node.nodeValue.length && !node.parentElement.closest('textarea, script, style, select, option, button, .pdf-tools')
+                        ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+                });
+                const nodes = [];
+                let base = 0;
+                while (walker.nextNode()) {
+                    nodes.push({ node: walker.currentNode, base });
+                    base += walker.currentNode.nodeValue.length;
+                }
+                return nodes;
+            };
+            const subtract = (list, start, end) => list.flatMap(item => {
+                if (item.e <= start || item.s >= end) return [item];
+                const parts = [];
+                if (item.s < start) parts.push({ s: item.s, e: start, c: item.c });
+                if (item.e > end) parts.push({ s: end, e: item.e, c: item.c });
+                return parts;
+            });
+            const render = () => {
+                if (!pdf.root) return;
+                pdf.root.querySelectorAll('mark[data-hl]').forEach(mark => mark.replaceWith(...mark.childNodes));
+                pdf.root.normalize();
+                textNodes(pdf.root).forEach(({ node, base }) => {
+                    const text = node.nodeValue;
+                    const end = base + text.length;
+                    const hits = pdf.list.filter(item => item.s < end && item.e > base).sort((a, b) => a.s - b.s);
+                    if (!hits.length) return;
+                    const fragment = document.createDocumentFragment();
+                    let position = 0;
+                    hits.forEach(item => {
+                        const from = Math.max(item.s, base) - base;
+                        const to = Math.min(item.e, end) - base;
+                        if (from > position) fragment.append(text.slice(position, from));
+                        const mark = document.createElement('mark');
+                        mark.className = 'pdf-highlight';
+                        mark.dataset.hl = `${item.s}-${item.e}`;
+                        mark.style.backgroundColor = item.c;
+                        mark.textContent = text.slice(from, to);
+                        fragment.append(mark);
+                        position = to;
+                    });
+                    if (position < text.length) fragment.append(text.slice(position));
+                    node.replaceWith(fragment);
+                });
+            };
+            const selectionOffsets = range => {
+                let start = null;
+                let end = null;
+                textNodes(pdf.root).forEach(({ node, base }) => {
+                    if (!range.intersectsNode(node)) return;
+                    const from = node === range.startContainer ? range.startOffset : 0;
+                    const to = node === range.endContainer ? range.endOffset : node.nodeValue.length;
+                    if (from >= to) return;
+                    start = start === null ? base + from : Math.min(start, base + from);
+                    end = end === null ? base + to : Math.max(end, base + to);
+                });
+                return start === null ? null : { start, end };
+            };
+            const applyChange = (start, end, color) => {
+                pdf.list = subtract(pdf.list, start, end);
+                if (color) pdf.list.push({ s: start, e: end, c: color });
+                pdf.list.sort((a, b) => a.s - b.s);
+                pdf.list = pdf.list.reduce((merged, item) => {
+                    const last = merged[merged.length - 1];
+                    if (last && last.e === item.s && last.c === item.c) last.e = item.e; else merged.push({ ...item });
+                    return merged;
+                }, []);
+                persist();
+                render();
+            };
+            const handleSelection = () => {
+                if (!pdf.root || !pdf.mode) return;
+                const selection = window.getSelection();
+                if (!selection.rangeCount || selection.isCollapsed) return;
+                const range = selection.getRangeAt(0);
+                if (!pdf.root.contains(range.commonAncestorContainer)) return;
+                const offsets = selectionOffsets(range);
+                if (!offsets) return;
+                selection.removeAllRanges();
+                applyChange(offsets.start, offsets.end, pdf.mode === 'eraser' ? null : pdf.mode);
+            };
+            const setMode = mode => {
+                pdf.mode = mode;
+                const tools = document.getElementById('pdfTools');
+                if (!tools) return;
+                tools.querySelectorAll('[data-hl-tool]').forEach(button => {
+                    const active = button.dataset.hlTool === mode;
+                    button.classList.toggle('is-active', active);
+                    button.setAttribute('aria-pressed', String(active));
+                });
+                document.getElementById('materialModal').dataset.hlMode = mode ? (mode === 'eraser' ? 'eraser' : 'mark') : '';
+            };
+
+            const setupTools = () => {
+                const tools = document.getElementById('pdfTools');
+                if (!tools || tools.dataset.ready) return;
+                tools.dataset.ready = '1';
+                const label = document.createElement('span');
+                label.className = 'pdf-tools-label';
+                label.textContent = 'Grifar:';
+                tools.appendChild(label);
+                HL_COLORS.forEach(color => {
+                    const swatch = makeButton('rich-swatch', `Marca-texto ${color.name.toLowerCase()}`, '');
+                    swatch.dataset.hlTool = color.value;
+                    swatch.style.backgroundColor = color.value;
+                    swatch.addEventListener('click', () => setMode(pdf.mode === color.value ? null : color.value));
+                    tools.appendChild(swatch);
+                });
+                const eraser = makeButton('rich-btn', 'Borracha: selecione ou clique num trecho grifado', '<i class="fa-solid fa-eraser" aria-hidden="true"></i> Borracha');
+                eraser.dataset.hlTool = 'eraser';
+                eraser.addEventListener('click', () => setMode(pdf.mode === 'eraser' ? null : 'eraser'));
+                const clear = makeButton('rich-btn', 'Apagar todos os grifos deste PDF', '<i class="fa-solid fa-trash-can" aria-hidden="true"></i> Limpar');
+                clear.addEventListener('click', () => {
+                    if (!pdf.list.length || !confirm('Apagar todos os grifos deste PDF?')) return;
+                    pdf.list = [];
+                    persist();
+                    render();
+                });
+                const hint = document.createElement('span');
+                hint.className = 'pdf-tools-hint';
+                hint.textContent = 'Escolha uma cor e selecione o texto.';
+                tools.append(eraser, clear, hint);
+                const finish = () => setTimeout(handleSelection, 0);
+                document.addEventListener('mouseup', finish);
+                document.addEventListener('touchend', finish);
+                document.addEventListener('click', event => {
+                    if (pdf.mode !== 'eraser' || !pdf.root || !(event.target instanceof Element)) return;
+                    const mark = event.target.closest('mark[data-hl]');
+                    if (!mark || !pdf.root.contains(mark) || !window.getSelection().isCollapsed) return;
+                    const [start, end] = mark.dataset.hl.split('-').map(Number);
+                    applyChange(start, end, null);
+                });
+            };
+
+            window.PMPEPdfHighlighter = {
+                attach(root, key, enabled = true) {
+                    setupTools();
+                    pdf.root = enabled ? root : null;
+                    pdf.key = key;
+                    const stored = readAll()[key];
+                    pdf.list = Array.isArray(stored)
+                        ? stored.filter(item => Number.isInteger(item.s) && Number.isInteger(item.e) && item.e > item.s && palette.includes(item.c))
+                        : [];
+                    setMode(null);
+                    const tools = document.getElementById('pdfTools');
+                    if (tools) tools.hidden = !enabled;
+                    if (enabled) render();
+                }
+            };
+        })();
+
+        // Central de apoio do sino: frases de motivação e dicas de estudo.
+        (() => {
+            const MESSAGES = [
+                ['motivacao', 'Cada questão resolvida hoje é um passo a menos entre você e a farda.'],
+                ['motivacao', 'Disciplina vence motivação. Faça a missão do dia mesmo nos dias difíceis.'],
+                ['motivacao', 'Ninguém passa por acaso. Quem passa é quem aparece todos os dias.'],
+                ['motivacao', 'Seu futuro nome na lista de aprovados está sendo escrito agora, em cada página estudada.'],
+                ['motivacao', 'Cansaço passa. A aprovação fica. Continue.'],
+                ['motivacao', 'Hoje você não precisa ser perfeito, só precisa ser constante.'],
+                ['motivacao', 'Quem treina na paz sofre menos na prova. Mantenha o ritmo.'],
+                ['motivacao', 'Você já chegou mais longe do que a versão sua que ainda não tinha começado.'],
+                ['motivacao', 'Errou uma questão? Ótimo: o erro certo agora é um ponto garantido na prova.'],
+                ['motivacao', 'A prova é um dia. A preparação é uma escolha diária. Escolha de novo hoje.'],
+                ['motivacao', 'Pequenos avanços repetidos todos os dias viram uma aprovação.'],
+                ['motivacao', 'Não compare seu capítulo 3 com o capítulo 20 de outra pessoa.'],
+                ['motivacao', 'Descanse se precisar, mas não desista do objetivo.'],
+                ['motivacao', 'A farda que você quer vestir é construída nas horas que ninguém vê.'],
+                ['motivacao', 'Foco total por 50 minutos vale mais do que 3 horas distraído.'],
+                ['motivacao', 'Seu esforço de hoje vai agradecer você no dia da posse.'],
+                ['motivacao', 'Quando bater a vontade de parar, lembre por que começou.'],
+                ['motivacao', 'Missão dada é missão cumprida: marque a próxima caixa.'],
+                ['motivacao', 'Você não está atrasado. Você está no seu processo, e ele está andando.'],
+                ['motivacao', 'Coragem não é ausência de medo. É estudar mesmo com ele.'],
+                ['motivacao', 'O concurso premia quem repete até acertar, não quem acerta de primeira.'],
+                ['motivacao', 'Respire, organize a mesa e comece. O resto vem depois do primeiro minuto.'],
+                ['motivacao', 'Sua família está torcendo por você. Dê a ela o orgulho da aprovação.'],
+                ['motivacao', 'Não existe atalho, mas existe método. E você já tem um plano.'],
+                ['motivacao', 'Um dia ruim de estudo ainda é melhor que um dia sem estudo.'],
+                ['apoio', 'Revisão espaçada: reveja o conteúdo em 24 horas, 7 dias e 30 dias para fixar de verdade.'],
+                ['apoio', 'Use o Caderno de Erros: anote a questão, o motivo do erro e a regra correta.'],
+                ['apoio', 'Técnica Pomodoro: 25 minutos de foco total e 5 minutos de pausa. A cada 4 ciclos, pause 15.'],
+                ['apoio', 'Dica de prova: leia o comando da questão antes dos itens. Muita gente erra por não ler o que se pede.'],
+                ['apoio', 'Atenção às palavras absolutas (sempre, nunca, somente, todos). Elas costumam tornar o item errado.'],
+                ['apoio', 'Na lei seca, grife palavras-chave e prazos. Use a aba PDFs e o marca-texto.'],
+                ['apoio', 'Explicar o conteúdo em voz alta, como se desse aula, mostra o que você ainda não domina.'],
+                ['apoio', 'Resolva questões da banca. Conhecer o estilo cobra menos tempo e mais acertos.'],
+                ['apoio', 'Dormir bem consolida a memória. Não troque sono por horas de estudo improdutivas.'],
+                ['apoio', 'Beba água e levante a cada hora. Corpo ativo, mente afiada.'],
+                ['apoio', 'Use as Anotações das videoaulas com negrito e marca-texto para destacar o que mais cai.'],
+                ['apoio', 'Antes de cada missão, olhe o objetivo do dia. Estudo sem meta vira distração.'],
+                ['apoio', 'Matemática se aprende resolvendo. Assistir à aula sem praticar não fixa o conteúdo.'],
+                ['apoio', 'Português: treine interpretação de texto todo dia, mesmo que por 15 minutos.'],
+                ['apoio', 'Mapas mentais ajudam a ligar assuntos. Use-os nas matérias com muitos conceitos.'],
+                ['apoio', 'Não deixe para a véspera: faça uma revisão leve na semana da prova, sem novos assuntos.'],
+                ['apoio', 'Simulados cronometrados treinam o tempo de prova. Resolva-os sem consulta.'],
+                ['apoio', 'Sempre confira o edital e as retificações nas páginas oficiais do concurso.'],
+                ['apoio', 'Cuidado com o celular: deixe o modo avião durante os blocos de estudo.'],
+                ['apoio', 'Estude ativamente: pare a videoaula, anote e reformule o que ouviu.'],
+                ['taf', 'TAF PMPE: a barra fixa masculina exige no mínimo 5 repetições dinâmicas; a feminina, 25 segundos de isometria.'],
+                ['taf', 'TAF PMPE: o salto em distância mínimo é de 3,60 m (masc.) e 2,80 m (fem.), com corrida de aproximação.'],
+                ['taf', 'TAF PMPE: natação de 50 m em até 1 minuto (masc.) e 1 min 10 s (fem.).'],
+                ['taf', 'TAF PMPE: o abdominal remador exige 40 repetições em 1 minuto (masc.) ou 36 (fem.).'],
+                ['taf', 'TAF PMPE: a corrida de 2.400 m deve ser feita em até 11 min 30 s (masc.) ou 13 min 30 s (fem.).'],
+                ['taf', 'O TAF é eliminatório e tem apenas 1 tentativa em barra, natação, abdominal e corrida. Treine até a marca ficar folgada.'],
+                ['taf', 'Aquecer e alongar antes do treino do TAF reduz o risco de lesões.'],
+                ['taf', 'Na barra fixa do TAF é proibido usar luvas ou pó de magnésio. Treine do jeito da prova.'],
+                ['apoio', 'Revise o Caderno de Erros todo fim de semana. Os erros repetidos são os mais perigosos.'],
+                ['apoio', 'Organize a semana: matérias difíceis nos horários em que você rende mais.'],
+                ['motivacao', 'Orgulho de ser PMPE começa na rotina de estudos de hoje.']
+            ];
+            const KEY = 'pmpeNotificationsV1';
+            const INTERVAL_MS = 30 * 60 * 1000;
+            const MAX_ITEMS = 30;
+
+            const load = () => {
+                try {
+                    const state = JSON.parse(localStorage.getItem(KEY) || 'null');
+                    if (state && Array.isArray(state.items)) return state;
+                } catch (error) { /* usa estado novo */ }
+                return { next: Math.floor(Math.random() * MESSAGES.length), items: [], last: 0 };
+            };
+            const state = load();
+            const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (error) { /* sem armazenamento */ } };
+            const push = timestamp => {
+                const index = ((Number(state.next) || 0) % MESSAGES.length + MESSAGES.length) % MESSAGES.length;
+                state.items.unshift({ i: index, t: timestamp, r: false });
+                state.items = state.items.slice(0, MAX_ITEMS);
+                state.next = index + 1;
+                state.last = timestamp;
+            };
+            const catchUp = () => {
+                const now = Date.now();
+                if (!state.items.length) { for (let n = 0; n < 3; n += 1) push(now - n * 60000); state.items.reverse(); }
+                else if (now - state.last >= INTERVAL_MS) push(now);
+                save();
+            };
+
+            const label = { motivacao: 'Motivação', apoio: 'Apoio ao estudo', taf: 'TAF' };
+            const render = (highlightUnread = false) => {
+                const list = document.getElementById('notificationList');
+                const badge = document.getElementById('notificationBadge');
+                if (!list || !badge) return;
+                list.textContent = '';
+                state.items.forEach(item => {
+                    const message = MESSAGES[item.i];
+                    if (!message) return;
+                    const li = document.createElement('li');
+                    li.className = 'notification-item' + (highlightUnread && !item.r ? ' is-new' : '');
+                    const tag = document.createElement('span');
+                    tag.className = 'notification-tag';
+                    tag.textContent = label[message[0]] || 'Aviso';
+                    const text = document.createElement('p');
+                    text.textContent = message[1];
+                    const time = document.createElement('small');
+                    time.textContent = new Date(item.t).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+                    li.append(tag, text, time);
+                    list.appendChild(li);
+                });
+                const unread = state.items.filter(item => !item.r).length;
+                badge.textContent = unread > 9 ? '9+' : String(unread);
+                badge.hidden = unread === 0;
+            };
+            const markRead = () => { state.items.forEach(item => { item.r = true; }); save(); };
+
+            document.addEventListener('DOMContentLoaded', () => {
+                catchUp();
+                render(true);
+                const bell = document.querySelector('[aria-controls="contestNotifications"]');
+                bell?.addEventListener('click', () => {
+                    render(true);
+                    const badge = document.getElementById('notificationBadge');
+                    if (badge) badge.hidden = true;
+                    markRead();
+                });
+                document.getElementById('notificationMarkRead')?.addEventListener('click', () => { markRead(); render(false); });
+                setInterval(() => { if (Date.now() - state.last >= INTERVAL_MS) { push(Date.now()); save(); render(true); } }, 60000);
+            });
+        })();
+    </script>
     <div id="customModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[100] backdrop-blur-sm">
         <div
             class="bg-slate-900 border-2 border-blue-600 rounded-xl p-6 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-200">
@@ -2568,7 +3578,7 @@
         class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[120] backdrop-blur-md overflow-y-auto py-10 px-4">
         <div class="bg-white border-2 border-slate-400 rounded-xl max-w-5xl w-full shadow-2xl relative text-slate-900">
             <div
-                class="p-4 border-b border-slate-300 flex justify-between items-center bg-gray-100 rounded-t-xl sticky top-0 z-30 shadow-sm">
+                class="p-4 border-b border-slate-300 flex flex-wrap justify-between items-center bg-gray-100 rounded-t-xl sticky top-0 z-30 shadow-sm">
                 <h3 class="text-xl font-tactical text-slate-800 truncate" id="materialTitle"><i
                         class="fa-solid fa-book-open text-blue-600 mr-2"></i> DOUTRINA E LEI SECA</h3>
                 <div class="flex gap-4 items-center flex-shrink-0 ml-2">
@@ -2579,47 +3589,16 @@
                         class="text-gray-500 hover:text-red-600 transition-colors bg-gray-200 hover:bg-red-100 rounded-full w-8 h-8 flex items-center justify-center"><i
                             class="fa-solid fa-xmark"></i></button>
                 </div>
+                <div id="pdfTools" class="pdf-tools w-full" role="toolbar" aria-label="Ferramentas de grifo" hidden></div>
             </div>
-            <div class="p-6 md:p-16 pdf-content" id="materialContent"></div>
-        </div>
-    </div>
-
-    <!-- Modal do Caderno de Erros -->
-    <div id="errorNotebookModal"
-        class="fixed inset-0 bg-slate-950/95 hidden items-start justify-center z-[115] backdrop-blur-md overflow-y-auto py-10 px-4">
-        <div class="bg-slate-900 border-2 border-red-700 rounded-xl max-w-5xl w-full shadow-2xl relative">
-            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800 rounded-t-xl sticky top-0 z-20">
-                <h3 class="text-xl md:text-2xl font-tactical text-red-400 truncate"><i class="fa-solid fa-book-skull mr-2"></i> CADERNO DE ERROS</h3>
-                <button onclick="closeErrorNotebook()" aria-label="Fechar caderno de erros"
-                    class="text-gray-400 hover:text-white bg-slate-700 hover:bg-red-600 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 ml-2"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="p-5 md:p-8 grid md:grid-cols-2 gap-6">
-                <form id="errorNotebookForm" class="space-y-3" onsubmit="return false">
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-white" id="errorFormTitle">Novo registro</h4>
-                        <span class="text-xs text-gray-400" id="errorSaveStatus">Rascunho salvo automaticamente.</span>
-                    </div>
-                    <input id="errSubject" type="text" maxlength="120" placeholder="Matéria / tema (ex.: Direito Constitucional - Art. 5º)"
-                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500">
-                    <textarea id="errQuestion" rows="3" maxlength="2000" placeholder="Questão ou situação em que errei..."
-                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
-                    <textarea id="errCause" rows="2" maxlength="1000" placeholder="Por que errei? (desatenção, não sabia, confundi conceitos...)"
-                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
-                    <textarea id="errRule" rows="4" maxlength="3000" placeholder="Regra correta / resposta certa com minhas palavras..."
-                        class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="saveErrorEntry()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-4 py-2 rounded text-sm"><i class="fa-solid fa-floppy-disk mr-1"></i> SALVAR NO CADERNO</button>
-                        <button type="button" onclick="newErrorEntry()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded text-sm">NOVO REGISTRO</button>
-                    </div>
-                </form>
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-bold text-white">Registros salvos (<span id="errCount">0</span>)</h4>
-                        <input id="errFilter" type="search" placeholder="Filtrar..." class="bg-slate-950 border border-slate-600 rounded p-1 text-sm text-gray-200 w-36">
-                    </div>
-                    <div id="errList" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1"></div>
+            <div class="police-banner police-banner--compact">
+                <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
+                <div class="police-banner-body">
+                    <span class="police-banner-eyebrow">Polícia Militar de Pernambuco</span>
+                    <strong class="police-banner-title">Material de estudo · Operação PMPE</strong>
                 </div>
             </div>
+            <div class="p-6 md:p-16 pdf-content" id="materialContent"></div>
         </div>
     </div>
 
@@ -2695,17 +3674,17 @@
         };
         let studyPreferences = window.PMPE_STUDY_PREFERENCES || DEFAULT_STUDY_PREFERENCES;
         let missionsInitialized = false;
+        const tacticalNotesEditor = PMPERichNotes.mount(document.getElementById('tacticalNotes'), {
+            onChange: html => { try { localStorage.setItem('pmpe_notes_rich_v1', html); } catch (e) { console.error(e); } }
+        });
         try {
             const savedProgress = localStorage.getItem('pmpe_ian_v7');
             if (savedProgress) userProgress = JSON.parse(savedProgress);
 
-            const savedNotes = localStorage.getItem('pmpe_ian_notes_v7');
-            if (savedNotes) document.getElementById('tacticalNotes').value = savedNotes;
+            const savedNotes = localStorage.getItem('pmpe_notes_rich_v1');
+            const legacyNotes = localStorage.getItem('pmpe_ian_notes_v7');
+            tacticalNotesEditor.setHtml(savedNotes !== null ? savedNotes : PMPERichNotes.textToHtml(legacyNotes || ''));
         } catch (e) { console.error("Erro no load de dados:", e); }
-
-        document.getElementById('tacticalNotes').addEventListener('input', (e) => {
-            localStorage.setItem('pmpe_ian_notes_v7', e.target.value);
-        });
 
         // =========================================================================
         // 2. BANCO DE PDFs DENSOS (OS 10 TÓPICOS APROFUNDADOS)
@@ -3616,18 +4595,309 @@
             return `https://www.youtube.com/results?search_query=Revisao+${base}`;
         };
 
+        const getCourseLessonId = (module, lessonIndex) => `module-${module.moduleId}-lesson-${lessonIndex + 1}`;
+        const MISSION_SEQUENCE_MODULE_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+        const EMBEDDED_VIDEO_LEGACY_IDS = {
+            "module-0-lesson-1": "d1_v1_1"
+        };
+        const EMBEDDED_VIDEO_URL_SEQUENCE = [
+            "https://youtu.be/22iA3PPjr7c?si=36-tYoCJr60rC3gU",
+            "https://youtu.be/nQvX_NSjP1s?si=oqB480Uc18wmJGsT",
+            "https://youtu.be/gK1g5ftu7WM?si=535ligFrx5feZ4Ys",
+            "https://youtu.be/fk8fWwAiG0U?si=4YxWF6QEyouO4O1l",
+            "https://youtu.be/xYjHxSUpJ8k?si=-TqBhdiQFnBCcZTl",
+            "https://youtu.be/UbrR7An5ZfY?si=6Rtmg_suqHq57hlv",
+            "https://youtu.be/ZYyAd8bhjHw?si=IlZuh1MHCZLdkMkw",
+            "https://youtu.be/NagfzzgrOW0?si=zQhpwF8jcLue0hWS",
+            "https://youtu.be/GmiIce_pxGw?si=0Y9u-M4ilxnx4vCx",
+            "https://youtu.be/6xtxfI6-uDw?si=pJVT5IiNojOYbaGC",
+            "https://youtu.be/bL3qKDPcwGI?si=_M_0fSHgdYbsWmx7",
+            "https://youtu.be/AjOp1Da_0_k?si=xty3eegdfirz9pXK",
+            "https://youtu.be/xp-f3mSsPUw?si=ixxBH2tk8JONj-PG",
+            "https://youtu.be/l_20kYKKZk0?si=kZ4rr82C4CFcBuUx",
+            "https://youtu.be/AIHYDa8gelo?si=6YzXJ_c5pTg_fyg_",
+            "https://www.youtube.com/live/W07-5dqmAps?si=molN3Dwfjl-M9a-a",
+            "https://youtu.be/qkmXPTeDxNA?si=HCQz4AhGaSScVXqX",
+            "https://youtu.be/erYMz7g0FMs?si=GUi0NYqN2STw_1d8",
+            "https://youtu.be/g6yM8U3qRg8?si=qyRkfMlVtP49j6qL",
+            "https://youtu.be/3PyTML2-fh0?si=BH8PHHOkPGQvOEy5",
+            "https://youtu.be/Xzn5YmXlz2c?si=WAfX8gi_dpg5BDbE",
+            "https://youtu.be/uBvdlyutXMY?si=w7M7n1CBKZf1WTat",
+            "https://www.youtube.com/live/a78GHr3wdwA?si=EX2G0RvnYWJkAMyb",
+            "https://youtu.be/6GSRf9AIqig?si=3yS62aolAfcMjIyO",
+            "https://youtu.be/TSGr3Y_cnz8?si=wa0AfxpaiCu8wp_u",
+            "https://youtu.be/ApjF0te77DA?si=Jd9osRLU_7TGSygS",
+            "https://www.youtube.com/live/uagsuY9H53w?si=IvbzAQMCBjW6TXuG",
+            "https://www.youtube.com/live/Zyv1VXLe11w?si=tRqbJBmqD2BXNoW7",
+            "https://youtu.be/AnzihbKCYFE?si=l_ttUtnbGH4wNbab",
+            "https://www.youtube.com/live/r1KnF41rHc?si=-6oDmUmqE37k_Xu",
+            "https://youtu.be/3fyN4DrdcOo?si=4EQd2ZvpSm5EnUk8",
+            "https://youtu.be/Ix7IlFM9xCE?si=vEcHJkdwk8TznBiM",
+            "https://youtu.be/0IpJZOvOuUs?si=_jjTGkRoET5sgrGI",
+            "https://youtu.be/w0sI3unOczM?si=2tsawgK38Sx55PAW",
+            "https://youtu.be/lCU4sxHZUyg?si=d8ZB72lr6YQ6AEPO",
+            "https://youtu.be/1-haLZcq4pA?si=SawCrbNmJvSNaYf2",
+            "https://www.youtube.com/live/3Vska6BGz4c?si=Xqp2aMPSyqVlHwsX",
+            "https://youtu.be/LGCQ0HZpTDw?si=-v_C3wNo0WogKG7U",
+            "https://youtu.be/oGpootHEeQw?si=99XTE_QdBCvI2CPe",
+            "https://youtu.be/QMkHs9kT9WE?si=vjFgFGwt81krrTpN",
+            "https://youtu.be/VikmvTpbztE?si=X47JLI3E0Rdunqr6",
+            "https://youtu.be/TVjzslm2QO4?si=-GpJfQqueZDUlmgT",
+            "https://youtu.be/Lo6_EtYiltU?si=mu9K16kxjMGTPH7t",
+            "https://youtu.be/LbVLCjrpWDA?si=FLMS4HdQyM3GfJOA",
+            "https://youtu.be/et2qWWa0kTA?si=7BM9nZYyDwUbXzI0",
+            "https://youtu.be/OZmlnzJOZ08?si=aWxSI9j6tffGYVUW",
+            "https://youtu.be/Q8L3nx1OXeU?si=qrK5Lw-WCxxb7AoW",
+            "https://youtu.be/8U3I83z-sI4?si=tCwh_Q0OFpBj56pY",
+            "https://youtu.be/uUNoVed7zdE?si=Po7BMkrv4f3KfkT5",
+            "https://youtu.be/7Gfw6nw9lFE?si=vYBSZEujnHvxvPlt",
+            "https://www.youtube.com/live/C1rAEoG9CNQ?si=9slvgf3TWxDbNirl",
+            "https://www.youtube.com/live/cSKKuN8T5D4?si=qDDOmatCWBSZ7J6o",
+            "https://youtu.be/hw-SLME2boU?si=jGXa0BUtoyohd0mC",
+            "https://www.youtube.com/live/spcb2jRG8ns?si=v7R5SRmKzC5vuYLw",
+            "https://youtu.be/bLaIROPxZSY?si=WR25Wu8AAMvrmKpW",
+            "https://www.youtube.com/live/lUp-TXC0-1c?si=zz1qZM0Rj_1Z0JEl",
+            "https://www.youtube.com/live/pYxn51GM1m4?si=n7-KcMVi_BOS29IE",
+            "https://www.youtube.com/live/0pGx7HoALFE?si=u8MMLli98RqjtC8R",
+            "https://youtu.be/GhL5F7SHDDY?si=1IStI6lvuX8BY9TP",
+            "https://youtu.be/yddfChyf3HE?si=dVKETaiwX41Ogwmx",
+            "https://youtu.be/BNVt7Vi9p7g?si=T35eDwLD9EYv8bZl",
+            "https://youtu.be/FZBgO4wArpc?si=1kZ2NpKuGPm47ZBw",
+            "https://youtu.be/G8Stjzy-87k?si=gwfttMy-h3v1SGBb",
+            "https://youtu.be/ydaUiAvvuMg?si=vbBX7aGzMaCbRQpa",
+            "https://youtu.be/9zprwzl0vm4?si=peTrpYoIkL8bRSbE",
+            "https://youtu.be/Csh_Iu5TQn0?si=UWKOfJGy6TiYnxLX",
+            "https://youtu.be/mCCM1qqAoWo?si=4jMtBgSeWrVW99vo",
+            "https://youtu.be/RZO6pTojlkg?si=LbLHjKCZQPV2JbYT",
+            "https://youtu.be/Y2B-poI4SZs?si=7Ga-oddAWNjet2iW",
+            "https://youtu.be/Rz9QWohV8wU?si=liyPGoIwEN8g7Ncg",
+            "https://youtu.be/80NM-4LJpPc?si=AS_h7XmtnPSm9a1D",
+            "https://youtu.be/OfZXNB-4mZc?si=LswxWQezad9AhaHa",
+            "https://youtu.be/GRU_vYzzMVg?si=jSwM2RqFdr5JCjPU",
+            "https://youtu.be/fZpjxOWKA-Y?si=4AiMbMbOyU-MphXY",
+            "https://youtu.be/4CKYiVhmxZ0?si=yPX8m9XOL6tKetVT",
+            "https://youtu.be/5qG2Wnd-hAs?si=YWZ0OWu59aeD5n9y",
+            "https://www.youtube.com/live/mXPD6SGKDV8?si=wXMT6kipCnR_Rwvy",
+            "https://youtu.be/Yn9EguapweY?si=RvQWn8HuEnYafCnO",
+            "https://youtu.be/HQleRxdXkIU?si=SQEXFTUira6H0rpD",
+            "https://youtu.be/5NPPjMh_ulo?si=sL_E2CyZyrjvxly8",
+            "https://youtu.be/o75TOZjN9EI?si=4mI6AJ_00-HsabdV",
+            "https://www.youtube.com/live/W07-5dqmAps?si=QjSY5zi83K6jX0xm",
+            "https://youtu.be/4wbtxlz-M7c?si=qrzFgUyvDErPXkTv",
+            "https://youtu.be/MAdH6y00ylM?si=dNK5mAqoKPx7OocW",
+            "https://youtu.be/NeBmQo0z3eY?si=9tw9MJc7_ME5VnRc",
+            "https://youtu.be/HQrQLxAYZnY?si=XinqnUvtYJDmZdb1",
+            "https://youtu.be/Vvs6d22g4eM?si=8zuR3hVUWosJcgh_",
+            "https://youtu.be/behEBkfUpKk?si=vEu3zqgmXmT26_sU",
+            "https://youtu.be/2Tf4vSHKdwo?si=kPCXeLH0Q9X-JI0L",
+            "https://youtu.be/FaZEZV4qYXU?si=Y8Lo_6GDFHtRXUg_",
+            "https://youtu.be/yjqtIT_EPss?si=afL32xYYS4pDoZLH",
+            "https://youtu.be/jMiN6HbxsZM?si=QFMYPTEWO3gmY5Wt",
+            "https://youtu.be/lkAhORJ9ct0?si=GOqF-ZwvSzOkm26g",
+            "https://youtu.be/EejsxTtflTg?si=DGjtKJ8lsFkauMtB",
+            "https://youtu.be/kJfA0yeXghw?si=wwchvTiseUl-sIlP",
+            "https://youtu.be/KDgBR8OLGKQ?si=-22jujljV0vek4QD",
+            "https://youtu.be/lkAhORJ9ct0?si=x5srzXeLeteDv6FB",
+            "https://youtu.be/IPhB3UHm_fQ?si=SLS1opBQcAhjpJtU",
+            "https://youtu.be/oQmr7Ymh008?si=OTgtFcUUIqtbuHf_",
+            "https://youtu.be/OYYk-DhaoD0?si=5wwV5_2LOXvisA7L",
+            "https://youtu.be/RA21YMfH2_U?si=zRGsnEST3q7Xj6Q5",
+            "https://www.youtube.com/live/HpYiKGs6poA?si=RsmXpoSiUHArrsaj",
+            "https://youtu.be/FAS3lo7UGlE?si=kPh4hi8rSiMjGEHc",
+            "https://www.youtube.com/live/cbZz2nJiCys?si=UNdmimlmsmVCemeA",
+            "https://youtu.be/VhvCd8b9Jx8?si=UXJOuKES9qCwo-0u",
+            "https://youtu.be/OYYk-DhaoD0?si=0HJXkKeLsEmKtIo_",
+            "https://www.youtube.com/live/DMbhKUCyRfM?si=ueYviJunIiTmzn5T",
+            "https://youtu.be/lXCTBmQ2sXs?si=Py_UJV79BPNI4hmo",
+            "https://youtu.be/FAS3lo7UGlE?si=_X7AmcKEvOKkTFhy",
+            "https://youtu.be/kZlZJVye3Uc?si=Aeoc_UqaE0Ro6T1d",
+            "https://youtu.be/yI5c8tmkkNc?si=TpcXQ65Ak7EVd01Y",
+            "https://www.youtube.com/live/txH7KK8gyoE?si=l5WT11s-NjgtzCmD",
+            "https://youtu.be/huwACN1L-Ck?si=SfYdRaqGhL29ORUv",
+            "https://youtu.be/Xe8gVda6WiQ?si=hHmqIx4vd7dfM2BA",
+            "https://youtu.be/fbpaGkxJvnI?si=JsgRcQuQ06USTlZN",
+            "https://youtu.be/SnfnJjpagFw?si=LJRhj6O7YHNWJiny",
+            "https://youtu.be/53S2jPGXluw?si=8NMBi8LR_JPm8jxX",
+            "https://youtu.be/YaXpMue6kH0?si=Rngl5Ajl7v9qDHZO",
+            "https://youtu.be/myKIT2VxMXo?si=BEwWiVo-AiZUWEWL",
+            "https://youtu.be/PcXqyBgGjJA?si=F3SWR7qBc7TZuz2u"
+        ];
+        const getYouTubeVideoId = videoUrl => {
+            try {
+                const url = new URL(videoUrl);
+                if (url.hostname.includes("youtu.be")) return url.pathname.slice(1).split("/")[0];
+                if (url.pathname === "/watch") return url.searchParams.get("v");
+                if (url.pathname.startsWith("/live/")) return url.pathname.split("/").filter(Boolean)[1];
+                if (url.pathname.startsWith("/embed/")) return url.pathname.split("/").filter(Boolean)[1];
+            } catch (error) {
+                console.error("URL de vídeo inválida:", videoUrl, error);
+            }
+            return "";
+        };
+        const buildEmbeddedVideoLessonsFromSequence = () => {
+            const modulesById = new Map(editalModules.map(module => [module.moduleId, module]));
+            const sequence = [];
+            MISSION_SEQUENCE_MODULE_IDS.forEach(moduleId => {
+                const module = modulesById.get(moduleId);
+                if (!module) return;
+                const lessonTitles = getDistributedLessonTitles(module).map(cleanLessonTitle);
+                const totalLessons = lessonTitles.length || 1;
+                for (let lessonIndex = 0; lessonIndex < totalLessons; lessonIndex++) {
+                    sequence.push({
+                        id: getCourseLessonId(module, lessonIndex),
+                        module,
+                        lessonIndex,
+                        totalLessons,
+                        lessonTitle: lessonTitles[lessonIndex] || module.topic
+                    });
+                }
+            });
+            if (sequence.length !== EMBEDDED_VIDEO_URL_SEQUENCE.length) {
+                console.warn("Quantidade de links de videoaulas diferente da sequência de aulas da missão.", {
+                    aulasNaMissao: sequence.length,
+                    linksInformados: EMBEDDED_VIDEO_URL_SEQUENCE.length
+                });
+            }
+            return sequence.reduce((acc, lesson, index) => {
+                const url = EMBEDDED_VIDEO_URL_SEQUENCE[index];
+                if (!url) return acc;
+                const videoId = getYouTubeVideoId(url);
+                if (!videoId) return acc;
+                acc[lesson.id] = {
+                    id: lesson.id,
+                    legacyId: EMBEDDED_VIDEO_LEGACY_IDS[lesson.id] || "",
+                    subject: `${lesson.module.sub} · ${lesson.module.topic}`,
+                    title: `Aula ${lesson.lessonIndex + 1}/${lesson.totalLessons} · ${lesson.lessonTitle}`,
+                    videoId,
+                    url
+                };
+                return acc;
+            }, {});
+        };
+        let EMBEDDED_VIDEO_LESSONS = {};
+        const VIDEO_NOTES_STORAGE_KEY = "pmpeVideoLessonNotesV2";
+        const LEGACY_VIDEO_NOTES_STORAGE_KEY = "pmpeVideoLessonNotesV1";
+        let videoLessonNotes = {};
+        let legacyVideoNotes = {};
+        let videoNotesEditor = null;
+        let videoNotesStorageReadFailed = false;
+        let selectedVideoLessonId = "";
+
+        function renderSelectedVideoLesson(lessonId) {
+            const lesson = EMBEDDED_VIDEO_LESSONS[lessonId];
+            if (!lesson) return;
+            selectedVideoLessonId = lesson.id;
+            document.getElementById("videoLessonSubject").textContent = lesson.subject;
+            document.getElementById("videoLessonTitle").textContent = lesson.title;
+            const frame = document.getElementById("lessonVideoFrame");
+            const emptyState = document.getElementById("videoPlayerEmpty");
+            const playerStatus = document.getElementById("videoPlayerStatus");
+            const externalLink = document.getElementById("videoLessonExternalLink");
+            externalLink.href = lesson.url;
+            if (!["http:", "https:"].includes(window.location.protocol)) {
+                frame.removeAttribute("src");
+                frame.hidden = true;
+                emptyState.hidden = false;
+                emptyState.textContent = "Para assistir dentro da plataforma, abra-a por um endereço HTTP ou HTTPS. Uma página aberta diretamente do computador não envia a identificação de origem exigida pelo YouTube.";
+                playerStatus.textContent = "Você ainda pode abrir o vídeo diretamente no YouTube pelo link abaixo.";
+            } else {
+                const embedUrl = new URL(`https://www.youtube.com/embed/${lesson.videoId}`);
+                embedUrl.searchParams.set("rel", "0");
+                embedUrl.searchParams.set("origin", window.location.origin);
+                frame.src = embedUrl.toString();
+                frame.title = `Videoaula: ${lesson.title}`;
+                frame.hidden = false;
+                emptyState.hidden = true;
+                emptyState.textContent = "";
+                playerStatus.textContent = "";
+            }
+            const notesHtml = videoLessonNotes[lesson.id] ?? videoLessonNotes[lesson.legacyId];
+            const legacyText = legacyVideoNotes[lesson.id] ?? legacyVideoNotes[lesson.legacyId] ?? "";
+            videoNotesEditor.setHtml(notesHtml ?? PMPERichNotes.textToHtml(legacyText));
+            videoNotesEditor.setDisabled(videoNotesStorageReadFailed);
+            document.getElementById("videoNotesStatus").textContent = videoNotesStorageReadFailed
+                ? "Não foi possível acessar as anotações salvas; edição desativada para evitar sobrescrever seus dados."
+                : "Anotações salvas automaticamente neste navegador.";
+        }
+
+        function initializeEmbeddedVideoLessons() {
+            EMBEDDED_VIDEO_LESSONS = buildEmbeddedVideoLessonsFromSequence();
+            const picker = document.getElementById("videoLessonPicker");
+            const lessonEntries = Object.values(EMBEDDED_VIDEO_LESSONS);
+            picker.replaceChildren(new Option("Selecione uma aula", ""));
+            lessonEntries.forEach(lesson => picker.add(new Option(`${lesson.subject} · ${lesson.title}`, lesson.id)));
+            picker.disabled = lessonEntries.length === 0;
+
+            try {
+                const legacySaved = localStorage.getItem(LEGACY_VIDEO_NOTES_STORAGE_KEY);
+                if (legacySaved) {
+                    const legacyParsed = JSON.parse(legacySaved);
+                    if (legacyParsed && typeof legacyParsed === "object" && !Array.isArray(legacyParsed)) legacyVideoNotes = legacyParsed;
+                }
+                const savedNotes = localStorage.getItem(VIDEO_NOTES_STORAGE_KEY);
+                if (savedNotes) {
+                    const parsedNotes = JSON.parse(savedNotes);
+                    if (!parsedNotes || typeof parsedNotes !== "object" || Array.isArray(parsedNotes)) {
+                        throw new Error("Formato de anotações inválido.");
+                    }
+                    videoLessonNotes = parsedNotes;
+                }
+            } catch (error) {
+                videoNotesStorageReadFailed = true;
+                console.error("Não foi possível carregar as anotações das videoaulas:", error);
+            }
+
+            picker.addEventListener("change", () => renderSelectedVideoLesson(picker.value));
+            videoNotesEditor = PMPERichNotes.mount(document.getElementById("videoLessonNotes"), {
+                onChange: html => {
+                    if (!selectedVideoLessonId || videoNotesStorageReadFailed) return;
+                    const updatedNotes = { ...videoLessonNotes, [selectedVideoLessonId]: html };
+                    try {
+                        localStorage.setItem(VIDEO_NOTES_STORAGE_KEY, JSON.stringify(updatedNotes));
+                        videoLessonNotes = updatedNotes;
+                        document.getElementById("videoNotesStatus").textContent = "Anotações salvas automaticamente neste navegador.";
+                    } catch (error) {
+                        console.error("Não foi possível salvar as anotações da videoaula:", error);
+                        document.getElementById("videoNotesStatus").textContent = "Falha ao salvar. Copie suas anotações antes de sair da página.";
+                    }
+                }
+            });
+            if (!selectedVideoLessonId) videoNotesEditor.setDisabled(true);
+            document.getElementById("scheduleContainer").addEventListener("click", event => {
+                const button = event.target instanceof Element
+                    ? event.target.closest("[data-open-video-lesson]")
+                    : null;
+                if (!button) return;
+                const lessonId = button.dataset.openVideoLesson;
+                if (!EMBEDDED_VIDEO_LESSONS[lessonId]) return;
+                picker.value = lessonId;
+                renderSelectedVideoLesson(lessonId);
+                window.activateDashboardView("videos");
+            });
+
+            if (lessonEntries.length) {
+                picker.value = lessonEntries[0].id;
+                renderSelectedVideoLesson(picker.value);
+            }
+        }
+
         const buildVideoTasks = (dayObj, module, slot, time, cycle) => {
             const titles = getDistributedLessonTitles(module).map(cleanLessonTitle);
             const subjects = titles.length ? titles : [module.topic];
-            return subjects.map((subjectTitle, i) => ({
-                id: `d${dayObj.id}_${slot}_${i + 1}`,
-                time: `${time} · aula ${i + 1}/${subjects.length}`,
-                subject: subjectTitle,
-                topic: `${module.sub} · (Ciclo ${cycle}) Videoaula ${i + 1} de ${subjects.length}${titles.length ? `; leia a seção "Aula ${i + 1}/${subjects.length}" no PDF do dia` : ""}. A busca do YouTube não é curadoria: confira professor e aderência ao edital.`,
-                type: "Teoria",
-                icon: "fa-youtube",
-                action: getYouTubeLinkByCycle(module.sub, subjectTitle, cycle)
-            }));
+            return subjects.map((subjectTitle, i) => {
+                const taskId = `d${dayObj.id}_${slot}_${i + 1}`;
+                const courseLessonId = getCourseLessonId(module, i);
+                return {
+                    id: taskId,
+                    time: `${time} · aula ${i + 1}/${subjects.length}`,
+                    subject: subjectTitle,
+                    topic: `${module.sub} · (Ciclo ${cycle}) Videoaula ${i + 1} de ${subjects.length}${titles.length ? `; leia a seção "Aula ${i + 1}/${subjects.length}" no PDF do dia` : ""}. A busca do YouTube não é curadoria: confira professor e aderência ao edital.`,
+                    type: "Teoria",
+                    icon: "fa-youtube",
+                    action: getYouTubeLinkByCycle(module.sub, subjectTitle, cycle),
+                    embeddedVideoLesson: EMBEDDED_VIDEO_LESSONS[courseLessonId] || null
+                };
+            });
         };
 
         const getPDFInstructionByCycle = (cycle) => {
@@ -3637,8 +4907,19 @@
             return "Fase 4 (Manutenção Letal): Apenas bizus, palavras-chave grifadas e leitura dinâmica acelerada.";
         };
 
+        // Rotação semanal ligada às 5 provas do TAF (barra, salto, natação, abdominal, corrida).
+        const TAF_DAILY_PLANS = [
+            "Foco Barra fixa + Abdominal: 5 séries de barra (máx. repetições; mulheres: isometria até 25s+) e 4 séries de abdominal remador de 1 min. Meta: 5 reps de barra / 40 abdominais (fem.: 25s / 36).",
+            "Foco Corrida: 2.400 m em ritmo de prova. Meta: até 11'30\" (fem.: 13'30\"). Aquecimento de 10 min e 5 min de alongamento.",
+            "Foco Natação + Salto: 8 tiros de 50 m livre (meta ≤ 1'00\"; fem. ≤ 1'10\") e 6 saltos em distância com aproximação (meta 3,60 m; fem. 2,80 m).",
+            "Foco Abdominal + Barra: simulado de 1 min de abdominal remador (meta 40; fem. 36) e barra em séries submáximas, sem luvas nem magnésio.",
+            "Foco Corrida intervalada: 6 x 400 m forte com 1'30\" de descanso, mais 10 min de trote leve de recuperação.",
+            "Simulado do 1º dia de TAF: barra, salto em distância e natação 50 m, com tentativa única e marcação do resultado.",
+            "Simulado do 2º dia de TAF: abdominal remador 1 min e corrida de 2.400 m. Registre as marcas e compare com o mínimo."
+        ];
+
         function generateTasksForDay(dayObj) {
-            const notes = "javascript:document.getElementById('tacticalNotes').focus()";
+            const notes =  "javascript:document.getElementById('tacticalNotes').focus()";
             let tasks = [];
             if (!dayObj) return tasks;
 
@@ -3648,7 +4929,7 @@
             const notebook = "javascript:openErrorNotebook()";
 
             tasks = [
-                { id: `d${dayObj.id}_taf`, time: "05:00 - 06:00", subject: "TAF - Despertar", topic: "Condicionamento básico para ligar o metabolismo e focar.", type: "Físico", icon: "fa-running", action: notes },
+                { id: `d${dayObj.id}_taf`, time: "05:00 - 06:00", subject: "TAF - Despertar", topic: TAF_DAILY_PLANS[(Number(dayObj.id) - 1 + TAF_DAILY_PLANS.length) % TAF_DAILY_PLANS.length], type: "Físico", icon: "fa-running", action: notes },
                 ...buildVideoTasks(dayObj, dayObj.mod1, 'v1', "07:00 - 09:30", cycle),
                 { id: `d${dayObj.id}_pdf1`, time: "10:00 - 12:00", subject: dayObj.mod1.sub, topic: `PDF temático: ${dayObj.mod1.topic}. ${inst}`, type: "Leitura", icon: "fa-file-pdf", action: `javascript:openMaterialModal('${dayObj.mod1.mat}')` },
                 ...buildVideoTasks(dayObj, dayObj.mod2, 'v2', "14:00 - 16:00", cycle),
@@ -3829,7 +5110,9 @@
                 const completedClass = isChecked ? 'opacity-50 line-through' : '';
 
                 let actionButtonHtml = '';
-                if (task.action.startsWith('http')) {
+                if (task.embeddedVideoLesson) {
+                    actionButtonHtml = `<button type="button" data-open-video-lesson="${task.embeddedVideoLesson.id}" class="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-circle-play mr-2"></i> ASSISTIR NA PLATAFORMA</button>`;
+                } else if (task.action.startsWith('http')) {
                     actionButtonHtml = `<a href="${task.action}" target="_blank" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-brands fa-youtube mr-2"></i> YOUTUBE</a>`;
                 } else {
                     actionButtonHtml = `<button onclick="${task.action}" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors shadow-lg"><i class="fa-solid fa-bolt mr-2"></i> EXECUTAR</button>`;
@@ -5587,36 +6870,36 @@
             });
         };
 
-        window.openErrorNotebook = () => {
-            const modal = document.getElementById('errorNotebookModal');
-            if (!modal.dataset.ready) {
-                modal.dataset.ready = '1';
-                modal.querySelectorAll('input, textarea').forEach(el => {
-                    if (el.id === 'errFilter') el.addEventListener('input', renderErrorList);
-                    else el.addEventListener('input', () => {
-                        setErrorStatus('Salvando rascunho...');
-                        clearTimeout(errorDraftTimer);
-                        errorDraftTimer = setTimeout(saveErrorDraft, 600);
-                    });
+        const initErrorNotebook = () => {
+            const root = document.getElementById('errorNotebookInline');
+            if (!root || root.dataset.ready) return;
+            root.dataset.ready = '1';
+            root.querySelectorAll('input, textarea').forEach(el => {
+                if (el.id === 'errFilter') el.addEventListener('input', renderErrorList);
+                else el.addEventListener('input', () => {
+                    setErrorStatus('Salvando rascunho...');
+                    clearTimeout(errorDraftTimer);
+                    errorDraftTimer = setTimeout(saveErrorDraft, 600);
                 });
-            }
+            });
             let draft = null;
             try { draft = JSON.parse(localStorage.getItem(ERROR_DRAFT_KEY) || 'null'); } catch (e) { draft = null; }
             fillErrorForm(draft);
-            document.getElementById('errFilter').value = '';
             renderErrorList();
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            errorFields().subject.focus();
+        };
+
+        window.openErrorNotebook = () => {
+            initErrorNotebook();
+            if (typeof activateDashboardView === 'function') activateDashboardView('errors');
+            errorFields().subject.focus({ preventScroll: true });
         };
 
         window.closeErrorNotebook = () => {
             clearTimeout(errorDraftTimer);
             saveErrorDraft();
-            const modal = document.getElementById('errorNotebookModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
         };
+
+        initErrorNotebook();
 
         window.newErrorEntry = () => { saveErrorDraft(); fillErrorForm(null); localStorage.removeItem(ERROR_DRAFT_KEY); setErrorStatus('Novo registro em branco.'); };
 
@@ -5638,6 +6921,54 @@
             fillErrorForm(null);
             setErrorStatus('Registro salvo no caderno.');
             renderErrorList();
+        };
+
+        const renderPdfLibrary = () => {
+            const container = document.getElementById('pdfLibrary');
+            if (!container) return;
+            const guideModules = Object.entries(window.PMPE_TOPIC_GUIDES || {})
+                .filter(([, guide]) => guide.subject && guide.materialKey)
+                .map(([topic, guide]) => ({ sub: guide.subject, topic, mat: guide.materialKey, completeCourse: Boolean(guide.completeCourse) }));
+            const seen = new Set();
+            const bySubject = new Map();
+            [...editalModules, ...guideModules].forEach(module => {
+                if (!module.mat || seen.has(module.mat) || !materialsDatabase[module.mat]) return;
+                seen.add(module.mat);
+                if (!bySubject.has(module.sub)) bySubject.set(module.sub, []);
+                bySubject.get(module.sub).push(module);
+            });
+            container.textContent = '';
+            bySubject.forEach((modules, subject) => {
+                const group = document.createElement('section');
+                group.className = 'pdf-subject';
+                const head = document.createElement('div');
+                head.className = 'pdf-subject-head';
+                const title = document.createElement('h3');
+                title.textContent = `${subject} (${modules.length})`;
+                const all = document.createElement('button');
+                all.type = 'button';
+                all.className = 'pdf-open-guide';
+                all.innerHTML = '<i class="fa-solid fa-book-open" aria-hidden="true"></i> Abrir guia da matéria';
+                all.addEventListener('click', () => window.openSubjectGuide(subject));
+                head.append(title, all);
+                const grid = document.createElement('div');
+                grid.className = 'pdf-grid';
+                modules.forEach(module => {
+                    const card = document.createElement('button');
+                    card.type = 'button';
+                    card.className = 'pdf-card';
+                    const icon = document.createElement('i');
+                    icon.className = 'fa-solid fa-file-pdf';
+                    icon.setAttribute('aria-hidden', 'true');
+                    const text = document.createElement('span');
+                    text.textContent = materialsDatabase[module.mat].title || module.topic;
+                    card.append(icon, text);
+                    card.addEventListener('click', () => window.openMaterialModal(module.mat));
+                    grid.appendChild(card);
+                });
+                group.append(head, grid);
+                container.appendChild(group);
+            });
         };
 
         window.openSubjectGuide = (subject) => {
@@ -5989,6 +7320,11 @@
                 document.getElementById('materialModal').classList.remove('hidden');
                 document.getElementById('materialModal').classList.add('flex');
                 if (materialKey === "mat_redacao_pmpe") window.initEssayWorkshop();
+                window.PMPEPdfHighlighter.attach(
+                    guideDocument || document.getElementById('materialContent'),
+                    preserveGuidePicker ? `${materialKey}:guide` : materialKey,
+                    materialKey !== "mat_redacao_pmpe"
+                );
             } else {
                 showModal("Atenção", "Apostila em verificação tática.", "fa-gears");
             }
@@ -6025,6 +7361,8 @@
                     window.dbPopulated = true;
                 }
                 populateTopicGuides();
+                renderPdfLibrary();
+                initializeEmbeddedVideoLessons();
                 window.PMPE_QUESTION_COVERAGE = editalModules.map(module => ({
                     topic: module.topic,
                     topics: module.questionCoverage || [],

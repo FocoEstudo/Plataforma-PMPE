@@ -227,6 +227,8 @@ const renderProfile = profile => {
     const normalizedFirstName = firstName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const rank = normalizedFirstName.endsWith("a") ? "Soldada" : "Soldado";
     document.getElementById("dashboardWelcomeTitle").textContent = `${rank} ${profile.displayName} de Pernambuco`;
+    window.PMPE_STUDENT_FIRST_NAME = firstName;
+    document.querySelectorAll("[data-student-first-name]").forEach(el => { el.textContent = firstName; });
 };
 
 const finishProfileSetup = () => {
