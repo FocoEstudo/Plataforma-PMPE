@@ -1428,6 +1428,12 @@
             setStatus("Não foi possível carregar o serviço de autenticação. Verifique sua conexão e recarregue a página.");
         }
 
+        ["registrationFullName", "registrationBirthDate", "registrationWhatsapp", "registrationCity"].forEach(id => {
+            const field = document.getElementById(id);
+            field.addEventListener("input", () => field.setCustomValidity(""));
+            field.addEventListener("change", () => field.setCustomValidity(""));
+        });
+
         form.addEventListener("submit", async event => {
             event.preventDefault();
             setStatus("");
