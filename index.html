@@ -2358,7 +2358,7 @@
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5P0BSF4Hcf3SFa3XBXmKrt8p5GZf5Mx-Hgu-SiyMIEQ&amp;s=10" alt="" loading="eager" decoding="async">
                             <div>
                                 <span class="payment-gate-offer-label">Pagamento único</span>
-                                <strong class="payment-gate-offer-price">R$ 99,90</strong>
+                                <strong class="payment-gate-offer-price payment-price-text">R$ 99,90</strong>
                                 <p class="payment-gate-offer-note">Sem cobrança mensal recorrente.</p>
                             </div>
                         </div>
@@ -2376,17 +2376,25 @@
                     </div>
                     <div class="payment-gate-column">
                         <h3 class="text-lg font-extrabold">Escolha como pagar com Pix</h3>
-                        <p class="mt-1 text-sm text-gray-600">Aponte a câmera do banco para o QR Code ou copie a chave.</p>
-                        <img src="pix-qr.png" alt="QR Code Pix para pagamento de R$ 99,90" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
+                        <p class="mt-1 text-sm text-gray-600">Aponte a câmera do banco para o QR Code ou copie o código Pix: o valor já aparece preenchido.</p>
+                        <img id="pixQrImage" src="pix-qr.png" alt="QR Code Pix para pagamento de R$ 99,90" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
+                        <div class="mt-4">
+                            <label for="promoCodeInput" class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Código promocional</label>
+                            <div class="mt-1 flex gap-2">
+                                <input id="promoCodeInput" type="text" autocomplete="off" maxlength="30" placeholder="Digite seu código" class="min-w-0 flex-1 rounded-lg border border-emerald-200 px-3 py-2 text-sm uppercase">
+                                <button id="promoCodeButton" type="button" class="payment-gate-copy" style="width:auto"><span class="text-sm font-extrabold text-emerald-800">Aplicar</span></button>
+                            </div>
+                            <p id="promoCodeMessage" class="mt-2 min-h-5 text-xs text-emerald-800" role="status" aria-live="polite"></p>
+                        </div>
                         <ol class="payment-gate-steps">
                             <li><span class="payment-gate-step-number">1</span><span>Abra o Pix no aplicativo do seu banco.</span></li>
-                            <li><span class="payment-gate-step-number">2</span><span>Leia o QR Code ou copie a chave abaixo.</span></li>
-                            <li><span class="payment-gate-step-number">3</span><span>Confira os dados e o valor de R$ 99,90 antes de pagar.</span></li>
+                            <li><span class="payment-gate-step-number">2</span><span>Leia o QR Code ou copie o código Pix abaixo.</span></li>
+                            <li><span class="payment-gate-step-number">3</span><span>Confira os dados e o valor de <span class="payment-price-text">R$ 99,90</span> antes de pagar.</span></li>
                         </ol>
                         <div class="mt-4">
-                            <p class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Chave Pix</p>
-                            <button id="copyPixKeyButton" type="button" class="payment-gate-copy" aria-label="Copiar chave Pix aleatória">
-                                <code id="pixKey" class="text-sm">623c3509-96f1-49f7-8794-41ed9de36bf6</code>
+                            <p class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Pix Copia e Cola</p>
+                            <button id="copyPixKeyButton" type="button" class="payment-gate-copy" aria-label="Copiar código Pix Copia e Cola">
+                                <code id="pixKey" class="text-sm">Código com o valor já preenchido</code>
                                 <span class="shrink-0 text-sm font-extrabold text-emerald-800"><i class="fa-regular fa-copy mr-1" aria-hidden="true"></i>Copiar</span>
                             </button>
                             <p id="pixCopyMessage" class="mt-2 min-h-5 text-xs text-emerald-800" role="status" aria-live="polite"></p>
@@ -3222,6 +3230,7 @@
                     <span class="police-banner-eyebrow">Canal oficial</span>
                     <h2 class="police-banner-title"><i class="fa-solid fa-headset mr-2" aria-hidden="true"></i>Central de atendimento e ouvidoria</h2>
                     <p class="police-banner-text">Tire dúvidas, peça suporte, envie sugestões, elogios, reclamações ou denúncias. Cada mensagem gera um protocolo e a resposta aparece aqui.</p>
+                    <a href="https://wa.me/5566996884580?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20a%20plataforma%20Opera%C3%A7%C3%A3o%20PMPE." target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:.7rem;padding:.55rem 1rem;border-radius:.6rem;background:#16a34a;color:#fff;font-weight:800;text-decoration:none"><i class="fa-brands fa-whatsapp mr-1" aria-hidden="true"></i> Dúvidas? Fale no WhatsApp (pagamento, interface e mais)</a>
                 </div>
             </div>
             <div class="desk-grid">

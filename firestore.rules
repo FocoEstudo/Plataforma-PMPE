@@ -23,11 +23,22 @@ service cloud.firestore {
         && accessRequest.requestedAt == request.time;
     }
 
+    function isValidPromoApplication() {
+      let accessRequest = request.resource.data;
+      return resource.data.status == 'pending'
+        && accessRequest.keys().hasAll(['email', 'status', 'requestedAt', 'promoCode', 'amount'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'promoCode', 'amount'])
+        && accessRequest.status == 'pending'
+        && accessRequest.promoCode in ['SEREI APROVADO', 'SEREI APROVADA']
+        && accessRequest.amount == 74.9
+        && accessRequest.diff(resource.data).affectedKeys().hasOnly(['promoCode', 'amount']);
+    }
+
     function isValidAdminReview() {
       let accessRequest = request.resource.data;
       return resource.data.status == 'pending'
         && accessRequest.keys().hasAll(['email', 'status', 'requestedAt', 'reviewedAt'])
-        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'reviewedAt'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'reviewedAt', 'promoCode', 'amount'])
         && accessRequest.status in ['approved', 'rejected']
         && accessRequest.reviewedAt == request.time
         && accessRequest.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedAt']);
@@ -37,7 +48,7 @@ service cloud.firestore {
       let accessRequest = request.resource.data;
       return resource.data.status == 'rejected'
         && accessRequest.keys().hasAll(['email', 'status', 'requestedAt'])
-        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'promoCode', 'amount'])
         && accessRequest.email == request.auth.token.email
         && accessRequest.status == 'pending'
         && accessRequest.requestedAt == request.time
@@ -61,23 +72,39 @@ service cloud.firestore {
         && preferences.endTime > preferences.startTime;
     }
 
-    function hasValidIdentity(profile) {
+    function hasValidLegacyIdentity(profile) {
       let identityFields = ['age', 'birthplaceCity', 'birthplaceState', 'identityConsentAt'];
-      return (!profile.keys().hasAny(identityFields) && !profile.keys().hasAny(['sex']))
-        || (
-          profile.keys().hasAll(identityFields)
-          && profile.age is int
-          && profile.age >= 14
-          && profile.age <= 100
-          && profile.birthplaceCity is string
-          && profile.birthplaceCity.size() >= 2
-          && profile.birthplaceCity.size() <= 80
-          && profile.birthplaceState is string
-          && profile.birthplaceState.size() >= 2
-          && profile.birthplaceState.size() <= 80
-          && profile.identityConsentAt is timestamp
-          && (!profile.keys().hasAny(['sex']) || profile.sex in ['feminino', 'masculino'])
-        );
+      return profile.keys().hasAll(identityFields)
+        && profile.age is int
+        && profile.age >= 14
+        && profile.age <= 100
+        && profile.birthplaceCity is string
+        && profile.birthplaceCity.size() >= 2
+        && profile.birthplaceCity.size() <= 80
+        && profile.birthplaceState is string
+        && profile.birthplaceState.size() >= 2
+        && profile.birthplaceState.size() <= 80
+        && profile.identityConsentAt is timestamp
+        && (!profile.keys().hasAny(['sex']) || profile.sex in ['feminino', 'masculino']);
+    }
+
+    function hasValidNewIdentity(profile) {
+      return profile.keys().hasAll(['birthDate', 'whatsapp', 'currentCity'])
+        && profile.birthDate is string
+        && profile.birthDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && profile.whatsapp is string
+        && profile.whatsapp.matches('^[0-9]{10,13}$')
+        && profile.currentCity is string
+        && profile.currentCity.size() >= 2
+        && profile.currentCity.size() <= 80;
+    }
+
+    function hasValidIdentity(profile) {
+      let legacyFields = ['age', 'sex', 'birthplaceCity', 'birthplaceState', 'identityConsentAt'];
+      let newFields = ['birthDate', 'whatsapp', 'currentCity'];
+      return (!profile.keys().hasAny(legacyFields) && !profile.keys().hasAny(newFields))
+        || (profile.keys().hasAny(newFields) && !profile.keys().hasAny(['age', 'sex', 'birthplaceCity', 'birthplaceState']) && hasValidNewIdentity(profile))
+        || (!profile.keys().hasAny(newFields) && hasValidLegacyIdentity(profile));
     }
 
     function hasValidProfile() {
@@ -85,7 +112,8 @@ service cloud.firestore {
       return profile.keys().hasAll(['displayName', 'email', 'updatedAt'])
         && profile.keys().hasOnly([
           'displayName', 'email', 'studyPreferences', 'updatedAt',
-          'age', 'sex', 'birthplaceCity', 'birthplaceState', 'identityConsentAt'
+          'age', 'sex', 'birthplaceCity', 'birthplaceState', 'identityConsentAt',
+          'birthDate', 'whatsapp', 'currentCity'
         ])
         && profile.displayName is string
         && profile.displayName.size() > 0
@@ -192,7 +220,7 @@ service cloud.firestore {
       allow create: if isOwner(userId)
         && !exists(/databases/$(database)/documents/accessRequests/$(userId))
         && hasValidAccessRequest();
-      allow update: if (isOwner(userId) && isValidResubmission())
+      allow update: if (isOwner(userId) && (isValidResubmission() || isValidPromoApplication()))
         || (isAdmin() && isValidAdminReview());
       allow delete: if false;
     }

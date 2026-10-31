@@ -11,6 +11,15 @@ const paymentRequestDetail = document.getElementById("paymentRequestDetail");
 const pixKey = document.getElementById("pixKey");
 const copyPixKeyButton = document.getElementById("copyPixKeyButton");
 const pixCopyMessage = document.getElementById("pixCopyMessage");
+const pixQrImage = document.getElementById("pixQrImage");
+const promoCodeInput = document.getElementById("promoCodeInput");
+const promoCodeButton = document.getElementById("promoCodeButton");
+const promoCodeMessage = document.getElementById("promoCodeMessage");
+const PROMO_CODES = ["SEREI APROVADO", "SEREI APROVADA"];
+const PROMO_QR_SRC = "pix-qr-promo.png";
+const PIX_PAYLOAD_FULL = "00020101021126580014br.gov.bcb.pix0136623c3509-96f1-49f7-8794-41ed9de36bf6520400005303986540599.905802BR5923IAN ITALO GOMES ANDRADE6006BRASIL62070503***6304AED6";
+const PIX_PAYLOAD_PROMO = "00020101021126580014br.gov.bcb.pix0136623c3509-96f1-49f7-8794-41ed9de36bf6520400005303986540574.905802BR5923IAN ITALO GOMES ANDRADE6006BRASIL62070503***63043330";
+let currentPixPayload = PIX_PAYLOAD_FULL;
 const profileForm = document.getElementById("profileForm");
 const profileNameInput = document.getElementById("profileName");
 const studyModeInput = document.getElementById("studyMode");
@@ -38,6 +47,7 @@ let updateProfile;
 let doc;
 let getDoc;
 let setDoc;
+let updateDoc;
 let deleteField;
 let serverTimestamp;
 let onSnapshot;
@@ -177,13 +187,43 @@ const showGrantedProfile = async user => {
     }
 };
 
+const normalizePromoCode = value => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ").toUpperCase();
+
+const applyPromoPrice = () => {
+    const price = "R$ 74,90";
+    pixQrImage.src = PROMO_QR_SRC;
+    pixQrImage.alt = `QR Code Pix para pagamento de ${price}`;
+    document.querySelectorAll(".payment-price-text").forEach(element => { element.textContent = price; });
+    currentPixPayload = PIX_PAYLOAD_PROMO;
+    promoCodeInput.disabled = true;
+    promoCodeButton.disabled = true;
+};
+
+promoCodeButton.addEventListener("click", async () => {
+    const code = normalizePromoCode(promoCodeInput.value);
+    if (!PROMO_CODES.includes(code)) {
+        promoCodeMessage.textContent = "Código promocional inválido.";
+        return;
+    }
+    promoCodeButton.disabled = true;
+    try {
+        await withTimeout(updateDoc(doc(db, "accessRequests", currentUser.uid), { promoCode: code, amount: 74.9 }), PROFILE_READ_TIMEOUT_MS);
+        applyPromoPrice();
+        promoCodeMessage.textContent = "Código aplicado! Valor promocional de R$ 74,90.";
+    } catch (error) {
+        console.error("Não foi possível aplicar o código promocional.", error);
+        promoCodeMessage.textContent = "Não foi possível aplicar o código agora. Tente novamente.";
+        promoCodeButton.disabled = false;
+    }
+});
+
 copyPixKeyButton.addEventListener("click", async () => {
     try {
-        await navigator.clipboard.writeText(pixKey.textContent.trim());
-        pixCopyMessage.textContent = "Chave Pix copiada.";
+        await navigator.clipboard.writeText(currentPixPayload);
+        pixCopyMessage.textContent = "Código Pix copiado. Cole no app do banco em Pix Copia e Cola.";
     } catch (error) {
-        console.error("Não foi possível copiar a chave Pix.", error);
-        pixCopyMessage.textContent = "Não foi possível copiar automaticamente. Selecione e copie a chave exibida.";
+        console.error("Não foi possível copiar o código Pix.", error);
+        pixCopyMessage.textContent = "Não foi possível copiar automaticamente. Use o QR Code acima.";
     }
 });
 
@@ -371,7 +411,7 @@ try {
     auth = firebaseModule.auth;
     db = firebaseModule.db;
     ({ onAuthStateChanged, signOut, updateProfile } = authModule);
-    ({ doc, getDoc, setDoc, deleteField, serverTimestamp, onSnapshot, runTransaction, collection, getDocs } = firestoreModule);
+    ({ doc, getDoc, setDoc, updateDoc, deleteField, serverTimestamp, onSnapshot, runTransaction, collection, getDocs } = firestoreModule);
     window.PMPE_CLOUD = { auth, db, fs: firestoreModule };
 
     onAuthStateChanged(auth, async user => {
@@ -397,7 +437,9 @@ try {
             stopRequestListener?.();
             stopRequestListener = onSnapshot(doc(db, "accessRequests", user.uid), snapshot => {
                 if (snapshot.exists()) {
-                    showPaymentRequestStatus(snapshot.data()?.status);
+                    const requestData = snapshot.data();
+                    if (requestData?.promoCode && requestData.status === "pending") applyPromoPrice();
+                    showPaymentRequestStatus(requestData?.status);
                 }
             }, error => {
                 console.error("Não foi possível acompanhar a solicitação de acesso.", error);

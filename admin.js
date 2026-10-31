@@ -71,6 +71,16 @@ const appendIdentityDetail = (details, label, value) => {
     details.append(term, description);
 };
 
+const buildWhatsappLink = (profile, withMessage = false, requestData = null) => {
+    const digits = String(profile.whatsapp || "").replace(/\D/g, "");
+    const number = digits.length <= 11 ? `55${digits}` : digits;
+    if (!withMessage) return `https://wa.me/${number}`;
+    const firstName = String(profile.displayName || "").trim().split(/\s+/)[0] || "";
+    const price = requestData?.promoCode ? "R$ 74,90" : "R$ 99,90";
+    const text = `Olá${firstName ? `, ${firstName}` : ""}! Aqui é da Operação PMPE. Recebemos seu cadastro. Para liberar seu acesso à plataforma, realize o pagamento de ${price} via Pix e nos envie o comprovante por aqui. Qualquer dúvida, estou à disposição!`;
+    return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+};
+
 const buildRequestCard = (requestSnapshot, profile, profileError) => {
     const requestData = requestSnapshot.data();
     const card = document.createElement("article");
@@ -90,9 +100,32 @@ const buildRequestCard = (requestSnapshot, profile, profileError) => {
         appendIdentityDetail(identityDetails, "Cadastro", "Não foi possível carregar os dados. Atualize a página.");
     } else if (profile) {
         appendIdentityDetail(identityDetails, "Nome completo", profile.displayName || "Não informado");
-        appendIdentityDetail(identityDetails, "Idade", Number.isInteger(profile.age) ? `${profile.age} anos` : "Não informada");
-        appendIdentityDetail(identityDetails, "Sexo", profile.sex || "Não informado");
-        appendIdentityDetail(identityDetails, "Naturalidade", [profile.birthplaceCity, profile.birthplaceState].filter(Boolean).join(" / ") || "Não informada");
+        if (profile.birthDate) {
+            const [year, month, day] = String(profile.birthDate).split("-");
+            appendIdentityDetail(identityDetails, "Data de nascimento", `${day}/${month}/${year}`);
+        } else {
+            appendIdentityDetail(identityDetails, "Data de nascimento", "Não informada");
+        }
+        const whatsappTerm = document.createElement("dt");
+        whatsappTerm.textContent = "WhatsApp";
+        const whatsappValue = document.createElement("dd");
+        if (profile.whatsapp) {
+            const whatsappLink = document.createElement("a");
+            whatsappLink.href = buildWhatsappLink(profile);
+            whatsappLink.target = "_blank";
+            whatsappLink.rel = "noopener noreferrer";
+            whatsappLink.textContent = profile.whatsapp;
+            whatsappValue.append(whatsappLink);
+        } else {
+            whatsappValue.textContent = "Não informado";
+        }
+        identityDetails.append(whatsappTerm, whatsappValue);
+        appendIdentityDetail(identityDetails, "Cidade atual", profile.currentCity || "Não informada");
+        if (Number.isInteger(profile.age)) appendIdentityDetail(identityDetails, "Idade", `${profile.age} anos`);
+        if (profile.sex) appendIdentityDetail(identityDetails, "Sexo", profile.sex);
+        if (profile.birthplaceCity || profile.birthplaceState) {
+            appendIdentityDetail(identityDetails, "Naturalidade", [profile.birthplaceCity, profile.birthplaceState].filter(Boolean).join(" / "));
+        }
     } else {
         appendIdentityDetail(identityDetails, "Cadastro", "Dados de identificação não disponíveis.");
     }
@@ -119,7 +152,21 @@ const buildRequestCard = (requestSnapshot, profile, profileError) => {
     rejectButton.addEventListener("click", () => reviewRequest(requestSnapshot.id, "rejected", card));
 
     actions.append(approveButton, rejectButton);
-    card.append(email, identityHeading, identityDetails, identityNote, requestedAt, status, actions);
+    if (profile?.whatsapp) {
+        const contactLink = document.createElement("a");
+        contactLink.href = buildWhatsappLink(profile, true, requestData);
+        contactLink.target = "_blank";
+        contactLink.rel = "noopener noreferrer";
+        contactLink.textContent = "Chamar no WhatsApp para cobrar o Pix";
+        contactLink.style.cssText = "display:inline-flex;align-items:center;padding:.6rem 1rem;border-radius:.65rem;background:#16a34a;color:#fff;font-weight:800;text-decoration:none";
+        actions.append(contactLink);
+    }
+    const promo = document.createElement("p");
+    promo.className = "identity-heading";
+    promo.textContent = requestData.promoCode
+        ? `🏷️ CÓDIGO PROMOCIONAL USADO: ${requestData.promoCode} — conferir recebimento de R$ 74,90`
+        : "Sem código promocional — conferir recebimento de R$ 99,90";
+    card.append(email, promo, identityHeading, identityDetails, identityNote, requestedAt, status, actions);
     return card;
 };
 
@@ -183,7 +230,7 @@ const reviewRequest = async (uid, decision, card) => {
             batch.set(doc(db, "access", uid), {
                 active: true,
                 provider: "pix_manual",
-                amount: 99.9,
+                amount: requestSnapshot.data().promoCode ? 74.9 : 99.9,
                 currency: "BRL",
                 paidAt: serverTimestamp()
             }, { merge: true });

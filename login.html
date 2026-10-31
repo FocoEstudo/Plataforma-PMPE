@@ -998,33 +998,22 @@
                                 <legend class="sr-only">Dados para identificação da conta</legend>
                                 <p class="identity-fields-heading">Complete seus dados de cadastro</p>
                                 <p class="identity-fields-note">Informe seus dados autodeclarados para identificação da conta. Não envie CPF nem documentos por este formulário.</p>
-                                <label class="field" for="registrationFirstName">
-                                    <span>Nome</span>
-                                    <input id="registrationFirstName" name="given-name" type="text" autocomplete="given-name" maxlength="39" data-register-required>
+                                <label class="field" for="registrationFullName">
+                                    <span>Nome completo</span>
+                                    <input id="registrationFullName" name="name" type="text" autocomplete="name" maxlength="80" data-register-required>
                                 </label>
-                                <label class="field" for="registrationLastName">
-                                    <span>Sobrenome</span>
-                                    <input id="registrationLastName" name="family-name" type="text" autocomplete="family-name" maxlength="39" data-register-required>
+                                <label class="field" for="registrationBirthDate">
+                                    <span>Data de nascimento</span>
+                                    <input id="registrationBirthDate" name="bday" type="date" autocomplete="bday" min="1920-01-01" data-register-required>
                                 </label>
-                                <label class="field" for="registrationAge">
-                                    <span>Idade</span>
-                                    <input id="registrationAge" name="age" type="number" inputmode="numeric" min="14" max="100" step="1" data-register-required>
+                                <label class="field" for="registrationWhatsapp">
+                                    <span>Número de WhatsApp</span>
+                                    <input id="registrationWhatsapp" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="(66) 99999-9999" maxlength="20" data-register-required>
                                 </label>
-                                <label class="field" for="registrationSex">
-                                    <span>Sexo <small>(opcional)</small></span>
-                                    <select id="registrationSex" name="sex">
-                                        <option value="">Prefiro não informar</option>
-                                        <option value="feminino">Feminino</option>
-                                        <option value="masculino">Masculino</option>
-                                    </select>
-                                </label>
-                                <label class="field" for="birthplaceCity">
-                                    <span>Naturalidade · cidade</span>
-                                    <input id="birthplaceCity" name="address-level2" type="text" autocomplete="address-level2" maxlength="80" data-register-required>
-                                </label>
-                                <label class="field" for="birthplaceState">
-                                    <span>Estado/UF ou país</span>
-                                    <input id="birthplaceState" name="address-level1" type="text" autocomplete="address-level1" maxlength="80" data-register-required>
+                                <label class="field" for="registrationCity" style="position:relative">
+                                    <span>Cidade atual</span>
+                                    <input id="registrationCity" name="address-level2" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="cityList" placeholder="Comece a digitar..." maxlength="80" data-register-required>
+                                    <ul id="cityList" role="listbox" hidden style="position:absolute;left:0;right:0;top:100%;z-index:30;margin:.2rem 0 0;padding:.25rem 0;list-style:none;max-height:14rem;overflow-y:auto;background:#fff;border:1px solid #bcd9c5;border-radius:.6rem;box-shadow:0 8px 24px rgba(0,0,0,.15)"></ul>
                                 </label>
                                 <label class="identity-consent" for="identityConsent">
                                     <input id="identityConsent" name="identityConsent" type="checkbox" data-register-required>
@@ -1038,6 +1027,7 @@
                             <button id="submitButton" class="submit-button" type="submit">Entrar na plataforma</button>
                         </form>
                         <button id="resetPasswordButton" class="secondary-action" type="button">Esqueci minha senha</button>
+                        <a class="secondary-action whatsapp-support" href="https://wa.me/5566996884580?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20a%20plataforma%20Opera%C3%A7%C3%A3o%20PMPE." target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none;margin-top:.6rem"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Dúvidas? Fale no WhatsApp (pagamento, interface e mais)</a>
                         <p id="authStatus" class="status" role="status" aria-live="polite"></p>
                         <div class="auth-card-foot">
                             <i class="fa-solid fa-lock" aria-hidden="true"></i>
@@ -1359,6 +1349,45 @@
         };
 
         loginModeButton.addEventListener("click", () => setMode("login"));
+        const cityInputEl = document.getElementById("registrationCity");
+        const cityListEl = document.getElementById("cityList");
+        let cities = null;
+        let citiesLoading = null;
+        const foldText = value => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const loadCities = () => citiesLoading ||= fetch("https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome")
+            .then(response => response.ok ? response.json() : Promise.reject(new Error("IBGE indisponível")))
+            .then(list => { cities = list.map(item => {
+                const uf = item.microrregiao?.mesorregiao?.UF?.sigla || item["regiao-imediata"]?.["regiao-intermediaria"]?.UF?.sigla || "";
+                return { label: `${item.nome}-${uf}`, key: foldText(item.nome) };
+            }); })
+            .catch(error => { console.error("Não foi possível carregar a lista de cidades.", error); citiesLoading = null; });
+        const hideCities = () => { cityListEl.hidden = true; cityInputEl.setAttribute("aria-expanded", "false"); };
+        const renderCities = () => {
+            const term = foldText(cityInputEl.value.trim());
+            if (!term || !cities) { hideCities(); return; }
+            const matches = cities.filter(city => city.key.startsWith(term)).slice(0, 8);
+            cityListEl.replaceChildren(...matches.map(city => {
+                const item = document.createElement("li");
+                item.role = "option";
+                item.textContent = city.label;
+                item.style.cssText = "padding:.55rem .85rem;cursor:pointer;font-size:.92rem";
+                item.addEventListener("mouseenter", () => { item.style.background = "#edf7f0"; });
+                item.addEventListener("mouseleave", () => { item.style.background = ""; });
+                item.addEventListener("mousedown", event => {
+                    event.preventDefault();
+                    cityInputEl.value = city.label;
+                    cityInputEl.setCustomValidity("");
+                    hideCities();
+                });
+                return item;
+            }));
+            cityListEl.hidden = !matches.length;
+            cityInputEl.setAttribute("aria-expanded", String(matches.length > 0));
+        };
+        cityInputEl.addEventListener("focus", () => { void loadCities().then(renderCities); });
+        cityInputEl.addEventListener("input", async () => { await loadCities(); renderCities(); });
+        cityInputEl.addEventListener("blur", hideCities);
+        cityInputEl.addEventListener("keydown", event => { if (event.key === "Escape") hideCities(); });
         registerModeButton.addEventListener("click", () => setMode("register"));
         setMode("login");
         document.querySelectorAll("[data-create-account]").forEach(button => {
@@ -1415,23 +1444,27 @@
                 return;
             }
             if (mode === "register") {
-                [
-                    ["registrationFirstName", 1, "Informe seu nome."],
-                    ["registrationLastName", 1, "Informe seu sobrenome."],
-                    ["birthplaceCity", 2, "Informe sua cidade de naturalidade."],
-                    ["birthplaceState", 2, "Informe seu estado, UF ou país de naturalidade."]
-                ].forEach(([id, minimumLength, message]) => {
-                    const input = document.getElementById(id);
-                    input.setCustomValidity(input.value.trim().length >= minimumLength ? "" : message);
-                });
+                const birthInput = document.getElementById("registrationBirthDate");
+                const whatsappInput = document.getElementById("registrationWhatsapp");
+                const birth = new Date(`${birthInput.value}T00:00:00`);
+                const now = new Date();
+                const fullNameInput = document.getElementById("registrationFullName");
+                fullNameInput.setCustomValidity(fullNameInput.value.trim().split(/\s+/).filter(Boolean).length >= 2 ? "" : "Informe seu nome completo.");
+                birthInput.setCustomValidity(birthInput.value && birth <= now && birth.getFullYear() >= 1920 ? "" : "Informe uma data de nascimento válida.");
+                const digits = whatsappInput.value.replace(/\D/g, "");
+                whatsappInput.setCustomValidity(digits.length >= 10 && digits.length <= 13 ? "" : "Informe um WhatsApp válido com DDD.");
+                cityInputEl.setCustomValidity(cityInputEl.value.trim().length < 2
+                    ? "Informe sua cidade atual."
+                    : cities && !cities.some(city => foldText(city.label) === foldText(cityInputEl.value.trim()))
+                        ? "Escolha sua cidade na lista (ex.: Araripina-PE)."
+                        : "");
                 if (!form.reportValidity()) return;
             }
             const identity = mode === "register" ? {
-                displayName: `${document.getElementById("registrationFirstName").value.trim()} ${document.getElementById("registrationLastName").value.trim()}`.replace(/\s+/g, " "),
-                age: Number(document.getElementById("registrationAge").value),
-                sex: document.getElementById("registrationSex").value,
-                birthplaceCity: document.getElementById("birthplaceCity").value.trim(),
-                birthplaceState: document.getElementById("birthplaceState").value,
+                displayName: document.getElementById("registrationFullName").value.trim().replace(/\s+/g, " "),
+                birthDate: document.getElementById("registrationBirthDate").value,
+                whatsapp: document.getElementById("registrationWhatsapp").value.replace(/\D/g, ""),
+                currentCity: document.getElementById("registrationCity").value.trim(),
                 consent: document.getElementById("identityConsent").checked
             } : null;
             if (mode === "register" && !identity.consent) {
@@ -1449,13 +1482,11 @@
                     const profile = {
                         displayName: identity.displayName,
                         email: pendingCreatedUser.email || email,
-                        age: identity.age,
-                        birthplaceCity: identity.birthplaceCity,
-                        birthplaceState: identity.birthplaceState,
-                        identityConsentAt: authApi.serverTimestamp(),
+                        birthDate: identity.birthDate,
+                        whatsapp: identity.whatsapp,
+                        currentCity: identity.currentCity,
                         updatedAt: authApi.serverTimestamp()
                     };
-                    if (identity.sex) profile.sex = identity.sex;
                     await authApi.setDoc(authApi.doc(authApi.db, "users", pendingCreatedUser.uid), profile, { merge: true });
                     pendingCreatedUser = undefined;
                 } else {
