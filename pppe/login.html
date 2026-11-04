@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a1448">
+    <meta name="description" content="Prepare-se para a Polícia Penal de Pernambuco com missões diárias, conteúdo por disciplina, simulados, oficina de redação e revisão estratégica.">
+    <title>Operação PPPE | Sua preparação com estratégia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Inter, Arial, sans-serif;
+            color: #173b2c;
+            background: #f3f8f4;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            display: grid;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.25rem;
+            place-items: center;
+            background:
+                radial-gradient(ellipse at top left, rgba(154, 205, 166, .4), transparent 42rem),
+                #f3f8f4;
+        }
+
+        .login-layout {
+            display: grid;
+            width: min(100%, 58rem);
+            min-height: 34rem;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #d7e7dc;
+            border-radius: 1.5rem;
+            box-shadow: 0 24px 70px rgba(20, 75, 48, .15);
+        }
+
+        .login-brand {
+            position: relative;
+            isolation: isolate;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(2rem, 5vw, 3.5rem);
+            color: #fff;
+            background:
+                linear-gradient(145deg, rgba(10, 39, 25, .76), rgba(16, 87, 55, .68)),
+                #102e20;
+        }
+
+        .login-brand::after {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, .08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .08) 1px, transparent 1px);
+            background-size: 2.25rem 2.25rem;
+            content: "";
+            mask-image: linear-gradient(135deg, transparent 10%, #000 100%);
+        }
+
+        .brand-crest {
+            width: 4.5rem;
+            height: 4.5rem;
+            padding: .3rem;
+            object-fit: contain;
+            background: #fff;
+            border: 2px solid rgba(255, 255, 255, .75);
+            border-radius: 1rem;
+        }
+
+        .brand-kicker {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin: 1.8rem 0 0;
+            color: #d8f3df;
+            font-size: .72rem;
+            font-weight: 850;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .brand-kicker::before {
+            width: 1.8rem;
+            height: 2px;
+            background: #d8f3df;
+            content: "";
+        }
+
+        .brand-title {
+            max-width: 11ch;
+            margin: .8rem 0 .75rem;
+            font-family: "Arial Narrow", Impact, sans-serif;
+            font-size: clamp(2.4rem, 4.5vw, 3.75rem);
+            line-height: .98;
+            text-transform: uppercase;
+        }
+
+        .brand-copy {
+            max-width: 31rem;
+            color: #e2f2e6;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .brand-missions {
+            display: grid;
+            gap: .8rem;
+            margin: 1.7rem 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .brand-missions li {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            color: #f1f8f2;
+            font-size: .9rem;
+            font-weight: 650;
+        }
+
+        .brand-mission-mark {
+            display: grid;
+            width: 1.8rem;
+            height: 1.8rem;
+            flex: 0 0 auto;
+            place-items: center;
+            color: #d8f3df;
+            border: 1px solid rgba(216, 243, 223, .55);
+            border-radius: .5rem;
+            font-size: .75rem;
+            font-weight: 850;
+        }
+
+        .brand-footnote {
+            margin: 2rem 0 0;
+            padding-top: 1rem;
+            color: #d8f3df;
+            border-top: 1px solid rgba(255, 255, 255, .25);
+            font-size: .82rem;
+            font-weight: 650;
+            line-height: 1.6;
+        }
+
+        .login-main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(1.5rem, 5vw, 3.5rem);
+        }
+
+        .eyebrow {
+            margin: 0 0 .5rem;
+            color: #176b45;
+            font-size: .75rem;
+            font-weight: 800;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+        h2 { margin: 0; font-size: 1.85rem; }
+
+        .intro {
+            margin: .65rem 0 1.5rem;
+            color: #5e7064;
+            line-height: 1.55;
+        }
+
+        .login-motivation {
+            display: flex;
+            align-items: flex-start;
+            gap: .7rem;
+            padding: .85rem .9rem;
+            margin: .1rem 0 1.1rem;
+            color: #315740;
+            background: #f1f7f2;
+            border-left: 3px solid #176b45;
+            border-radius: 0 .65rem .65rem 0;
+            font-size: .85rem;
+            line-height: 1.55;
+        }
+
+        .login-motivation-mark {
+            flex: 0 0 auto;
+            color: #176b45;
+            font-size: 1rem;
+            font-weight: 900;
+        }
+
+        .login-assurance {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem 1rem;
+            margin: 1.2rem 0 0;
+            color: #6b7d71;
+            font-size: .75rem;
+        }
+
+        .login-assurance span {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+        }
+
+        .login-assurance span::before {
+            width: .42rem;
+            height: .42rem;
+            background: #176b45;
+            border-radius: 999px;
+            content: "";
+        }
+
+        .mode-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .35rem;
+            padding: .3rem;
+            margin-bottom: 1.25rem;
+            background: #edf4ef;
+            border-radius: .75rem;
+        }
+
+        .mode-switch button,
+        .secondary-action,
+        .submit-button {
+            min-height: 2.75rem;
+            font: inherit;
+            font-weight: 750;
+            cursor: pointer;
+            border: 0;
+            border-radius: .6rem;
+        }
+
+        .mode-switch button {
+            color: #52665a;
+            background: transparent;
+        }
+
+        .mode-switch button[aria-selected="true"] {
+            color: #105737;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(20, 75, 48, .1);
+        }
+
+        .field { display: block; margin-top: 1rem; }
+        .field span { display: block; margin-bottom: .4rem; font-size: .85rem; font-weight: 750; }
+
+        .field input {
+            width: 100%;
+            min-height: 2.85rem;
+            padding: .7rem .8rem;
+            color: #173b2c;
+            background: #fff;
+            border: 1px solid #bfd2c4;
+            border-radius: .6rem;
+            font: inherit;
+        }
+
+        .field input:focus-visible {
+            border-color: #176b45;
+            outline: 3px solid rgba(23, 107, 69, .18);
+        }
+
+        .submit-button {
+            width: 100%;
+            margin-top: 1.25rem;
+            color: #fff;
+            background: #176b45;
+            transition: background .15s ease;
+        }
+
+        .submit-button:hover { background: #105737; }
+        .submit-button:disabled { cursor: wait; opacity: .7; }
+
+        .secondary-action {
+            width: 100%;
+            margin-top: .7rem;
+            color: #176b45;
+            background: transparent;
+        }
+
+        .secondary-action:hover { background: #edf7f0; }
+
+        .status {
+            min-height: 1.4rem;
+            margin: .9rem 0 0;
+            color: #9b271e;
+            font-size: .85rem;
+            line-height: 1.45;
+        }
+
+        .status[data-state="success"] { color: #176b45; }
+
+        .privacy-note {
+            margin: 1rem 0 0;
+            color: #6b7d71;
+            font-size: .75rem;
+            line-height: 1.5;
+        }
+
+        [hidden] { display: none !important; }
+
+        @media (max-width: 700px) {
+            body { padding: .75rem; }
+            .login-layout { max-width: 28rem; min-height: 0; grid-template-columns: 1fr; }
+            .login-brand { min-height: 23rem; padding: 1.5rem; }
+            .brand-crest { width: 3.5rem; height: 3.5rem; }
+            .brand-kicker { margin-top: 1.1rem; }
+            .brand-title { margin: .65rem 0 .35rem; font-size: 2.35rem; }
+            .brand-copy { margin: .6rem 0 0; font-size: .9rem; }
+            .brand-missions { gap: .55rem; margin-top: 1rem; }
+            .brand-missions li { font-size: .82rem; }
+            .brand-mission-mark { width: 1.6rem; height: 1.6rem; }
+            .brand-footnote { margin-top: 1.2rem; padding-top: .75rem; font-size: .75rem; }
+            .login-main { padding: 1.5rem; }
+        }
+
+        @media (max-width: 380px) {
+            body { padding: .4rem; }
+            .login-brand, .login-main { padding: 1.15rem; }
+            .login-brand { min-height: 22rem; }
+        }
+
+        body {
+            display: block;
+            min-height: 100vh;
+            padding: 0;
+            place-items: initial;
+            background: #f4f7f4;
+            color: #183529;
+            line-height: 1.5;
+        }
+
+        a { color: inherit; }
+
+        .skip-link {
+            position: absolute;
+            z-index: 20;
+            top: .5rem;
+            left: .5rem;
+            padding: .7rem 1rem;
+            color: #fff;
+            background: #102e20;
+            border-radius: .5rem;
+            transform: translateY(-160%);
+        }
+        .skip-link:focus { transform: translateY(0); }
+        a:focus-visible, button:focus-visible, input:focus-visible {
+            outline: 3px solid #8ed5a1;
+            outline-offset: 3px;
+        }
+
+        .site-shell { overflow: hidden; }
+        .site-container { width: min(calc(100% - 2.5rem), 76rem); margin-inline: auto; }
+
+        .site-header {
+            position: absolute;
+            z-index: 5;
+            inset: 0 0 auto;
+            color: #fff;
+        }
+
+        .site-header-inner {
+            display: flex;
+            min-height: 5.2rem;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .18);
+        }
+
+        .site-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: .75rem;
+            flex: 0 0 auto;
+            color: #fff;
+            font-weight: 900;
+            letter-spacing: .06em;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .site-brand img {
+            width: 2.8rem;
+            height: 2.8rem;
+            padding: .18rem;
+            object-fit: cover;
+            background: #fff;
+            border: 1px solid rgba(255, 255, 255, .7);
+            border-radius: .75rem;
+        }
+
+        .site-brand small {
+            display: block;
+            color: #d8f3df;
+            font-size: .62rem;
+            font-weight: 750;
+            letter-spacing: .16em;
+        }
+
+        .site-nav { display: flex; align-items: center; gap: 1.6rem; }
+        .site-nav a {
+            color: #e6f1e8;
+            font-size: .84rem;
+            font-weight: 750;
+            text-decoration: none;
+        }
+        .site-nav a:hover { color: #fff; }
+
+        .nav-cta, .hero-cta, .final-cta {
+            display: inline-flex;
+            min-height: 2.85rem;
+            align-items: center;
+            justify-content: center;
+            gap: .6rem;
+            padding: .7rem 1.1rem;
+            color: #103b27 !important;
+            background: #d7f0dc;
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: .65rem;
+            font-size: .86rem;
+            font-weight: 850 !important;
+            text-decoration: none;
+            transition: transform .18s ease, background .18s ease;
+        }
+        .nav-cta:hover, .hero-cta:hover, .final-cta:hover {
+            transform: translateY(-2px);
+            background: #fff;
+        }
+
+        .hero {
+            position: relative;
+            isolation: isolate;
+            display: grid;
+            min-height: 47rem;
+            align-items: center;
+            padding: 7rem 0 4.5rem;
+            color: #fff;
+            background:
+                linear-gradient(90deg, rgba(7, 28, 18, .96) 0%, rgba(10, 48, 29, .88) 47%, rgba(12, 58, 35, .57) 100%),
+                #102e20;
+        }
+
+        .hero::after {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, .055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .055) 1px, transparent 1px);
+            background-size: 2.5rem 2.5rem;
+            content: "";
+            mask-image: linear-gradient(90deg, #000, transparent 85%);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(19rem, .72fr);
+            align-items: center;
+            gap: clamp(2rem, 5vw, 5.5rem);
+        }
+
+        .hero-grid > * { min-width: 0; }
+
+        .hero-copy { max-width: 43rem; padding: 2rem 0; }
+
+        .hero-kicker, .section-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+            margin: 0;
+            color: #a9e2b8;
+            font-size: .72rem;
+            font-weight: 900;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+        }
+
+        .hero-kicker::before {
+            width: 1.6rem;
+            height: 2px;
+            background: currentColor;
+            content: "";
+        }
+
+        .hero-title {
+            max-width: 11ch;
+            margin: 1.1rem 0 1rem;
+            font-family: "Arial Narrow", Impact, sans-serif;
+            font-size: clamp(3.1rem, 7vw, 6.1rem);
+            font-weight: 900;
+            letter-spacing: -.045em;
+            line-height: .92;
+            text-transform: uppercase;
+        }
+
+        .hero-title span { color: #a9e2b8; }
+
+        .hero-description {
+            max-width: 39rem;
+            margin: 1.25rem 0 0;
+            color: #e1eee4;
+            font-size: clamp(1rem, 1.5vw, 1.16rem);
+            line-height: 1.75;
+        }
+
+        .hero-points {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .7rem 1.2rem;
+            margin: 1.7rem 0 1.8rem;
+            padding: 0;
+            color: #f4faf5;
+            list-style: none;
+        }
+
+        .hero-points li { display: inline-flex; align-items: center; gap: .5rem; font-size: .85rem; font-weight: 700; }
+        .hero-points i { color: #a9e2b8; }
+        .hero-cta { min-height: 3.2rem; padding-inline: 1.4rem; }
+        .hero-secondary {
+            display: inline-flex;
+            min-height: 3rem;
+            align-items: center;
+            padding: .65rem 1rem;
+            color: #fff;
+            font-size: .86rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .hero-note {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin: 2rem 0 0;
+            color: #c6ddcb;
+            font-size: .75rem;
+        }
+
+        .hero-note i { color: #a9e2b8; }
+
+        .auth-card {
+            width: 100%;
+            padding: clamp(1.35rem, 3vw, 2rem);
+            color: #183529;
+            background: rgba(255, 255, 255, .98);
+            border: 1px solid rgba(255, 255, 255, .75);
+            border-radius: 1.2rem;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, .32);
+            scroll-margin-top: 6rem;
+        }
+
+        .auth-card-top {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .auth-card-icon {
+            display: grid;
+            width: 2.8rem;
+            height: 2.8rem;
+            flex: 0 0 auto;
+            place-items: center;
+            color: #fff;
+            background: #145b39;
+            border-radius: .8rem;
+            font-size: 1.1rem;
+        }
+
+        .auth-card-top p { margin: 0; color: #718176; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+        .auth-card-top h2 { margin: .15rem 0 0; font-size: 1.45rem; letter-spacing: -.025em; }
+        .auth-card-intro { margin: 0 0 1.1rem; color: #627267; font-size: .88rem; line-height: 1.55; }
+
+        .mode-switch { margin-bottom: 1rem; }
+        .mode-switch button { font-size: .86rem; }
+        .field { margin-top: .85rem; }
+        .field span { color: #304d3c; }
+        .field input, .field select { min-height: 3rem; background: #fbfdfb; }
+        .identity-fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 .75rem;
+            margin: 1rem 0 .25rem;
+            padding: 1rem;
+            background: #f3f8f4;
+            border: 1px solid #d7e7dc;
+            border-radius: .8rem;
+        }
+        .identity-fields[hidden] { display: none !important; }
+        .identity-fields-heading { grid-column: 1 / -1; margin: 0; color: #183b29; font-size: .86rem; font-weight: 900; }
+        .identity-fields-note { grid-column: 1 / -1; margin: .35rem 0 .2rem; color: #627267; font-size: .72rem; line-height: 1.5; }
+        .identity-fields .field { margin-top: .7rem; }
+        .identity-consent {
+            display: flex;
+            grid-column: 1 / -1;
+            align-items: flex-start;
+            gap: .55rem;
+            margin-top: .85rem;
+            color: #52665a;
+            font-size: .72rem;
+            line-height: 1.5;
+        }
+        .identity-consent input { width: 1rem; height: 1rem; flex: 0 0 auto; margin-top: .12rem; accent-color: #176b45; }
+        .identity-consent a { color: #145b39; font-weight: 800; }
+        .submit-button {
+            min-height: 3.05rem;
+            margin-top: 1rem;
+            border-radius: .7rem;
+            font-size: .94rem;
+            letter-spacing: .01em;
+        }
+        .secondary-action { min-height: 2.5rem; font-size: .82rem; }
+        .status { min-height: 0; }
+        .auth-card-foot {
+            display: flex;
+            align-items: flex-start;
+            gap: .55rem;
+            padding-top: .9rem;
+            margin-top: .75rem;
+            color: #718176;
+            border-top: 1px solid #e6ede7;
+            font-size: .72rem;
+            line-height: 1.5;
+        }
+        .auth-card-foot i { margin-top: .12rem; color: #176b45; }
+
+        .proof-strip {
+            position: relative;
+            z-index: 2;
+            width: min(calc(100% - 2.5rem), 72rem);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            margin: -1.65rem auto 0;
+            color: #173b2c;
+            background: #fff;
+            border: 1px solid #e0e9e1;
+            border-radius: 1rem;
+            box-shadow: 0 18px 45px rgba(25, 61, 40, .1);
+        }
+
+        .proof-item { padding: 1.25rem 1rem; text-align: center; }
+        .proof-item + .proof-item { border-left: 1px solid #e6ede7; }
+        .proof-value { display: block; color: #145b39; font-size: 1.65rem; font-weight: 950; letter-spacing: -.05em; line-height: 1.1; }
+        .proof-label { display: block; margin-top: .35rem; color: #6c7c70; font-size: .72rem; font-weight: 750; }
+
+        .section { padding: clamp(4rem, 8vw, 7rem) 0; }
+        .section-heading { max-width: 48rem; margin: 0 auto 2.6rem; text-align: center; }
+        .section-kicker { color: #176b45; }
+        .section-title {
+            margin: .75rem 0 .85rem;
+            color: #143c29;
+            font-family: "Arial Narrow", Impact, sans-serif;
+            font-size: clamp(2.15rem, 4vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -.035em;
+            line-height: 1.02;
+            text-transform: uppercase;
+        }
+        .section-description { margin: 0; color: #627267; font-size: 1rem; line-height: 1.7; }
+
+        .field-report { padding: 1rem 0 clamp(3.5rem, 7vw, 5.5rem); background: #f4f7f4; }
+        .field-report-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.5rem; }
+        .field-report-heading .section-title { max-width: 16ch; margin-bottom: 0; font-size: clamp(1.8rem, 3vw, 2.8rem); }
+        .field-report-link { flex: 0 0 auto; color: #145b39; font-size: .82rem; font-weight: 850; text-decoration: none; }
+        .field-report-link:hover { text-decoration: underline; }
+        .field-report-grid { display: grid; grid-template-columns: 1.1fr .9fr 1.1fr; gap: .85rem; }
+        .field-report-photo { position: relative; min-width: 0; height: clamp(12rem, 23vw, 20rem); overflow: hidden; background: #dce8de; border-radius: .9rem; }
+        .field-report-photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+        .field-report-photo:hover img { transform: scale(1.04); }
+        .field-report-photo figcaption { position: absolute; right: 0; bottom: 0; left: 0; padding: 2.5rem 1rem .9rem; color: #fff; background: linear-gradient(transparent, rgba(7, 28, 18, .82)); font-size: .78rem; font-weight: 800; }
+        .field-report-credit { margin: .75rem 0 0; color: #718176; font-size: .7rem; line-height: 1.5; }
+        .field-report-credit a { color: #46614f; font-weight: 750; }
+
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .feature-card {
+            position: relative;
+            min-height: 14rem;
+            padding: 1.45rem;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #e0e9e1;
+            border-radius: 1rem;
+            box-shadow: 0 7px 24px rgba(25, 61, 40, .045);
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .feature-card:hover { transform: translateY(-4px); border-color: #b4d2bb; box-shadow: 0 18px 34px rgba(25, 61, 40, .1); }
+        .feature-card::after {
+            position: absolute;
+            right: -2rem;
+            bottom: -3.5rem;
+            width: 8rem;
+            height: 8rem;
+            color: #f1f7f2;
+            border: 1px solid #edf4ee;
+            border-radius: 50%;
+            content: "";
+        }
+        .feature-icon {
+            display: grid;
+            width: 2.8rem;
+            height: 2.8rem;
+            place-items: center;
+            color: #145b39;
+            background: #e9f4eb;
+            border-radius: .8rem;
+            font-size: 1.1rem;
+        }
+        .feature-number { float: right; color: #b5c7b9; font-size: .72rem; font-weight: 900; letter-spacing: .12em; }
+        .feature-card h3 { margin: 1.15rem 0 .45rem; color: #183b29; font-size: 1.05rem; font-weight: 900; letter-spacing: -.02em; }
+        .feature-card p { position: relative; z-index: 1; max-width: 31rem; margin: 0; color: #68796d; font-size: .85rem; line-height: 1.65; }
+
+        .preview-section { padding-top: 1rem; background: #fff; }
+        .preview-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(22rem, 1.1fr); align-items: center; gap: clamp(2rem, 6vw, 6rem); }
+        .preview-copy .section-title { max-width: 12ch; }
+        .preview-copy p { color: #627267; line-height: 1.75; }
+        .preview-list { display: grid; gap: .8rem; margin: 1.4rem 0 1.7rem; padding: 0; list-style: none; }
+        .preview-list li { display: flex; align-items: flex-start; gap: .7rem; color: #375343; font-size: .9rem; line-height: 1.55; }
+        .preview-list i { margin-top: .18rem; color: #176b45; }
+        .preview-window {
+            padding: 1rem;
+            background: #102e20;
+            border: 1px solid #214c34;
+            border-radius: 1.1rem;
+            box-shadow: 0 24px 60px rgba(14, 52, 32, .2);
+            transform: rotate(1deg);
+        }
+        .preview-window-top { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .25rem .25rem .9rem; color: #d7e8db; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+        .preview-dots { display: flex; gap: .3rem; }
+        .preview-dots i { width: .45rem; height: .45rem; background: #3a684b; border-radius: 50%; }
+        .preview-dash { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(8rem, .85fr); gap: .7rem; }
+        .preview-panel { padding: 1rem; color: #183529; background: #fff; border-radius: .75rem; }
+        .preview-panel-label { margin: 0; color: #718176; font-size: .63rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+        .preview-panel h3 { margin: .35rem 0 .7rem; color: #183b29; font-size: 1rem; font-weight: 900; }
+        .preview-task { display: flex; align-items: center; gap: .55rem; padding: .55rem 0; border-top: 1px solid #edf2ed; color: #46614f; font-size: .7rem; }
+        .preview-task i { color: #176b45; }
+        .preview-progress { height: .4rem; overflow: hidden; background: #e8efe9; border-radius: 999px; }
+        .preview-progress span { display: block; width: 62%; height: 100%; background: #23804d; border-radius: inherit; }
+        .preview-subject { margin-top: .75rem; }
+        .preview-subject-row { display: flex; justify-content: space-between; gap: .4rem; margin-bottom: .3rem; color: #53685a; font-size: .63rem; font-weight: 750; }
+        .preview-subject .preview-progress span { width: 44%; }
+        .preview-subject:nth-of-type(3) .preview-progress span { width: 71%; }
+        .preview-subject:nth-of-type(4) .preview-progress span { width: 28%; }
+        .preview-chip { display: inline-flex; align-items: center; gap: .35rem; margin-top: .8rem; padding: .38rem .5rem; color: #145b39; background: #eaf4ec; border-radius: .5rem; font-size: .62rem; font-weight: 850; }
+        .preview-caption { margin: .75rem 0 0; color: #738478; font-size: .68rem; text-align: right; }
+
+        .curriculum-section { background: #eaf1eb; }
+        .curriculum-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .curriculum-card {
+            padding: 1.5rem;
+            color: #fff;
+            background: #123b29;
+            border-radius: 1rem;
+            box-shadow: inset 0 1px rgba(255,255,255,.1);
+        }
+        .curriculum-card:nth-child(2) { background: #174b32; }
+        .curriculum-card:nth-child(3) { background: #1b5538; }
+        .curriculum-card > span { color: #b3e3bf; font-size: .7rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+        .curriculum-card h3 { margin: .45rem 0 .9rem; font-size: 1.15rem; font-weight: 900; }
+        .curriculum-card ul { display: grid; gap: .58rem; margin: 0; padding: 0; list-style: none; }
+        .curriculum-card li { display: flex; align-items: center; gap: .55rem; color: #e2eee5; font-size: .84rem; }
+        .curriculum-card li i { color: #a9e2b8; font-size: .75rem; }
+        .curriculum-note { margin: 1rem 0 0; color: #65766a; font-size: .76rem; text-align: center; }
+
+        .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; counter-reset: step; }
+        .method-card { position: relative; padding: 1.5rem; background: #fff; border: 1px solid #e0e9e1; border-radius: 1rem; counter-increment: step; }
+        .method-card::before {
+            display: grid;
+            width: 2.6rem;
+            height: 2.6rem;
+            margin-bottom: 1rem;
+            place-items: center;
+            color: #fff;
+            background: #145b39;
+            border-radius: .8rem;
+            content: "0" counter(step);
+            font-size: .82rem;
+            font-weight: 900;
+        }
+        .method-card h3 { margin: 0 0 .5rem; color: #183b29; font-size: 1rem; font-weight: 900; }
+        .method-card p { margin: 0; color: #68796d; font-size: .86rem; line-height: 1.65; }
+
+        .motivation-band {
+            position: relative;
+            isolation: isolate;
+            padding: clamp(2.5rem, 6vw, 4.5rem);
+            overflow: hidden;
+            color: #fff;
+            background:
+                linear-gradient(100deg, rgba(9, 39, 24, .97), rgba(18, 76, 46, .9)),
+                #123b29;
+            border-radius: 1.3rem;
+        }
+        .motivation-band::after {
+            position: absolute;
+            z-index: -1;
+            top: -7rem;
+            right: -4rem;
+            width: 23rem;
+            height: 23rem;
+            border: 1px solid rgba(255, 255, 255, .16);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2rem rgba(255,255,255,.025), 0 0 0 4rem rgba(255,255,255,.02);
+            content: "";
+        }
+        .motivation-band .section-kicker { color: #a9e2b8; }
+        .motivation-band .section-title { max-width: 13ch; color: #fff; }
+        .motivation-band p { max-width: 42rem; color: #dcebe0; line-height: 1.75; }
+        .motivation-band .hero-cta { margin-top: .75rem; }
+
+        .site-footer { padding: 1.6rem 0; color: #68796d; font-size: .75rem; }
+        .site-footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+        .site-footer p { margin: 0; }
+        .site-footer a { color: #145b39; font-weight: 800; text-decoration: none; }
+        .site-footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 900px) {
+            .hero { min-height: auto; padding-top: 7.5rem; }
+            .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(18rem, .82fr); gap: 2rem; }
+            .hero-title { font-size: clamp(3rem, 7vw, 4.8rem); }
+            .feature-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 700px) {
+            .site-container, .proof-strip { width: min(calc(100% - 1.4rem), 38rem); }
+            .site-header-inner { min-height: 4.4rem; }
+            .site-brand { gap: .55rem; font-size: .77rem; }
+            .site-brand small { display: none; }
+            .site-nav { gap: .45rem; }
+            .site-nav a:not(.nav-cta) { display: none; }
+            .site-brand img { width: 2.4rem; height: 2.4rem; }
+            .nav-cta { min-height: 2.55rem; padding: .55rem .65rem; font-size: .72rem !important; white-space: nowrap; }
+            .hero { padding: 6rem 0 3.2rem; background-position: 55% center; }
+            .hero-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+            .hero-copy { padding: 1.2rem 0 0; }
+            .hero-title { max-width: 100%; font-size: clamp(2.35rem, 10vw, 4.4rem); }
+            .hero-description { font-size: .98rem; }
+            .hero-note { margin-top: 1.25rem; }
+            .auth-card { max-width: 32rem; margin-inline: auto; }
+            .identity-fields { padding: .8rem; gap: 0 .55rem; }
+            .proof-strip { grid-template-columns: repeat(2, 1fr); margin-top: -1rem; }
+            .proof-item { padding: 1rem .65rem; }
+            .proof-item:nth-child(3) { border-left: 0; border-top: 1px solid #e6ede7; }
+            .proof-item:nth-child(4) { border-top: 1px solid #e6ede7; }
+            .proof-value { font-size: 1.4rem; }
+            .field-report { padding-top: .5rem; }
+            .field-report-heading { align-items: flex-start; flex-direction: column; gap: .6rem; margin-bottom: 1rem; }
+            .field-report-grid { grid-template-columns: 1fr 1fr; gap: .55rem; }
+            .field-report-photo { height: clamp(9rem, 38vw, 14rem); }
+            .field-report-photo:first-child { grid-column: 1 / -1; height: clamp(12rem, 55vw, 19rem); }
+            .field-report-photo figcaption { padding: 2rem .7rem .65rem; font-size: .7rem; }
+            .field-report-credit { font-size: .66rem; }
+            .feature-grid, .curriculum-grid, .method-grid { grid-template-columns: 1fr; }
+            .feature-card { min-height: auto; }
+            .preview-section { padding-top: 0; }
+            .preview-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+            .preview-copy .section-title { max-width: 15ch; }
+            .preview-window { padding: .65rem; transform: none; }
+            .preview-dash { grid-template-columns: minmax(0, 1.05fr) minmax(7rem, .95fr); gap: .45rem; }
+            .preview-panel { padding: .75rem; }
+            .preview-panel h3 { font-size: .9rem; }
+            .preview-task { font-size: .63rem; }
+            .section { padding: 4rem 0; }
+            .section-heading { margin-bottom: 1.8rem; text-align: left; }
+            .section-title { font-size: clamp(2.25rem, 11vw, 3.3rem); }
+            .curriculum-card { padding: 1.25rem; }
+            .motivation-band { padding: 2rem 1.35rem; }
+            .site-footer-inner { align-items: flex-start; flex-direction: column; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+
+        @media (max-width: 380px) {
+            .site-nav .nav-cta { display: none; }
+            .hero-grid { width: min(calc(100% - 1.4rem), 38rem); }
+            .hero-title { font-size: clamp(2.2rem, 9.5vw, 3.5rem); }
+        }
+
+        /* Tema Polícia Penal: azul-marinho, dourado e vermelho */
+        :root { --pm-navy: #0b2447; --pm-blue: #19376d; --pm-gold: #e0b43c; --pm-red: #b3202a; }
+
+        .site-header::after, .motivation-band::before {
+            position: absolute;
+            inset: auto 0 0;
+            height: .3rem;
+            background: linear-gradient(90deg, var(--pm-blue) 0 33%, var(--pm-gold) 33% 66%, var(--pm-red) 66% 100%);
+            content: "";
+        }
+        .hero {
+            background:
+                linear-gradient(90deg, rgba(5, 18, 40, .96) 0%, rgba(11, 36, 71, .88) 47%, rgba(25, 55, 109, .55) 100%),
+                var(--pm-navy);
+        }
+        .hero-title span { color: var(--pm-gold); }
+        .hero-kicker { color: var(--pm-gold); }
+        .hero-note i { color: var(--pm-gold); }
+        .hero-cta { background: var(--pm-gold); color: #0b2447; }
+        .hero-cta:hover { background: #f0c653; }
+
+        .auth-card { border-top: .3rem solid var(--pm-gold); }
+        .auth-card-icon { background: var(--pm-navy); color: var(--pm-gold); }
+        .auth-card-top h2 { color: var(--pm-navy); }
+        .submit-button { background: var(--pm-navy); }
+        .submit-button:hover { background: var(--pm-blue); }
+        .auth-card-foot i, .identity-consent a { color: var(--pm-blue); }
+
+        .section-kicker { color: var(--pm-red); }
+        .feature-icon { background: var(--pm-navy); color: var(--pm-gold); }
+        .feature-card { border-top: .22rem solid var(--pm-gold); }
+        .motivation-band {
+            background:
+                linear-gradient(100deg, rgba(5, 18, 40, .97), rgba(25, 55, 109, .9)),
+                var(--pm-navy);
+        }
+        .motivation-band .section-kicker { color: var(--pm-gold); }
+        .login-layout { box-shadow: 0 24px 70px rgba(11, 36, 71, .2); }
+    </style>
+    <link rel="stylesheet" href="tema.css">
+</head>
+<body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div class="site-shell">
+        <header class="site-header">
+            <div class="site-container site-header-inner">
+                <a class="site-brand" href="#inicio" aria-label="Operação PPPE, início">
+                    <img src="https://www.monsterconcursos.com.br/brasao-policia-penal-pe.png" alt="" referrerpolicy="no-referrer">
+                    <span>OPERAÇÃO PPPE<small>PREPARAÇÃO COM PROPÓSITO</small></span>
+                </a>
+                <nav class="site-nav" aria-label="Navegação principal">
+                    <a href="#plataforma">A plataforma</a>
+                    <a href="#metodo">Como funciona</a>
+                    <a class="nav-cta" href="#acesso">Acessar plataforma <span aria-hidden="true">→</span></a>
+                </nav>
+            </div>
+        </header>
+
+        <main id="conteudo">
+            <section id="inicio" class="hero">
+                <div class="site-container hero-grid">
+                    <div class="hero-copy">
+                        <p class="hero-kicker">Operação PPPE · seu próximo passo começa aqui</p>
+                        <h1 class="hero-title">Transforme estudo em <span>prontidão.</span></h1>
+                        <p class="hero-description">Uma plataforma de preparação para quem quer sair do estudo sem direção e avançar com plano, prática e acompanhamento — missão após missão.</p>
+                        <ul class="hero-points">
+                            <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Conteúdo organizado para a Polícia Penal</li>
+                            <li><i class="fa-solid fa-crosshairs" aria-hidden="true"></i>Prática com foco no edital</li>
+                            <li><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Progresso visível</li>
+                        </ul>
+                        <a class="hero-cta" href="#acesso" data-create-account>Começar minha preparação <span aria-hidden="true">→</span></a>
+                        <a class="hero-secondary" href="#plataforma">Explorar recursos da plataforma</a>
+                        <p class="hero-note"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Rotina flexível, no seu ritmo e em um só lugar.</p>
+                    </div>
+
+                    <section id="acesso" class="auth-card" aria-labelledby="loginHeading">
+                        <div class="auth-card-top">
+                            <span class="auth-card-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+                            <div>
+                                <p>Área do estudante</p>
+                                <h2 id="loginHeading">Entre para continuar</h2>
+                            </div>
+                        </div>
+                        <p class="auth-card-intro">Acesse sua preparação ou crie sua conta para começar uma rotina de estudo mais estratégica.</p>
+
+                        <div class="mode-switch" role="tablist" aria-label="Tipo de acesso">
+                            <button id="loginMode" type="button" role="tab" aria-selected="true">Entrar</button>
+                            <button id="registerMode" type="button" role="tab" aria-selected="false">Criar conta</button>
+                        </div>
+
+                        <form id="authForm">
+                            <label class="field" for="email">
+                                <span>Email</span>
+                                <input id="email" name="email" type="email" autocomplete="email" required maxlength="254">
+                            </label>
+                            <label class="field" for="password">
+                                <span>Senha</span>
+                                <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6">
+                            </label>
+                            <fieldset id="identityFields" class="identity-fields" hidden>
+                                <legend class="sr-only">Dados para identificação da conta</legend>
+                                <p class="identity-fields-heading">Complete seus dados de cadastro</p>
+                                <p class="identity-fields-note">Informe seus dados autodeclarados para identificação da conta. Não envie CPF nem documentos por este formulário.</p>
+                                <label class="field" for="registrationFullName">
+                                    <span>Nome completo</span>
+                                    <input id="registrationFullName" name="name" type="text" autocomplete="name" maxlength="80" data-register-required>
+                                </label>
+                                <label class="field" for="registrationBirthDate">
+                                    <span>Data de nascimento</span>
+                                    <input id="registrationBirthDate" name="bday" type="date" autocomplete="bday" min="1920-01-01" data-register-required>
+                                </label>
+                                <label class="field" for="registrationWhatsapp">
+                                    <span>Número de WhatsApp</span>
+                                    <input id="registrationWhatsapp" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="(66) 99999-9999" maxlength="20" data-register-required>
+                                </label>
+                                <label class="field" for="registrationCity" style="position:relative">
+                                    <span>Cidade atual</span>
+                                    <input id="registrationCity" name="address-level2" type="text" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="cityList" placeholder="Comece a digitar..." maxlength="80" data-register-required>
+                                    <ul id="cityList" role="listbox" hidden style="position:absolute;left:0;right:0;top:100%;z-index:30;margin:.2rem 0 0;padding:.25rem 0;list-style:none;max-height:14rem;overflow-y:auto;background:#fff;border:1px solid #bcd9c5;border-radius:.6rem;box-shadow:0 8px 24px rgba(0,0,0,.15)"></ul>
+                                </label>
+                                <label class="identity-consent" for="identityConsent">
+                                    <input id="identityConsent" name="identityConsent" type="checkbox" data-register-required>
+                                    <span>Autorizo o uso desses dados para identificação e atendimento da minha conta. Entendo que os dados serão exibidos à equipe administrativa e são autodeclarados, sem comprovar minha identidade.</span>
+                                </label>
+                            </fieldset>
+                            <label id="passwordConfirmField" class="field" for="passwordConfirm" hidden>
+                                <span>Confirme sua senha</span>
+                                <input id="passwordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" minlength="6">
+                            </label>
+                            <button id="submitButton" class="submit-button" type="submit">Entrar na plataforma</button>
+                        </form>
+                        <button id="resetPasswordButton" class="secondary-action" type="button">Esqueci minha senha</button>
+                        <a class="secondary-action whatsapp-support" href="https://wa.me/5566996884580?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20a%20plataforma%20Opera%C3%A7%C3%A3o%20PPPE." target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;text-decoration:none;margin-top:.6rem"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Dúvidas? Fale no WhatsApp (pagamento, interface e mais)</a>
+                        <p id="authStatus" class="status" role="status" aria-live="polite"></p>
+                        <div class="auth-card-foot">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                            <span>Seu acesso é individual. Entre com sua conta para retomar seus estudos e acompanhar sua evolução.</span>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <div class="proof-strip" aria-label="Visão geral da preparação">
+                <div class="proof-item"><span class="proof-value">12</span><span class="proof-label">disciplinas do edital</span></div>
+                <div class="proof-item"><span class="proof-value">60</span><span class="proof-label">questões no simulado geral</span></div>
+                <div class="proof-item"><span class="proof-value">01</span><span class="proof-label">plano para acompanhar sua rotina</span></div>
+                <div class="proof-item"><span class="proof-value">09</span><span class="proof-label">recursos estratégicos</span></div>
+            </div>
+
+            <section class="field-report" aria-labelledby="fieldReportHeading">
+                <div class="site-container">
+                    <div class="field-report-heading">
+                        <div>
+                            <p class="section-kicker">Inspiração para a missão</p>
+                            <h2 id="fieldReportHeading" class="section-title">Um objetivo que pede preparo e constância</h2>
+                        </div>
+                    </div>
+                    <p class="field-report-credit">Prova objetiva com 60 questões (20 de conhecimentos gerais e 40 de específicos) e prova discursiva. Consulte o edital vigente nos canais oficiais.</p>
+                </div>
+            </section>
+
+            <section id="plataforma" class="section">
+                <div class="site-container">
+                    <header class="section-heading">
+                        <p class="section-kicker">Sua central de preparação</p>
+                        <h2 class="section-title">Estratégia em cada ponto da jornada</h2>
+                        <p class="section-description">Mais do que reunir materiais: a plataforma conecta planejamento, estudo ativo e revisão para ajudar você a aproveitar melhor cada sessão.</p>
+                    </header>
+
+                    <div class="feature-grid">
+                        <article class="feature-card">
+                            <span class="feature-number">01 / PLANEJAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span>
+                            <h3>Missões diárias</h3>
+                            <p>Organize seu ritmo com preferências de dias, horários e intensidade. Avance pelas tarefas em uma sequência clara, etapa por etapa.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">02 / APRENDER</span>
+                            <span class="feature-icon"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
+                            <h3>Conteúdo por disciplina</h3>
+                            <p>Encontre guias, materiais e conteúdos distribuídos pelas matérias da preparação PPPE, sem perder tempo procurando o próximo assunto.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">03 / TREINAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-crosshairs" aria-hidden="true"></i></span>
+                            <h3>Simulados e questões</h3>
+                            <p>Treine por disciplina ou encare o simulado geral de 60 questões. Use a prática para identificar temas que merecem outra rodada.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">04 / ACOMPANHAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></span>
+                            <h3>Progresso por matéria</h3>
+                            <p>Visualize sua evolução e as tarefas concluídas em cada frente. Transforme uma meta grande em pequenos avanços observáveis.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">05 / APERFEIÇOAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i></span>
+                            <h3>Oficina de redação</h3>
+                            <p>Estude estrutura, trabalhe temas, guarde rascunhos e receba uma análise orientativa local para praticar a escrita.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">06 / REVISAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-book-skull" aria-hidden="true"></i></span>
+                            <h3>Caderno de erros</h3>
+                            <p>Registre o que precisa de atenção e volte às suas anotações para entender o erro, rever a regra e fortalecer a aprendizagem.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">07 / FIXAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-puzzle-piece" aria-hidden="true"></i></span>
+                            <h3>Pausa tática</h3>
+                            <p>Alterne o ritmo com caça-palavras e cruzadinhas temáticas para revisar conceitos de um jeito leve e ativo.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">08 / MANTER O FOCO</span>
+                            <span class="feature-icon"><i class="fa-solid fa-bullseye" aria-hidden="true"></i></span>
+                            <h3>Uma missão por vez</h3>
+                            <p>Acompanhe o que vem agora, conclua a etapa atual e mantenha a constância sem precisar decidir tudo do zero a cada dia.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">09 / ORGANIZAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+                            <h3>Tudo conectado</h3>
+                            <p>Conteúdo, treino, redação e revisão ficam reunidos em uma única área de estudos, pronta para acompanhar sua rotina.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">10 / ASSISTIR E LER</span>
+                            <span class="feature-icon"><i class="fa-solid fa-circle-play" aria-hidden="true"></i></span>
+                            <h3>Videoaulas e PDFs</h3>
+                            <p>Assista às videoaulas dentro da plataforma, faça anotações salvas no navegador e consulte os PDFs de apoio sem sair da área de estudos.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">11 / MEMORIZAR</span>
+                            <span class="feature-icon"><i class="fa-solid fa-clone" aria-hidden="true"></i></span>
+                            <h3>Flashcards e mapas mentais</h3>
+                            <p>Fixe conceitos com flashcards e visualize a conexão entre os assuntos nos mapas mentais para revisar com mais clareza.</p>
+                        </article>
+                        <article class="feature-card">
+                            <span class="feature-number">12 / SUPORTE</span>
+                            <span class="feature-icon"><i class="fa-solid fa-headset" aria-hidden="true"></i></span>
+                            <h3>Atendimento e avaliação</h3>
+                            <p>Envie dúvidas, sugestões ou reclamações pela central de atendimento, acompanhe a resposta da equipe na própria plataforma e avalie sua experiência.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section preview-section" aria-labelledby="previewHeading">
+                <div class="site-container preview-layout">
+                    <div class="preview-copy">
+                        <p class="section-kicker">Sua central de comando</p>
+                        <h2 id="previewHeading" class="section-title">Veja o próximo passo. Marque cada avanço.</h2>
+                        <p>O painel reúne sua rotina e seus recursos de estudo para você gastar menos energia organizando abas e mais tempo cumprindo a missão.</p>
+                        <ul class="preview-list">
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Plano de estudo com dias, horários e ritmo escolhidos por você.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Atalhos por matéria e acompanhamento visual das tarefas.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Simulado, redação e revisão a poucos passos da sua rotina.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Videoaulas, PDFs, flashcards e mapas mentais reunidos no mesmo painel.</span></li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>Central de atendimento com resposta da equipe dentro da plataforma.</span></li>
+                        </ul>
+                        <a class="hero-cta" href="#acesso" data-create-account>Quero organizar meus estudos <span aria-hidden="true">→</span></a>
+                    </div>
+                    <div>
+                        <div class="preview-window" aria-label="Prévia ilustrativa do painel de estudos">
+                            <div class="preview-window-top">
+                                <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Operação PPPE</span>
+                                <span class="preview-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                            </div>
+                            <div class="preview-dash">
+                                <div class="preview-panel">
+                                    <p class="preview-panel-label">Missão do dia</p>
+                                    <h3>Avance no seu plano</h3>
+                                    <div class="preview-progress" aria-hidden="true"><span></span></div>
+                                    <div class="preview-task"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Revisão de conteúdo</div>
+                                    <div class="preview-task"><i class="fa-regular fa-circle" aria-hidden="true"></i> Prática com questões</div>
+                                    <div class="preview-task"><i class="fa-regular fa-circle" aria-hidden="true"></i> Revisar pontos-chave</div>
+                                    <span class="preview-chip"><i class="fa-solid fa-bullseye" aria-hidden="true"></i> Siga para a próxima etapa</span>
+                                </div>
+                                <div class="preview-panel">
+                                    <p class="preview-panel-label">Seu painel</p>
+                                    <h3>Matérias</h3>
+                                    <div class="preview-subject">
+                                        <div class="preview-subject-row"><span>Português</span><span>•••</span></div>
+                                        <div class="preview-progress" aria-hidden="true"><span></span></div>
+                                    </div>
+                                    <div class="preview-subject">
+                                        <div class="preview-subject-row"><span>Execução Penal</span><span>•••</span></div>
+                                        <div class="preview-progress" aria-hidden="true"><span></span></div>
+                                    </div>
+                                    <div class="preview-subject">
+                                        <div class="preview-subject-row"><span>Direito</span><span>•••</span></div>
+                                        <div class="preview-progress" aria-hidden="true"><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="preview-caption">Prévia ilustrativa da interface — seu progresso é pessoal.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section curriculum-section">
+                <div class="site-container">
+                    <header class="section-heading">
+                        <p class="section-kicker">Mapa da preparação</p>
+                        <h2 class="section-title">As frentes que compõem sua missão</h2>
+                        <p class="section-description">Uma visão integrada dos principais núcleos de conteúdo e da etapa discursiva contemplada na organização da plataforma.</p>
+                    </header>
+                    <div class="curriculum-grid">
+                        <article class="curriculum-card">
+                            <span>Bloco I · Conhecimentos gerais</span>
+                            <h3>Base para interpretar e raciocinar</h3>
+                            <ul>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Língua Portuguesa</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Raciocínio Lógico</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Informática, Legislação Estadual e Atualidades</li>
+                            </ul>
+                        </article>
+                        <article class="curriculum-card">
+                            <span>Bloco II · Execução penal</span>
+                            <h3>O núcleo da carreira</h3>
+                            <ul>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Execução Penal (LEP)</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Legislação Especial</li>
+                            </ul>
+                        </article>
+                        <article class="curriculum-card">
+                            <span>Bloco III · Núcleo jurídico</span>
+                            <h3>Conhecimento para a missão pública</h3>
+                            <ul>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Direito Constitucional, Administrativo, Penal e Processual Penal</li>
+                                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Direitos Humanos e Participação Social</li>
+                            </ul>
+                        </article>
+                    </div>
+                    <p class="curriculum-note">A organização é um apoio de estudo. Confira sempre o edital e suas eventuais atualizações nos canais oficiais.</p>
+                </div>
+            </section>
+
+            <section id="metodo" class="section">
+                <div class="site-container">
+                    <header class="section-heading">
+                        <p class="section-kicker">Ritmo operacional</p>
+                        <h2 class="section-title">Estude com direção. Evolua com constância.</h2>
+                        <p class="section-description">Uma rotina que transforma o objetivo de longo prazo em ações possíveis para o seu dia.</p>
+                    </header>
+                    <div class="method-grid">
+                        <article class="method-card">
+                            <h3>Defina seu ritmo</h3>
+                            <p>Escolha dias, horários e intensidade de estudo para organizar uma rotina que faça sentido para sua realidade.</p>
+                        </article>
+                        <article class="method-card">
+                            <h3>Cumpra a missão</h3>
+                            <p>Avance pelos conteúdos e tarefas, pratique com questões e acompanhe o que já foi concluído.</p>
+                        </article>
+                        <article class="method-card">
+                            <h3>Revise e reforce</h3>
+                            <p>Retome pontos difíceis no caderno de erros, pratique redação e volte aos temas que pedem mais atenção.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="site-container">
+                <div class="motivation-band">
+                    <p class="section-kicker">Disciplina • foco • missão</p>
+                    <h2 class="section-title">A aprovação é o objetivo. A constância é a missão de hoje.</h2>
+                    <p>Não existe atalho para o preparo consistente. Existe um plano, uma tarefa concluída e a decisão de continuar. Comece pela próxima missão.</p>
+                    <a class="hero-cta" href="#acesso" data-create-account>Entrar ou criar minha conta <span aria-hidden="true">→</span></a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="site-container site-footer-inner">
+                <p>Operação PPPE · preparação com foco, método e constância.</p>
+                <p>Confira o edital vigente nos canais oficiais: <a href="https://www.cebraspe.org.br/" target="_blank" rel="noopener noreferrer">Cebraspe</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module">
+        const form = document.getElementById("authForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const identityFields = document.getElementById("identityFields");
+        const confirmationField = document.getElementById("passwordConfirmField");
+        const confirmationInput = document.getElementById("passwordConfirm");
+        const submitButton = document.getElementById("submitButton");
+        const status = document.getElementById("authStatus");
+        const loginModeButton = document.getElementById("loginMode");
+        const registerModeButton = document.getElementById("registerMode");
+        const resetPasswordButton = document.getElementById("resetPasswordButton");
+        let mode = "login";
+        let authApi;
+        let pendingCreatedUser;
+        let registrationInProgress = false;
+        const getPostLoginPage = () => new URLSearchParams(window.location.search).get("next") === "admin"
+            ? "../admin.html"
+            : "index.html";
+
+        const setStatus = (message, state = "error") => {
+            status.textContent = message;
+            status.dataset.state = state;
+        };
+
+        const authErrorMessage = error => {
+            const messages = {
+                "auth/email-already-in-use": "Já existe uma conta com este email. Tente entrar.",
+                "auth/invalid-email": "Informe um endereço de email válido.",
+                "auth/invalid-credential": "Email ou senha incorretos.",
+                "auth/user-not-found": "Não encontramos uma conta com esse email.",
+                "auth/wrong-password": "Senha incorreta. Confira os dados e tente novamente.",
+                "auth/weak-password": "A senha precisa ter pelo menos 6 caracteres.",
+                "auth/too-many-requests": "Muitas tentativas. Aguarde um pouco e tente novamente.",
+                "auth/network-request-failed": "Falha de conexão. Verifique sua internet e tente novamente.",
+                "auth/operation-not-allowed": "O acesso por email e senha ainda não foi ativado no Firebase Authentication.",
+                "auth/unauthorized-domain": "Este domínio ainda não está autorizado no Firebase Authentication."
+            };
+            return messages[error.code] || "Não foi possível concluir o acesso. Verifique os dados e tente novamente.";
+        };
+
+        const setMode = nextMode => {
+            mode = nextMode;
+            const registering = mode === "register";
+            loginModeButton.setAttribute("aria-selected", String(!registering));
+            registerModeButton.setAttribute("aria-selected", String(registering));
+            confirmationField.hidden = !registering;
+            confirmationInput.required = registering;
+            identityFields.hidden = !registering;
+            identityFields.querySelectorAll("[data-register-required]").forEach(input => {
+                input.required = registering;
+            });
+            passwordInput.autocomplete = registering ? "new-password" : "current-password";
+            submitButton.textContent = registering ? "Criar conta" : "Entrar";
+            resetPasswordButton.hidden = registering;
+            document.getElementById("loginHeading").textContent = registering ? "Crie sua conta" : "Entre para continuar";
+            setStatus("");
+        };
+
+        loginModeButton.addEventListener("click", () => setMode("login"));
+        const cityInputEl = document.getElementById("registrationCity");
+        const cityListEl = document.getElementById("cityList");
+        let cities = null;
+        let citiesLoading = null;
+        const foldText = value => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const loadCities = () => citiesLoading ||= fetch("https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome")
+            .then(response => response.ok ? response.json() : Promise.reject(new Error("IBGE indisponível")))
+            .then(list => { cities = list.map(item => {
+                const uf = item.microrregiao?.mesorregiao?.UF?.sigla || item["regiao-imediata"]?.["regiao-intermediaria"]?.UF?.sigla || "";
+                return { label: `${item.nome}-${uf}`, key: foldText(item.nome) };
+            }); })
+            .catch(error => { console.error("Não foi possível carregar a lista de cidades.", error); citiesLoading = null; });
+        const hideCities = () => { cityListEl.hidden = true; cityInputEl.setAttribute("aria-expanded", "false"); };
+        const renderCities = () => {
+            const term = foldText(cityInputEl.value.trim());
+            if (!term || !cities) { hideCities(); return; }
+            const matches = cities.filter(city => city.key.startsWith(term)).slice(0, 8);
+            cityListEl.replaceChildren(...matches.map(city => {
+                const item = document.createElement("li");
+                item.role = "option";
+                item.textContent = city.label;
+                item.style.cssText = "padding:.55rem .85rem;cursor:pointer;font-size:.92rem";
+                item.addEventListener("mouseenter", () => { item.style.background = "#edf7f0"; });
+                item.addEventListener("mouseleave", () => { item.style.background = ""; });
+                item.addEventListener("mousedown", event => {
+                    event.preventDefault();
+                    cityInputEl.value = city.label;
+                    cityInputEl.setCustomValidity("");
+                    hideCities();
+                });
+                return item;
+            }));
+            cityListEl.hidden = !matches.length;
+            cityInputEl.setAttribute("aria-expanded", String(matches.length > 0));
+        };
+        cityInputEl.addEventListener("focus", () => { void loadCities().then(renderCities); });
+        cityInputEl.addEventListener("input", async () => { await loadCities(); renderCities(); });
+        cityInputEl.addEventListener("blur", hideCities);
+        cityInputEl.addEventListener("keydown", event => { if (event.key === "Escape") hideCities(); });
+        registerModeButton.addEventListener("click", () => setMode("register"));
+        setMode("login");
+        document.querySelectorAll("[data-create-account]").forEach(button => {
+            button.addEventListener("click", () => {
+                setMode("register");
+                document.getElementById("acesso").scrollIntoView({ behavior: "smooth", block: "center" });
+            });
+        });
+
+        try {
+            const [{ auth, db }, { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword }, firestore] = await Promise.all([
+                import("../firebase-config.js"),
+                import("https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js"),
+                import("https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js")
+            ]);
+
+            authApi = {
+                auth,
+                db,
+                createUserWithEmailAndPassword,
+                doc: firestore.doc,
+                onAuthStateChanged,
+                sendPasswordResetEmail,
+                serverTimestamp: firestore.serverTimestamp,
+                setDoc: firestore.setDoc,
+                signInWithEmailAndPassword
+            };
+            onAuthStateChanged(auth, user => {
+                if (user && !registrationInProgress && !pendingCreatedUser) {
+                    window.location.replace(new URL(getPostLoginPage(), window.location.href));
+                }
+            }, error => {
+                console.error("Não foi possível verificar a sessão no Firebase Authentication.", error);
+                setStatus(authErrorMessage(error));
+            });
+        } catch (error) {
+            console.error("Não foi possível carregar o Firebase Authentication.", error);
+            setStatus("Não foi possível carregar o serviço de autenticação. Verifique sua conexão e recarregue a página.");
+        }
+
+        ["registrationFullName", "registrationBirthDate", "registrationWhatsapp", "registrationCity"].forEach(id => {
+            const field = document.getElementById(id);
+            field.addEventListener("input", () => field.setCustomValidity(""));
+            field.addEventListener("change", () => field.setCustomValidity(""));
+        });
+
+        form.addEventListener("submit", async event => {
+            event.preventDefault();
+            setStatus("");
+            if (!authApi) {
+                setStatus("O serviço de autenticação não está disponível. Recarregue a página e tente novamente.");
+                return;
+            }
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            if (mode === "register" && password !== confirmationInput.value) {
+                setStatus("As senhas não coincidem.");
+                confirmationInput.focus();
+                return;
+            }
+            if (mode === "register") {
+                const birthInput = document.getElementById("registrationBirthDate");
+                const whatsappInput = document.getElementById("registrationWhatsapp");
+                const birth = new Date(`${birthInput.value}T00:00:00`);
+                const now = new Date();
+                const fullNameInput = document.getElementById("registrationFullName");
+                fullNameInput.setCustomValidity(fullNameInput.value.trim().split(/\s+/).filter(Boolean).length >= 2 ? "" : "Informe seu nome completo.");
+                birthInput.setCustomValidity(birthInput.value && birth <= now && birth.getFullYear() >= 1920 ? "" : "Informe uma data de nascimento válida.");
+                const digits = whatsappInput.value.replace(/\D/g, "");
+                whatsappInput.setCustomValidity(digits.length >= 10 && digits.length <= 13 ? "" : "Informe um WhatsApp válido com DDD.");
+                cityInputEl.setCustomValidity(cityInputEl.value.trim().length < 2
+                    ? "Informe sua cidade atual."
+                    : cities && !cities.some(city => foldText(city.label) === foldText(cityInputEl.value.trim()))
+                        ? "Escolha sua cidade na lista (ex.: Araripina-PE)."
+                        : "");
+                if (!form.reportValidity()) return;
+            }
+            const identity = mode === "register" ? {
+                displayName: document.getElementById("registrationFullName").value.trim().replace(/\s+/g, " "),
+                birthDate: document.getElementById("registrationBirthDate").value,
+                whatsapp: document.getElementById("registrationWhatsapp").value.replace(/\D/g, ""),
+                currentCity: document.getElementById("registrationCity").value.trim(),
+                consent: document.getElementById("identityConsent").checked
+            } : null;
+            if (mode === "register" && !identity.consent) {
+                setStatus("Confirme o uso dos dados para concluir o cadastro.");
+                document.getElementById("identityConsent").focus();
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = mode === "register" ? "Criando conta..." : "Entrando...";
+            try {
+                if (mode === "register") {
+                    registrationInProgress = true;
+                    pendingCreatedUser ||= (await authApi.createUserWithEmailAndPassword(authApi.auth, email, password)).user;
+                    const profile = {
+                        displayName: identity.displayName,
+                        email: pendingCreatedUser.email || email,
+                        birthDate: identity.birthDate,
+                        whatsapp: identity.whatsapp,
+                        currentCity: identity.currentCity,
+                        updatedAt: authApi.serverTimestamp()
+                    };
+                    await authApi.setDoc(authApi.doc(authApi.db, "users", pendingCreatedUser.uid), profile, { merge: true });
+                    pendingCreatedUser = undefined;
+                } else {
+                    await authApi.signInWithEmailAndPassword(authApi.auth, email, password);
+                }
+                setStatus("Acesso confirmado. Abrindo sua área de estudos...", "success");
+                window.location.replace(new URL(getPostLoginPage(), window.location.href));
+            } catch (error) {
+                console.error("Falha ao autenticar usuário pelo Firebase.", error);
+                setStatus(mode === "register" && pendingCreatedUser
+                    ? "A conta foi criada, mas não foi possível salvar os dados. Tente novamente; se o erro persistir, confirme se as regras atualizadas do Firestore foram publicadas."
+                    : authErrorMessage(error));
+            } finally {
+                registrationInProgress = false;
+                submitButton.disabled = false;
+                submitButton.textContent = mode === "register"
+                    ? pendingCreatedUser ? "Tentar salvar cadastro" : "Criar conta"
+                    : "Entrar";
+            }
+        });
+
+        let resetCooldownTimer;
+        const startResetCooldown = seconds => {
+            let remaining = seconds;
+            clearInterval(resetCooldownTimer);
+            resetPasswordButton.disabled = true;
+            const tick = () => {
+                if (remaining <= 0) {
+                    clearInterval(resetCooldownTimer);
+                    resetPasswordButton.disabled = false;
+                    resetPasswordButton.textContent = "Esqueci minha senha";
+                    return;
+                }
+                resetPasswordButton.textContent = `Reenviar e-mail em ${remaining}s`;
+                remaining -= 1;
+            };
+            tick();
+            resetCooldownTimer = setInterval(tick, 1000);
+        };
+
+        resetPasswordButton.addEventListener("click", async () => {
+            setStatus("");
+            if (!authApi) {
+                setStatus("O serviço de autenticação não está disponível. Recarregue a página e tente novamente.");
+                return;
+            }
+            if (!emailInput.reportValidity()) return;
+
+            resetPasswordButton.disabled = true;
+            const email = emailInput.value.trim();
+            try {
+                authApi.auth.languageCode = "pt-BR";
+                const canRedirect = ["http:", "https:"].includes(window.location.protocol);
+                const settings = canRedirect ? { url: new URL("login.html", window.location.href).href, handleCodeInApp: false } : undefined;
+                try {
+                    await authApi.sendPasswordResetEmail(authApi.auth, email, settings);
+                } catch (error) {
+                    // Domínio ainda não autorizado no Firebase: envia o e-mail padrão sem o link de retorno.
+                    if (settings && ["auth/unauthorized-continue-uri", "auth/invalid-continue-uri"].includes(error?.code)) {
+                        await authApi.sendPasswordResetEmail(authApi.auth, email);
+                    } else {
+                        throw error;
+                    }
+                }
+                setStatus("Se houver uma conta com este e-mail, enviamos as instruções para redefinir a senha. Confira também a caixa de spam e o lixo eletrônico.", "success");
+                startResetCooldown(60);
+            } catch (error) {
+                console.error("Falha ao solicitar redefinição de senha pelo Firebase.", error);
+                setStatus(authErrorMessage(error));
+                resetPasswordButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -125,9 +125,31 @@ service cloud.firestore {
         && profile.updatedAt == request.time;
     }
 
-    function hasAccess() {
+    function hasAccessPmpe() {
       return exists(/databases/$(database)/documents/access/$(request.auth.uid))
         && get(/databases/$(database)/documents/access/$(request.auth.uid)).data.active == true;
+    }
+
+    // Suporte e feedback ficam disponíveis a quem tem acesso a qualquer concurso.
+    function hasAccess() {
+      return hasAccessPmpe() || hasAccessPppe();
+    }
+
+    function hasAccessPppe() {
+      return exists(/databases/$(database)/documents/accessPppe/$(request.auth.uid))
+        && get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.active == true;
+    }
+
+    function isValidSyncDocPppe(syncId) {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['key', 'value', 'deleted', 't'])
+        && data.keys().hasAll(['key', 'deleted', 't'])
+        && data.key is string
+        && data.key == syncId
+        && data.key.matches('^pppe[A-Za-z0-9_]{0,100}$')
+        && data.deleted is bool
+        && data.t is number
+        && (!data.keys().hasAny(['value']) || data.value == null || (data.value is string && data.value.size() <= 900000));
     }
 
     function isValidSyncDoc(syncId) {
@@ -190,6 +212,12 @@ service cloud.firestore {
         allow create, update: if isOwner(userId) && isValidSyncDoc(syncId);
         allow delete: if isOwner(userId);
       }
+
+      match /syncPppe/{syncId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidSyncDocPppe(syncId);
+        allow delete: if isOwner(userId);
+      }
     }
 
     match /tickets/{ticketId} {
@@ -221,6 +249,24 @@ service cloud.firestore {
         && !exists(/databases/$(database)/documents/accessRequests/$(userId))
         && hasValidAccessRequest();
       allow update: if (isOwner(userId) && (isValidResubmission() || isValidPromoApplication()))
+        || (isAdmin() && isValidAdminReview());
+      allow delete: if false;
+    }
+
+    match /accessPppe/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /accessRequestsPppe/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId)
+        && !exists(/databases/$(database)/documents/accessRequestsPppe/$(userId))
+        && hasValidAccessRequest();
+      allow update: if (isOwner(userId) && isValidResubmission())
         || (isAdmin() && isValidAdminReview());
       allow delete: if false;
     }

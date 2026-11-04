@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#105737">
+    <script>
+        if (new URLSearchParams(location.search).get("concurso") === "pppe") {
+            location.replace("pppe/login.html" + location.search.replace(/([?&])concurso=pppe&?/, "$1").replace(/[?&]$/, ""));
+        }
+    </script>
     <meta name="description" content="Prepare-se para a PMPE com missões diárias, conteúdo por disciplina, simulados, oficina de redação e revisão estratégica.">
     <title>Operação PMPE | Sua preparação com estratégia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">

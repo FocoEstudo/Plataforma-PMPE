@@ -1,4 +1,9 @@
 const ADMIN_EMAIL = "ianitalocorp@gmail.com";
+const CONCURSOS = {
+    pmpe: { label: "PMPE", requests: "accessRequests", access: "access", price: 99.9 },
+    pppe: { label: "PPPE", requests: "accessRequestsPppe", access: "accessPppe", price: 99.9 }
+};
+const formatPrice = value => `R$ ${value.toFixed(2).replace(".", ",")}`;
 const adminStatus = document.getElementById("adminStatus");
 const loginLink = document.getElementById("loginLink");
 const switchAccountButton = document.getElementById("switchAccountButton");
@@ -76,8 +81,9 @@ const buildWhatsappLink = (profile, withMessage = false, requestData = null) => 
     const number = digits.length <= 11 ? `55${digits}` : digits;
     if (!withMessage) return `https://wa.me/${number}`;
     const firstName = String(profile.displayName || "").trim().split(/\s+/)[0] || "";
-    const price = requestData?.promoCode ? "R$ 74,90" : "R$ 99,90";
-    const text = `Olá${firstName ? `, ${firstName}` : ""}! Aqui é da Operação PMPE. Recebemos seu cadastro. Para liberar seu acesso à plataforma, realize o pagamento de ${price} via Pix e nos envie o comprovante por aqui. Qualquer dúvida, estou à disposição!`;
+    const config = CONCURSOS[requestData?.concurso] || CONCURSOS.pmpe;
+    const price = requestData?.promoCode ? "R$ 74,90" : formatPrice(config.price);
+    const text = `Olá${firstName ? `, ${firstName}` : ""}! Aqui é da Operação ${config.label}. Recebemos seu cadastro. Para liberar seu acesso à plataforma, realize o pagamento de ${price} via Pix e nos envie o comprovante por aqui. Qualquer dúvida, estou à disposição!`;
     return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 };
 
@@ -85,6 +91,9 @@ const buildRequestCard = (requestSnapshot, profile, profileError) => {
     const requestData = requestSnapshot.data();
     const card = document.createElement("article");
     card.className = "request-card";
+    const concursoBadge = document.createElement("p");
+    concursoBadge.className = "identity-heading";
+    concursoBadge.textContent = `Concurso: ${CONCURSOS[requestSnapshot.concurso].label}`;
     const email = document.createElement("p");
     email.innerHTML = "<strong>Conta:</strong> ";
     email.append(document.createTextNode(requestData.email || "Email não informado"));
@@ -143,18 +152,18 @@ const buildRequestCard = (requestSnapshot, profile, profileError) => {
     approveButton.type = "button";
     approveButton.className = "primary";
     approveButton.textContent = "Pix confirmado — aprovar acesso";
-    approveButton.addEventListener("click", () => reviewRequest(requestSnapshot.id, "approved", card));
+    approveButton.addEventListener("click", () => reviewRequest(requestSnapshot.id, "approved", card, requestSnapshot.concurso));
 
     const rejectButton = document.createElement("button");
     rejectButton.type = "button";
     rejectButton.className = "danger";
     rejectButton.textContent = "Recusar solicitação";
-    rejectButton.addEventListener("click", () => reviewRequest(requestSnapshot.id, "rejected", card));
+    rejectButton.addEventListener("click", () => reviewRequest(requestSnapshot.id, "rejected", card, requestSnapshot.concurso));
 
     actions.append(approveButton, rejectButton);
     if (profile?.whatsapp) {
         const contactLink = document.createElement("a");
-        contactLink.href = buildWhatsappLink(profile, true, requestData);
+        contactLink.href = buildWhatsappLink(profile, true, { ...requestData, concurso: requestSnapshot.concurso });
         contactLink.target = "_blank";
         contactLink.rel = "noopener noreferrer";
         contactLink.textContent = "Chamar no WhatsApp para cobrar o Pix";
@@ -165,18 +174,23 @@ const buildRequestCard = (requestSnapshot, profile, profileError) => {
     promo.className = "identity-heading";
     promo.textContent = requestData.promoCode
         ? `🏷️ CÓDIGO PROMOCIONAL USADO: ${requestData.promoCode} — conferir recebimento de R$ 74,90`
-        : "Sem código promocional — conferir recebimento de R$ 99,90";
-    card.append(email, promo, identityHeading, identityDetails, identityNote, requestedAt, status, actions);
+        : `Sem código promocional — conferir recebimento de ${formatPrice(CONCURSOS[requestSnapshot.concurso].price)}`;
+    card.append(concursoBadge, email, promo, identityHeading, identityDetails, identityNote, requestedAt, status, actions);
     return card;
 };
 
 const startRequestsListener = () => {
     if (activeRequestsListener) return;
     requestsPanel.hidden = false;
-    const pendingRequests = query(collection(db, "accessRequests"), where("status", "==", "pending"));
-    activeRequestsListener = onSnapshot(pendingRequests, snapshot => {
+    const pendingByConcurso = {};
+    const renderPending = () => {
         const renderVersion = ++requestRenderVersion;
-        if (snapshot.empty) {
+        const requests = Object.values(pendingByConcurso).flat().sort((left, right) => {
+            const leftTime = left.data().requestedAt?.toMillis?.() || 0;
+            const rightTime = right.data().requestedAt?.toMillis?.() || 0;
+            return rightTime - leftTime;
+        });
+        if (!requests.length) {
             requestList.replaceChildren();
             const emptyMessage = document.createElement("p");
             emptyMessage.className = "muted";
@@ -184,11 +198,6 @@ const startRequestsListener = () => {
             requestList.append(emptyMessage);
             return;
         }
-        const requests = snapshot.docs.sort((left, right) => {
-            const leftTime = left.data().requestedAt?.toMillis?.() || 0;
-            const rightTime = right.data().requestedAt?.toMillis?.() || 0;
-            return rightTime - leftTime;
-        });
         void Promise.all(requests.map(async requestSnapshot => {
             try {
                 const profileSnapshot = await getDoc(doc(db, "users", requestSnapshot.id));
@@ -205,20 +214,33 @@ const startRequestsListener = () => {
             if (renderVersion !== requestRenderVersion) return;
             requestList.replaceChildren(...cards);
         });
-    }, error => {
-        console.error("Não foi possível carregar as solicitações de acesso.", error);
-        setStatus("Falha ao carregar a lista. Confira as regras do Firestore e tente novamente.", true);
+    };
+    const unsubscribers = Object.keys(CONCURSOS).map(concurso => {
+        const pendingRequests = query(collection(db, CONCURSOS[concurso].requests), where("status", "==", "pending"));
+        return onSnapshot(pendingRequests, snapshot => {
+            pendingByConcurso[concurso] = snapshot.docs.map(item => ({
+                id: item.id,
+                concurso,
+                data: () => item.data()
+            }));
+            renderPending();
+        }, error => {
+            console.error(`Não foi possível carregar as solicitações de acesso (${concurso}).`, error);
+            setStatus("Falha ao carregar a lista. Confira as regras do Firestore e tente novamente.", true);
+        });
     });
+    activeRequestsListener = () => unsubscribers.forEach(unsubscribe => unsubscribe());
 };
 
-const reviewRequest = async (uid, decision, card) => {
+const reviewRequest = async (uid, decision, card, concurso) => {
+    const config = CONCURSOS[concurso];
     const buttons = card.querySelectorAll("button");
     buttons.forEach(button => { button.disabled = true; });
     const status = card.querySelector('[role="status"]');
     status.textContent = decision === "approved" ? "Liberando acesso..." : "Registrando recusa...";
 
     try {
-        const requestReference = doc(db, "accessRequests", uid);
+        const requestReference = doc(db, config.requests, uid);
         const requestSnapshot = await getDoc(requestReference);
         if (!requestSnapshot.exists() || requestSnapshot.data().status !== "pending") {
             throw new Error("Esta solicitação não está mais pendente. Atualize a página.");
@@ -227,10 +249,10 @@ const reviewRequest = async (uid, decision, card) => {
         const batch = writeBatch(db);
         batch.update(requestReference, { status: decision, reviewedAt: serverTimestamp() });
         if (decision === "approved") {
-            batch.set(doc(db, "access", uid), {
+            batch.set(doc(db, config.access, uid), {
                 active: true,
                 provider: "pix_manual",
-                amount: requestSnapshot.data().promoCode ? 74.9 : 99.9,
+                amount: requestSnapshot.data().promoCode ? 74.9 : config.price,
                 currency: "BRL",
                 paidAt: serverTimestamp()
             }, { merge: true });

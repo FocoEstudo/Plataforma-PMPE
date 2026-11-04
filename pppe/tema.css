@@ -1,0 +1,112 @@
+/* Tema PPPE: cores do brasão (azul-marinho, azul, amarelo-ouro e vermelho) e foto de fundo. */
+:root {
+    --pp-navy: #0a1448;
+    --pp-blue: #14289a;
+    --pp-sky: #3f8fd6;
+    --pp-gold: #f5c400;
+    --pp-gold-soft: #ffe27a;
+    --pp-red: #d9381e;
+    --pp-ink: #131a3a;
+    --pp-muted: #5a6280;
+    --pp-line: #d5daec;
+    --pp-tint: #eef1fb;
+    --pp-bg: #f1f3fa;
+    --pp-photo: url("../assets/fundo-pppe.jpg");
+    --pm-navy: var(--pp-navy);
+    --pm-blue: var(--pp-blue);
+    --pm-gold: var(--pp-gold);
+    --pm-red: var(--pp-red);
+    color: var(--pp-ink);
+    background: var(--pp-bg);
+}
+
+/* ---------- login.html ---------- */
+body { background: radial-gradient(ellipse at top left, rgba(63, 143, 214, .28), transparent 42rem), var(--pp-bg); color: var(--pp-ink); }
+.login-brand { background: linear-gradient(145deg, rgba(10, 20, 72, .82), rgba(20, 40, 154, .66)), var(--pp-photo) center / cover, var(--pp-navy); }
+.hero { background: linear-gradient(90deg, rgba(6, 12, 46, .95) 0%, rgba(10, 20, 72, .84) 48%, rgba(20, 40, 154, .42) 100%), var(--pp-photo) center 40% / cover, var(--pp-navy); }
+.motivation-band { background: linear-gradient(100deg, rgba(6, 12, 46, .93), rgba(20, 40, 154, .8)), var(--pp-photo) center 45% / cover, var(--pp-navy); }
+.curriculum-card { background: var(--pp-navy); }
+.preview-window { background: var(--pp-navy); }
+.skip-link { background: var(--pp-navy); }
+
+.brand-kicker, .brand-kicker::before, .brand-mission-mark, .brand-footnote, .site-brand small { color: var(--pp-gold-soft); }
+.brand-kicker::before { background: var(--pp-gold-soft); }
+.hero-kicker, .section-kicker, .hero-title span, .hero-points i, .hero-note i, .curriculum-card li i, .motivation-band .section-kicker { color: var(--pp-gold); }
+.section-kicker { color: var(--pp-red); }
+.motivation-band .section-kicker { color: var(--pp-gold); }
+.hero-cta { background: var(--pp-gold); color: var(--pp-navy); }
+.hero-cta:hover { background: var(--pp-gold-soft); }
+
+.eyebrow, .login-motivation-mark, .secondary-action, .status[data-state="success"], .auth-card-foot i, .preview-list i, .preview-task i, .identity-consent a, .site-footer a, .field-report-link { color: var(--pp-blue); }
+.login-motivation { background: var(--pp-tint); border-left-color: var(--pp-blue); }
+.login-assurance span::before { background: var(--pp-blue); }
+.mode-switch button[aria-selected="true"] { color: var(--pp-navy); }
+.field input { color: var(--pp-ink); }
+.field input:focus-visible { border-color: var(--pp-blue); outline-color: rgba(20, 40, 154, .22); }
+.submit-button, .auth-card-icon, .method-card::before, .feature-icon { background: var(--pp-navy); }
+.submit-button:hover { background: var(--pp-blue); }
+.auth-card-icon, .feature-icon { color: var(--pp-gold); }
+.secondary-action:hover { background: var(--pp-tint); }
+.auth-card { color: var(--pp-ink); border-top-color: var(--pp-gold); }
+.auth-card-top h2, .identity-fields-heading, .feature-card h3, .preview-panel h3, .method-card h3 { color: var(--pp-navy); }
+.identity-fields { background: var(--pp-bg); }
+.identity-consent input { accent-color: var(--pp-blue); }
+.auth-card-foot, .proof-item + .proof-item, .proof-item:nth-child(3), .proof-item:nth-child(4) { border-color: var(--pp-line); }
+.proof-strip { color: var(--pp-ink); border-color: var(--pp-line); }
+.proof-value { color: var(--pp-blue); }
+.field-report { background: var(--pp-bg); }
+.feature-card, .method-card { border-color: var(--pp-line); }
+.feature-card { border-top-color: var(--pp-gold); }
+.feature-card::after { color: var(--pp-tint); }
+.preview-panel { color: var(--pp-ink); }
+.preview-chip { color: var(--pp-blue); background: var(--pp-tint); }
+.site-header::after, .motivation-band::before { background: linear-gradient(90deg, var(--pp-blue) 0 33%, var(--pp-gold) 33% 66%, var(--pp-red) 66% 100%); }
+.site-brand img { height: 2.6rem; width: auto; object-fit: contain; }
+
+/* ---------- index.html (acesso, perfil e painel) ---------- */
+#sessionGate { color: var(--pp-ink); background: var(--pp-bg); }
+.payment-gate-card { color: var(--pp-ink); }
+.payment-gate-intro { background: linear-gradient(120deg, var(--pp-navy), var(--pp-blue)); }
+.payment-gate-lead, .payment-gate-offer-note { color: #dfe5ff !important; }
+.payment-gate-kicker { color: var(--pp-gold) !important; }
+.payment-gate-offer-price { color: var(--pp-gold-soft); }
+.payment-gate-column:first-of-type { background: linear-gradient(180deg, #fafbff, #fff); border-bottom-color: var(--pp-line); }
+.payment-gate-price, .payment-gate-step-number { color: var(--pp-navy); }
+.payment-gate-benefits i, .payment-gate-secure-note i, .payment-gate-status-icon, .profile-time-field i { color: var(--pp-blue); }
+.payment-gate-secure-note, .profile-section-hint { color: var(--pp-muted); }
+.payment-gate-copy { color: var(--pp-ink); background: var(--pp-bg); border-color: var(--pp-line); }
+.payment-gate-status { border-color: var(--pp-line); }
+.payment-gate-status-icon { background: var(--pp-tint); }
+.payment-gate-footer { border-top-color: var(--pp-line); }
+
+.profile-field input, .profile-mode-select, .profile-time-field input { color: var(--pp-ink); border-color: var(--pp-line); }
+.profile-field input:focus-visible { border-color: var(--pp-blue); outline-color: rgba(20, 40, 154, .22); }
+.session-gate-card:has(#profileForm:not([hidden])) { border-color: var(--pp-line); }
+.profile-form-header { background: linear-gradient(90deg, rgba(6, 12, 46, .96), rgba(20, 40, 154, .9)), var(--pp-photo) center 42% / cover, var(--pp-navy); }
+.profile-form-kicker { color: var(--pp-gold); }
+.profile-form-header > p:last-child { color: #dfe5ff; }
+.profile-section { background: #fafbff; border-color: var(--pp-line); }
+.profile-section legend { color: var(--pp-blue); }
+.profile-day-option { color: var(--pp-muted); border-color: var(--pp-line); }
+.profile-day-option:hover { border-color: var(--pp-sky); }
+.profile-day-option:has(input:checked) { background: var(--pp-blue); border-color: var(--pp-blue); box-shadow: 0 4px 12px rgba(20, 40, 154, .2); }
+.profile-day-option:has(input:checked) input { accent-color: var(--pp-gold); }
+.profile-day-option:focus-within { outline-color: rgba(20, 40, 154, .28); }
+.profile-time-field { color: var(--pp-muted); }
+.profile-time-arrow { color: #99a0c0; }
+.payment-gate-copy span.text-emerald-800, #sessionGate .text-emerald-800, #sessionGate .text-emerald-700 { color: var(--pp-blue) !important; }
+#sessionGate .bg-emerald-800 { background: var(--pp-navy) !important; }
+#sessionGate .bg-emerald-800:hover { background: var(--pp-blue) !important; }
+#sessionGate .border-emerald-200 { border-color: var(--pp-line) !important; }
+#sessionGate .hover\:bg-emerald-50:hover { background: var(--pp-tint) !important; }
+
+body.ppe-page { background: linear-gradient(rgba(241, 243, 250, .94), rgba(241, 243, 250, .94)), var(--pp-photo) center / cover fixed; color: var(--pp-ink); }
+.ppe-top { border-color: var(--pp-line); border-top: .3rem solid var(--pp-gold); }
+.ppe-card { border-color: var(--pp-line); border-top-color: var(--pp-gold); }
+.ppe-card ul, .ppe-top .text-xs, .ppe-block p { color: var(--pp-muted); }
+.ppe-block h2, .ppe-card h3, .ppe-brand { color: var(--pp-navy); }
+.ppe-btn { color: var(--pp-navy); border-color: var(--pp-line); }
+.ppe-btn:hover { background: var(--pp-tint); }
+.ppe-hero { margin-top: 1.25rem; padding: 2rem 1.5rem; border-radius: 1.1rem; color: #fff; background: linear-gradient(100deg, rgba(6, 12, 46, .94), rgba(20, 40, 154, .66)), var(--pp-photo) center 42% / cover, var(--pp-navy); }
+.ppe-hero h2 { color: #fff; margin: 0; font-family: Oswald, sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); }
+.ppe-hero p { margin: .5rem 0 0; color: #dfe5ff; max-width: 38rem; }

@@ -416,7 +416,7 @@ try {
 
     onAuthStateChanged(auth, async user => {
         if (!user) {
-            window.location.replace(new URL("login.html", window.location.href));
+            window.location.replace(new URL("concursos.html", window.location.href));
             return;
         }
         currentUser = user;
@@ -489,7 +489,7 @@ try {
         try {
             await window.PMPE_SYNC?.stopAndClear();
             await signOut(auth);
-            window.location.replace(new URL("login.html", window.location.href));
+            window.location.replace(new URL("concursos.html", window.location.href));
         } catch (error) {
             console.error("Não foi possível encerrar a sessão Firebase.", error);
             status.textContent = "Não foi possível sair. Verifique sua conexão e tente novamente.";

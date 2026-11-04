@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b2447">
+    <meta name="description" content="Escolha o concurso para o qual você quer se preparar e acesse a plataforma de estudos.">
+    <title>Escolha seu concurso | Plataforma de Estudos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { color-scheme: light; font-family: Inter, Arial, sans-serif; color: #14203f; background: #f2f5fb; }
+        * { box-sizing: border-box; }
+        body {
+            display: grid;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.25rem;
+            place-items: center;
+            background: radial-gradient(ellipse at top left, rgba(138, 170, 226, .4), transparent 42rem), #f2f5fb;
+        }
+        main { width: min(100%, 56rem); }
+        header { margin-bottom: 1.75rem; text-align: center; }
+        .kicker { margin: 0 0 .5rem; color: #19376d; font-size: .8rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 0; font-family: Oswald, Inter, sans-serif; font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.1; }
+        header p { margin: .75rem auto 0; max-width: 34rem; color: #55607f; line-height: 1.55; }
+        .grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.75rem 1.5rem;
+            border: 2px solid transparent;
+            border-radius: 1.1rem;
+            background: #fff;
+            box-shadow: 0 14px 38px rgba(16, 87, 55, .12);
+            color: inherit;
+            text-align: center;
+            text-decoration: none;
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+        .card:hover, .card:focus-visible { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 18px 44px rgba(25, 55, 109, .2); outline: none; }
+        .crest { display: grid; width: 6.5rem; height: 6.5rem; margin-bottom: 1rem; place-items: center; }
+        .crest img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .crest i { color: var(--accent); font-size: 3.5rem; }
+        .card h2 { margin: 0; font-family: Oswald, Inter, sans-serif; font-size: 1.5rem; }
+        .card .full { margin: .35rem 0 0; color: #55607f; font-size: .92rem; line-height: 1.45; }
+        .cta { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.25rem; padding: .7rem 1.2rem; border-radius: .7rem; background: var(--accent); color: #fff; font-weight: 800; font-size: .92rem; }
+        footer { margin-top: 1.75rem; color: #6e7896; font-size: .82rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <p class="kicker">Plataforma de Estudos</p>
+            <h1>Para qual concurso você quer se preparar?</h1>
+            <p>Cada concurso tem sua própria plataforma, com conteúdo e plano específicos. Escolha o seu para continuar.</p>
+        </header>
+
+        <section class="grid" aria-label="Concursos disponíveis">
+            <a class="card" href="login.html?concurso=pmpe" data-concurso="pmpe" style="--accent:#19376d">
+                <span class="crest"><img src="assets/brasao-pmpe.png" alt="Brasão da Polícia Militar de Pernambuco"></span>
+                <h2>PMPE</h2>
+                <p class="full">Polícia Militar de Pernambuco</p>
+                <span class="cta">Acessar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+
+            <a class="card" href="pppe/login.html?concurso=pppe" data-concurso="pppe" style="--accent:#0a1448">
+                <span class="crest">
+                    <img src="https://www.monsterconcursos.com.br/brasao-policia-penal-pe.png" alt="Brasão da Polícia Penal de Pernambuco" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fa-solid fa-shield-halved'}))">
+                </span>
+                <h2>PPPE</h2>
+                <p class="full">Polícia Penal de Pernambuco</p>
+                <span class="cta">Acessar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+        </section>
+
+        <footer>Novos concursos serão adicionados em breve.</footer>
+    </main>
+
+    <script>
+        document.querySelectorAll("[data-concurso]").forEach(card => {
+            card.addEventListener("click", () => {
+                try { localStorage.setItem("concurso_selecionado", card.dataset.concurso); } catch (e) {}
+            });
+        });
+    </script>
+</body>
+</html>
