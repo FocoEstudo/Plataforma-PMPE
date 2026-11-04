@@ -8,7 +8,7 @@
     window.__gabariLoaded = true;
 
     const cfg = Object.assign({
-        concurso: 'concurso',
+        concurso: '',
         accent: '#0a1448',
         gold: '#e0b43c',
         storageKey: 'gabari_hidden',
@@ -65,7 +65,13 @@
 #gabari-bubble,#gabari-panel{max-width:min(20rem,calc(100vw - 2rem));background:#fff;color:#14213d;border-radius:1rem;border:2px solid ${cfg.accent};box-shadow:0 14px 36px rgba(0,0,0,.28)}
 #gabari-bubble{padding:.7rem .9rem;font-size:.85rem;line-height:1.4;position:relative}
 #gabari-bubble[hidden],#gabari-panel[hidden]{display:none}
-#gabari-panel{width:20rem;overflow:hidden}
+#gabari-panel{width:20rem;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100vh - 7rem)}
+#gabari-panel[hidden]{display:none}
+.gabari-body{overflow-y:auto}
+.gabari-guide{margin:0 0 .8rem;padding:.6rem .7rem;border-radius:.6rem;background:#f3f5fb;font-size:.82rem;line-height:1.45}
+.gabari-guide strong{display:block;margin-bottom:.3rem;color:${cfg.accent}}
+.gabari-guide ol{margin:0;padding-left:1.1rem}
+.gabari-guide li{margin:.2rem 0}
 .gabari-head{display:flex;align-items:center;gap:.7rem;padding:.8rem 1rem;background:${cfg.accent};color:#fff}
 .gabari-head svg{width:2.8rem;height:2.8rem;flex:none;border-radius:50%}
 .gabari-head strong{display:block;font-size:1rem}
@@ -87,12 +93,199 @@
     function greeting() {
         const h = new Date().getHours();
         const part = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
-        return `${part}! Eu sou o Gabari, seu parceiro de estudos rumo ao ${cfg.concurso}. Como posso ajudar?`;
+        return `${part}! Eu sou o Gabari, seu parceiro de estudos${cfg.concurso ? ' rumo ao ' + cfg.concurso : ' rumo à aprovação'}. Como posso ajudar?`;
     }
 
     const pickTip = () => cfg.tips[Math.floor(Math.random() * cfg.tips.length)];
 
+    const A = {
+        missions: { label: 'Ver minhas missões', tab: 'missions', icon: 'fa-bullseye' },
+        simulations: { label: 'Fazer um simulado', tab: 'simulations', icon: 'fa-clipboard-check' },
+        errors: { label: 'Abrir caderno de erros', tab: 'errors', icon: 'fa-book-bookmark' },
+        writing: { label: 'Treinar redação', tab: 'writing', icon: 'fa-pen-nib' },
+        supportdesk: { label: 'Falar com o atendimento', tab: 'supportdesk', icon: 'fa-headset' },
+        content: { label: 'Ver o conteúdo programático', tab: 'content', icon: 'fa-list-check' },
+        home: { label: 'Voltar ao painel', tab: 'home', icon: 'fa-house' }
+    };
+
+    const GUIDES = {
+        select: {
+            title: 'Escolha do concurso',
+            steps: [
+                'Cada concurso tem plataforma, conteúdo e acesso próprios.',
+                'Clique no cartão do concurso para o qual você vai estudar.',
+                'Você será levado à tela de login daquele concurso.',
+                'Quer outro concurso depois? É só voltar a esta tela.'
+            ]
+        },
+        login: {
+            title: 'Entrar na plataforma',
+            steps: [
+                'Já tem conta? Use "Entrar", com e-mail e senha.',
+                'Primeiro acesso? Toque em "Criar conta" e preencha os dados.',
+                'Esqueceu a senha? Use "Esqueci minha senha" e confira seu e-mail.',
+                'Depois de entrar, o acesso é liberado após a confirmação do pagamento.'
+            ]
+        },
+        gate: {
+            title: 'Liberação do acesso',
+            steps: [
+                'Esta tela aparece enquanto o seu acesso não está liberado.',
+                'Faça o pagamento pelas instruções da tela e envie a solicitação.',
+                'Após a confirmação, a plataforma abre sozinha ao recarregar a página.',
+                'Dúvidas? Use o botão de WhatsApp na própria tela.'
+            ]
+        },
+        admin: {
+            title: 'Área administrativa',
+            steps: [
+                'Aqui você vê as solicitações de acesso de cada concurso.',
+                'Confira o pagamento antes de aprovar uma solicitação.',
+                'Use o filtro para alternar entre os concursos.',
+                'Tickets e feedbacks dos alunos aparecem na caixa de entrada.'
+            ]
+        },
+        home: {
+            title: 'Painel inicial',
+            steps: [
+                'Aqui você vê seu progresso geral e a contagem regressiva.',
+                'Os atalhos por matéria abrem direto a missão daquela disciplina.',
+                'O menu lateral (ou a barra inferior no celular) leva às demais seções.',
+                'Comece pela aba "Missões": ela organiza o seu dia.'
+            ],
+            actions: ['missions', 'content', 'simulations', 'errors']
+        },
+        content: {
+            title: 'Conteúdo programático',
+            steps: [
+                'É a lista de todos os assuntos do edital, por disciplina.',
+                'Use-a como mapa: marque o que já estudou.',
+                'Cada assunto é trabalhado depois nas missões.'
+            ],
+            actions: ['missions', 'home']
+        },
+        missions: {
+            title: 'Missões',
+            steps: [
+                'Cada dia traz tarefas: aula, PDF, questões e revisão.',
+                'Conclua as tarefas na ordem e marque como feitas.',
+                'Perdeu um dia? Retome pela próxima tarefa pendente, sem acumular culpa.',
+                'Os atalhos por matéria do painel levam direto à missão da disciplina.'
+            ],
+            actions: ['errors', 'simulations']
+        },
+        videos: {
+            title: 'Aulas em vídeo',
+            steps: [
+                'Escolha a aula na lista e assista com atenção.',
+                'Use o campo de anotações da aula para registrar o que importa.',
+                'Ao terminar, faça as questões do assunto para fixar.'
+            ],
+            actions: ['missions', 'errors']
+        },
+        pdfs: {
+            title: 'PDFs de estudo',
+            steps: [
+                'Abra o PDF do assunto e leia com o marca-texto da plataforma.',
+                'Seus destaques ficam salvos para a revisão.',
+                'Dúvida no texto? Anote e leve ao atendimento.'
+            ],
+            actions: ['errors', 'supportdesk']
+        },
+        flashcards: {
+            title: 'Cards de revisão',
+            steps: [
+                'Leia a pergunta e tente responder antes de virar o card.',
+                'Marque se acertou ou errou para repetir os difíceis.',
+                'Faça poucos cards por dia, mas todos os dias.'
+            ],
+            actions: ['simulations', 'missions']
+        },
+        mindmaps: {
+            title: 'Mapas mentais',
+            steps: [
+                'Use os mapas para enxergar o assunto inteiro de uma vez.',
+                'Ótimos para revisar na véspera do simulado.',
+                'Refaça o mapa de memória e compare com o original.'
+            ],
+            actions: ['flashcards', 'simulations']
+        },
+        simulations: {
+            title: 'Simulados',
+            steps: [
+                'Escolha o filtro de disciplinas e gere o simulado.',
+                'Responda com cronômetro, como na prova.',
+                'Ao finalizar, veja o gabarito e os comentários.',
+                'Questões erradas vão para o caderno de erros.'
+            ],
+            actions: ['errors', 'missions']
+        },
+        errors: {
+            title: 'Caderno de erros',
+            steps: [
+                'Aqui ficam as questões que você errou.',
+                'Escreva por que errou: falta de base, distração ou pegadinha.',
+                'Releia o caderno toda semana. É onde a nota sobe mais rápido.'
+            ],
+            actions: ['simulations', 'missions']
+        },
+        writing: {
+            title: 'Redação',
+            steps: [
+                'Escolha um tema e escreva o texto dissertativo.',
+                'Organize em introdução, desenvolvimento e conclusão.',
+                'Seu rascunho é salvo automaticamente.',
+                'Releia procurando erros de pontuação, concordância e crase.'
+            ],
+            actions: ['errors', 'missions']
+        },
+        supportdesk: {
+            title: 'Atendimento',
+            steps: [
+                'Abra um chamado para dúvidas, problemas de acesso ou sugestões.',
+                'Escolha o assunto e descreva com detalhes.',
+                'A seção de perguntas frequentes pode já ter a resposta.',
+                'Para urgências, use o botão de WhatsApp.'
+            ],
+            actions: ['home']
+        },
+        feedback: {
+            title: 'Feedback',
+            steps: [
+                'Avalie a plataforma e diga o que pode melhorar.',
+                'Escolha a categoria e conte sua experiência.',
+                'Leva menos de um minuto e ajuda muito.'
+            ],
+            actions: ['home']
+        },
+        support: {
+            title: 'Apoio ao estudo',
+            steps: [
+                'Aqui há jogos e ferramentas para fixar o conteúdo de forma leve.',
+                'Escolha o tema e jogue caça-palavras ou cruzadinha.',
+                'Use quando estiver cansado: estudar também é descansar bem.'
+            ],
+            actions: ['missions', 'simulations']
+        }
+    };
+
+    function currentContext() {
+        const path = location.pathname.toLowerCase();
+        if (/admin/.test(path)) return 'admin';
+        if (/concursos/.test(path)) return 'select';
+        if (/login/.test(path)) return 'login';
+        const state = document.body.getAttribute('data-session-state');
+        if (state && state !== 'ready') return 'gate';
+        return document.body.getAttribute('data-active-view') || 'home';
+    }
+
     function build() {
+        if (!document.querySelector('link[href*="font-awesome"], link[href*="fontawesome"]')) {
+            const fa = document.createElement('link');
+            fa.rel = 'stylesheet';
+            fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+            document.head.appendChild(fa);
+        }
         const style = document.createElement('style');
         style.textContent = css;
         document.head.appendChild(style);
@@ -102,10 +295,11 @@
         root.innerHTML = `
             <div id="gabari-bubble" role="status" hidden></div>
             <section id="gabari-panel" role="dialog" aria-label="Gabari, mascote de apoio" hidden>
-                <div class="gabari-head">${avatar}<div><strong>Gabari</strong><small>Apoio ao candidato · ${cfg.concurso}</small></div>
+                <div class="gabari-head">${avatar}<div><strong>Gabari</strong><small>Apoio ao candidato${cfg.concurso ? ' · ' + cfg.concurso : ''}</small></div>
                     <button type="button" class="gabari-close" aria-label="Fechar conversa com o Gabari"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
                 <div class="gabari-body">
                     <p class="gabari-say" id="gabari-say"></p>
+                    <div class="gabari-guide" id="gabari-guide"></div>
                     <div class="gabari-actions" id="gabari-actions"></div>
                 </div>
                 <div class="gabari-foot"><button type="button" id="gabari-tip">Outra dica</button><button type="button" id="gabari-hide">Esconder o Gabari</button></div>
@@ -124,21 +318,37 @@
         const panel = $('gabari-panel');
         const bubble = $('gabari-bubble');
         const say = $('gabari-say');
-
+        const guideBox = $('gabari-guide');
         const actions = $('gabari-actions');
-        cfg.actions.forEach(action => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.innerHTML = `<i class="fa-solid ${action.icon}" aria-hidden="true"></i><span></span>`;
-            btn.lastChild.textContent = action.label;
-            btn.addEventListener('click', () => {
-                const tab = document.getElementById('desktopTab-' + action.tab) || document.getElementById('mobileTab-' + action.tab)
-                    || document.querySelector(`[data-dashboard-target="${action.tab}"]`);
-                if (tab) tab.click();
-                setOpen(false);
+
+        function renderGuide() {
+            const guide = GUIDES[currentContext()] || GUIDES.home;
+            guideBox.innerHTML = '';
+            const title = document.createElement('strong');
+            title.textContent = 'Como usar: ' + guide.title;
+            const list = document.createElement('ol');
+            guide.steps.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                list.appendChild(li);
             });
-            actions.appendChild(btn);
-        });
+            guideBox.append(title, list);
+
+            actions.innerHTML = '';
+            (guide.actions || []).map(key => A[key]).filter(Boolean).forEach(action => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.innerHTML = `<i class="fa-solid ${action.icon}" aria-hidden="true"></i><span></span>`;
+                btn.lastChild.textContent = action.label;
+                btn.addEventListener('click', () => {
+                    const tab = document.getElementById('desktopTab-' + action.tab) || document.getElementById('mobileTab-' + action.tab)
+                        || document.querySelector(`[data-dashboard-target="${action.tab}"]`);
+                    if (tab) tab.click();
+                    setOpen(false);
+                });
+                actions.appendChild(btn);
+            });
+        }
 
         function setOpen(open) {
             panel.hidden = !open;
@@ -146,11 +356,15 @@
             if (open) {
                 bubble.hidden = true;
                 say.textContent = greeting() + ' Dica: ' + pickTip();
+                renderGuide();
                 panel.querySelector('button').focus();
             } else {
                 fab.focus({ preventScroll: true });
             }
         }
+
+        new MutationObserver(() => { if (!panel.hidden) renderGuide(); })
+            .observe(document.body, { attributes: true, attributeFilter: ['data-active-view', 'data-session-state'] });
 
         fab.addEventListener('click', () => setOpen(panel.hidden));
         panel.querySelector('.gabari-close').addEventListener('click', () => setOpen(false));

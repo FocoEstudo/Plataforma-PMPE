@@ -221,8 +221,9 @@ html = html.replace(/Soldado/g, 'Candidato')
     .replace(/Opera%C3%A7%C3%A3o%20PMPE/g, 'Opera%C3%A7%C3%A3o%20PPPE');
 
 // 12. Mascote Gabari
+html = html.replace(/<script>window\.GABARI_CONFIG[^\n]*<\/script>\s*<script src="gabari\.js[^"]*"><\/script>\s*/, '');
 sub(/<\/body>/, `<script>window.GABARI_CONFIG = { concurso: 'PPPE', accent: '#0a1448', gold: '#e0b43c', storageKey: 'pppe_gabari_hidden' };</script>
-    <script src="../gabari.js"></script>
+    <script src="../gabari.js?v=2"></script>
 </body>`, 'gabari');
 
 fs.writeFileSync(path.join(root, 'pppe', 'index.html'), html, 'utf8');
