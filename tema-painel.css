@@ -1,0 +1,82 @@
+/* Tema do painel (estrutura): todas as cores vêm de variáveis --t-* definidas pela paleta de cada concurso. */
+body { color: var(--t-ink); }
+body .text-white { color: #fff; }
+body.skull-bg { background: linear-gradient(180deg, var(--t-page-1) 0%, var(--t-page-2) 40%, var(--t-page-3) 100%); background-attachment: fixed; }
+
+/* Estrutura */
+.platform-header, header.platform-header { background: linear-gradient(100deg, var(--t-dark) 0%, var(--t-main) 58%, var(--t-mid) 100%); border-bottom: 3px solid var(--t-gold); border-color: var(--t-gold); }
+.platform-sidebar, aside.platform-sidebar { background: linear-gradient(180deg, var(--t-dark) 0%, var(--t-main) 58%, var(--t-dark) 100%); border-right: 1px solid color-mix(in srgb, var(--t-gold) 55%, transparent); }
+.mobile-dashboard-nav { background: linear-gradient(180deg, var(--t-main), var(--t-dark)); border-top-color: var(--t-gold); }
+.dashboard-nav-item.is-active { background: linear-gradient(90deg, color-mix(in srgb, var(--t-gold) 38%, transparent), color-mix(in srgb, var(--t-gold) 8%, transparent)); box-shadow: inset 3px 0 0 var(--t-gold); }
+.dashboard-nav-item:not(.is-active):hover { background: color-mix(in srgb, var(--t-gold) 14%, transparent); }
+.glass-panel { background: linear-gradient(160deg, #ffffff 0%, var(--t-tint) 100%); border-color: var(--t-line); }
+.dashboard-home-hero, .dashboard-home-hero.glass-panel { border: 1px solid var(--t-gold); box-shadow: 0 14px 34px color-mix(in srgb, var(--t-dark) 40%, transparent); }
+.police-banner { background-color: var(--t-dark); border-color: var(--t-gold); border-left-color: var(--t-gold); }
+.police-banner::after { background: repeating-linear-gradient(135deg, var(--t-gold) 0 14px, var(--t-dark) 14px 28px); }
+.video-player-shell { background: var(--t-dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--t-main); }
+
+/* Cartões por matéria */
+.dashboard-shortcut { border-top: 3px solid var(--t-gold); }
+.dashboard-shortcut:hover { border-color: var(--t-gold); box-shadow: 0 12px 26px color-mix(in srgb, var(--t-dark) 28%, transparent); }
+.dashboard-progress-fill { background: linear-gradient(90deg, var(--t-gold), var(--t-gold-soft)); }
+
+/* Textos e destaques */
+.dashboard-shortcut, .header-popover, .resource-link, .syllabus-essay-card summary, .pdf-card, .rich-btn, .rich-editor,
+.notification-item p, #videoLessonNotes, .official-sources-card, .study-filters select, .study-filters input, .study-stat { color: var(--t-ink); }
+.dashboard-shortcut-content i, .dashboard-progress-value, .header-popover a, .official-sources-icon, .syllabus-essay-card summary i,
+.resource-link i, .writing-section-card > i, .pdf-content h2, .pdf-content nav a, .notification-tag, .study-stat strong, .study-btn,
+.pdf-subject-head h3, .fc-back .fc-tag, body [class*="text-amber-"] { color: var(--t-link); }
+.resource-link:focus-visible { color: var(--t-dark) !important; }
+
+/* Botões e marcadores */
+.simulator-panel .simulator-heading, .simulator-panel .quiz-launch, .official-sources-button, .study-tab-button[aria-selected="true"],
+.rich-btn.is-active, .mission-check input:checked + span, body [class*="bg-amber-700"] { background: var(--t-main); }
+.simulator-panel .quiz-launch { border-color: var(--t-gold); color: var(--t-on-main); }
+.simulator-panel .quiz-launch:hover, .official-sources-button:focus-visible, body [class*="hover:bg-amber-"]:hover { background: var(--t-dark); }
+.mission-check input:checked + span { border-color: var(--t-gold); }
+.simulator-panel #quizFilter:focus, .rich-editor:focus { border-color: var(--t-gold); }
+.dashboard-shortcut:focus-visible .dashboard-progress-track { outline-color: var(--t-gold); }
+.official-sources-card, .syllabus-essay-card, .pdf-content blockquote { border-left-color: var(--t-gold); }
+.mission-task-card { border-left-color: var(--t-gold) !important; }
+.mission-task-card:hover { border-left-color: var(--t-accent2) !important; }
+.rich-swatch.is-active { box-shadow: 0 0 0 3px var(--t-gold); }
+body .bg-blue-700, .pdf-open-guide { background-image: linear-gradient(135deg, var(--t-main), var(--t-mid)); color: #fff; }
+body .bg-blue-700:hover { background-image: linear-gradient(135deg, var(--t-dark), var(--t-main)); }
+#studyGameBoard button.study-word-cell { color: var(--t-ink) !important; }
+#studyGameBoard button.study-word-cell.is-found { background-color: var(--t-main) !important; border-color: var(--t-gold) !important; color: #fff !important; }
+#studyGameBoard button.study-word-cell.is-selected { outline-color: var(--t-gold); }
+.study-btn { background: linear-gradient(180deg, #fff, var(--t-tint)); border-color: var(--t-line); }
+.study-stat { background: linear-gradient(160deg, #fff, var(--t-tint)); border-color: var(--t-line); }
+.study-filters select, .study-filters input { border-color: var(--t-line); }
+.fc-front { background: linear-gradient(145deg, color-mix(in srgb, var(--t-dark) 90%, transparent), color-mix(in srgb, var(--t-main) 78%, transparent)), var(--fc-photo, none) center / cover no-repeat, var(--t-dark); color: #fff; }
+.fc-back { border-color: var(--t-gold); color: var(--t-ink); }
+
+/* Acesso, pagamento e perfil */
+#sessionGate, .payment-gate-card, .payment-gate-copy, .profile-field input, .profile-mode-select, .profile-time-field input { color: var(--t-ink); }
+.payment-gate-intro { background: linear-gradient(120deg, var(--t-dark), var(--t-main)); }
+.payment-gate-offer { background: var(--t-dark); }
+.payment-gate-price, .payment-gate-step-number { color: var(--t-link); }
+.payment-gate-benefits i, .payment-gate-secure-note i, .payment-gate-status-icon, .profile-time-field i { color: var(--t-link); }
+.payment-gate-status-icon { background: var(--t-tint); }
+.profile-field input:focus-visible { border-color: var(--t-gold); }
+.profile-section legend { color: var(--t-link); }
+.profile-day-option:has(input:checked) { background: var(--t-main); border-color: var(--t-gold); }
+.profile-day-option:has(input:checked) input { accent-color: var(--t-gold); }
+
+/* Classes Tailwind em verde (cores de marca) */
+.text-emerald-700, .text-emerald-800, .text-emerald-900, .text-emerald-950 { color: var(--t-link) !important; }
+.text-emerald-300, .text-emerald-400 { color: var(--t-gold) !important; }
+.bg-emerald-700, .bg-emerald-800 { background-color: var(--t-main) !important; color: #fff; }
+.hover\:bg-emerald-800:hover, .hover\:bg-emerald-900:hover { background-color: var(--t-dark) !important; }
+.bg-emerald-400 { background-color: var(--t-gold) !important; }
+.bg-emerald-50, .bg-emerald-100, .hover\:bg-emerald-50:hover { background-color: var(--t-tint) !important; }
+.border-emerald-100, .border-emerald-200, .border-emerald-300 { border-color: var(--t-line) !important; }
+.border-emerald-600, .focus\:border-emerald-500:focus { border-color: var(--t-gold) !important; }
+
+/* Verdes remanescentes do painel */
+.dashboard-nav-item.is-active i { color: var(--t-gold) !important; }
+.sidebar-brand-caption, .sidebar-caption, .sidebar-section-label { color: var(--t-gold-soft) !important; }
+::-webkit-scrollbar-track { background: var(--t-tint); }
+::-webkit-scrollbar-thumb { background: var(--t-mid); }
+::-webkit-scrollbar-thumb:hover { background: var(--t-gold); }

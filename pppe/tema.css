@@ -1,5 +1,21 @@
 /* Tema PPPE: cores do brasão (azul-marinho, azul, amarelo-ouro e vermelho) e foto de fundo. */
+@import url("../tema-painel.css?v=2");
+
 :root {
+    --t-dark: #060c2e;
+    --t-main: #0a1448;
+    --t-mid: #14289a;
+    --t-gold: #f5c400;
+    --t-gold-soft: #ffe27a;
+    --t-accent2: #d9381e;
+    --t-ink: #131a3a;
+    --t-link: #14289a;
+    --t-tint: #eef1fb;
+    --t-line: #d5daec;
+    --t-on-main: #ffe27a;
+    --t-page-1: #e9edf9;
+    --t-page-2: #f4f6fc;
+    --t-page-3: #e3e8f6;
     --pp-navy: #0a1448;
     --pp-blue: #14289a;
     --pp-sky: #3f8fd6;
@@ -19,6 +35,21 @@
     color: var(--pp-ink);
     background: var(--pp-bg);
 }
+
+/* ---------- painel (index.html) ---------- */
+body.skull-bg { background: linear-gradient(rgba(241, 243, 250, .92), rgba(238, 241, 251, .95)), var(--pp-photo) center / cover fixed, var(--t-page-2); }
+.dashboard-home-hero, .dashboard-home-hero.glass-panel {
+    background: linear-gradient(95deg, rgba(6, 12, 46, .95) 0%, rgba(10, 20, 72, .8) 50%, rgba(20, 40, 154, .35) 100%), var(--pp-photo) center 40% / cover no-repeat, var(--t-main);
+    border-left: 6px solid var(--t-gold);
+}
+.police-banner {
+    background: linear-gradient(100deg, rgba(6, 12, 46, .95) 0%, rgba(10, 20, 72, .86) 55%, rgba(20, 40, 154, .55) 100%), var(--pp-photo) center / cover no-repeat, var(--t-dark);
+}
+.profile-form-header { background: linear-gradient(90deg, rgba(6, 12, 46, .96), rgba(20, 40, 154, .9)), var(--pp-photo) center 42% / cover, var(--t-dark); }
+.fc-back { background: linear-gradient(145deg, rgba(255, 251, 230, .96), rgba(238, 241, 251, .94)), url("https://www.monsterconcursos.com.br/brasao-policia-penal-pe.png") center / 7rem no-repeat, #fffbe6; }
+.platform-header, header.platform-header { border-bottom: 4px solid var(--t-gold); box-shadow: 0 4px 0 var(--t-red, #d9381e); }
+.dashboard-nav-item.is-active { background: linear-gradient(90deg, rgba(245, 196, 0, .42), rgba(245, 196, 0, .08)); color: #fff; }
+.dashboard-shortcut { border-top-color: var(--t-gold); border-bottom: 3px solid var(--t-mid); }
 
 /* ---------- login.html ---------- */
 body { background: radial-gradient(ellipse at top left, rgba(63, 143, 214, .28), transparent 42rem), var(--pp-bg); color: var(--pp-ink); }

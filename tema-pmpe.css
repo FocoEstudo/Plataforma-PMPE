@@ -1,89 +1,43 @@
-/* Tema PMPE: cores do brasão da Polícia Militar (azul, dourado e vermelho) no lugar do verde. */
+/* Tema PMPE: cores do brasão da Polícia Militar (grafite/preto, dourado e vermelho). */
+@import url("tema-painel.css?v=2");
+
 :root {
-    --pm-navy: #0b2447;
-    --pm-blue: #19376d;
-    --pm-mid: #2a5db0;
-    --pm-gold: #e0b43c;
-    --pm-red: #b3202a;
-    --pm-ink: #14203f;
-    --pm-tint: #eef2fa;
-    --pm-line: #d3dbec;
-    --pm-bg: #f2f5fb;
-    --pm-green-1: var(--pm-navy);
-    --pm-green-2: var(--pm-blue);
-    --pm-green-3: var(--pm-mid);
+    --t-dark: #0d0d0f;
+    --t-main: #25272b;
+    --t-mid: #3d4047;
+    --t-gold: #e8b931;
+    --t-gold-soft: #ffd86b;
+    --t-accent2: #c4202c;
+    --t-ink: #1b1c20;
+    --t-link: #7a5600;
+    --t-tint: #f6f3e9;
+    --t-line: #ddd5bd;
+    --t-on-main: #ffd86b;
+    --t-page-1: #ece9df;
+    --t-page-2: #f7f5ee;
+    --t-page-3: #e6e2d5;
+    --pm-gold: var(--t-gold);
+    --pm-green-1: var(--t-dark);
+    --pm-green-2: var(--t-main);
+    --pm-green-3: var(--t-mid);
 }
 
-body, body .text-white { color: var(--pm-ink); }
-body .text-white { color: #fff; }
-body.skull-bg {
+.dashboard-home-hero, .dashboard-home-hero.glass-panel {
     background:
-        radial-gradient(1100px 520px at 8% -8%, rgba(42, 93, 176, .2), transparent 60%),
-        radial-gradient(900px 480px at 100% 0%, rgba(224, 180, 60, .14), transparent 55%),
-        linear-gradient(180deg, #eaf0fa 0%, #f6f8fc 38%, #e4ebf6 100%);
-    background-attachment: fixed;
+        linear-gradient(90deg, rgba(13, 13, 15, .94) 0%, rgba(37, 39, 43, .78) 48%, rgba(61, 64, 71, .38) 100%),
+        url('https://penoticias.com.br/blog/wp-content/uploads/2024/07/Policia-Militar.jpg') center 35% / cover no-repeat,
+        linear-gradient(115deg, #0d0d0f 0%, #25272b 62%, #3d4047 100%);
 }
-
-/* Estrutura */
-.platform-header, header.platform-header { background: linear-gradient(100deg, #0b2447 0%, #19376d 55%, #2a5db0 100%); border-color: var(--pm-gold); }
-.platform-sidebar, aside.platform-sidebar { background: linear-gradient(180deg, #0b2447 0%, #12306a 55%, #0a1c38 100%); }
-.mobile-dashboard-nav { background: linear-gradient(180deg, #12306a, #08162d); border-top-color: var(--pm-gold); }
-.dashboard-nav-item.is-active { background: linear-gradient(90deg, rgba(224, 180, 60, .3), rgba(138, 170, 226, .2)); }
-.glass-panel { background: linear-gradient(160deg, #ffffff 0%, #f3f6fc 100%); border-color: var(--pm-line); }
-.dashboard-home-hero, .dashboard-home-hero.glass-panel { background: linear-gradient(115deg, #0a1c38 0%, #19376d 62%, #2a5db0 100%); }
-.police-banner { background-color: #0b2447; }
-.police-banner::after { background: repeating-linear-gradient(135deg, var(--pm-gold) 0 14px, #0b2447 14px 28px); }
-.video-player-shell { background: #060d1c; }
-::-webkit-scrollbar-thumb:hover { background: var(--pm-blue); }
-
-/* Textos e destaques que eram verdes */
-.dashboard-shortcut, .header-popover, .resource-link, .syllabus-essay-card summary, .pdf-card, .rich-btn, .rich-editor,
-.notification-item p, #videoLessonNotes, .official-sources-card, .study-filters select, .study-filters input, .study-stat { color: var(--pm-ink); }
-.dashboard-shortcut-content i, .dashboard-progress-value, .header-popover a, .official-sources-icon, .syllabus-essay-card summary i,
-.resource-link i, .writing-section-card > i, .pdf-content h2, .pdf-content nav a, .notification-tag, .study-stat strong, .study-btn,
-.pdf-subject-head h3, .fc-back .fc-tag, body [class*="text-amber-"] { color: var(--pm-blue); }
-.resource-link:focus-visible { color: var(--pm-navy) !important; }
-
-/* Botões e marcadores */
-.simulator-panel .simulator-heading, .simulator-panel .quiz-launch, .official-sources-button, .study-tab-button[aria-selected="true"],
-.rich-btn.is-active, .mission-check input:checked + span, body [class*="bg-amber-700"] { background: var(--pm-blue); }
-.simulator-panel .quiz-launch { border-color: var(--pm-blue); }
-.simulator-panel .quiz-launch:hover, .official-sources-button:focus-visible, body [class*="hover:bg-amber-"]:hover { background: var(--pm-navy); }
-.mission-check input:checked + span { border-color: var(--pm-blue); }
-.simulator-panel #quizFilter:focus, .rich-editor:focus { border-color: var(--pm-blue); }
-.dashboard-shortcut:focus-visible .dashboard-progress-track { outline-color: var(--pm-blue); }
-.official-sources-card, .syllabus-essay-card, .pdf-content blockquote { border-left-color: var(--pm-blue); }
-.mission-task-card { border-left-color: var(--pm-blue) !important; }
-.mission-task-card:hover { border-left-color: var(--pm-navy) !important; }
-.rich-swatch.is-active { box-shadow: 0 0 0 3px var(--pm-blue); }
-body .bg-blue-700, .pdf-open-guide { background-image: linear-gradient(135deg, #19376d, #2a5db0); }
-#studyGameBoard button.study-word-cell { color: var(--pm-ink) !important; }
-#studyGameBoard button.study-word-cell.is-found { background-color: var(--pm-blue) !important; border-color: var(--pm-navy) !important; color: #fff !important; }
-#studyGameBoard button.study-word-cell.is-selected { outline-color: var(--pm-navy); }
-.study-btn { background: linear-gradient(180deg, #fff, #e8eef9); border-color: #b5c4e2; }
-.study-stat { background: linear-gradient(160deg, #fff, #eef2fa); border-color: var(--pm-line); }
-.study-filters select, .study-filters input { border-color: #b5c4e2; }
-.fc-front { background: linear-gradient(145deg, rgba(8, 24, 52, .88), rgba(25, 55, 109, .74)), var(--fc-photo, none) center / cover no-repeat, #0b2447; color: #f4f7ff; }
-.fc-back { background: linear-gradient(145deg, rgba(255, 253, 243, .95), rgba(240, 244, 251, .93)), url('assets/brasao-pmpe.png') center / 9rem no-repeat, #fffdf3; border-color: var(--pm-blue); color: var(--pm-ink); }
-
-/* Acesso, pagamento e perfil */
-#sessionGate, .payment-gate-card, .payment-gate-copy, .profile-field input, .profile-mode-select, .profile-time-field input { color: var(--pm-ink); }
-.payment-gate-intro { background: linear-gradient(120deg, var(--pm-navy), var(--pm-blue)); }
-.payment-gate-offer { background: #0f2650; }
-.payment-gate-price, .payment-gate-step-number { color: var(--pm-navy); }
-.payment-gate-benefits i, .payment-gate-secure-note i, .payment-gate-status-icon, .profile-time-field i { color: var(--pm-blue); }
-.payment-gate-status-icon { background: var(--pm-tint); }
-.profile-field input:focus-visible { border-color: var(--pm-blue); }
-.profile-form-header { background: linear-gradient(90deg, rgba(11, 36, 71, .97), rgba(25, 55, 109, .92)), url("https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png") center 42% / cover, var(--pm-navy); }
-.profile-section legend { color: var(--pm-blue); }
-.profile-day-option:has(input:checked) { background: var(--pm-blue); border-color: var(--pm-blue); }
-
-/* Classes Tailwind em verde (cores de marca) */
-.text-emerald-700, .text-emerald-800, .text-emerald-900, .text-emerald-950 { color: var(--pm-blue) !important; }
-.text-emerald-300, .text-emerald-400 { color: var(--pm-gold) !important; }
-.bg-emerald-700, .bg-emerald-800 { background-color: var(--pm-navy) !important; }
-.hover\:bg-emerald-800:hover, .hover\:bg-emerald-900:hover { background-color: var(--pm-blue) !important; }
-.bg-emerald-400 { background-color: var(--pm-gold) !important; }
-.bg-emerald-50, .bg-emerald-100, .hover\:bg-emerald-50:hover { background-color: var(--pm-tint) !important; }
-.border-emerald-100, .border-emerald-200, .border-emerald-300 { border-color: var(--pm-line) !important; }
-.border-emerald-600, .focus\:border-emerald-500:focus { border-color: var(--pm-blue) !important; }
+.police-banner {
+    background:
+        linear-gradient(100deg, rgba(13, 13, 15, .95) 0%, rgba(37, 39, 43, .88) 55%, rgba(37, 39, 43, .58) 100%),
+        url("https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png") center / cover no-repeat,
+        #0d0d0f;
+}
+.profile-form-header {
+    background:
+        linear-gradient(90deg, rgba(13, 13, 15, .97), rgba(37, 39, 43, .93)),
+        url("https://www.pm.pe.gov.br/wp-content/uploads/2024/09/portalpmpe1.png") center 42% / cover,
+        #0d0d0f;
+}
+.fc-back { background: linear-gradient(145deg, rgba(255, 253, 243, .95), rgba(246, 243, 233, .93)), url('assets/brasao-pmpe.png') center / 9rem no-repeat, #fffdf3; }
