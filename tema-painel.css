@@ -64,6 +64,14 @@ body .bg-blue-700:hover { background-image: linear-gradient(135deg, var(--t-dark
 .profile-day-option:has(input:checked) { background: var(--t-main); border-color: var(--t-gold); }
 .profile-day-option:has(input:checked) input { accent-color: var(--t-gold); }
 
+/* Legibilidade: letreiros brancos/dourados sobre painéis claros. Áreas escuras (banners, botões, vídeo, cartas) ficam de fora. */
+.glass-panel :is(h1, h2, h3, h4, h5, h6, p, span, strong, summary, label, li, small, div).text-white:not(.police-banner *, .video-player-shell *, .fc-front *, .simulator-heading *, .platform-header *, .platform-sidebar *, #countdown, [class*="bg-"], [class*="bg-"] *) { color: var(--t-ink); }
+#syllabusSection summary.text-white, #videoNotesHeading, #quizModal #quizQuestionText, #statTotal, #errCount, #errorsPanel h4.text-white { color: var(--t-ink) !important; }
+.glass-panel :is(h1, h2, h3, h4, h5, h6, p, span, strong, summary).text-white:not(.police-banner *, .video-player-shell *, [class*="bg-"] *) i { color: var(--t-link); }
+.glass-panel #videoLessonSubject, .glass-panel #videoLessonExternalLink, .glass-panel a.text-emerald-300 { color: var(--t-link) !important; }
+.glass-panel button.bg-slate-700 { background-color: var(--t-main) !important; color: #fff !important; }
+.fb-star { color: #8d98b5; }
+
 /* Classes Tailwind em verde (cores de marca) */
 .text-emerald-700, .text-emerald-800, .text-emerald-900, .text-emerald-950 { color: var(--t-link) !important; }
 .text-emerald-300, .text-emerald-400 { color: var(--t-gold) !important; }

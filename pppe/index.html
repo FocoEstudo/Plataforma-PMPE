@@ -32,6 +32,8 @@
     <script src="questoes-legislacao-especial.js"></script>
     <script src="questoes-execucao-penal.js"></script>
     <script src="questoes-direitos-humanos.js"></script>
+    <script src="videos-pppe.js"></script>
+    <script src="videos-complementares.js"></script>
     <script src="edital-pppe.js"></script>
     <script src="conteudo-lep.js"></script>
     <script type="module" src="session-guard.js"></script>
@@ -2353,7 +2355,8 @@
             .fc-card { min-height: 20rem; }
         }
     </style>
-    <link rel="stylesheet" href="tema.css?v=2">
+    <link rel="stylesheet" href="tema.css?v=4">
+    <link rel="stylesheet" href="../aviso-pagamento.css">
 </head>
 
 <body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home" data-session-state="checking">
@@ -2370,14 +2373,14 @@
                         <div>
                             <p class="payment-gate-kicker"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> OPERAÇÃO PPPE · ACESSO DO ESTUDANTE</p>
                             <h2 class="payment-gate-title mt-2 font-extrabold">Seu próximo passo começa com estratégia.</h2>
-                            <p class="payment-gate-lead mt-2">Uma plataforma de preparação PPPE para organizar sua rotina, praticar e acompanhar sua evolução — sem mensalidade.</p>
+                            <p class="payment-gate-lead mt-2">Uma plataforma de preparação PPPE para organizar sua rotina, praticar e acompanhar sua evolução.</p>
                         </div>
-                        <div class="payment-gate-offer" aria-label="Acesso à plataforma por R$ 99,90 em pagamento único">
+                        <div class="payment-gate-offer" aria-label="Planos de acesso PPPE">
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5P0BSF4Hcf3SFa3XBXmKrt8p5GZf5Mx-Hgu-SiyMIEQ&amp;s=10" alt="" loading="eager" decoding="async">
                             <div>
-                                <span class="payment-gate-offer-label">Pagamento único</span>
-                                <strong class="payment-gate-offer-price payment-price-text">R$ 99,90</strong>
-                                <p class="payment-gate-offer-note">Sem cobrança mensal recorrente.</p>
+                                <span id="paymentOfferLabel" class="payment-gate-offer-label">Planos disponíveis</span>
+                                <strong class="payment-gate-offer-price payment-price-text">Selecione um plano</strong>
+                                <p id="paymentOfferNote" class="payment-gate-offer-note">Mensal ou pagamento único.</p>
                             </div>
                         </div>
                     </header>
@@ -2394,16 +2397,25 @@
                     </div>
                     <div class="payment-gate-column">
                         <h3 class="text-lg font-extrabold">Escolha como pagar com Pix</h3>
-                        <p class="mt-1 text-sm text-gray-600">Aponte a câmera do banco para o QR Code ou copie o código Pix: o valor já aparece preenchido.</p>
-                        <img id="pixQrImage" src="pix-qr.png" alt="QR Code Pix para pagamento de R$ 99,90" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
-                        <div class="mt-4">
-                            <label for="promoCodeInput" class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Código promocional</label>
-                            <div class="mt-1 flex gap-2">
-                                <input id="promoCodeInput" type="text" autocomplete="off" maxlength="30" placeholder="Digite seu código" class="min-w-0 flex-1 rounded-lg border border-emerald-200 px-3 py-2 text-sm uppercase">
-                                <button id="promoCodeButton" type="button" class="payment-gate-copy" style="width:auto"><span class="text-sm font-extrabold text-emerald-800">Aplicar</span></button>
-                            </div>
-                            <p id="promoCodeMessage" class="mt-2 min-h-5 text-xs text-emerald-800" role="status" aria-live="polite"></p>
+                        <div class="card-payment-notice">
+                            <i class="fa-solid fa-credit-card" aria-hidden="true"></i>
+                            <div><strong>Cartão de crédito · em preparação</strong><span>Ainda não disponível. Atualmente, o pagamento é por Pix.</span></div>
                         </div>
+                        <p class="mt-1 text-sm text-gray-600">Escolha um dos planos. O QR Code e o Pix Copia e Cola mostrarão o valor correspondente.</p>
+                        <fieldset id="paymentPlanOptions" class="mt-4 grid gap-3">
+                            <legend class="text-sm font-extrabold">Planos PPPE</legend>
+                            <label class="flex cursor-pointer gap-3 rounded-xl border border-emerald-200 p-3 has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50">
+                                <input type="radio" name="paymentPlan" value="mensal" class="mt-1 accent-emerald-700">
+                                <span><strong class="block">Mensal — R$ 24,90</strong><small class="block text-gray-600">30 dias a partir da aprovação; renovação manual por Pix.</small></span>
+                            </label>
+                            <label class="flex cursor-pointer gap-3 rounded-xl border border-emerald-200 p-3 has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50">
+                                <input type="radio" name="paymentPlan" value="vitalicio" class="mt-1 accent-emerald-700">
+                                <span><strong class="block">Vitalício — R$ 99,90</strong><small class="block text-gray-600">Pagamento único, sem renovação.</small></span>
+                            </label>
+                        </fieldset>
+                        <button id="selectPaymentPlanButton" type="button" class="payment-gate-copy mt-3">Registrar plano e exibir Pix</button>
+                        <div id="pixPaymentDetails" hidden>
+                        <img id="pixQrImage" alt="" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
                         <ol class="payment-gate-steps">
                             <li><span class="payment-gate-step-number">1</span><span>Abra o Pix no aplicativo do seu banco.</span></li>
                             <li><span class="payment-gate-step-number">2</span><span>Leia o QR Code ou copie o código Pix abaixo.</span></li>
@@ -2417,11 +2429,12 @@
                             </button>
                             <p id="pixCopyMessage" class="mt-2 min-h-5 text-xs text-emerald-800" role="status" aria-live="polite"></p>
                         </div>
+                        </div>
                         <div id="paymentRequestStatus" class="payment-gate-status" data-state="loading" role="status" aria-live="polite">
                             <span class="payment-gate-status-icon"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i></span>
                             <div>
-                                <p id="paymentRequestHeading" class="font-extrabold">Preparando sua área de estudos</p>
-                                <p id="paymentRequestDetail" class="mt-1 text-sm leading-relaxed text-gray-600">Sua experiência será vinculada a esta conta.</p>
+                                <p id="paymentRequestHeading" class="font-extrabold">Escolha um plano</p>
+                                <p id="paymentRequestDetail" class="mt-1 text-sm leading-relaxed text-gray-600">Selecione Mensal ou Vitalício para exibir o QR Code correspondente.</p>
                             </div>
                         </div>
                         <p id="paymentGateMessage" class="mt-3 text-sm text-red-700" role="alert" aria-live="polite"></p>
@@ -2642,7 +2655,7 @@
             </div>
             <div class="dashboard-shortcuts" aria-label="Progresso por matéria">
                                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Língua Portuguesa">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-spell-check" aria-hidden="true"></i><span><strong>Língua Portuguesa</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Língua Portuguesa">0%</span></span>
@@ -2650,7 +2663,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Ética no Serviço Público">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><span><strong>Ética no Serviço Público</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Ética no Serviço Público">0%</span></span>
@@ -2658,7 +2671,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Noções de Informática">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-computer" aria-hidden="true"></i><span><strong>Noções de Informática</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Noções de Informática">0%</span></span>
@@ -2666,7 +2679,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Legislação Estadual">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-landmark" aria-hidden="true"></i><span><strong>Legislação Estadual</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Legislação Estadual">0%</span></span>
@@ -2674,7 +2687,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Atualidades">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-newspaper" aria-hidden="true"></i><span><strong>Atualidades</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Atualidades">0%</span></span>
@@ -2682,7 +2695,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Execução Penal (LEP)">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-lock" aria-hidden="true"></i><span><strong>Execução Penal (LEP)</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Execução Penal (LEP)">0%</span></span>
@@ -2690,7 +2703,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Noções de Direito Constitucional">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><span><strong>Noções de Direito Constitucional</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Noções de Direito Constitucional">0%</span></span>
@@ -2698,7 +2711,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Noções de Direito Administrativo">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-building-columns" aria-hidden="true"></i><span><strong>Noções de Direito Administrativo</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Noções de Direito Administrativo">0%</span></span>
@@ -2706,7 +2719,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Noções de Direito Penal">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-handcuffs" aria-hidden="true"></i><span><strong>Noções de Direito Penal</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Noções de Direito Penal">0%</span></span>
@@ -2714,7 +2727,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Noções de Direito Processual Penal">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-gavel" aria-hidden="true"></i><span><strong>Noções de Direito Processual Penal</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Noções de Direito Processual Penal">0%</span></span>
@@ -2722,7 +2735,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Legislação Especial">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-book-skull" aria-hidden="true"></i><span><strong>Legislação Especial</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Legislação Especial">0%</span></span>
@@ -2730,7 +2743,7 @@
                     </span>
                 </button>
                 <button class="dashboard-shortcut" type="button" data-open-subject-mission="Noções de Direitos Humanos e Participação Social">
-                    <img class="dashboard-shortcut-image" src="../assets/fundo-pppe.jpg" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
+                    <img class="dashboard-shortcut-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScfKZ7KTM-GTRtd-O4BeBHyBqay9z23QCD_9FwcfbjzA&amp;s=10" alt="" aria-hidden="true" loading="lazy" onerror="this.hidden=true">
                     <span class="dashboard-shortcut-content"><i class="fa-solid fa-scale-unbalanced-flip" aria-hidden="true"></i><span><strong>Noções de Direitos Humanos e Participação Social</strong><small>Continue de onde parou nesta matéria</small></span></span>
                     <span class="dashboard-progress">
                         <span class="dashboard-progress-heading"><span>Aulas e PDFs concluídos</span><span class="dashboard-progress-value" data-subject-progress-value="Noções de Direitos Humanos e Participação Social">0%</span></span>
@@ -2930,6 +2943,7 @@
                     <option value="">Carregando aulas...</option>
                 </select>
             </label>
+            <p class="mb-5 text-sm text-gray-300">As aulas são selecionadas por assunto e podem cobrir apenas parte do tema. Complemente pelo edital e pelos PDFs e confira atualizações da legislação e versões dos programas.</p>
             <div class="video-study-layout">
                 <div class="min-w-0">
                     <div class="mb-3">
@@ -4919,6 +4933,18 @@
                     operationDays.push({ type: 'teoria', id: dayNumber++, mod1: selectedModulePerSubject[pair], mod2: selectedModulePerSubject[pair + 1], cycle });
                 }
             }
+            // Acrescenta temas ainda não distribuídos sem alterar os IDs das missões já existentes.
+            const scheduledModuleIds = new Set(operationDays.flatMap(day => [day.mod1.moduleId, day.mod2.moduleId]));
+            const pendingModules = editalModules.filter(module => !scheduledModuleIds.has(module.moduleId));
+            while (pendingModules.length) {
+                const mod1 = pendingModules.shift();
+                const nextIndex = pendingModules.findIndex(module => module.sub !== mod1.sub);
+                const mod2 = nextIndex >= 0
+                    ? pendingModules.splice(nextIndex, 1)[0]
+                    : editalModules.find(module => module.sub !== mod1.sub);
+                if (!mod2) throw new Error("Não foi possível distribuir os temas restantes entre disciplinas.");
+                operationDays.push({ type: 'teoria', id: dayNumber++, mod1, mod2, cycle: fullCycles + 1 });
+            }
         }
 
         function populateTopicGuides() {
@@ -4955,58 +4981,6 @@
             });
         }
 
-        const getDistributedLessonTitles = module => {
-            const assignment = window.PMPE_DAILY_COURSE_DISTRIBUTION?.[module?.moduleId];
-            const course = assignment && window.PMPE_TOPIC_GUIDES?.[assignment.course];
-            return course
-                ? assignment.lessons.map(index => course.lessons[index - 1]?.[0]).filter(Boolean)
-                : [];
-        };
-
-        const cleanLessonTitle = title => String(title).replace(/^\d+\.\s*/, '').trim();
-
-        const getYouTubeLinkByCycle = (subject, topic, cycle) => {
-            const base = encodeURIComponent(`${subject} ${topic} PPPE`);
-            if (cycle === 1) return `https://www.youtube.com/results?search_query=Aula+${base}`;
-            if (cycle === 2) return `https://www.youtube.com/results?search_query=Aprofundamento+${base}`;
-            if (cycle === 3) return `https://www.youtube.com/results?search_query=Resolucao+de+questoes+${base}`;
-            return `https://www.youtube.com/results?search_query=Revisao+${base}`;
-        };
-
-        const getCourseLessonId = (module, lessonIndex) => `module-${module.moduleId}-lesson-${lessonIndex + 1}`;
-        const MISSION_SEQUENCE_MODULE_IDS = editalModules.map(module => module.moduleId);
-        const EMBEDDED_VIDEO_LEGACY_IDS = {
-            "module-0-lesson-1": "d1_v1_1"
-        };
-        const EMBEDDED_VIDEO_URL_SEQUENCE = [];
-        // Cada aula aponta explicitamente para o nº (base 1) do vídeo em EMBEDDED_VIDEO_URL_SEQUENCE.
-        // Aulas sem vídeo equivalente ficam de fora até que um vídeo com o tema correto seja adicionado.
-        const EMBEDDED_VIDEO_BY_LESSON = {
-            "module-0-lesson-1": 1, "module-0-lesson-2": 2, "module-0-lesson-3": 3, "module-0-lesson-4": 4, "module-0-lesson-5": 5, "module-0-lesson-6": 6,
-            "module-1-lesson-1": 7, "module-1-lesson-2": 8, "module-1-lesson-3": 9, "module-1-lesson-4": 10, "module-1-lesson-5": 11,
-            "module-2-lesson-1": 12, "module-2-lesson-2": 13, "module-2-lesson-3": 14, "module-2-lesson-4": 15,
-            "module-3-lesson-1": 16, "module-3-lesson-2": 17, "module-3-lesson-3": 18,
-            "module-4-lesson-1": 113, "module-4-lesson-2": 19, "module-4-lesson-3": 20,
-            "module-5-lesson-1": 21, "module-5-lesson-2": 22, "module-5-lesson-3": 23, "module-5-lesson-4": 24, "module-5-lesson-5": 25, "module-5-lesson-6": 26, "module-5-lesson-7": 27,
-            "module-6-lesson-1": 28, "module-6-lesson-2": [114, 115], "module-6-lesson-3": 29, "module-6-lesson-4": 30,
-            "module-7-lesson-1": 31, "module-7-lesson-2": 32, "module-7-lesson-3": 116, "module-7-lesson-4": 33,
-            "module-8-lesson-1": 34, "module-8-lesson-2": 35, "module-8-lesson-3": 36, "module-8-lesson-4": 37, "module-8-lesson-5": 38, "module-8-lesson-6": 39,
-            "module-9-lesson-1": 40, "module-9-lesson-2": 41, "module-9-lesson-3": 42, "module-9-lesson-4": 43,
-            "module-10-lesson-1": 44, "module-10-lesson-2": 45,
-            "module-11-lesson-1": 46, "module-11-lesson-2": 47, "module-11-lesson-3": 48, "module-11-lesson-4": 49, "module-11-lesson-5": 50, "module-11-lesson-6": 51,
-            "module-11-lesson-7": 56, "module-11-lesson-8": 52, "module-11-lesson-9": 53, "module-11-lesson-10": 54, "module-11-lesson-11": 55,
-            "module-11-lesson-12": 56, "module-11-lesson-13": 57, "module-11-lesson-14": 58, "module-11-lesson-15": 59,
-            "module-12-lesson-1": 60, "module-12-lesson-2": 61, "module-12-lesson-3": 62, "module-12-lesson-4": 63, "module-12-lesson-5": 64, "module-12-lesson-6": 65,
-            "module-13-lesson-1": 67, "module-13-lesson-2": 68, "module-13-lesson-3": 66, "module-13-lesson-4": 69, "module-13-lesson-5": 70,             "module-13-lesson-6": 71, "module-13-lesson-7": 117, "module-13-lesson-8": 72,
-                        "module-14-lesson-1": 73, "module-14-lesson-2": 74, "module-14-lesson-3": 75, "module-14-lesson-4": [118, 119, 120],
-                        "module-15-lesson-1": 76, "module-15-lesson-2": 121, "module-15-lesson-3": 77, "module-15-lesson-4": 78, "module-15-lesson-5": 79, "module-15-lesson-6": 80,
-            "module-16-lesson-1": 81, "module-16-lesson-2": 82, "module-16-lesson-3": 83, "module-16-lesson-4": 84, "module-16-lesson-5": 85, "module-16-lesson-6": 86,
-            "module-16-lesson-7": 87, "module-16-lesson-8": 88, "module-16-lesson-9": 89, "module-16-lesson-10": 90, "module-16-lesson-11": 91, "module-16-lesson-12": 92,
-            "module-17-lesson-1": 93, "module-17-lesson-2": 94, "module-17-lesson-3": 95, "module-17-lesson-4": 96, "module-17-lesson-5": 97, "module-17-lesson-6": 98,
-            "module-17-lesson-7": 99, "module-17-lesson-8": 100, "module-17-lesson-9": 101, "module-17-lesson-10": 102, "module-17-lesson-11": 103, "module-17-lesson-12": 104,
-            "module-17-lesson-13": 105, "module-17-lesson-14": 122, "module-17-lesson-15": 106, "module-17-lesson-16": 107, "module-17-lesson-17": 108, "module-17-lesson-18": 109,
-            "module-17-lesson-19": 110, "module-17-lesson-20": 111, "module-17-lesson-21": 112
-        };
         const getYouTubeVideoId = videoUrl => {
             try {
                 const url = new URL(videoUrl);
@@ -5020,44 +4994,35 @@
             return "";
         };
         const buildEmbeddedVideoLessonsFromSequence = () => {
-            const modulesById = new Map(editalModules.map(module => [module.moduleId, module]));
-            const sequence = [];
-            MISSION_SEQUENCE_MODULE_IDS.forEach(moduleId => {
-                const module = modulesById.get(moduleId);
-                if (!module) return;
-                const lessonTitles = getDistributedLessonTitles(module).map(cleanLessonTitle);
-                const totalLessons = lessonTitles.length || 1;
-                for (let lessonIndex = 0; lessonIndex < totalLessons; lessonIndex++) {
-                    sequence.push({
-                        id: getCourseLessonId(module, lessonIndex),
-                        module,
-                        lessonIndex,
-                        totalLessons,
-                        lessonTitle: lessonTitles[lessonIndex] || module.topic
-                    });
-                }
-            });
-            const missingVideos = sequence.filter(lesson => !EMBEDDED_VIDEO_BY_LESSON[lesson.id]);
-            if (missingVideos.length) {
-                console.warn("Aulas sem videoaula vinculada:", missingVideos.map(lesson => lesson.id));
+            if (!window.PPPE_VIDEOS || !window.PPPE_VIDEOS_COMPLEMENTARES) {
+                console.error("Catálogo de videoaulas PPPE não carregado.");
+                document.getElementById("videoPlayerStatus").textContent = "Não foi possível carregar o catálogo de videoaulas. Atualize a página e tente novamente.";
+                return {};
             }
-            return sequence.reduce((acc, lesson) => {
-                const mapped = EMBEDDED_VIDEO_BY_LESSON[lesson.id];
-                const videos = [].concat(mapped || [])
-                    .map(position => EMBEDDED_VIDEO_URL_SEQUENCE[position - 1])
-                    .filter(Boolean)
-                    .map(url => ({ url, videoId: getYouTubeVideoId(url) }))
-                    .filter(video => video.videoId);
-                if (!videos.length) return acc;
-                acc[lesson.id] = {
-                    id: lesson.id,
-                    legacyId: EMBEDDED_VIDEO_LEGACY_IDS[lesson.id] || "",
-                    subject: `${lesson.module.sub} · ${lesson.module.topic}`,
-                    title: `Aula ${lesson.lessonIndex + 1}/${lesson.totalLessons} · ${lesson.lessonTitle}`,
-                    videoId: videos[0].videoId,
-                    url: videos[0].url,
-                    videos
-                };
+            return editalModules.reduce((acc, module) => {
+                const complementary = (window.PPPE_VIDEOS_COMPLEMENTARES[module.topic] || []).map(([videoId, title]) => ({
+                    source: `youtube-${videoId}`,
+                    title,
+                    urls: [`https://www.youtube.com/watch?v=${videoId}`]
+                }));
+                [...(window.PPPE_VIDEOS[module.topic] || []), ...complementary].forEach(lesson => {
+                    const id = `pppe-${module.moduleId}-${lesson.source}`;
+                    const videos = lesson.urls.map(url => ({ url, videoId: getYouTubeVideoId(url) }));
+                    if (!videos.length || videos.some(video => !video.videoId)) {
+                        console.error("Videoaula com URL inválida:", module.topic, lesson);
+                        return;
+                    }
+                    acc[id] = {
+                        id,
+                        legacyId: "",
+                        moduleId: module.moduleId,
+                        subject: `${module.sub} · ${module.topic}`,
+                        title: lesson.title,
+                        videoId: videos[0].videoId,
+                        url: videos[0].url,
+                        videos
+                    };
+                });
                 return acc;
             }, {});
         };
@@ -5187,22 +5152,18 @@
         }
 
         const buildVideoTasks = (dayObj, module, slot, time, cycle) => {
-            const titles = getDistributedLessonTitles(module).map(cleanLessonTitle);
-            const subjects = titles.length ? titles : [module.topic];
-            return subjects.map((subjectTitle, i) => {
-                const taskId = `d${dayObj.id}_${slot}_${i + 1}`;
-                const courseLessonId = getCourseLessonId(module, i);
-                return {
-                    id: taskId,
-                    time: `${time} · aula ${i + 1}/${subjects.length}`,
-                    subject: subjectTitle,
-                    topic: `${module.sub} · (Ciclo ${cycle}) Videoaula ${i + 1} de ${subjects.length}${titles.length ? `; leia a seção "Aula ${i + 1}/${subjects.length}" no PDF do dia` : ""}. A busca do YouTube não é curadoria: confira professor e aderência ao edital.`,
-                    type: "Teoria",
-                    icon: "fa-youtube",
-                    action: getYouTubeLinkByCycle(module.sub, subjectTitle, cycle),
-                    embeddedVideoLesson: EMBEDDED_VIDEO_LESSONS[courseLessonId] || null
-                };
-            });
+            const lessons = Object.values(EMBEDDED_VIDEO_LESSONS).filter(lesson => lesson.moduleId === module.moduleId);
+            return [{
+                id: `d${dayObj.id}_${slot}_1`,
+                time: `${time} · aula 1/1`,
+                subject: module.topic,
+                topic: lessons.length
+                    ? `${module.sub} · (Ciclo ${cycle}) Assista às aulas selecionadas dentro da plataforma. Elas podem cobrir apenas parte do tema; complemente pelo PDF e confira atualizações.`
+                    : `${module.sub} · (Ciclo ${cycle}) Videoaula ainda não disponível. Consulte o PDF do tema enquanto a seleção é concluída.`,
+                type: "Teoria",
+                icon: "fa-youtube",
+                embeddedVideoLessons: lessons
+            }];
         };
 
         const getPDFInstructionByCycle = (cycle) => {
@@ -5413,10 +5374,14 @@
                 const completedClass = isChecked ? 'opacity-50 line-through' : '';
 
                 let actionButtonHtml = '';
-                if (task.embeddedVideoLesson) {
-                    actionButtonHtml = `<button type="button" data-open-video-lesson="${task.embeddedVideoLesson.id}" class="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-circle-play mr-2"></i> ASSISTIR NA PLATAFORMA</button>`;
+                if (task.embeddedVideoLessons?.length) {
+                    actionButtonHtml = task.embeddedVideoLessons.map(lesson =>
+                        `<button type="button" data-open-video-lesson="${lesson.id}" class="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-circle-play mr-2"></i>${PMPERichNotes.escapeHtml(lesson.title)}</button>`
+                    ).join('');
+                } else if (task.type === "Teoria") {
+                    actionButtonHtml = '<span class="text-sm font-bold text-slate-700">Videoaula em preparação</span>';
                 } else if (task.action.startsWith('http')) {
-                    actionButtonHtml = `<a href="${task.action}" target="_blank" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-brands fa-youtube mr-2"></i> YOUTUBE</a>`;
+                    actionButtonHtml = `<a href="${task.action}" target="_blank" rel="noopener noreferrer" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-brands fa-youtube mr-2"></i> YOUTUBE</a>`;
                 } else {
                     actionButtonHtml = `<button onclick="${task.action}" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors shadow-lg"><i class="fa-solid fa-bolt mr-2"></i> EXECUTAR</button>`;
                 }
@@ -5441,7 +5406,7 @@
                                 <p class="text-gray-300 text-sm mt-1 leading-relaxed break-words">${task.topic}</p>
                             </div>
                         </div>
-                        <div class="w-full lg:w-auto flex justify-end flex-shrink-0 mt-2 lg:mt-0">
+                        <div class="w-full lg:w-auto flex flex-wrap gap-2 justify-end lg:max-w-xl flex-shrink-0 mt-2 lg:mt-0">
                             ${actionButtonHtml}
                         </div>
                     </div>

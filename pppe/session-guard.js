@@ -12,14 +12,17 @@ const pixKey = document.getElementById("pixKey");
 const copyPixKeyButton = document.getElementById("copyPixKeyButton");
 const pixCopyMessage = document.getElementById("pixCopyMessage");
 const pixQrImage = document.getElementById("pixQrImage");
-const promoCodeInput = document.getElementById("promoCodeInput");
-const promoCodeButton = document.getElementById("promoCodeButton");
-const promoCodeMessage = document.getElementById("promoCodeMessage");
-const PROMO_CODES = [];
-const PROMO_QR_SRC = "pix-qr-promo.png";
-const PIX_PAYLOAD_FULL = "00020101021126580014br.gov.bcb.pix0136623c3509-96f1-49f7-8794-41ed9de36bf6520400005303986540599.905802BR5923IAN ITALO GOMES ANDRADE6006BRASIL62070503***6304AED6";
-const PIX_PAYLOAD_PROMO = "00020101021126580014br.gov.bcb.pix0136623c3509-96f1-49f7-8794-41ed9de36bf6520400005303986540574.905802BR5923IAN ITALO GOMES ANDRADE6006BRASIL62070503***63043330";
-let currentPixPayload = PIX_PAYLOAD_FULL;
+const paymentPlanOptions = document.getElementById("paymentPlanOptions");
+const selectPaymentPlanButton = document.getElementById("selectPaymentPlanButton");
+const pixPaymentDetails = document.getElementById("pixPaymentDetails");
+const paymentOfferLabel = document.getElementById("paymentOfferLabel");
+const paymentOfferNote = document.getElementById("paymentOfferNote");
+const ACCESS_REQUESTS_COLLECTION = "accessRequestsPppe";
+const PIX_ASSET_BASE = "../assets/";
+let paymentPlanPayloads;
+let currentPixPayload = "";
+let selectedPaymentPlan = null;
+let paymentRequestData = null;
 const profileForm = document.getElementById("profileForm");
 const profileNameInput = document.getElementById("profileName");
 const studyModeInput = document.getElementById("studyMode");
@@ -57,6 +60,7 @@ let getDocs;
 let stopAccessListener;
 let stopRequestListener;
 let isLoadingGrantedProfile = false;
+let accessExpiryTimer;
 
 const normalizeStudyPreferences = preferences => {
     const days = Array.isArray(preferences?.days)
@@ -152,14 +156,26 @@ const showPaymentRequestStatus = status => {
     if (status === "pending") {
         setPaymentRequestStatus(
             "pending",
-            "Sua área está sendo preparada",
-            "Conclua as etapas acima. O status da sua conta será atualizado nesta tela."
+            "Solicitação de Pix registrada",
+            `Plano ${selectedPaymentPlan === "mensal" ? "mensal (30 dias)" : "vitalício"} selecionado. Confira o valor, faça o Pix e envie o comprovante pelo WhatsApp. A liberação é manual.`
+        );
+    } else if (status === "choose-plan") {
+        setPaymentRequestStatus(
+            "pending",
+            "Escolha um plano para continuar",
+            "Selecione Mensal ou Vitalício e toque em “Registrar plano e exibir Pix”."
         );
     } else if (status === "rejected") {
         setPaymentRequestStatus(
             "rejected",
-            "Não foi possível atualizar sua conta",
-            "Se acredita que houve um engano, tente novamente mais tarde."
+            "Selecione um plano para fazer uma nova solicitação",
+            "A solicitação anterior foi recusada. Confira com o atendimento antes de pagar novamente."
+        );
+    } else if (status === "approved") {
+        setPaymentRequestStatus(
+            "error",
+            "Seu acesso mensal venceu",
+            "Selecione o plano Mensal para renovar ou Vitalício para fazer uma nova compra."
         );
     } else {
         setPaymentRequestStatus(
@@ -170,9 +186,35 @@ const showPaymentRequestStatus = status => {
     }
 };
 
-const showGrantedProfile = async user => {
+const accessExpiration = access => {
+    if (access?.active !== true) return null;
+    if (access.plan === undefined || access.plan === "vitalicio") return Infinity;
+    if (access.plan !== "mensal" || typeof access.paidAt?.toMillis !== "function") return null;
+    const paidAt = access.paidAt.toMillis();
+    return Number.isSafeInteger(paidAt) && paidAt >= 0 ? paidAt + 30 * 24 * 60 * 60 * 1000 : null;
+};
+
+const hasCurrentAccess = access => {
+    const expiry = accessExpiration(access);
+    return expiry === Infinity || Number.isFinite(expiry) && Date.now() < expiry;
+};
+
+const scheduleAccessExpiry = access => {
+    clearTimeout(accessExpiryTimer);
+    const expiry = accessExpiration(access);
+    if (!Number.isFinite(expiry)) return;
+    const check = () => {
+        const remaining = expiry - Date.now();
+        if (remaining <= 0) window.location.reload();
+        else accessExpiryTimer = setTimeout(check, Math.min(remaining, 2147483647));
+    };
+    check();
+};
+
+const showGrantedProfile = async (user, access) => {
     if (isLoadingGrantedProfile) return;
     isLoadingGrantedProfile = true;
+    scheduleAccessExpiry(access);
     stopAccessListener?.();
     stopAccessListener = undefined;
     stopRequestListener?.();
@@ -187,38 +229,108 @@ const showGrantedProfile = async user => {
     }
 };
 
-const normalizePromoCode = value => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ").toUpperCase();
+const planPrice = plan => plan === "mensal" ? 24.9 : 99.9;
+const formatPlanPrice = amount => amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-const applyPromoPrice = () => {
-    const price = "R$ 74,90";
-    pixQrImage.src = PROMO_QR_SRC;
-    pixQrImage.alt = `QR Code Pix para pagamento de ${price}`;
-    document.querySelectorAll(".payment-price-text").forEach(element => { element.textContent = price; });
-    currentPixPayload = PIX_PAYLOAD_PROMO;
-    promoCodeInput.disabled = true;
-    promoCodeButton.disabled = true;
+const loadPaymentPlanPayloads = async () => {
+    if (!paymentPlanPayloads) {
+        const response = await fetch(new URL(`${PIX_ASSET_BASE}pix-planos.json`, window.location.href));
+        if (!response.ok) throw new Error(`Não foi possível carregar os dados Pix (${response.status}).`);
+        const payloads = await response.json();
+        if (typeof payloads.mensal !== "string" || typeof payloads.vitalicio !== "string") {
+            throw new Error("Os códigos Pix dos planos estão incompletos.");
+        }
+        paymentPlanPayloads = payloads;
+    }
+    return paymentPlanPayloads;
 };
 
-promoCodeButton.addEventListener("click", async () => {
-    const code = normalizePromoCode(promoCodeInput.value);
-    if (!PROMO_CODES.includes(code)) {
-        promoCodeMessage.textContent = "Código promocional inválido.";
+const renderPaymentPlan = async plan => {
+    if (!["mensal", "vitalicio"].includes(plan)) {
+        selectedPaymentPlan = null;
+        currentPixPayload = "";
+        pixPaymentDetails.hidden = true;
+        paymentPlanOptions.querySelectorAll('input[name="paymentPlan"]').forEach(input => { input.checked = false; });
+        pixQrImage.removeAttribute("src");
+        pixQrImage.alt = "";
+        document.querySelectorAll(".payment-price-text").forEach(element => { element.textContent = "Selecione um plano"; });
+        paymentOfferLabel.textContent = "Planos disponíveis";
+        paymentOfferNote.textContent = "Mensal ou pagamento único.";
         return;
     }
-    promoCodeButton.disabled = true;
-    try {
-        await withTimeout(updateDoc(doc(db, "accessRequestsPppe", currentUser.uid), { promoCode: code, amount: 74.9 }), PROFILE_READ_TIMEOUT_MS);
-        applyPromoPrice();
-        promoCodeMessage.textContent = "Código aplicado! Valor promocional de R$ 74,90.";
-    } catch (error) {
-        console.error("Não foi possível aplicar o código promocional.", error);
-        promoCodeMessage.textContent = "Não foi possível aplicar o código agora. Tente novamente.";
-        promoCodeButton.disabled = false;
+    const payloads = await loadPaymentPlanPayloads();
+    selectedPaymentPlan = plan;
+    paymentPlanOptions.querySelector(`input[value="${plan}"]`).checked = true;
+    pixPaymentDetails.hidden = false;
+    const price = formatPlanPrice(planPrice(plan));
+    pixQrImage.src = `${PIX_ASSET_BASE}pix-${plan}.png`;
+    pixQrImage.alt = `QR Code Pix do plano ${plan === "mensal" ? "mensal" : "vitalício"}, ${price}`;
+    document.querySelectorAll(".payment-price-text").forEach(element => { element.textContent = price; });
+    paymentOfferLabel.textContent = plan === "mensal" ? "Plano mensal · 30 dias" : "Pagamento único";
+    paymentOfferNote.textContent = plan === "mensal" ? "Renovação manual por Pix." : "Acesso sem renovação.";
+    currentPixPayload = payloads[plan];
+};
+
+const selectPaymentPlan = async () => {
+    const plan = paymentPlanOptions.querySelector('input[name="paymentPlan"]:checked')?.value;
+    if (!["mensal", "vitalicio"].includes(plan)) {
+        showPaymentRequestStatus("choose-plan");
+        return;
     }
-});
+    selectPaymentPlanButton.disabled = true;
+    paymentGateMessage.textContent = "";
+    try {
+        await loadPaymentPlanPayloads();
+        const requestReference = doc(db, ACCESS_REQUESTS_COLLECTION, currentUser.uid);
+        await withTimeout(runTransaction(db, async transaction => {
+            const requestSnapshot = await transaction.get(requestReference);
+            if (!requestSnapshot.exists()) {
+                transaction.set(requestReference, {
+                    email: currentUser.email || "",
+                    status: "pending",
+                    requestedAt: serverTimestamp(),
+                    plan
+                });
+                return;
+            }
+            const request = requestSnapshot.data();
+            if (request.status === "pending") {
+                if (request.plan === plan) return;
+                transaction.set(requestReference, {
+                    email: currentUser.email || "",
+                    status: "pending",
+                    requestedAt: request.requestedAt || serverTimestamp(),
+                    plan
+                });
+                return;
+            }
+            if (["approved", "rejected"].includes(request.status)) {
+                transaction.set(requestReference, {
+                    email: currentUser.email || "",
+                    status: "pending",
+                    requestedAt: serverTimestamp(),
+                    plan
+                });
+                return;
+            }
+            throw new Error("O status da solicitação não permite escolher um plano.");
+        }), PROFILE_READ_TIMEOUT_MS);
+        paymentRequestData = { ...(paymentRequestData || {}), status: "pending", plan };
+        await renderPaymentPlan(plan);
+        showPaymentRequestStatus("pending");
+    } catch (error) {
+        console.error("Não foi possível registrar o plano Pix.", error);
+        paymentGateMessage.textContent = "Não foi possível registrar o plano. Confira a conexão e as regras do Firestore e tente novamente.";
+    } finally {
+        selectPaymentPlanButton.disabled = false;
+    }
+};
+
+selectPaymentPlanButton.addEventListener("click", () => { void selectPaymentPlan(); });
 
 copyPixKeyButton.addEventListener("click", async () => {
     try {
+        if (!currentPixPayload) throw new Error("Escolha um plano antes de copiar o Pix.");
         await navigator.clipboard.writeText(currentPixPayload);
         pixCopyMessage.textContent = "Código Pix copiado. Cole no app do banco em Pix Copia e Cola.";
     } catch (error) {
@@ -415,6 +527,7 @@ try {
     window.PPPE_CLOUD = { auth, db, fs: firestoreModule };
 
     onAuthStateChanged(auth, async user => {
+        clearTimeout(accessExpiryTimer);
         if (!user) {
             window.location.replace(new URL("../concursos.html", window.location.href));
             return;
@@ -429,43 +542,36 @@ try {
 
         try {
             const accessSnapshot = await withTimeout(getDoc(doc(db, "accessPppe", user.uid)), PROFILE_READ_TIMEOUT_MS);
-            if (accessSnapshot.data()?.active === true) {
+            const existingAccess = accessSnapshot.exists() ? accessSnapshot.data() : null;
+            if (hasCurrentAccess(existingAccess)) {
+                scheduleAccessExpiry(existingAccess);
                 await showProfileForUser(user);
                 return;
             }
             showPaymentGate();
             stopRequestListener?.();
             stopRequestListener = onSnapshot(doc(db, "accessRequestsPppe", user.uid), snapshot => {
-                if (snapshot.exists()) {
-                    const requestData = snapshot.data();
-                    if (requestData?.promoCode && requestData.status === "pending") applyPromoPrice();
-                    showPaymentRequestStatus(requestData?.status);
-                }
+                paymentRequestData = snapshot.exists() ? snapshot.data() : null;
+                const requestPlan = paymentRequestData?.status === "pending"
+                    ? (["mensal", "vitalicio"].includes(paymentRequestData.plan) ? paymentRequestData.plan : "vitalicio")
+                    : null;
+                void renderPaymentPlan(requestPlan)
+                    .then(() => showPaymentRequestStatus(paymentRequestData?.status || "choose-plan"))
+                    .catch(error => {
+                        console.error("Não foi possível carregar o QR Code do plano.", error);
+                        paymentGateMessage.textContent = "Não foi possível carregar o Pix. Recarregue a página e tente novamente.";
+                    });
             }, error => {
                 console.error("Não foi possível acompanhar a solicitação de acesso.", error);
                 showPaymentRequestStatus(error);
             });
-            try {
-                const requestReference = doc(db, "accessRequestsPppe", user.uid);
-                const requestStatus = await withTimeout(runTransaction(db, async transaction => {
-                    const requestSnapshot = await transaction.get(requestReference);
-                    if (requestSnapshot.exists()) return requestSnapshot.data()?.status;
-                    transaction.set(requestReference, {
-                        email: user.email || "",
-                        status: "pending",
-                        requestedAt: serverTimestamp()
-                    });
-                    return "pending";
-                }), PROFILE_READ_TIMEOUT_MS);
-                showPaymentRequestStatus(requestStatus);
-            } catch (error) {
-                console.error("Não foi possível registrar automaticamente a solicitação de acesso.", error);
-                showPaymentRequestStatus(error);
-            }
             stopAccessListener?.();
             stopAccessListener = onSnapshot(doc(db, "accessPppe", user.uid), snapshot => {
-                if (snapshot.data()?.active === true) {
-                    void showGrantedProfile(user);
+                const access = snapshot.exists() ? snapshot.data() : null;
+                if (hasCurrentAccess(access)) {
+                    void showGrantedProfile(user, access);
+                } else if (access?.active === true && access.plan === "mensal" && accessExpiration(access) !== null) {
+                    showPaymentRequestStatus("approved");
                 }
             }, error => {
                 console.error("Não foi possível acompanhar a confirmação do pagamento.", error);

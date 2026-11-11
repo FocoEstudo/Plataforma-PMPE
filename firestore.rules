@@ -15,22 +15,24 @@ service cloud.firestore {
     function hasValidAccessRequest() {
       let accessRequest = request.resource.data;
       return accessRequest.keys().hasAll(['email', 'status', 'requestedAt'])
-        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'plan'])
         && accessRequest.email is string
         && accessRequest.email.size() <= 254
         && accessRequest.email == request.auth.token.email
         && accessRequest.status == 'pending'
-        && accessRequest.requestedAt == request.time;
+        && accessRequest.requestedAt == request.time
+        && (!accessRequest.keys().hasAny(['plan']) || accessRequest.plan in ['mensal', 'vitalicio']);
     }
 
     function isValidPromoApplication() {
       let accessRequest = request.resource.data;
       return resource.data.status == 'pending'
         && accessRequest.keys().hasAll(['email', 'status', 'requestedAt', 'promoCode', 'amount'])
-        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'promoCode', 'amount'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'promoCode', 'amount', 'plan'])
         && accessRequest.status == 'pending'
         && accessRequest.promoCode in ['SEREI APROVADO', 'SEREI APROVADA']
         && accessRequest.amount == 74.9
+        && (!accessRequest.keys().hasAny(['plan']) || accessRequest.plan == 'vitalicio')
         && accessRequest.diff(resource.data).affectedKeys().hasOnly(['promoCode', 'amount']);
     }
 
@@ -38,7 +40,7 @@ service cloud.firestore {
       let accessRequest = request.resource.data;
       return resource.data.status == 'pending'
         && accessRequest.keys().hasAll(['email', 'status', 'requestedAt', 'reviewedAt'])
-        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'reviewedAt', 'promoCode', 'amount'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'reviewedAt', 'promoCode', 'amount', 'plan'])
         && accessRequest.status in ['approved', 'rejected']
         && accessRequest.reviewedAt == request.time
         && accessRequest.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedAt']);
@@ -46,13 +48,26 @@ service cloud.firestore {
 
     function isValidResubmission() {
       let accessRequest = request.resource.data;
-      return resource.data.status == 'rejected'
+      return resource.data.status in ['rejected', 'approved']
         && accessRequest.keys().hasAll(['email', 'status', 'requestedAt'])
-        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'promoCode', 'amount'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'promoCode', 'amount', 'plan'])
         && accessRequest.email == request.auth.token.email
         && accessRequest.status == 'pending'
         && accessRequest.requestedAt == request.time
-        && accessRequest.diff(resource.data).affectedKeys().hasOnly(['status', 'requestedAt', 'reviewedAt']);
+        && (!accessRequest.keys().hasAny(['plan']) || accessRequest.plan in ['mensal', 'vitalicio'])
+        && accessRequest.diff(resource.data).affectedKeys().hasOnly(['status', 'requestedAt', 'reviewedAt', 'plan', 'promoCode', 'amount']);
+    }
+
+    function isValidPlanSelection() {
+      let accessRequest = request.resource.data;
+      return resource.data.status == 'pending'
+        && accessRequest.keys().hasAll(['email', 'status', 'requestedAt', 'plan'])
+        && accessRequest.keys().hasOnly(['email', 'status', 'requestedAt', 'plan', 'promoCode', 'amount'])
+        && accessRequest.email == resource.data.email
+        && accessRequest.status == 'pending'
+        && accessRequest.requestedAt == resource.data.requestedAt
+        && accessRequest.plan in ['mensal', 'vitalicio']
+        && accessRequest.diff(resource.data).affectedKeys().hasOnly(['plan', 'promoCode', 'amount']);
     }
 
     function hasValidStudyPreferences(profile) {
@@ -126,8 +141,14 @@ service cloud.firestore {
     }
 
     function hasAccessPmpe() {
-      return exists(/databases/$(database)/documents/access/$(request.auth.uid))
-        && get(/databases/$(database)/documents/access/$(request.auth.uid)).data.active == true;
+      return request.auth != null
+        && exists(/databases/$(database)/documents/access/$(request.auth.uid))
+        && get(/databases/$(database)/documents/access/$(request.auth.uid)).data.active == true
+        && (!get(/databases/$(database)/documents/access/$(request.auth.uid)).data.keys().hasAny(['plan'])
+          || get(/databases/$(database)/documents/access/$(request.auth.uid)).data.plan == 'vitalicio'
+          || (get(/databases/$(database)/documents/access/$(request.auth.uid)).data.plan == 'mensal'
+            && get(/databases/$(database)/documents/access/$(request.auth.uid)).data.paidAt is timestamp
+            && request.time < get(/databases/$(database)/documents/access/$(request.auth.uid)).data.paidAt + duration.value(30, 'd')));
     }
 
     // Suporte e feedback ficam disponíveis a quem tem acesso a qualquer concurso.
@@ -136,8 +157,68 @@ service cloud.firestore {
     }
 
     function hasAccessPppe() {
-      return exists(/databases/$(database)/documents/accessPppe/$(request.auth.uid))
-        && get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.active == true;
+      return request.auth != null
+        && exists(/databases/$(database)/documents/accessPppe/$(request.auth.uid))
+        && get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.active == true
+        && (!get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.keys().hasAny(['plan'])
+          || get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.plan == 'vitalicio'
+          || (get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.plan == 'mensal'
+            && get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.paidAt is timestamp
+            && request.time < get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.paidAt + duration.value(30, 'd')));
+    }
+
+    function canGrantPmpeAccess(userId) {
+      return !exists(/databases/$(database)/documents/access/$(userId))
+        || get(/databases/$(database)/documents/access/$(userId)).data.active != true
+        || (get(/databases/$(database)/documents/access/$(userId)).data.plan == 'mensal'
+          && get(/databases/$(database)/documents/access/$(userId)).data.paidAt is timestamp
+          && request.time >= get(/databases/$(database)/documents/access/$(userId)).data.paidAt + duration.value(30, 'd'));
+    }
+
+    function canGrantPppeAccess(userId) {
+      return !exists(/databases/$(database)/documents/accessPppe/$(userId))
+        || get(/databases/$(database)/documents/accessPppe/$(userId)).data.active != true
+        || (get(/databases/$(database)/documents/accessPppe/$(userId)).data.plan == 'mensal'
+          && get(/databases/$(database)/documents/accessPppe/$(userId)).data.paidAt is timestamp
+          && request.time >= get(/databases/$(database)/documents/accessPppe/$(userId)).data.paidAt + duration.value(30, 'd'));
+    }
+
+    function canGrantPcpeAccess(userId) {
+      return !exists(/databases/$(database)/documents/accessPcpe/$(userId))
+        || get(/databases/$(database)/documents/accessPcpe/$(userId)).data.active != true
+        || (get(/databases/$(database)/documents/accessPcpe/$(userId)).data.plan == 'mensal'
+          && get(/databases/$(database)/documents/accessPcpe/$(userId)).data.paidAt is timestamp
+          && request.time >= get(/databases/$(database)/documents/accessPcpe/$(userId)).data.paidAt + duration.value(30, 'd'));
+    }
+
+    function hasAccessPcpe() {
+      return exists(/databases/$(database)/documents/accessPcpe/$(request.auth.uid))
+        && get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.active == true
+        && (get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.plan == 'vitalicio'
+          || (get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.plan == 'mensal'
+            && get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.paidAt is timestamp
+            && request.time < get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.paidAt + duration.value(30, 'd')));
+    }
+
+    function isValidPcpeRequest() {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['email', 'status', 'requestedAt', 'plan'])
+        && data.keys().hasAll(['email', 'status', 'requestedAt', 'plan'])
+        && data.email == request.auth.token.email
+        && data.email is string && data.email.size() <= 254
+        && data.status == 'pending'
+        && data.plan in ['mensal', 'vitalicio']
+        && data.requestedAt == request.time;
+    }
+
+    function isValidPcpeReview() {
+      let data = request.resource.data;
+      return resource.data.status == 'pending'
+        && data.keys().hasAll(['email', 'status', 'requestedAt', 'plan', 'reviewedAt'])
+        && data.keys().hasOnly(['email', 'status', 'requestedAt', 'plan', 'reviewedAt'])
+        && data.status in ['approved', 'rejected']
+        && data.reviewedAt == request.time
+        && data.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedAt']);
     }
 
     function isValidSyncDocPppe(syncId) {
@@ -246,10 +327,14 @@ service cloud.firestore {
       allow get: if isOwner(userId) || isAdmin();
       allow list: if isAdmin();
       allow create: if isOwner(userId)
+        && !hasAccessPmpe()
         && !exists(/databases/$(database)/documents/accessRequests/$(userId))
         && hasValidAccessRequest();
-      allow update: if (isOwner(userId) && (isValidResubmission() || isValidPromoApplication()))
-        || (isAdmin() && isValidAdminReview());
+      allow update: if (isOwner(userId)
+          && !hasAccessPmpe()
+          && (isValidResubmission() || isValidPlanSelection() || isValidPromoApplication()))
+        || (isAdmin() && isValidAdminReview()
+          && (request.resource.data.status != 'approved' || canGrantPmpeAccess(userId)));
       allow delete: if false;
     }
 
@@ -264,10 +349,33 @@ service cloud.firestore {
       allow get: if isOwner(userId) || isAdmin();
       allow list: if isAdmin();
       allow create: if isOwner(userId)
+        && !hasAccessPppe()
         && !exists(/databases/$(database)/documents/accessRequestsPppe/$(userId))
         && hasValidAccessRequest();
-      allow update: if (isOwner(userId) && isValidResubmission())
-        || (isAdmin() && isValidAdminReview());
+      allow update: if (isOwner(userId)
+          && !hasAccessPppe()
+          && (isValidResubmission() || isValidPlanSelection()))
+        || (isAdmin() && isValidAdminReview()
+          && (request.resource.data.status != 'approved' || canGrantPppeAccess(userId)));
+      allow delete: if false;
+    }
+
+    match /accessPcpe/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if false;
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /accessRequestsPcpe/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && !hasAccessPcpe() && isValidPcpeRequest();
+      allow update: if (isOwner(userId)
+          && resource.data.status in ['approved', 'rejected']
+          && !hasAccessPcpe() && isValidPcpeRequest())
+        || (isAdmin() && isValidPcpeReview()
+          && (request.resource.data.status != 'approved' || canGrantPcpeAccess(userId)));
       allow delete: if false;
     }
 

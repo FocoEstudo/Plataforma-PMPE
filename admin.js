@@ -1,9 +1,25 @@
 const ADMIN_EMAIL = "ianitalocorp@gmail.com";
 const CONCURSOS = {
     pmpe: { label: "PMPE", requests: "accessRequests", access: "access", price: 99.9 },
-    pppe: { label: "PPPE", requests: "accessRequestsPppe", access: "accessPppe", price: 99.9 }
+    pppe: { label: "PPPE", requests: "accessRequestsPppe", access: "accessPppe", price: 99.9 },
+    pcpe: { label: "PCPE", requests: "accessRequestsPcpe", access: "accessPcpe", price: 99.9 }
 };
 const formatPrice = value => `R$ ${value.toFixed(2).replace(".", ",")}`;
+const requestPrice = (request, config) => request.promoCode && request.plan !== "mensal" ? 74.9
+    : request.plan === "mensal" ? 24.9 : config.price;
+const accessExpiration = access => {
+    if (!access || access.active !== true) return null;
+    if (access.plan === undefined || access.plan === "vitalicio") return Infinity;
+    if (access.plan !== "mensal" || typeof access.paidAt?.toMillis !== "function") return null;
+    const paidAt = access.paidAt.toMillis();
+    return Number.isSafeInteger(paidAt) && paidAt >= 0 ? paidAt + 30 * 24 * 60 * 60 * 1000 : null;
+};
+const mayApproveExpiredAccess = (access, now = Date.now()) => {
+    if (!access || access.active === false) return true;
+    if (access.active !== true || !Number.isFinite(now)) return false;
+    const expiration = accessExpiration(access);
+    return expiration !== null && expiration !== Infinity && now >= expiration;
+};
 const adminStatus = document.getElementById("adminStatus");
 const loginLink = document.getElementById("loginLink");
 const switchAccountButton = document.getElementById("switchAccountButton");
@@ -29,7 +45,7 @@ let onSnapshot;
 let query;
 let serverTimestamp;
 let where;
-let writeBatch;
+let runTransaction;
 let isPreparingRequests = false;
 let requestRenderVersion = 0;
 
@@ -82,7 +98,7 @@ const buildWhatsappLink = (profile, withMessage = false, requestData = null) => 
     if (!withMessage) return `https://wa.me/${number}`;
     const firstName = String(profile.displayName || "").trim().split(/\s+/)[0] || "";
     const config = CONCURSOS[requestData?.concurso] || CONCURSOS.pmpe;
-    const price = requestData?.promoCode ? "R$ 74,90" : formatPrice(config.price);
+    const price = formatPrice(requestPrice(requestData || {}, config));
     const text = `Olá${firstName ? `, ${firstName}` : ""}! Aqui é da Operação ${config.label}. Recebemos seu cadastro. Para liberar seu acesso à plataforma, realize o pagamento de ${price} via Pix e nos envie o comprovante por aqui. Qualquer dúvida, estou à disposição!`;
     return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 };
@@ -174,7 +190,7 @@ const buildRequestCard = (requestSnapshot, profile, profileError) => {
     promo.className = "identity-heading";
     promo.textContent = requestData.promoCode
         ? `🏷️ CÓDIGO PROMOCIONAL USADO: ${requestData.promoCode} — conferir recebimento de R$ 74,90`
-        : `Sem código promocional — conferir recebimento de ${formatPrice(CONCURSOS[requestSnapshot.concurso].price)}`;
+        : `Plano ${requestData.plan === "mensal" ? "mensal (30 dias)" : "vitalício"} — conferir recebimento de ${formatPrice(requestPrice({ ...requestData, concurso: requestSnapshot.concurso }, CONCURSOS[requestSnapshot.concurso]))}`;
     card.append(concursoBadge, email, promo, identityHeading, identityDetails, identityNote, requestedAt, status, actions);
     return card;
 };
@@ -241,23 +257,36 @@ const reviewRequest = async (uid, decision, card, concurso) => {
 
     try {
         const requestReference = doc(db, config.requests, uid);
-        const requestSnapshot = await getDoc(requestReference);
-        if (!requestSnapshot.exists() || requestSnapshot.data().status !== "pending") {
-            throw new Error("Esta solicitação não está mais pendente. Atualize a página.");
-        }
-
-        const batch = writeBatch(db);
-        batch.update(requestReference, { status: decision, reviewedAt: serverTimestamp() });
-        if (decision === "approved") {
-            batch.set(doc(db, config.access, uid), {
-                active: true,
-                provider: "pix_manual",
-                amount: requestSnapshot.data().promoCode ? 74.9 : config.price,
-                currency: "BRL",
-                paidAt: serverTimestamp()
-            }, { merge: true });
-        }
-        await batch.commit();
+        const accessReference = doc(db, config.access, uid);
+        await runTransaction(db, async transaction => {
+            const requestSnapshot = await transaction.get(requestReference);
+            if (!requestSnapshot.exists() || requestSnapshot.data().status !== "pending") {
+                throw new Error("Esta solicitação não está mais pendente. Atualize a página.");
+            }
+            const request = requestSnapshot.data();
+            const plan = request.plan || "vitalicio";
+            if (!["mensal", "vitalicio"].includes(plan)) {
+                throw new Error("Plano inválido. A solicitação não foi processada.");
+            }
+            if (decision === "approved") {
+                const accessSnapshot = await transaction.get(accessReference);
+                const canApprove = concurso === "pcpe"
+                    ? PcpeAccessPolicy.mayApprovePix(accessSnapshot.exists() ? accessSnapshot.data() : null)
+                    : mayApproveExpiredAccess(accessSnapshot.exists() ? accessSnapshot.data() : null);
+                if (!canApprove) {
+                    throw new Error("Esta conta já possui acesso ativo ou inválido. Confira o cadastro e o pagamento antes de alterar o acesso.");
+                }
+                transaction.set(accessReference, {
+                    active: true,
+                    provider: "pix_manual",
+                    amount: requestPrice({ ...request, plan, concurso }, config),
+                    currency: "BRL",
+                    paidAt: serverTimestamp(),
+                    plan
+                });
+            }
+            transaction.update(requestReference, { status: decision, reviewedAt: serverTimestamp() });
+        });
     } catch (error) {
         console.error("Não foi possível processar a solicitação de acesso.", error);
         status.textContent = error.code === "permission-denied"
@@ -363,7 +392,7 @@ try {
     auth = firebaseAuth;
     db = firestore;
     ({ onAuthStateChanged, sendEmailVerification, reload, signOut } = authModule);
-    ({ collection, doc, getDoc, onSnapshot, query, serverTimestamp, where, writeBatch } = firestoreModule);
+    ({ collection, doc, getDoc, onSnapshot, query, serverTimestamp, where, runTransaction } = firestoreModule);
     onAuthStateChanged(auth, user => {
         void activateAdminPage(user);
     }, error => {

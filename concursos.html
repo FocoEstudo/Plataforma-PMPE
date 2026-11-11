@@ -3,91 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0b2447">
-    <meta name="description" content="Escolha o concurso para o qual você quer se preparar e acesse a plataforma de estudos.">
-    <title>Escolha seu concurso | Plataforma de Estudos</title>
+    <meta name="theme-color" content="#0b1936">
+    <meta name="description" content="Preparação para as carreiras policiais de Pernambuco. Escolha seu concurso e organize sua jornada.">
+    <title>Escolha sua missão | Plataforma de Estudos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { color-scheme: light; font-family: Inter, Arial, sans-serif; color: #14203f; background: #f2f5fb; }
-        * { box-sizing: border-box; }
-        body {
-            display: grid;
-            min-height: 100vh;
-            margin: 0;
-            padding: 1.25rem;
-            place-items: center;
-            background: radial-gradient(ellipse at top left, rgba(138, 170, 226, .4), transparent 42rem), #f2f5fb;
-        }
-        main { width: min(100%, 56rem); }
-        header { margin-bottom: 1.75rem; text-align: center; }
-        .kicker { margin: 0 0 .5rem; color: #19376d; font-size: .8rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-        h1 { margin: 0; font-family: Oswald, Inter, sans-serif; font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.1; }
-        header p { margin: .75rem auto 0; max-width: 34rem; color: #55607f; line-height: 1.55; }
-        .grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
-        .card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1.75rem 1.5rem;
-            border: 2px solid transparent;
-            border-radius: 1.1rem;
-            background: #fff;
-            box-shadow: 0 14px 38px rgba(16, 87, 55, .12);
-            color: inherit;
-            text-align: center;
-            text-decoration: none;
-            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-        }
-        .card:hover, .card:focus-visible { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 18px 44px rgba(25, 55, 109, .2); outline: none; }
-        .crest { display: grid; width: 6.5rem; height: 6.5rem; margin-bottom: 1rem; place-items: center; }
-        .crest img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .crest i { color: var(--accent); font-size: 3.5rem; }
-        .card h2 { margin: 0; font-family: Oswald, Inter, sans-serif; font-size: 1.5rem; }
-        .card .full { margin: .35rem 0 0; color: #55607f; font-size: .92rem; line-height: 1.45; }
-        .cta { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.25rem; padding: .7rem 1.2rem; border-radius: .7rem; background: var(--accent); color: #fff; font-weight: 800; font-size: .92rem; }
-        footer { margin-top: 1.75rem; color: #6e7896; font-size: .82rem; text-align: center; }
-    </style>
+    <link rel="stylesheet" href="concursos.css">
 </head>
 <body>
+    <header class="site-header">
+        <a class="brand" href="#inicio"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> OPERAÇÃO <span>PERNAMBUCO</span></a>
+        <nav aria-label="Navegação principal">
+            <a href="#carreiras">Concursos</a><a href="#qg">A plataforma</a><a href="#planos">Planos</a><a href="#faq">Dúvidas</a>
+        </nav>
+    </header>
     <main>
-        <header>
-            <p class="kicker">Plataforma de Estudos</p>
-            <h1>Para qual concurso você quer se preparar?</h1>
-            <p>Cada concurso tem sua própria plataforma, com conteúdo e plano específicos. Escolha o seu para continuar.</p>
-        </header>
-
-        <section class="grid" aria-label="Concursos disponíveis">
-            <a class="card" href="login.html?concurso=pmpe" data-concurso="pmpe" style="--accent:#19376d">
-                <span class="crest"><img src="assets/brasao-pmpe.png" alt="Brasão da Polícia Militar de Pernambuco"></span>
-                <h2>PMPE</h2>
-                <p class="full">Polícia Militar de Pernambuco</p>
-                <span class="cta">Acessar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
-            </a>
-
-            <a class="card" href="pppe/login.html?concurso=pppe" data-concurso="pppe" style="--accent:#0a1448">
-                <span class="crest">
-                    <img src="https://www.monsterconcursos.com.br/brasao-policia-penal-pe.png" alt="Brasão da Polícia Penal de Pernambuco" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'fa-solid fa-shield-halved'}))">
-                </span>
-                <h2>PPPE</h2>
-                <p class="full">Polícia Penal de Pernambuco</p>
-                <span class="cta">Acessar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
-            </a>
+        <section id="inicio" class="hero">
+            <div class="wrap hero-grid">
+                <div>
+                    <p class="eyebrow">Sua preparação começa agora</p>
+                    <h1>Sua farda policial começa aqui. <span>Escolha sua missão.</span></h1>
+                    <p class="hero-copy">Preparação para as carreiras policiais de Pernambuco com missões diárias, inteligência e foco no que realmente cai na prova.</p>
+                    <a class="button gold" href="#carreiras">Escolha seu Concurso <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+                <div class="device" aria-label="Ilustração da organização da plataforma de estudos">
+                    <div class="device-top"><span></span><span></span><span></span><small>PLATAFORMA DE ESTUDOS</small></div>
+                    <div class="device-screen">
+                        <div class="device-sidebar"><i class="fa-solid fa-shield-halved"></i><b>PAINEL</b><span>Missões</span><span>Conteúdo</span><span>Revisão</span></div>
+                        <div class="device-main"><small>SUA MISSÃO DE HOJE</small><strong>Mais perto da aprovação.</strong><div class="device-tiles"><span><i class="fa-solid fa-list-check"></i> Missões</span><span><i class="fa-solid fa-circle-play"></i> Aulas</span><span><i class="fa-solid fa-chart-line"></i> Evolução</span></div><div class="device-progress"><span></span></div><small>Uma jornada, um passo de cada vez.</small></div>
+                    </div>
+                    <div class="device-base"></div>
+                </div>
+            </div>
         </section>
 
-        <footer>Novos concursos serão adicionados em breve.</footer>
-    </main>
+        <section id="carreiras" class="section wrap">
+            <p class="eyebrow">Encontre seu caminho</p>
+            <h2>Escolha sua carreira</h2>
+            <p class="intro">Cada concurso tem acesso e conteúdo próprios. Escolha a missão que combina com você.</p>
+            <div class="career-grid">
+                <article class="card">
+                    <span class="badge available">● Foco total</span>
+                    <img class="crest" src="assets/brasao-pmpe.png" alt="Brasão da Polícia Militar de Pernambuco">
+                    <h3>PMPE</h3><p class="full">Polícia Militar de Pernambuco</p>
+                    <p><strong>Cargos:</strong> Soldado e Oficial <small>(Oficial em preparação)</small></p>
+                    <p class="salary">Soldo de Soldado: <strong>R$ 5.617,92</strong><small>Referência: grade vigente a partir de junho de 2026. <a href="https://www.pm.pe.gov.br/?mdocs-file=53768" target="_blank" rel="noopener noreferrer">Fonte oficial</a></small></p>
+                    <a class="button navy" href="login.html?concurso=pmpe" data-concurso="pmpe">Ver Plano PMPE <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="card">
+                    <span class="badge available">● Foco total</span>
+                    <img class="crest" src="https://www.monsterconcursos.com.br/brasao-policia-penal-pe.png" alt="Brasão da Polícia Penal de Pernambuco" referrerpolicy="no-referrer">
+                    <h3>PPPE</h3><p class="full">Polícia Penal de Pernambuco</p>
+                    <p><strong>Cargo:</strong> Policial Penal</p>
+                    <p class="salary">Remuneração inicial: <strong>R$ 5.667,92</strong><small>Edital de 2026. <a href="https://cdn.cebraspe.org.br/concursos/SEAP_PE_26/arquivos/2327822CE642EE75B289D1FEF1BD0A9FCD699F971AC65A85CA07D3786DCF7AC4.pdf" target="_blank" rel="noopener noreferrer">Edital oficial</a></small></p>
+                    <a class="button navy" href="pppe/login.html?concurso=pppe" data-concurso="pppe">Ver Plano PPPE <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                </article>
+                <article class="card">
+                    <span class="badge building">● Em construção</span>
+                    <img class="crest" src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg" alt="Brasão da Polícia Civil de Pernambuco" referrerpolicy="no-referrer">
+                    <h3>PCPE</h3><p class="full">Polícia Civil de Pernambuco</p>
+                    <p><strong>Cargos:</strong> Agente e Escrivão</p>
+                    <p class="salary">Remuneração inicial: <strong>R$ 5.667,92</strong><small>Edital de 2026. <a href="https://www.cebraspe.org.br/policia-civil-de-pernambuco-divulga-concurso-publico-para-agente-delegado-e-escrivao-de-policia/" target="_blank" rel="noopener noreferrer">Fonte oficial</a></small></p>
+                    <a class="button navy" href="pcpe/index.html">Conhecer a PCPE <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    <a class="card-secondary" href="https://wa.me/5566996884580?text=Ol%C3%A1%21%20Quero%20ser%20avisado%20sobre%20a%20plataforma%20PCPE." target="_blank" rel="noopener noreferrer">Quero ser avisado pelo WhatsApp</a>
+                </article>
+            </div>
+            <p class="footnote">Valores de referência dos concursos, não da plataforma; sujeitos a alterações. Consulte sempre o edital vigente e suas retificações.</p>
+        </section>
 
+        <section id="qg" class="section qg">
+            <div class="wrap">
+                <p class="eyebrow">Seu quartel-general de estudos</p>
+                <h2>Por dentro do QG</h2>
+                <p class="intro">Uma metodologia para organizar a preparação e transformar estudo em progresso.</p>
+                <div class="feature-grid">
+                    <article><i class="fa-solid fa-list-check"></i><h3>Missões diárias</h3><p>Não perca tempo montando cronogramas. Entre e saiba o que estudar em cada missão.</p></article>
+                    <article><i class="fa-solid fa-layer-group"></i><h3>O arsenal completo</h3><p>Videoaulas, materiais e simulados organizados para sua preparação.</p></article>
+                    <article><i class="fa-solid fa-brain"></i><h3>Revisão inteligente</h3><p>Use flashcards e mapas mentais para reforçar e conectar o que estudou.</p></article>
+                    <article><i class="fa-solid fa-pen-nib"></i><h3>Caderno de erros e redação</h3><p>Registre suas dificuldades e pratique a escrita para evoluir antes da prova.</p></article>
+                </div>
+                <p class="footnote">A disponibilidade de conteúdos varia por concurso. A área da PCPE e conteúdos específicos para Oficial estão em construção.</p>
+            </div>
+        </section>
+
+        <section class="gabari-section">
+            <div class="wrap gabari-layout">
+                <div id="gabari-portrait" class="gabari-portrait" aria-label="Gabari, mascote da plataforma"></div>
+                <div><p class="eyebrow">Você não estuda sozinho</p><h2>Conheça o Gabari</h2><p>Seu parceiro de estudos está na plataforma para dar dicas, lembrar da revisão do caderno de erros e ajudar a manter a motivação no topo.</p><p class="footnote">Abra o botão do Gabari para encontrar orientações sobre a página em que você está.</p></div>
+            </div>
+        </section>
+
+        <section id="planos" class="section wrap">
+            <p class="eyebrow">Invista na sua jornada</p><h2>Escolha como investir no seu futuro</h2>
+            <p class="intro">Valores por concurso. Os materiais PCPE estão sendo completados; o plano mensal via Pix está disponível para a PCPE após configuração do acesso.</p>
+            <div class="plans">
+                <article class="plan"><h3>Plano mensal</h3><p class="price">R$ 24,90 <small>/ mês</small></p><p>Por Pix, são 30 dias após a aprovação, com renovação manual. Disponível para PCPE após configuração; nas demais plataformas está em preparação.</p></article>
+                <article class="plan recommended"><span class="badge best">Melhor custo-benefício</span><h3>Plano vitalício</h3><p class="price">R$ 99,90 <small>pagamento único</small></p><p>Acesso por concurso, sem mensalidade. Sujeito à confirmação manual do pagamento.</p><a class="button gold" href="#carreiras">Escolher concurso</a></article>
+            </div>
+        </section>
+
+        <section id="faq" class="section faq">
+            <div class="wrap narrow"><p class="eyebrow">Estamos aqui para ajudar</p><h2>Perguntas frequentes</h2>
+                <details><summary>O acesso é imediato?</summary><p>Não necessariamente. O Pix é conferido manualmente antes da liberação. A PCPE ainda está em construção.</p></details>
+                <details><summary>Tem limite de visualizações nas aulas?</summary><p>Consulte o atendimento sobre as condições de uso. A reprodução depende também da disponibilidade e das regras dos provedores dos vídeos.</p></details>
+                <details><summary>Como funciona o cancelamento do mensal?</summary><p>No Pix PCPE não há cobrança automática: basta não solicitar uma renovação. O mensal das demais plataformas e o pagamento por cartão ainda estão em preparação.</p></details>
+            </div>
+        </section>
+    </main>
+    <footer><div class="wrap footer-content">
+        <div><strong>OPERAÇÃO PERNAMBUCO</strong><p>Estudo, estratégia e constância.</p><p>Plataforma independente, sem vínculo oficial com as instituições ou bancas dos concursos.</p></div>
+        <div><strong>Links úteis</strong><a href="#carreiras">Concursos</a><a href="#planos">Planos</a><a href="https://www.cebraspe.org.br/" target="_blank" rel="noopener noreferrer">Cebraspe</a><a href="https://www.institutoaocp.org.br/" target="_blank" rel="noopener noreferrer">Instituto AOCP</a></div>
+        <div><strong>Contato</strong><a href="https://wa.me/5566996884580" target="_blank" rel="noopener noreferrer">Fale pelo WhatsApp</a><p>Confira informações e retificações nos canais oficiais.</p></div>
+    </div></footer>
     <script>
-        document.querySelectorAll("[data-concurso]").forEach(card => {
-            card.addEventListener("click", () => {
-                try { localStorage.setItem("concurso_selecionado", card.dataset.concurso); } catch (e) {}
+        document.querySelectorAll('[data-concurso]').forEach(link => {
+            link.addEventListener('click', () => {
+                try { localStorage.setItem('concurso_selecionado', link.dataset.concurso); }
+                catch (error) { console.warn('Não foi possível salvar o concurso selecionado.', error); }
             });
         });
+        window.GABARI_CONFIG = { concurso: '', accent: '#1f2a44', gold: '#e8b931', storageKey: 'gabari_hidden' };
     </script>
-<script>window.GABARI_CONFIG = { concurso: '', accent: '#1f2a44', gold: '#e8b931', storageKey: 'gabari_hidden' };</script>
-    <script src="gabari.js?v=2"></script>
+    <script src="gabari.js?v=4"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const avatar = document.querySelector('#gabari-fab svg');
+            if (avatar) document.getElementById('gabari-portrait').appendChild(avatar.cloneNode(true));
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0a1448">
+    <title>Conta e acesso | Operação PCPE</title>
+    <link rel="stylesheet" href="entrada-base.css">
+    <link rel="stylesheet" href="../pppe/tema.css?v=3">
+    <link rel="stylesheet" href="entrada.css">
+    <link rel="stylesheet" href="conta.css">
+    <link rel="stylesheet" href="../aviso-pagamento.css">
+    <script defer src="../planos-acesso.js"></script>
+    <script defer src="access-policy.js"></script>
+    <script type="module">
+        import('./conta.js').catch(error => {
+            console.error('Não foi possível carregar o acesso PCPE.', error);
+            const status = document.getElementById('status');
+            status.textContent = 'Não foi possível carregar o serviço de acesso. Confira sua conexão e recarregue a página.';
+            status.dataset.error = 'true';
+        });
+    </script>
+</head>
+<body class="account-page">
+    <main class="account-shell">
+        <a href="index.html">← Voltar à PCPE</a>
+        <section class="auth-card">
+            <div class="auth-card-top">
+                <img class="account-crest" src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg" alt="Brasão da PCPE" referrerpolicy="no-referrer">
+                <div><p>Operação PCPE</p><h1>Conta e acesso</h1></div>
+            </div>
+            <p class="account-note">A PCPE ainda tem materiais e funcionalidades em preparação. Não há sincronização entre dispositivos.</p>
+            <div class="card-payment-notice">
+                <span aria-hidden="true">💳</span>
+                <div><strong>Cartão de crédito · em preparação</strong><span>Ainda não disponível. Após entrar, é possível solicitar acesso por Pix. Não informe dados do cartão nesta página.</span></div>
+            </div>
+            <p id="status" role="status" aria-live="polite">Carregando serviço de acesso...</p>
+            <section id="authentication" hidden>
+                <p>Entre com sua conta existente ou crie uma conta para solicitar acesso à PCPE.</p>
+                <div class="mode-switch" role="group" aria-label="Tipo de acesso">
+                    <button id="login-mode" type="button" aria-pressed="true">Entrar</button>
+                    <button id="register" type="button" aria-pressed="false">Criar conta</button>
+                </div>
+                <form id="auth-form">
+                    <label class="field">Email <input id="email" type="email" autocomplete="email" maxlength="254" required></label>
+                    <label class="field">Senha <input id="password" type="password" autocomplete="current-password" minlength="6" required></label>
+                    <button class="submit-button" id="auth-submit" type="submit">Entrar na plataforma</button>
+                </form>
+                <button class="secondary-action" id="reset" type="button">Esqueci minha senha</button>
+            </section>
+            <section id="account" hidden>
+                <p>Conta: <strong id="account-email"></strong> <button class="secondary-action" id="sign-out" type="button">Sair</button></p>
+                <div id="checking">Verificando seu acesso...</div>
+                <p id="expired-message" class="account-note" role="status" hidden>Seu plano mensal PCPE venceu. Para continuar estudando, registre uma nova solicitação e faça o Pix. O acesso será liberado após a confirmação manual do pagamento.</p>
+                <section id="granted" hidden>
+                    <h2>Acesso PCPE liberado</h2>
+                    <p id="access-description"></p>
+                    <form action="estudos.html" method="get" class="role-form">
+                        <fieldset>
+                            <legend>Escolha seu cargo</legend>
+                            <label class="role-option"><input name="cargo" type="radio" value="agente" required><span><strong>Agente de Polícia</strong><small>Inclui Contabilidade Geral</small></span></label>
+                            <label class="role-option"><input name="cargo" type="radio" value="escrivao" required><span><strong>Escrivão de Polícia</strong><small>Inclui Arquivologia</small></span></label>
+                        </fieldset>
+                        <button class="submit-button" type="submit">Abrir área de estudos</button>
+                    </form>
+                    <p>Os dados de estudo ficam neste navegador, separados por conta e cargo. Os dados da prévia anterior permanecem no navegador, mas não são importados automaticamente.</p>
+                </section>
+                <section id="purchase" hidden>
+                    <h2>Solicitar acesso via Pix</h2>
+                    <p>Uma compra PCPE libera Agente e Escrivão. Após a confirmação manual do Pix, o acesso será liberado nesta conta.</p>
+                    <form id="request-form">
+                        <fieldset class="account-plans">
+                            <legend>Escolha um plano</legend>
+                            <label class="role-option"><input name="plan" type="radio" value="mensal" required><span><strong>Mensal — R$ 24,90</strong><small>30 dias a partir da aprovação; renovação manual por novo Pix.</small></span></label>
+                            <label class="role-option"><input name="plan" type="radio" value="vitalicio" required><span><strong>Vitalício — R$ 99,90</strong><small>Pagamento único, acesso até a aprovação.</small></span></label>
+                        </fieldset>
+                        <button class="submit-button" type="submit">Registrar solicitação</button>
+                    </form>
+                </section>
+                <section id="pending" hidden>
+                    <h2>Solicitação pendente</h2>
+                    <p id="pending-plan"></p>
+                    <p>Escaneie o QR Code ou copie o código Pix. Confira o valor e os dados do recebedor no banco e envie o comprovante pelo WhatsApp. A liberação é manual.</p>
+                    <img id="pix-qr" class="pix-qr" alt="" width="220" height="220">
+                    <button class="secondary-action" id="copy-pix" type="button">Copiar Pix Copia e Cola</button>
+                    <p><a id="receipt-link" href="https://wa.me/5566996884580" target="_blank" rel="noopener noreferrer">Enviar comprovante pelo WhatsApp ↗</a></p>
+                    <p>A página atualiza o status após a análise. Para alterar um pedido pendente, entre em contato com o atendimento antes de pagar.</p>
+                </section>
+            </section>
+        </section>
+    </main>
+</body>
+</html>

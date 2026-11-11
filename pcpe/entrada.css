@@ -1,0 +1,12 @@
+body {
+    --pp-photo: url("https://www.simuladosbr.net/wp-content/uploads/2024/01/pacote-simulados-pcpe-2024-agente.jpg");
+}
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.role-form fieldset { display: grid; gap: .75rem; margin: 0 0 1rem; padding: 0; border: 0; }
+.role-option { display: flex; align-items: flex-start; gap: .75rem; padding: 1rem; border: 1px solid #c8d3e2; border-radius: .7rem; cursor: pointer; }
+.role-option:has(input:checked) { border-color: #14289a; background: #eef1fb; box-shadow: 0 0 0 1px #14289a; }
+.role-option input { margin-top: .2rem; accent-color: #14289a; }
+.role-option strong, .role-option small { display: block; }
+.role-option small { margin-top: .25rem; color: #53647b; line-height: 1.4; }
+.access-note { display: flex; gap: .5rem; margin: 1rem 0; color: #465974; font-size: .8rem; line-height: 1.5; }
+.access-note i { margin-top: .15rem; color: #14289a; }

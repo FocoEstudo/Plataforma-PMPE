@@ -1,5 +1,5 @@
-/* Tema PMPE: cores do brasão da Polícia Militar (grafite/preto, dourado e vermelho). */
-@import url("tema-painel.css?v=2");
+﻿/* Tema PMPE: cores do brasão da Polícia Militar (grafite/preto, dourado e vermelho). */
+@import url("tema-painel.css?v=3");
 
 :root {
     --t-dark: #0d0d0f;

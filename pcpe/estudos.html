@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#26364a">
+    <title>PCPE | Área de estudos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="painel-base.css">
+    <link rel="stylesheet" href="../pppe/tema.css?v=3">
+    <link rel="stylesheet" href="estudos.css">
+    <script defer src="../pppe/videos-pppe.js"></script>
+    <script defer src="../pppe/videos-complementares.js"></script>
+    <script defer src="video-mapeamento.js"></script>
+    <script defer src="access-policy.js"></script>
+    <script type="module">
+        import('./session-guard.js').catch(error => {
+            console.error('Não foi possível carregar a verificação de acesso PCPE.', error);
+            document.getElementById('session-message').textContent = 'Não foi possível verificar seu acesso. Confira sua conexão e tente novamente.';
+        });
+    </script>
+</head>
+<body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home">
+        <div id="sessionGate" role="status">
+            <div class="session-gate-card"><p id="session-message">Verificando seu acesso PCPE...</p><a href="index.html#acesso">Ir para conta e acesso</a></div>
+        </div>
+        <aside class="platform-sidebar sidebar">
+            <div class="sidebar-brand">
+                <img class="brand-crest" src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg" alt="" referrerpolicy="no-referrer">
+                <div class="sidebar-brand-title">OPERAÇÃO PCPE <span class="sidebar-brand-caption" id="sidebar-role">Área de estudos</span></div>
+            </div>
+            <p class="sidebar-section-label">Navegação</p>
+            <nav class="sidebar-nav" aria-label="Áreas de estudo">
+                <a class="dashboard-nav-item" href="#painel"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Painel</span></a>
+                <a class="dashboard-nav-item" href="#conteudo"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Conteúdos</span></a>
+                <a class="dashboard-nav-item" href="#missoes"><i class="fa-solid fa-list-check" aria-hidden="true"></i><span>Missões diárias</span></a>
+                <a class="dashboard-nav-item" href="#videos"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>Videoaulas</span></a>
+                <a class="dashboard-nav-item" href="#pdfs"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>PDFs</span></a>
+                <a class="dashboard-nav-item" href="#flashcards"><i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>Flashcards</span></a>
+                <a class="dashboard-nav-item" href="#mapas"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i><span>Mapas mentais</span></a>
+                <a class="dashboard-nav-item" href="#atendimento"><i class="fa-solid fa-headset" aria-hidden="true"></i><span>Atendimento</span></a>
+                <a class="dashboard-nav-item" href="#feedback"><i class="fa-solid fa-star" aria-hidden="true"></i><span>Feedback</span></a>
+                <a class="dashboard-nav-item" href="#simulado"><i class="fa-solid fa-clipboard-question" aria-hidden="true"></i><span>Simulados</span></a>
+                <a class="dashboard-nav-item" href="#apoio"><i class="fa-solid fa-toolbox" aria-hidden="true"></i><span>Apoio</span></a>
+                <a class="dashboard-nav-item" href="#redacao"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i><span>Redação</span></a>
+                <a class="dashboard-nav-item" href="#erros"><i class="fa-solid fa-book-skull" aria-hidden="true"></i><span>Caderno de erros</span></a>
+            </nav>
+            <a class="sidebar-caption" href="index.html#acesso">Trocar cargo ou sair</a>
+        </aside>
+        <header class="platform-header">
+            <div class="platform-header-inner">
+                <img class="brand-crest" src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg" alt="Brasão da Polícia Civil de Pernambuco" referrerpolicy="no-referrer">
+                <div>
+                    <h1 class="font-tactical text-white">OPERAÇÃO PCPE</h1>
+                    <p>PLATAFORMA DE ESTUDOS <span class="brand-accent">· Preparação PCPE</span></p>
+                </div>
+                <a class="change-role" href="index.html#acesso">Trocar cargo ou sair</a>
+            </div>
+        </header>
+        <main class="pcpe-main">
+            <div class="notice">Os materiais e ferramentas estão sendo completados. Os dados de estudo ficam neste navegador, sem sincronização entre dispositivos, e não são privados de outras pessoas que o utilizem.</div>
+            <div id="storage-error" class="error" role="alert" hidden></div>
+            <section id="invalid-role" class="panel" hidden>
+                <h2>Cargo não reconhecido</h2>
+                <p>Selecione Agente ou Escrivão para abrir a área de estudos.</p>
+                <a href="index.html#acesso">Escolher cargo</a>
+            </section>
+            <div id="app" hidden>
+                <section id="painel" class="view">
+                    <div class="dashboard-home-hero glass-panel rounded-2xl">
+                        <div class="dashboard-home-copy">
+                            <p class="eyebrow">Operação PCPE</p>
+                            <h2 id="page-title" class="dashboard-home-title">Área de estudos</h2>
+                            <p>Seu espaço de preparação: conteúdos, missões diárias, simulados e redação em um só lugar.</p>
+                        </div>
+                        <img class="dashboard-home-crest" src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg" alt="Brasão da Polícia Civil de Pernambuco" referrerpolicy="no-referrer">
+                    </div>
+                    <div id="dashboard-subjects" class="dashboard-shortcuts" aria-label="Disciplinas da preparação"></div>
+                </section>
+                <section id="conteudo" class="view" hidden>
+                    <h2>Conteúdo programático</h2>
+                    <p>Resumo inicial informado para a plataforma. Consulte o edital oficial e as retificações para o programa completo.</p>
+                    <div id="syllabus"></div>
+                    <p><a href="https://www.cebraspe.org.br/concursos/PC_PE_26" target="_blank" rel="noopener noreferrer">Edital e retificações no Cebraspe ↗</a></p>
+                </section>
+                <section id="missoes" class="view" hidden>
+                    <h2>Missões</h2>
+                    <p>Organize seu estudo por disciplina. A marcação é manual e independente para cada cargo.</p>
+                    <p id="mission-progress" aria-live="polite"></p>
+                    <div id="mission-list" class="stack"></div>
+                </section>
+                <section id="videos" class="view" hidden>
+                    <h2>Videoaulas</h2>
+                    <p>As aulas reaproveitadas abordam assuntos comuns, mas não garantem cobertura integral. Consulte o edital e verifique a atualização da legislação.</p>
+                    <label for="video-subject">Disciplina
+                        <select id="video-subject"></select>
+                    </label>
+                    <label for="video-lesson">Aula
+                        <select id="video-lesson"></select>
+                    </label>
+                    <p id="video-status" class="placeholder" role="status" aria-live="polite"></p>
+                    <div class="video-player-shell" id="video-player" hidden>
+                        <iframe id="video-frame" title="Videoaula selecionada" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </section>
+                <section id="pdfs" class="view" hidden>
+                    <h2>PDFs</h2>
+                    <p class="placeholder">Os PDFs específicos da PCPE ainda estão em preparação.</p>
+                </section>
+                <section id="flashcards" class="view" hidden>
+                    <h2>Flashcards</h2>
+                    <p>Crie seus próprios cartões de revisão para este cargo.</p>
+                    <form id="flashcard-form" class="stack">
+                        <label>Pergunta <input id="flashcard-question" maxlength="500" required></label>
+                        <label>Resposta <textarea id="flashcard-answer" maxlength="2000" rows="3" required></textarea></label>
+                        <button type="submit">Adicionar cartão</button>
+                    </form>
+                    <div id="flashcard-list" class="stack list"></div>
+                </section>
+                <section id="mapas" class="view" hidden>
+                    <h2>Mapas mentais</h2>
+                    <p>Explore os tópicos resumidos de cada disciplina e registre suas próprias conexões. Os mapas completos estão em preparação.</p>
+                    <div id="mindmap-topics" class="mindmap-topics"></div>
+                    <label for="mindmap-text">Rascunho do mapa</label>
+                    <textarea id="mindmap-text" data-draft="mindmap" rows="12" maxlength="30000" placeholder="Tema central, ramificações e conexões"></textarea>
+                </section>
+                <section id="atendimento" class="view" hidden>
+                    <h2>Atendimento</h2>
+                    <p class="placeholder">O atendimento integrado da PCPE ainda não está disponível nesta prévia.</p>
+                </section>
+                <section id="feedback" class="view" hidden>
+                    <h2>Feedback</h2>
+                    <p class="placeholder">O envio de feedback da PCPE ainda não está disponível nesta prévia.</p>
+                </section>
+                <section id="simulado" class="view" hidden>
+                    <h2>Simulado</h2>
+                    <p class="placeholder">O banco de questões e os simulados específicos da PCPE ainda estão em preparação.</p>
+                </section>
+                <section id="apoio" class="view" hidden>
+                    <h2>Apoio ao estudo</h2>
+                    <p>Planeje sua rotina e registre os próximos passos.</p>
+                    <label for="support-text">Meu plano de estudos</label>
+                    <textarea id="support-text" data-draft="support" rows="10" maxlength="30000" placeholder="Horários, revisões e prioridades"></textarea>
+                </section>
+                <section id="redacao" class="view" hidden>
+                    <h2>Redação</h2>
+                    <p>Use este espaço para rascunhar. A correção e os temas orientados ainda não estão disponíveis.</p>
+                    <label for="essay-text">Rascunho da redação</label>
+                    <textarea id="essay-text" data-draft="essay" rows="14" maxlength="30000" placeholder="Escreva sua redação"></textarea>
+                </section>
+                <section id="erros" class="view" hidden>
+                    <h2>Caderno de erros</h2>
+                    <p>Registre o que errou, a correção e quando pretende revisar.</p>
+                    <label for="errors-text">Minhas anotações</label>
+                    <textarea id="errors-text" data-draft="errors" rows="14" maxlength="30000" placeholder="Questão, motivo do erro e regra correta"></textarea>
+                </section>
+                <p id="save-status" class="save-status" role="status" aria-live="polite"></p>
+            </div>
+        </main>
+    <nav id="mobile-nav" class="mobile-dashboard-nav" aria-label="Navegação rápida"></nav>
+    <script>window.GABARI_CONFIG = { concurso: 'PCPE', accent: '#26364a', gold: '#e0b43c', storageKey: 'gabari_hidden' };</script>
+    <script src="../gabari.js?v=4"></script>
+</body>
+</html>

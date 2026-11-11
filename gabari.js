@@ -114,8 +114,26 @@
             steps: [
                 'Cada concurso tem plataforma, conteúdo e acesso próprios.',
                 'Clique no cartão do concurso para o qual você vai estudar.',
-                'Você será levado à tela de login daquele concurso.',
+                'Nos concursos disponíveis, você será levado à tela de login; os que estão em construção mostram seu andamento.',
                 'Quer outro concurso depois? É só voltar a esta tela.'
+            ]
+        },
+        pcpeSelection: {
+            title: 'Escolha do cargo',
+            steps: [
+                'Escolha entre Agente e Escrivão e continue para a conta PCPE.',
+                'As disciplinas comuns aparecem nos dois cargos; cada um tem uma disciplina específica.',
+                'Entre na conta e solicite o plano por Pix; a liberação depende da confirmação manual.',
+                'Consulte o edital e as retificações na página oficial da banca.'
+            ]
+        },
+        pcpeStudy: {
+            title: 'Área de estudos',
+            steps: [
+                'Use o menu para navegar pelas áreas da preparação.',
+                'Marque suas missões e registre suas anotações ou cartões neste navegador.',
+                'Os dados são separados por conta e cargo neste navegador, mas não são sincronizados.',
+                'As áreas indicadas como em preparação ainda serão disponibilizadas.'
             ]
         },
         login: {
@@ -272,6 +290,8 @@
     function currentContext() {
         const path = location.pathname.toLowerCase();
         if (/admin/.test(path)) return 'admin';
+        if (/\/pcpe\/estudos\.html$/.test(path)) return 'pcpeStudy';
+        if (/\/pcpe\/(?:index\.html)?$/.test(path)) return 'pcpeSelection';
         if (/concursos/.test(path)) return 'select';
         if (/login/.test(path)) return 'login';
         const state = document.body.getAttribute('data-session-state');

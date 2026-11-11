@@ -4,6 +4,7 @@ const { FieldValue, Timestamp, getFirestore } = require("firebase-admin/firestor
 const { HttpsError, onCall, onRequest } = require("firebase-functions/v2/https");
 const { onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
+const { cancelSubscription, CancellationError, createSubscriptionProvider } = require("./credit-card-cancel");
 
 initializeApp();
 
@@ -329,3 +330,37 @@ exports.notifyTicketReply = onDocumentWritten(
 
 exports.createPixPayment = createPixPayment;
 exports.mercadoPagoWebhook = mercadoPagoWebhook;
+
+exports.cancelCardSubscription = onCall(
+  { region: "southamerica-east1", maxInstances: 5, secrets: [mercadoPagoAccessToken] },
+  async request => {
+    const uid = request.auth?.uid;
+    if (!uid) throw new HttpsError("unauthenticated", "Entre na sua conta para cancelar a assinatura.");
+    try {
+      const providerRequest = createSubscriptionProvider(mercadoPagoAccessToken.value());
+      return await cancelSubscription({
+        uid,
+        orderId: request.data?.orderId,
+        readOrder: async orderId => (await db.collection("cardPaymentOrders").doc(orderId).get()).data(),
+        getSubscription: id => providerRequest(id, "GET"),
+        cancelAtProvider: id => providerRequest(id, "PUT"),
+        recordCancellation: async (orderId, owner, subscriptionId) => {
+          const ref = db.collection("cardPaymentOrders").doc(orderId);
+          await db.runTransaction(async transaction => {
+            const snapshot = await transaction.get(ref);
+            const order = snapshot.data();
+            if (!order || order.uid !== owner || order.subscriptionId !== subscriptionId || order.plan !== "mensal") {
+              throw new HttpsError("failed-precondition", "O pedido foi alterado. Entre em contato com o atendimento.");
+            }
+            transaction.update(ref, { subscriptionStatus: "cancelled", cancellationConfirmedAt: FieldValue.serverTimestamp() });
+          });
+        }
+      });
+    } catch (error) {
+      if (error instanceof CancellationError) throw new HttpsError(error.code, error.message);
+      if (error instanceof HttpsError) throw error;
+      console.error("Falha ao cancelar assinatura no Mercado Pago.", error);
+      throw new HttpsError("unavailable", "Não foi possível confirmar o cancelamento. Tente novamente.");
+    }
+  }
+);

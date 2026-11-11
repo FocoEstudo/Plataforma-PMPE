@@ -2336,7 +2336,8 @@
             .fc-card { min-height: 20rem; }
         }
     </style>
-    <link rel="stylesheet" href="tema-pmpe.css?v=3">
+    <link rel="stylesheet" href="tema-pmpe.css?v=4">
+    <link rel="stylesheet" href="aviso-pagamento.css">
 </head>
 
 <body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home" data-session-state="checking">
@@ -2353,14 +2354,14 @@
                         <div>
                             <p class="payment-gate-kicker"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> OPERAÇÃO PMPE · ACESSO DO ESTUDANTE</p>
                             <h2 class="payment-gate-title mt-2 font-extrabold">Seu próximo passo começa com estratégia.</h2>
-                            <p class="payment-gate-lead mt-2">Uma plataforma de preparação PMPE para organizar sua rotina, praticar e acompanhar sua evolução — sem mensalidade.</p>
+                            <p class="payment-gate-lead mt-2">Uma plataforma de preparação PMPE para organizar sua rotina, praticar e acompanhar sua evolução.</p>
                         </div>
-                        <div class="payment-gate-offer" aria-label="Acesso à plataforma por R$ 99,90 em pagamento único">
+                            <div class="payment-gate-offer" aria-label="Planos de acesso PMPE">
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5P0BSF4Hcf3SFa3XBXmKrt8p5GZf5Mx-Hgu-SiyMIEQ&amp;s=10" alt="" loading="eager" decoding="async">
                             <div>
-                                <span class="payment-gate-offer-label">Pagamento único</span>
-                                <strong class="payment-gate-offer-price payment-price-text">R$ 99,90</strong>
-                                <p class="payment-gate-offer-note">Sem cobrança mensal recorrente.</p>
+                                <span id="paymentOfferLabel" class="payment-gate-offer-label">Planos disponíveis</span>
+                                <strong class="payment-gate-offer-price payment-price-text">Selecione um plano</strong>
+                                <p id="paymentOfferNote" class="payment-gate-offer-note">Mensal ou pagamento único.</p>
                             </div>
                         </div>
                     </header>
@@ -2377,8 +2378,25 @@
                     </div>
                     <div class="payment-gate-column">
                         <h3 class="text-lg font-extrabold">Escolha como pagar com Pix</h3>
-                        <p class="mt-1 text-sm text-gray-600">Aponte a câmera do banco para o QR Code ou copie o código Pix: o valor já aparece preenchido.</p>
-                        <img id="pixQrImage" src="pix-qr.png" alt="QR Code Pix para pagamento de R$ 99,90" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
+                        <div class="card-payment-notice">
+                            <i class="fa-solid fa-credit-card" aria-hidden="true"></i>
+                            <div><strong>Cartão de crédito · em preparação</strong><span>Ainda não disponível. Atualmente, o pagamento é por Pix.</span></div>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-600">Escolha um dos planos. O QR Code e o Pix Copia e Cola mostrarão o valor correspondente.</p>
+                        <fieldset id="paymentPlanOptions" class="mt-4 grid gap-3">
+                            <legend class="text-sm font-extrabold">Planos PMPE</legend>
+                            <label class="flex cursor-pointer gap-3 rounded-xl border border-emerald-200 p-3 has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50">
+                                <input type="radio" name="paymentPlan" value="mensal" class="mt-1 accent-emerald-700">
+                                <span><strong class="block">Mensal — R$ 24,90</strong><small class="block text-gray-600">30 dias a partir da aprovação; renovação manual por Pix.</small></span>
+                            </label>
+                            <label class="flex cursor-pointer gap-3 rounded-xl border border-emerald-200 p-3 has-[:checked]:border-emerald-700 has-[:checked]:bg-emerald-50">
+                                <input type="radio" name="paymentPlan" value="vitalicio" class="mt-1 accent-emerald-700">
+                                <span><strong class="block">Vitalício — R$ 99,90</strong><small class="block text-gray-600">Pagamento único, sem renovação.</small></span>
+                            </label>
+                        </fieldset>
+                        <button id="selectPaymentPlanButton" type="button" class="payment-gate-copy mt-3">Registrar plano e exibir Pix</button>
+                        <div id="pixPaymentDetails" hidden>
+                        <img id="pixQrImage" alt="" class="mx-auto mt-4 w-full max-w-[17rem] rounded-xl border border-emerald-100 bg-white p-2">
                         <div class="mt-4">
                             <label for="promoCodeInput" class="text-xs font-extrabold uppercase tracking-wide text-gray-600">Código promocional</label>
                             <div class="mt-1 flex gap-2">
@@ -2400,11 +2418,12 @@
                             </button>
                             <p id="pixCopyMessage" class="mt-2 min-h-5 text-xs text-emerald-800" role="status" aria-live="polite"></p>
                         </div>
+                        </div>
                         <div id="paymentRequestStatus" class="payment-gate-status" data-state="loading" role="status" aria-live="polite">
                             <span class="payment-gate-status-icon"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i></span>
                             <div>
-                                <p id="paymentRequestHeading" class="font-extrabold">Preparando sua área de estudos</p>
-                                <p id="paymentRequestDetail" class="mt-1 text-sm leading-relaxed text-gray-600">Sua experiência será vinculada a esta conta.</p>
+                                <p id="paymentRequestHeading" class="font-extrabold">Escolha um plano</p>
+                                <p id="paymentRequestDetail" class="mt-1 text-sm leading-relaxed text-gray-600">Selecione Mensal ou Vitalício para exibir o QR Code correspondente.</p>
                             </div>
                         </div>
                         <p id="paymentGateMessage" class="mt-3 text-sm text-red-700" role="alert" aria-live="polite"></p>

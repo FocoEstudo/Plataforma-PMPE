@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a1448">
+    <meta name="description" content="Organize sua preparação para Agente e Escrivão da Polícia Civil de Pernambuco.">
+    <title>Operação PCPE | Sua preparação com estratégia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="entrada-base.css">
+    <link rel="stylesheet" href="../pppe/tema.css?v=3">
+    <link rel="stylesheet" href="entrada.css">
+    <link rel="stylesheet" href="conta.css">
+    <link rel="stylesheet" href="../aviso-pagamento.css">
+    <script defer src="../planos-acesso.js"></script>
+    <script defer src="access-policy.js"></script>
+    <script type="module">
+        import('./conta.js').catch(error => {
+            console.error('Não foi possível carregar o acesso PCPE.', error);
+            const status = document.getElementById('status');
+            status.textContent = 'Não foi possível carregar o serviço de acesso. Confira sua conexão e recarregue a página.';
+            status.dataset.error = 'true';
+        });
+    </script>
+</head>
+<body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div class="site-shell">
+        <header class="site-header">
+            <div class="site-container site-header-inner">
+                <a class="site-brand" href="#inicio" aria-label="Operação PCPE, início">
+                    <img src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg" alt="" referrerpolicy="no-referrer">
+                    <span>OPERAÇÃO PCPE<small>PREPARAÇÃO COM PROPÓSITO</small></span>
+                </a>
+                <nav class="site-nav" aria-label="Navegação principal">
+                    <a href="../concursos.html">Outros concursos</a>
+                    <a href="#plataforma">A plataforma</a>
+                    <a href="#metodo">Como funciona</a>
+                    <a class="nav-cta" href="#acesso">Acessar plataforma <span aria-hidden="true">→</span></a>
+                </nav>
+            </div>
+        </header>
+        <main id="conteudo">
+            <section id="inicio" class="hero">
+                <div class="site-container hero-grid">
+                    <div class="hero-copy">
+                        <p class="hero-kicker">Operação PCPE · seu próximo passo começa aqui</p>
+                        <h1 class="hero-title">Transforme estudo em <span>prontidão.</span></h1>
+                        <p class="hero-description">Uma plataforma de preparação para quem quer sair do estudo sem direção e avançar com plano, prática e acompanhamento — missão após missão.</p>
+                        <ul class="hero-points">
+                            <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Preparação para a Polícia Civil de Pernambuco</li>
+                            <li><i class="fa-solid fa-crosshairs" aria-hidden="true"></i>Conteúdos separados por cargo</li>
+                            <li><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Organize sua rotina de estudos</li>
+                        </ul>
+                        <a class="hero-cta" href="#acesso">Começar minha preparação <span aria-hidden="true">→</span></a>
+                        <a class="hero-secondary" href="#plataforma">Explorar recursos da plataforma</a>
+                    </div>
+                    <section id="acesso" class="auth-card" aria-labelledby="account-heading">
+                        <div class="auth-card-top">
+                            <span class="auth-card-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+                            <div><p>Área do estudante</p><h2 id="account-heading">Entre para continuar</h2></div>
+                        </div>
+                        <p class="auth-card-intro">Acesse sua preparação ou crie sua conta para começar uma rotina de estudo mais estratégica.</p>
+                        <section id="authentication" hidden>
+                            <div class="mode-switch" role="group" aria-label="Tipo de acesso">
+                                <button id="login-mode" type="button" aria-pressed="true">Entrar</button>
+                                <button id="register" type="button" aria-pressed="false">Criar conta</button>
+                            </div>
+                            <form id="auth-form">
+                                <label class="field" for="email"><span>Email</span><input id="email" type="email" autocomplete="email" maxlength="254" required></label>
+                                <label class="field" for="password"><span>Senha</span><input id="password" type="password" autocomplete="current-password" minlength="6" required></label>
+                                <button class="submit-button" id="auth-submit" type="submit">Entrar na plataforma</button>
+                            </form>
+                            <button class="secondary-action" id="reset" type="button">Esqueci minha senha</button>
+                            <a class="secondary-action account-support" href="https://wa.me/5566996884580" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Dúvidas? Fale no WhatsApp</a>
+                        </section>
+                        <section id="account" hidden>
+                            <p>Conta: <strong id="account-email"></strong> <button class="secondary-action" id="sign-out" type="button">Sair</button></p>
+                            <div id="checking">Verificando seu acesso...</div>
+                            <p id="expired-message" class="account-note" role="status" hidden></p>
+                            <section id="granted" hidden>
+                                <h3>Acesso PCPE liberado</h3>
+                                <p id="access-description"></p>
+                                <form action="estudos.html" method="get" class="role-form">
+                                    <fieldset>
+                                        <legend>Escolha seu cargo</legend>
+                                        <label class="role-option"><input name="cargo" type="radio" value="agente" required><span><strong>Agente de Polícia</strong><small>Inclui Contabilidade Geral</small></span></label>
+                                        <label class="role-option"><input name="cargo" type="radio" value="escrivao" required><span><strong>Escrivão de Polícia</strong><small>Inclui Arquivologia</small></span></label>
+                                    </fieldset>
+                                    <button class="submit-button" type="submit">Abrir área de estudos</button>
+                                </form>
+                                <p>Os dados de estudo ficam neste navegador, separados por conta e cargo. Os dados da prévia anterior permanecem no navegador, mas não são importados automaticamente.</p>
+                            </section>
+                            <section id="purchase" hidden>
+                                <h3>Solicitar acesso via Pix</h3>
+                                <p>Uma compra PCPE libera Agente e Escrivão. Após a confirmação manual do Pix, o acesso será liberado nesta conta.</p>
+                                <form id="request-form">
+                                    <fieldset class="account-plans">
+                                        <legend>Escolha um plano</legend>
+                                        <label class="role-option"><input name="plan" type="radio" value="mensal" required><span><strong>Mensal — R$ 24,90</strong><small>30 dias a partir da aprovação; renovação manual por novo Pix.</small></span></label>
+                                        <label class="role-option"><input name="plan" type="radio" value="vitalicio" required><span><strong>Vitalício — R$ 99,90</strong><small>Pagamento único, acesso até a aprovação.</small></span></label>
+                                    </fieldset>
+                                    <button class="submit-button" type="submit">Registrar solicitação</button>
+                                </form>
+                            </section>
+                            <section id="pending" hidden>
+                                <h3>Solicitação pendente</h3>
+                                <p id="pending-plan"></p>
+                                <p>Escaneie o QR Code ou copie o código Pix. Confira o valor e os dados do recebedor no banco e envie o comprovante pelo WhatsApp. A liberação é manual.</p>
+                                <img id="pix-qr" class="pix-qr" alt="" width="220" height="220">
+                                <button class="secondary-action" id="copy-pix" type="button">Copiar Pix Copia e Cola</button>
+                                <p><a id="receipt-link" href="https://wa.me/5566996884580" target="_blank" rel="noopener noreferrer">Enviar comprovante pelo WhatsApp ↗</a></p>
+                                <p>A página atualiza o status após a análise. Para alterar um pedido pendente, entre em contato com o atendimento antes de pagar.</p>
+                            </section>
+                        </section>
+                        <p id="status" class="status" role="status" aria-live="polite">Carregando serviço de acesso...</p>
+                        <p class="access-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Os materiais estão sendo completados e os dados de estudo ficam neste navegador.</p>
+                        <div class="card-payment-notice">
+                            <i class="fa-solid fa-credit-card" aria-hidden="true"></i>
+                            <div><strong>Cartão de crédito · em preparação</strong><span>Ainda não disponível. O acesso é solicitado por Pix após entrar na conta.</span></div>
+                        </div>
+                        <div class="auth-card-foot"><i class="fa-solid fa-lock" aria-hidden="true"></i><span>Seu acesso é individual. Entre com sua conta para retomar seus estudos.</span></div>
+                    </section>
+                </div>
+            </section>
+            <section id="plataforma" class="section">
+                <div class="site-container">
+                    <header class="section-heading">
+                        <p class="section-kicker">Sua preparação em um só lugar</p>
+                        <h2 class="section-title">Organização para cada etapa da missão.</h2>
+                        <p class="section-description">Acompanhe seus temas e organize sua rotina, com recursos estruturados por cargo.</p>
+                    </header>
+                    <div class="feature-grid">
+                        <article class="feature-card"><span class="feature-icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></span><h3>Plano de estudos</h3><p>Consulte as disciplinas e acompanhe suas missões.</p></article>
+                        <article class="feature-card"><span class="feature-icon"><i class="fa-solid fa-circle-play" aria-hidden="true"></i></span><h3>Videoaulas</h3><p>Estude com aulas selecionadas de assuntos comuns aos concursos.</p></article>
+                        <article class="feature-card"><span class="feature-icon"><i class="fa-solid fa-brain" aria-hidden="true"></i></span><h3>Revisão estratégica</h3><p>Crie seus cartões e registre dúvidas, redações e anotações.</p></article>
+                    </div>
+                    <p class="curriculum-note">Os materiais e ferramentas da PCPE estão sendo completados. Confira sempre o edital e as retificações oficiais.</p>
+                </div>
+            </section>
+            <section id="metodo" class="section">
+                <div class="site-container">
+                    <header class="section-heading"><p class="section-kicker">Ritmo operacional</p><h2 class="section-title">Estude com direção. Evolua com constância.</h2></header>
+                    <div class="method-grid">
+                        <article class="method-card"><h3>Escolha seu cargo</h3><p>Selecione Agente ou Escrivão para visualizar os assuntos correspondentes.</p></article>
+                        <article class="method-card"><h3>Cumpra a missão</h3><p>Organize seu estudo por disciplina e marque o que já estudou.</p></article>
+                        <article class="method-card"><h3>Revise e reforce</h3><p>Retome seus cartões e registros para consolidar o aprendizado.</p></article>
+                    </div>
+                </div>
+            </section>
+            <section class="site-container">
+                <div class="motivation-band"><p class="section-kicker">Disciplina • foco • missão</p><h2 class="section-title">A aprovação é o objetivo. A constância é a missão de hoje.</h2><p>Comece pela próxima missão e avance no seu ritmo.</p><a class="hero-cta" href="#acesso">Acessar plataforma <span aria-hidden="true">→</span></a></div>
+            </section>
+        </main>
+        <footer class="site-footer"><div class="site-container site-footer-inner"><p>Operação PCPE · preparação com foco, método e constância.</p><p>Confira o edital vigente no <a href="https://www.cebraspe.org.br/concursos/PC_PE_26" target="_blank" rel="noopener noreferrer">Cebraspe</a>.</p></div></footer>
+    </div>
+    <script>window.GABARI_CONFIG = { concurso: 'PCPE', accent: '#0a1448', gold: '#e0b43c', storageKey: 'gabari_hidden' };</script>
+    <script src="../gabari.js?v=4"></script>
+</body>
+</html>

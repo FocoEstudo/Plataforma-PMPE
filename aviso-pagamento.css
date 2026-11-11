@@ -1,0 +1,15 @@
+.card-payment-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    margin: 1rem 0;
+    padding: .85rem;
+    border: 1px solid #c7d2e3;
+    border-radius: .7rem;
+    background: #f1f5fb;
+    color: #23395a;
+    font: 500 .82rem/1.5 Inter, Arial, sans-serif;
+}
+.card-payment-notice i { margin-top: .2rem; color: #173a76; }
+.card-payment-notice strong, .card-payment-notice span { display: block; }
+.card-payment-notice strong { color: #14284b; font-size: .88rem; }

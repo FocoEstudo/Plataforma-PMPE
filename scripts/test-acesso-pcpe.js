@@ -1,0 +1,31 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const policy = require('../pcpe/access-policy.js');
+const plans = require('../planos-acesso.js');
+const approval = Date.UTC(2026, 0, 31, 14, 30);
+const stamp = value => ({ toMillis: () => value });
+const monthly = { active: true, plan: 'mensal', paidAt: stamp(approval) };
+const expiration = plans.expirationForApproval('mensal', approval);
+
+assert.equal(policy.expiresAt(monthly), expiration);
+assert.equal(policy.hasAccess(monthly, approval), true);
+assert.equal(policy.hasAccess(monthly, expiration - 1), true);
+assert.equal(policy.hasAccess(monthly, expiration), false);
+assert.equal(policy.hasAccess(monthly, expiration + 1), false);
+assert.equal(policy.hasAccess({ ...monthly, active: false }, approval), false);
+assert.equal(policy.hasAccess({ ...monthly, paidAt: null }, approval), false);
+assert.equal(policy.hasAccess({ ...monthly, paidAt: stamp(NaN) }, approval), false);
+assert.equal(policy.hasAccess({ active: true, plan: 'desconhecido' }, approval), false);
+assert.equal(policy.hasAccess({ active: true, plan: 'vitalicio' }, expiration + 10000000000), true);
+assert.equal(policy.hasAccess({ active: false, plan: 'vitalicio' }, approval), false);
+assert.equal(policy.hasAccess(null, approval), false);
+assert.equal(policy.mayApprovePix(null, approval), true);
+assert.equal(policy.mayApprovePix({ active: false }, approval), true);
+assert.equal(policy.mayApprovePix(monthly, expiration - 1), false);
+assert.equal(policy.mayApprovePix(monthly, expiration), true);
+assert.equal(policy.mayApprovePix({ active: true, plan: 'vitalicio' }, expiration), false);
+assert.equal(policy.mayApprovePix({ active: true, plan: 'mensal' }, expiration), false);
+assert.equal(policy.mayApprovePix({ active: true, plan: 'outro' }, expiration), false);
+assert.equal(policy.mayApprovePix({}, expiration), false);
+console.log('OK: acesso PCPE mensal, vencimento exato, vitalício e dados inválidos.');
