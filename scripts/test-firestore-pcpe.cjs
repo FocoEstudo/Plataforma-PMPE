@@ -23,6 +23,7 @@ async function main() {
     try {
         const owner = env.authenticatedContext('student-a', { email: 'student-a@example.test' }).firestore();
         const other = env.authenticatedContext('student-b', { email: 'student-b@example.test' }).firestore();
+        const thirdStudent = env.authenticatedContext('student-c', { email: 'student-c@example.test' }).firestore();
         const admin = env.authenticatedContext('administrator', { email: adminEmail, email_verified: true }).firestore();
         const unverifiedAdmin = env.authenticatedContext('administrator', { email: adminEmail, email_verified: false }).firestore();
         const ownerRequest = doc(owner, 'accessRequestsPcpe', 'student-a');
@@ -115,6 +116,21 @@ async function main() {
         await assertFails(updateDoc(adminPppeRequest, {
             status: 'approved', reviewedAt: serverTimestamp()
         }));
+
+        await env.withSecurityRulesDisabled(async context => {
+            await setDoc(doc(context.firestore(), 'accessPcpe', 'student-b'), {
+                active: true, plan: 'semanal', paidAt: Timestamp.fromMillis(Date.now() - 8 * 86400000)
+            });
+            await setDoc(doc(context.firestore(), 'accessPcpe', 'student-c'), {
+                active: true, plan: 'semanal', paidAt: Timestamp.fromMillis(Date.now())
+            });
+        });
+        await assertSucceeds(setDoc(doc(other, 'accessRequestsPcpe', 'student-b'), {
+            email: 'student-b@example.test', status: 'pending', plan: 'mensal', requestedAt: serverTimestamp()
+        }));
+        await assertFails(setDoc(doc(thirdStudent, 'accessRequestsPcpe', 'student-c'), {
+            email: 'student-c@example.test', status: 'pending', plan: 'mensal', requestedAt: serverTimestamp()
+        }));
         await env.withSecurityRulesDisabled(async context => {
             await setDoc(doc(context.firestore(), 'accessPppe', 'student-a'), {
                 active: true, provider: 'pix_manual', amount: 24.9, currency: 'BRL',
@@ -130,7 +146,7 @@ async function main() {
         });
         assert.equal((await getDoc(doc(owner, 'access', 'student-a'))).data().active, true);
         assert.equal((await getDoc(doc(owner, 'accessPppe', 'student-a'))).data().active, true);
-        console.log('OK: regras Pix PCPE, PMPE e PPPE, validade mensal, renovação, aprovação concorrente e acessos legados.');
+        console.log('OK: regras Pix PCPE, PMPE e PPPE, validade semanal/mensal, renovação, aprovação concorrente e acessos legados.');
     } finally {
         await env.clearFirestore();
         await env.cleanup();

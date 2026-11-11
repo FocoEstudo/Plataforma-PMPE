@@ -1,3 +1,5 @@
+import { requestCheckoutUrl } from "./checkout-client.mjs";
+
 const gate = document.getElementById("sessionGate");
 const gateLoading = document.getElementById("sessionGateLoading");
 const gateLoadingMessage = document.getElementById("sessionGateLoadingMessage");
@@ -20,6 +22,7 @@ const PROMO_QR_SRC = "pix-qr-promo.png";
 const PIX_PAYLOAD_PROMO = "00020101021126580014br.gov.bcb.pix0136623c3509-96f1-49f7-8794-41ed9de36bf6520400005303986540574.905802BR5923IAN ITALO GOMES ANDRADE6006BRASIL62070503***63043330";
 const paymentPlanOptions = document.getElementById("paymentPlanOptions");
 const selectPaymentPlanButton = document.getElementById("selectPaymentPlanButton");
+const startCheckoutButton = document.getElementById("startCheckoutButton");
 const pixPaymentDetails = document.getElementById("pixPaymentDetails");
 const paymentOfferLabel = document.getElementById("paymentOfferLabel");
 const paymentOfferNote = document.getElementById("paymentOfferNote");
@@ -180,8 +183,8 @@ const showPaymentRequestStatus = status => {
     } else if (status === "approved") {
         setPaymentRequestStatus(
             "error",
-            "Seu acesso mensal venceu",
-            "Selecione o plano Mensal para renovar ou Vitalício para fazer uma nova compra."
+            "Seu acesso por período venceu",
+            "Escolha um plano para renovar seu acesso ou Vitalício para uma nova compra."
         );
     } else {
         setPaymentRequestStatus(
@@ -192,12 +195,18 @@ const showPaymentRequestStatus = status => {
     }
 };
 
+const ACCESS_DURATION_MS = Object.freeze({
+    semanal: 7 * 24 * 60 * 60 * 1000,
+    mensal: 30 * 24 * 60 * 60 * 1000
+});
+
 const accessExpiration = access => {
     if (access?.active !== true) return null;
     if (access.plan === undefined || access.plan === "vitalicio") return Infinity;
-    if (access.plan !== "mensal" || typeof access.paidAt?.toMillis !== "function") return null;
+    const durationMs = ACCESS_DURATION_MS[access.plan];
+    if (!durationMs || typeof access.paidAt?.toMillis !== "function") return null;
     const paidAt = access.paidAt.toMillis();
-    return Number.isSafeInteger(paidAt) && paidAt >= 0 ? paidAt + 30 * 24 * 60 * 60 * 1000 : null;
+    return Number.isSafeInteger(paidAt) && paidAt >= 0 ? paidAt + durationMs : null;
 };
 
 const hasCurrentAccess = access => {
@@ -237,7 +246,7 @@ const showGrantedProfile = async (user, access) => {
 
 const normalizePromoCode = value => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, " ").toUpperCase();
 
-const planPrice = plan => plan === "mensal" ? 24.9 : 99.9;
+const planPrice = plan => ({ semanal: 6.25, mensal: 24.9, vitalicio: 99.9 })[plan];
 const formatPlanPrice = amount => amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 const loadPaymentPlanPayloads = async () => {
@@ -298,6 +307,9 @@ const selectPaymentPlan = async () => {
     const plan = paymentPlanOptions.querySelector('input[name="paymentPlan"]:checked')?.value;
     if (!["mensal", "vitalicio"].includes(plan)) {
         showPaymentRequestStatus("choose-plan");
+        paymentGateMessage.textContent = plan === "semanal"
+            ? "O plano semanal está disponível no Checkout Pro. Use o botão “Pagar com Mercado Pago”."
+            : "";
         return;
     }
     selectPaymentPlanButton.disabled = true;
@@ -365,6 +377,36 @@ const selectPaymentPlan = async () => {
 };
 
 selectPaymentPlanButton.addEventListener("click", () => { void selectPaymentPlan(); });
+
+const startCheckout = async () => {
+    const plan = paymentPlanOptions.querySelector('input[name="paymentPlan"]:checked')?.value;
+    if (!PLANS_FOR_CHECKOUT.has(plan)) {
+        paymentGateMessage.textContent = "Selecione um plano para continuar.";
+        return;
+    }
+    if (paymentRequestData?.promoCode && plan === "vitalicio" && paymentRequestData.amount === 74.9) {
+        paymentGateMessage.textContent = "O desconto promocional ainda não está disponível no Checkout Pro. Use a opção de Pix manual para manter o desconto.";
+        return;
+    }
+    startCheckoutButton.disabled = true;
+    paymentGateMessage.textContent = "";
+    try {
+        const checkoutUrl = await requestCheckoutUrl({
+            auth,
+            concurso: ACCESS_REQUESTS_COLLECTION === "accessRequestsPppe" ? "pppe" : "pmpe",
+            plan
+        });
+        window.location.assign(checkoutUrl);
+    } catch (error) {
+        console.error("Não foi possível iniciar o Checkout Pro.", error);
+        paymentGateMessage.textContent = error.message || "Não foi possível iniciar o checkout. Tente novamente.";
+    } finally {
+        startCheckoutButton.disabled = false;
+    }
+};
+
+const PLANS_FOR_CHECKOUT = new Set(["semanal", "mensal", "vitalicio"]);
+startCheckoutButton.addEventListener("click", () => { void startCheckout(); });
 
 if (promoCodeButton && promoCodeInput && PROMO_CODES.length) {
     promoCodeButton.addEventListener("click", async () => {
@@ -635,7 +677,7 @@ try {
                 const access = snapshot.exists() ? snapshot.data() : null;
                 if (hasCurrentAccess(access)) {
                     void showGrantedProfile(user, access);
-                } else if (access?.active === true && access.plan === "mensal" && accessExpiration(access) !== null) {
+                } else if (access?.active === true && ["semanal", "mensal"].includes(access.plan) && accessExpiration(access) !== null) {
                     showPaymentRequestStatus("approved");
                 }
             }, error => {

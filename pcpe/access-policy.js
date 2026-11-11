@@ -5,12 +5,18 @@
     else root.PcpeAccessPolicy = policy;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
     'use strict';
+    const DURATION_MS = Object.freeze({
+        semanal: 7 * 24 * 60 * 60 * 1000,
+        mensal: 30 * 24 * 60 * 60 * 1000
+    });
+
     function expiresAt(access) {
         if (!access || access.active !== true) return null;
         if (access.plan === 'vitalicio') return Infinity;
-        if (access.plan !== 'mensal' || typeof access.paidAt?.toMillis !== 'function') return null;
+        const durationMs = DURATION_MS[access.plan];
+        if (!durationMs || typeof access.paidAt?.toMillis !== 'function') return null;
         const time = access.paidAt.toMillis();
-        return Number.isSafeInteger(time) && time >= 0 ? time + 30 * 24 * 60 * 60 * 1000 : null;
+        return Number.isSafeInteger(time) && time >= 0 ? time + durationMs : null;
     }
     function hasAccess(access, now = Date.now()) {
         const expiration = expiresAt(access);

@@ -5,9 +5,17 @@ const policy = require('../pcpe/access-policy.js');
 const plans = require('../planos-acesso.js');
 const approval = Date.UTC(2026, 0, 31, 14, 30);
 const stamp = value => ({ toMillis: () => value });
+const weekly = { active: true, plan: 'semanal', paidAt: stamp(approval) };
 const monthly = { active: true, plan: 'mensal', paidAt: stamp(approval) };
+const weeklyExpiration = plans.expirationForApproval('semanal', approval);
 const expiration = plans.expirationForApproval('mensal', approval);
 
+assert.equal(policy.expiresAt(weekly), weeklyExpiration);
+assert.equal(policy.hasAccess(weekly, approval), true);
+assert.equal(policy.hasAccess(weekly, weeklyExpiration - 1), true);
+assert.equal(policy.hasAccess(weekly, weeklyExpiration), false);
+assert.equal(policy.mayApprovePix(weekly, weeklyExpiration - 1), false);
+assert.equal(policy.mayApprovePix(weekly, weeklyExpiration), true);
 assert.equal(policy.expiresAt(monthly), expiration);
 assert.equal(policy.hasAccess(monthly, approval), true);
 assert.equal(policy.hasAccess(monthly, expiration - 1), true);
@@ -28,4 +36,4 @@ assert.equal(policy.mayApprovePix({ active: true, plan: 'vitalicio' }, expiratio
 assert.equal(policy.mayApprovePix({ active: true, plan: 'mensal' }, expiration), false);
 assert.equal(policy.mayApprovePix({ active: true, plan: 'outro' }, expiration), false);
 assert.equal(policy.mayApprovePix({}, expiration), false);
-console.log('OK: acesso PCPE mensal, vencimento exato, vitalício e dados inválidos.');
+console.log('OK: acesso PCPE semanal/mensal, vencimentos exatos, vitalício e dados inválidos.');

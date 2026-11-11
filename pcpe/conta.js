@@ -1,4 +1,5 @@
 import { auth, db } from '../firebase-config.js';
+import { requestCheckoutUrl } from '../checkout-client.mjs';
 import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 import { doc, onSnapshot, serverTimestamp, setDoc } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
@@ -31,15 +32,15 @@ const render = () => {
         const expiry = PcpeAccessPolicy.expiresAt(access);
         $('access-description').textContent = expiry === Infinity
             ? 'Plano vitalício. O acesso inclui os dois cargos.'
-            : `Plano mensal válido até ${new Date(expiry).toLocaleString('pt-BR')}.`;
+            : `Plano ${PlanosAcesso.getPlan(access.plan).label.toLowerCase()} válido até ${new Date(expiry).toLocaleString('pt-BR')}.`;
         return;
     }
     const expiry = PcpeAccessPolicy.expiresAt(access);
     if (expiry !== null && expiry !== Infinity && Date.now() >= expiry) {
         $('expired-message').hidden = false;
         $('expired-message').textContent = request?.status === 'pending'
-            ? 'Seu plano mensal PCPE venceu. Conclua o pagamento da solicitação pendente; o acesso será liberado após a confirmação manual.'
-            : 'Seu plano mensal PCPE venceu. Para continuar estudando, registre uma nova solicitação e faça o Pix. O acesso será liberado após a confirmação manual do pagamento.';
+            ? 'Seu plano por período PCPE venceu. Conclua o pagamento da solicitação pendente; o acesso será liberado após a confirmação.'
+            : 'Seu plano por período PCPE venceu. Para continuar estudando, escolha um plano e conclua uma nova compra.';
     }
     if (request?.status === 'pending') {
         if (!['mensal', 'vitalicio'].includes(request.plan)) {
@@ -149,11 +150,35 @@ $('sign-out').addEventListener('click', async () => {
     try { await signOut(auth); }
     catch (error) { console.error('Falha ao sair.', error); setStatus('Não foi possível encerrar a sessão. Tente novamente.', true); }
 });
+$('start-checkout').addEventListener('click', async () => {
+    const plan = new FormData($('request-form')).get('plan');
+    const button = $('start-checkout');
+    if (!['semanal', 'mensal', 'vitalicio'].includes(plan)) {
+        setStatus('Selecione um plano para continuar.', true);
+        return;
+    }
+    button.disabled = true;
+    setStatus('Preparando o checkout seguro do Mercado Pago...');
+    try {
+        const checkoutUrl = await requestCheckoutUrl({ auth, concurso: 'pcpe', plan });
+        window.location.assign(checkoutUrl);
+    } catch (error) {
+        console.error('Falha ao iniciar o Checkout Pro PCPE.', error);
+        setStatus(error.message || 'Não foi possível iniciar o checkout. Tente novamente.', true);
+    } finally {
+        button.disabled = false;
+    }
+});
 $('request-form').addEventListener('submit', async event => {
     event.preventDefault();
     if (!user || !user.email) { setStatus('Entre com uma conta com email válido para solicitar acesso.', true); return; }
     const plan = new FormData(event.currentTarget).get('plan');
-    if (!['mensal', 'vitalicio'].includes(plan)) { setStatus('Selecione um plano válido.', true); return; }
+    if (!['mensal', 'vitalicio'].includes(plan)) {
+        setStatus(plan === 'semanal'
+            ? 'A solicitação Pix manual não oferece o plano semanal. Use “Pagar com Mercado Pago”.'
+            : 'Selecione um plano válido.', true);
+        return;
+    }
     const button = event.currentTarget.querySelector('button[type="submit"]');
     button.disabled = true;
     try {

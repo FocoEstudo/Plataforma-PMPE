@@ -7,6 +7,7 @@
     'use strict';
 
     const PLANS = Object.freeze({
+        semanal: Object.freeze({ id: 'semanal', label: 'Semanal', amount: 6.25, durationMs: 7 * 24 * 60 * 60 * 1000 }),
         mensal: Object.freeze({ id: 'mensal', label: 'Mensal', amount: 24.90, durationMs: 30 * 24 * 60 * 60 * 1000 }),
         vitalicio: Object.freeze({ id: 'vitalicio', label: 'Vitalício', amount: 99.90, durationMs: null })
     });

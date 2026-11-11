@@ -12,6 +12,27 @@ service cloud.firestore {
         && request.auth.token.email_verified == true;
     }
 
+    function hasCurrentPaidAccess(access) {
+      return access.active == true
+        && (!access.keys().hasAny(['plan'])
+          || access.plan == 'vitalicio'
+          || (access.plan == 'semanal'
+            && access.paidAt is timestamp
+            && request.time < access.paidAt + duration.value(7, 'd'))
+          || (access.plan == 'mensal'
+            && access.paidAt is timestamp
+            && request.time < access.paidAt + duration.value(30, 'd')));
+    }
+
+    function hasExpiredPaidAccess(access) {
+      return access.active == true
+        && access.paidAt is timestamp
+        && ((access.plan == 'semanal'
+            && request.time >= access.paidAt + duration.value(7, 'd'))
+          || (access.plan == 'mensal'
+            && request.time >= access.paidAt + duration.value(30, 'd')));
+    }
+
     function hasValidAccessRequest() {
       let accessRequest = request.resource.data;
       return accessRequest.keys().hasAll(['email', 'status', 'requestedAt'])
@@ -143,12 +164,7 @@ service cloud.firestore {
     function hasAccessPmpe() {
       return request.auth != null
         && exists(/databases/$(database)/documents/access/$(request.auth.uid))
-        && get(/databases/$(database)/documents/access/$(request.auth.uid)).data.active == true
-        && (!get(/databases/$(database)/documents/access/$(request.auth.uid)).data.keys().hasAny(['plan'])
-          || get(/databases/$(database)/documents/access/$(request.auth.uid)).data.plan == 'vitalicio'
-          || (get(/databases/$(database)/documents/access/$(request.auth.uid)).data.plan == 'mensal'
-            && get(/databases/$(database)/documents/access/$(request.auth.uid)).data.paidAt is timestamp
-            && request.time < get(/databases/$(database)/documents/access/$(request.auth.uid)).data.paidAt + duration.value(30, 'd')));
+        && hasCurrentPaidAccess(get(/databases/$(database)/documents/access/$(request.auth.uid)).data);
     }
 
     // Suporte e feedback ficam disponíveis a quem tem acesso a qualquer concurso.
@@ -159,45 +175,30 @@ service cloud.firestore {
     function hasAccessPppe() {
       return request.auth != null
         && exists(/databases/$(database)/documents/accessPppe/$(request.auth.uid))
-        && get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.active == true
-        && (!get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.keys().hasAny(['plan'])
-          || get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.plan == 'vitalicio'
-          || (get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.plan == 'mensal'
-            && get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.paidAt is timestamp
-            && request.time < get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data.paidAt + duration.value(30, 'd')));
+        && hasCurrentPaidAccess(get(/databases/$(database)/documents/accessPppe/$(request.auth.uid)).data);
     }
 
     function canGrantPmpeAccess(userId) {
       return !exists(/databases/$(database)/documents/access/$(userId))
         || get(/databases/$(database)/documents/access/$(userId)).data.active != true
-        || (get(/databases/$(database)/documents/access/$(userId)).data.plan == 'mensal'
-          && get(/databases/$(database)/documents/access/$(userId)).data.paidAt is timestamp
-          && request.time >= get(/databases/$(database)/documents/access/$(userId)).data.paidAt + duration.value(30, 'd'));
+        || hasExpiredPaidAccess(get(/databases/$(database)/documents/access/$(userId)).data);
     }
 
     function canGrantPppeAccess(userId) {
       return !exists(/databases/$(database)/documents/accessPppe/$(userId))
         || get(/databases/$(database)/documents/accessPppe/$(userId)).data.active != true
-        || (get(/databases/$(database)/documents/accessPppe/$(userId)).data.plan == 'mensal'
-          && get(/databases/$(database)/documents/accessPppe/$(userId)).data.paidAt is timestamp
-          && request.time >= get(/databases/$(database)/documents/accessPppe/$(userId)).data.paidAt + duration.value(30, 'd'));
+        || hasExpiredPaidAccess(get(/databases/$(database)/documents/accessPppe/$(userId)).data);
     }
 
     function canGrantPcpeAccess(userId) {
       return !exists(/databases/$(database)/documents/accessPcpe/$(userId))
         || get(/databases/$(database)/documents/accessPcpe/$(userId)).data.active != true
-        || (get(/databases/$(database)/documents/accessPcpe/$(userId)).data.plan == 'mensal'
-          && get(/databases/$(database)/documents/accessPcpe/$(userId)).data.paidAt is timestamp
-          && request.time >= get(/databases/$(database)/documents/accessPcpe/$(userId)).data.paidAt + duration.value(30, 'd'));
+        || hasExpiredPaidAccess(get(/databases/$(database)/documents/accessPcpe/$(userId)).data);
     }
 
     function hasAccessPcpe() {
       return exists(/databases/$(database)/documents/accessPcpe/$(request.auth.uid))
-        && get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.active == true
-        && (get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.plan == 'vitalicio'
-          || (get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.plan == 'mensal'
-            && get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.paidAt is timestamp
-            && request.time < get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data.paidAt + duration.value(30, 'd')));
+        && hasCurrentPaidAccess(get(/databases/$(database)/documents/accessPcpe/$(request.auth.uid)).data);
     }
 
     function isValidPcpeRequest() {
