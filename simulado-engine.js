@@ -58,6 +58,18 @@
                 if (valid.length) result[subject] = valid;
             });
         }
+        if (app.id === 'pmpe' && window.PMPE_QUIZ_SUPPLEMENT) {
+            Object.entries(window.PMPE_QUIZ_SUPPLEMENT).forEach(([subject, questions]) => {
+                if (!Array.isArray(questions)) return;
+                const pool = result[subject] || (result[subject] = []);
+                questions.forEach(question => {
+                    if (!question || typeof question.text !== 'string' || !Array.isArray(question.options)
+                        || question.options.length < 2 || !Number.isInteger(question.correct)
+                        || question.correct < 0 || question.correct >= question.options.length) return;
+                    pool.push({ ...question, subject: question.subject || subject, options: [...question.options] });
+                });
+            });
+        }
         if (!Object.keys(result).length && window.PPPE_QUESTOES) {
             Object.entries(window.PPPE_QUESTOES).forEach(([topic, questions]) => {
                 if (!Array.isArray(questions)) return;

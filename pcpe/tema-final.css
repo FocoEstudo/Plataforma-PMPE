@@ -1,0 +1,11 @@
+﻿@import url("../tema-final-base.css?v=1");
+/* Marinho e branco do escudo da Polícia Civil; vermelho é detalhe do brasão. */
+:root { --theme-primary:#101457; --theme-primary-dark:#080c3b; --theme-accent:#d9def7; --theme-accent-light:#e4e9ff; --theme-on-accent:#080c3b; --theme-ink:#111639; --theme-link:#202a78; --theme-tint:#f0f2fa; --theme-line:#cbd1e7; --theme-page:#f3f4fa; --theme-focus:#293b91; --theme-chart:#202a78;
+--t-dark:#080c3b; --t-main:#101457; --t-mid:#26347c; --t-gold:#d9def7; --t-gold-soft:#e4e9ff; --t-accent2:#b51d2a; --t-ink:#111639; --t-link:#202a78; --t-tint:#f0f2fa; --t-line:#cbd1e7; --t-on-main:#fff; --t-page-1:#e9ecf7; --t-page-2:#f6f7fc; --t-page-3:#e3e7f3;
+--pp-navy:#101457; --pp-blue:#202a78; --pp-sky:#7182c4; --pp-gold:#d9def7; --pp-gold-soft:#e4e9ff; --pp-red:#a92030; --pp-ink:#111639; --pp-muted:#505b79; --pp-line:#cbd1e7; --pp-tint:#f0f2fa; --pp-bg:#f3f4fa; }
+body.skull-bg { background: linear-gradient(180deg,var(--t-page-1),var(--t-page-2),var(--t-page-3)); }
+.dashboard-home-hero,.dashboard-home-hero.glass-panel,.police-banner,.profile-form-header { background: linear-gradient(110deg,var(--theme-primary-dark),var(--theme-primary)); }
+.dashboard-nav-item.is-active { background: linear-gradient(90deg,rgba(217,222,247,.26),rgba(217,222,247,.05)); }
+.platform-header,header.platform-header { box-shadow:none; }
+.fc-back { background: linear-gradient(145deg,#fff,var(--theme-tint)); }
+.payment-gate-intro { background: linear-gradient(120deg,var(--theme-primary-dark),var(--theme-primary)); }

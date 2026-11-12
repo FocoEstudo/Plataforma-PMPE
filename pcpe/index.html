@@ -46,6 +46,25 @@
     <script src="pdf-estatistica.js"></script>
     <script src="questoes-estatistica.js"></script>
     <script src="modulos-pcpe.js"></script>
+    <script src="../pppe/apostila-renderer.js"></script>
+    <script src="../pppe/aprofundamento-constitucional.js"></script>
+    <script src="../pppe/aprofundamento-penal.js"></script>
+    <script src="../pppe/aprofundamento-processo-penal.js"></script>
+    <script src="../pppe/aprofundamento-administrativo.js"></script>
+    <script src="../pppe/aprofundamento-portugues.js"></script>
+    <script src="../pppe/aprofundamento-legestadual.js"></script>
+    <script src="../pppe/aprofundamento-informatica-atualidades.js"></script>
+    <script src="../pppe/aprofundamento-complementar-portugues.js"></script>
+    <script src="../pppe/aprofundamento-complementar-informatica.js"></script>
+    <script src="../pppe/aprofundamento-complementar-administrativo.js"></script>
+    <script src="../pppe/aprofundamento-complementar-constitucional.js"></script>
+    <script src="../pppe/aprofundamento-complementar-penal.js"></script>
+    <script src="../pppe/aprofundamento-complementar-processo-penal.js"></script>
+    <script src="aprofundamento-logica.js"></script>
+    <script src="aprofundamento-estatistica.js"></script>
+    <script src="aprofundamento-contabilidade.js"></script>
+    <script src="aprofundamento-arquivologia.js"></script>
+    <script src="aprofundamento-linux-legestadual.js"></script>
     <script type="module" src="session-guard.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap"
         rel="stylesheet">
@@ -2370,8 +2389,10 @@
       #videoLessonsPanel select, #quizFilter, #subjectGuidePicker { background-color: #fff !important; color: #172b45 !important; border: 1px solid #718096 !important; }
       #videoLessonsPanel select option, #quizFilter option, #subjectGuidePicker option { background: #fff !important; color: #172b45 !important; }
       #videoLessonsPanel label { color: #172b45 !important; }
+      body .text-emerald-300, body .text-emerald-400, body .text-green-300, body .text-green-400 { color: #176b45; }
     </style>
     <link rel="stylesheet" href="../aviso-pagamento.css">
+    <link rel="stylesheet" href="tema-final.css?v=1">
 </head>
 
 <body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home" data-session-state="checking">
@@ -4691,13 +4712,20 @@
         function populateTopicGuides() {
             const esc = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             const guides = window.PMPE_TOPIC_GUIDES || {};
-            const lessonHtml = ([heading, explanation, example, alert], index, total) => `
+            const lessonHtml = ([heading, explanation, example, alert], index, total, topic) => {
+                const blocks = window.PMPE_DEEPENING?.[topic]?.[index + 1];
+                const deepening = blocks?.length && window.PPPE_APOSTILA_RENDERER
+                    ? `<div class="apostila-deepening"><h3>Conceito aprofundado, do zero</h3>${window.PPPE_APOSTILA_RENDERER.renderBlocks(blocks)}</div>`
+                    : '';
+                return `
                 <section class="mb-8">
                     <h2>Aula ${index + 1}/${total} · ${esc(heading)}</h2>
                     <p>${esc(explanation)}</p>
                     <blockquote><strong>Exemplo prático:</strong> ${esc(example)}</blockquote>
                     <p class="rounded border-l-4 border-amber-500 bg-amber-50 p-4"><strong>Ponto de atenção:</strong> ${esc(alert)}</p>
+                    ${deepening}
                 </section>`;
+            };
             editalModules.forEach(module => {
                 const guide = guides[module.topic];
                 const meta = (window.PCPE_MODULOS || []).find(item => item.topic === module.topic);
@@ -4709,7 +4737,7 @@
                         '<li>' + esc(question) + '<br><details class="mt-1"><summary class="cursor-pointer font-bold">Ver gabarito comentado</summary><p>' + esc(guide.answers?.[index] || '') + '</p></details></li>').join('');
                     const sources = (guide.sources || []).map(([label, url]) =>
                         '<li><a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a></li>').join('');
-                    body = guide.lessons.map((lesson, index) => lessonHtml(lesson, index, guide.lessons.length)).join('')
+                    body = guide.lessons.map((lesson, index) => lessonHtml(lesson, index, guide.lessons.length, module.topic)).join('')
                         + (practice ? '<section class="mb-8"><h2>Treino comentado</h2><ol>' + practice + '</ol></section>' : '')
                         + (sources ? '<section><h2>Fontes oficiais</h2><ul>' + sources + '</ul></section>' : '');
                 } else {

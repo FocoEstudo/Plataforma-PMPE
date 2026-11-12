@@ -4,9 +4,11 @@
 
 PMPE, PPPE e PCPE usam o Checkout Pro integrado à Orders API do Worker. O estudante seleciona um plano e conclui a compra no Mercado Pago; o acesso é concedido pelo Worker somente depois que o webhook é validado e a Order é consultada como aprovada. Não há mais solicitação de Pix manual na jornada do estudante, nem desconto PMPE associado a esse fluxo.
 
-O Worker está publicado com `MP_MODE = "test"`. Um pagamento de cartão em sandbox já foi aprovado e o acesso PCPE foi liberado após o reenvio/simulação da notificação. O Pix automático ainda não foi validado. Não anuncie Pix como confirmado nem mude para produção até validar Pix, cartão, webhook e configurações de produção de ponta a ponta. As formas disponíveis no checkout dependem da configuração e elegibilidade da conta Mercado Pago. A renovação dos planos semanal e mensal exige uma nova compra.
+O Worker está publicado com `MP_MODE = "production"` e o Pix e o cartão foram validados em produção; o webhook de produção está configurado para o evento Order (Mercado Pago). O ID da Order deve ser usado em minúsculas no manifesto da assinatura (`x-signature`), como o Mercado Pago exige. As formas disponíveis no checkout dependem da configuração e elegibilidade da conta Mercado Pago. A renovação dos planos semanal e mensal exige uma nova compra.
 
-A oferta para cada concurso é semanal por R$ 6,25 (7 dias), mensal por R$ 24,90 (30 dias) e vitalícia por R$ 99,90, todos como pagamentos únicos. Dados de estudo PCPE permanecem no navegador, separados por conta e cargo; dados da antiga prévia não são migrados automaticamente.
+Observabilidade: o painel de Webhooks do Mercado Pago mostra o código HTTP de cada entrega (200 = acesso concedido, 401 = assinatura ou segredo incorretos). Mantenha `MP_WEBHOOK_SECRET` igual ao segredo do webhook de **produção**.
+
+A oferta para cada concurso é semanal por R$ 6,25 (7 dias), mensal por R$ 24,90 (30 dias) e vitalícia por R$ 99,90, todos como pagamentos únicos.
 
 `planos-acesso.js` contém os valores e durações. `backend/payment-catalog.mjs` centraliza produtos e valida Orders; `backend/worker.mjs` cria Orders pela API `/v1/orders`, valida os Webhooks, consulta a Order diretamente e atualiza o acesso somente após aprovação. `checkout-client.mjs` obtém a URL do checkout com um token Firebase e valida o destino Mercado Pago. A antiga `functions/credit-card-policy.js` é isolada e não é usada por esse Worker. Nunca confie no preço nem no estado de pagamento enviados pelo navegador.
 
@@ -16,9 +18,9 @@ Para testar as regras localmente, use o emulador Firestore com um projeto de dem
 
 Antes de ativar o checkout em produção, configure e teste os meios efetivamente oferecidos (inclusive Pix e cartão), as parcelas e quem arca com juros. Faça testes de ponta a ponta de pagamentos pendentes, aprovados, recusados, reembolsados e contestados, incluindo notificações repetidas e falhas temporárias do provedor. O Worker valida a assinatura, consulta o pagamento diretamente e só concede acesso após aprovação; o retorno do navegador não confirma pagamento.
 
-## Worker Mercado Pago (Orders API publicada em modo de teste)
+## Worker Mercado Pago (Orders API em produção)
 
-O Worker está publicado com `MP_MODE = "test"`. Não o altere para processar cobranças de produção até a configuração e os testes descritos abaixo serem concluídos.
+O Worker está publicado com `MP_MODE = "production"`. Os passos abaixo documentam a configuração; durante testes, use credenciais de teste e `MP_MODE = "test"`.
 
 ### Configure the optional checkout
 
