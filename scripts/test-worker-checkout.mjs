@@ -142,7 +142,7 @@ try {
     const dataId = providerOrderId;
     const requestId = "webhook-request-id";
     const timestamp = "1731330000";
-    const manifest = `id:${dataId};request-id:${requestId};ts:${timestamp};`;
+    const manifest = `id:${dataId.toLowerCase()};request-id:${requestId};ts:${timestamp};`;
     const signature = createHmac("sha256", env.MP_WEBHOOK_SECRET).update(manifest).digest("hex");
     const makeWebhookRequest = () => new Request(`https://worker.test/webhook?type=order&data.id=${dataId}`, {
         method: "POST",

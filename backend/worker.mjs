@@ -242,7 +242,7 @@ const getWebhookSignature = async (request, dataId, secret) => {
     }));
     if (!fields.ts || !fields.v1 || !requestId) return false;
 
-    const manifest = `id:${dataId};request-id:${requestId};ts:${fields.ts};`;
+    const manifest = `id:${dataId.toLowerCase()};request-id:${requestId};ts:${fields.ts};`;
     const signingKey = await crypto.subtle.importKey(
         "raw",
         new TextEncoder().encode(secret),
