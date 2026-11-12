@@ -7,6 +7,11 @@
     <title>Operação PCPE | Plataforma de Estudos</title>
     <script>window.PCPE_ROLE = localStorage.getItem('pcpe_cargo') === 'escrivao' ? 'escrivao' : 'agente';</script>
     <script src="cloud-sync.js"></script>
+    <link rel="stylesheet" href="../mission-videos.css">
+    <script src="../mission-videos.js"></script>
+    <link rel="stylesheet" href="../planejamento.css">
+    <script src="../planejamento.js"></script>
+    <script src="../analytics.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>window.PMPE_TOPIC_GUIDES = {};</script>
@@ -4983,6 +4988,7 @@
         }
 
         function updateSubjectProgressCards() {
+            window.PlatformAnalytics?.setProgressSource(() => ({ days: operationDays, tasks: generateTasksForDay, checked: userProgress }));
             document.querySelectorAll('[data-subject-progress-value]').forEach(valueElement => {
                 const subject = valueElement.dataset.subjectProgressValue;
                 const subjectTasks = operationDays.flatMap(day => getSubjectStudyTasksForDay(day, subject));
@@ -5108,9 +5114,7 @@
 
                 let actionButtonHtml = '';
                 if (task.embeddedVideoLessons?.length) {
-                    actionButtonHtml = task.embeddedVideoLessons.map(lesson =>
-                        `<button type="button" data-open-video-lesson="${lesson.id}" class="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-circle-play mr-2"></i>${PMPERichNotes.escapeHtml(lesson.title)}</button>`
-                    ).join('');
+                    actionButtonHtml = window.renderMissionVideos(task.embeddedVideoLessons);
                 } else if (task.type === "Teoria") {
                     actionButtonHtml = '<span class="text-sm font-bold text-slate-700">Estude pela apostila do tema</span>';
                 } else if (task.action.startsWith('http')) {
@@ -7104,6 +7108,8 @@
     </script>
 <script>window.GABARI_CONFIG = { concurso: 'PCPE', accent: '#0a1448', gold: '#e0b43c', storageKey: 'pcpe_gabari_hidden' };</script>
     <script src="../gabari.js?v=2"></script>
+    <script src="../simulado-engine.js"></script>
+    <script src="../redacao.js"></script>
 </body>
 
 </html>

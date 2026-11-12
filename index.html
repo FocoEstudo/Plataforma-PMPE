@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operação PMPE | Plataforma de Estudos</title>
     <script src="cloud-sync.js"></script>
+    <link rel="stylesheet" href="mission-videos.css">
+    <script src="mission-videos.js"></script>
+    <link rel="stylesheet" href="planejamento.css">
+    <script src="planejamento.js"></script>
+    <script src="analytics.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dados-topicos.js"></script>
@@ -5315,6 +5320,11 @@
                 console.error("Não foi possível carregar o progresso das videoaulas:", error);
             }
 
+            window.addEventListener("mission-videos:changed", () => {
+                try { videoLessonWatched = JSON.parse(localStorage.getItem(VIDEO_WATCHED_STORAGE_KEY) || "{}"); } catch (error) { return; }
+                const lesson = EMBEDDED_VIDEO_LESSONS[selectedVideoLessonId];
+                if (lesson) { updateVideoWatchedControl(lesson); renderVideoLessonList(lesson.topic); }
+            });
             picker.addEventListener("change", () => renderVideoTopic(picker.value));
             document.getElementById("videoLessonWatchedButton").addEventListener("click", () => {
                 if (!selectedVideoLessonId) return;
@@ -5330,6 +5340,7 @@
                 const lesson = EMBEDDED_VIDEO_LESSONS[selectedVideoLessonId];
                 updateVideoWatchedControl(lesson);
                 renderVideoLessonList(lesson.topic);
+                window.dispatchEvent(new CustomEvent("mission-videos:changed"));
             });
             videoNotesEditor = PMPERichNotes.mount(document.getElementById("videoLessonNotes"), {
                 onChange: html => {
@@ -5463,6 +5474,7 @@
         }
 
         function updateSubjectProgressCards() {
+            window.PlatformAnalytics?.setProgressSource(() => ({ days: operationDays, tasks: generateTasksForDay, checked: userProgress }));
             document.querySelectorAll('[data-subject-progress-value]').forEach(valueElement => {
                 const subject = valueElement.dataset.subjectProgressValue;
                 const subjectTasks = operationDays.flatMap(day => getSubjectStudyTasksForDay(day, subject));
@@ -5588,9 +5600,7 @@
 
                 let actionButtonHtml = '';
                 if (task.embeddedVideoLessons?.length) {
-                    actionButtonHtml = task.embeddedVideoLessons.map(lesson =>
-                        `<button type="button" data-open-video-lesson="${lesson.id}" class="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-circle-play mr-2"></i>${PMPERichNotes.escapeHtml(lesson.title)}</button>`
-                    ).join('');
+                    actionButtonHtml = window.renderMissionVideos(task.embeddedVideoLessons);
                 } else if (task.type === "Teoria" && task.icon === "fa-youtube") {
                     actionButtonHtml = '<span class="text-sm font-bold text-slate-700">Videoaula em preparação</span>';
                 } else if (task.action.startsWith('http')) {
@@ -8407,6 +8417,8 @@
     </script>
 <script>window.GABARI_CONFIG = { concurso: 'PMPE', accent: '#25272b', gold: '#e8b931', storageKey: 'gabari_hidden' };</script>
     <script src="gabari.js?v=2"></script>
+    <script src="simulado-engine.js"></script>
+    <script src="redacao.js"></script>
 </body>
 
 </html>

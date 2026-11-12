@@ -297,6 +297,7 @@ const openProfileForm = ({ profile, required, editable }) => {
     profileCancelButton.hidden = required || !editable;
     setGateMessage("");
     profileSaveButton.disabled = false;
+    window.PMPE_PLANNING?.load();
     if (editable) profileNameInput.focus();
 };
 
@@ -361,6 +362,7 @@ profileForm.addEventListener("submit", async event => {
             photoURL: deleteField()
         };
         await setDoc(doc(db, "users", currentUser.uid), profile, { merge: true });
+        window.PMPE_PLANNING?.save();
         currentProfile = { displayName: name, studyPreferences };
         renderProfile(currentProfile);
 

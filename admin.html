@@ -66,13 +66,14 @@
             header { align-items: flex-start; flex-direction: column; }
         }
     </style>
+    <link rel="stylesheet" href="admin-analytics.css">
 </head>
 <body>
     <main>
         <header>
             <div>
                 <p class="eyebrow">Operação PMPE</p>
-                <h1>Solicitações de acesso</h1>
+                <h1>Central de administração</h1>
             </div>
             <button id="signOutButton" type="button" hidden>Sair da conta</button>
         </header>
@@ -88,6 +89,21 @@
             </div>
         </section>
 
+        <nav id="adminTabs" class="admin-tabs" aria-label="Áreas administrativas" hidden>
+            <button type="button" class="active" data-admin-tab="analytics" aria-pressed="true">Engajamento</button>
+            <button type="button" data-admin-tab="management" aria-pressed="false">Acessos e atendimento</button>
+        </nav>
+        <section id="analyticsPanel" class="analytics" hidden aria-labelledby="analyticsHeading">
+            <div class="analytics-hero"><div><p class="eyebrow">Inteligência de estudos</p><h2 id="analyticsHeading">Visão de engajamento</h2><p>Acompanhe a atividade e a evolução dos alunos em um só lugar.</p></div><span class="hero-badge" id="analyticsBadge">DADOS REAIS</span></div>
+            <div class="analytics-controls"><label>Período<select id="analyticsPeriod"><option value="1">Hoje</option><option value="7">Últimos 7 dias</option><option value="30" selected>Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="365">Últimos 12 meses</option></select></label><label>Concurso<select id="analyticsCourse"><option value="all">Todos</option><option value="pmpe">PMPE</option><option value="pppe">PPPE</option><option value="pcpe">PCPE</option></select></label><button id="analyticsExport" type="button">↓ Exportar CSV</button></div>
+            <p id="analyticsStatus" class="muted" role="status">Carregando indicadores…</p>
+            <div class="kpi-grid" id="analyticsKpis"></div>
+            <div class="chart-grid"><article class="analytics-card"><h3>Acessos ao longo do tempo</h3><div class="chart-wrap"><canvas id="accessChart"></canvas></div></article><article class="analytics-card"><h3>Materiais e áreas mais acessados</h3><div class="chart-wrap"><canvas id="materialsChart"></canvas></div></article><article class="analytics-card"><h3>Progresso por matéria</h3><div class="chart-wrap"><canvas id="subjectsChart"></canvas></div></article><article class="analytics-card"><h3>Progresso por método da missão</h3><div class="chart-wrap"><canvas id="methodsChart"></canvas></div></article></div>
+            <article class="analytics-card"><h3>Ranking de materiais individuais</h3><div class="chart-wrap"><canvas id="individualMaterialsChart"></canvas></div><p class="muted">Apostilas e videoaulas identificáveis; demais acessos aparecem no gráfico por categoria.</p></article>
+            <article class="analytics-card"><div class="table-heading"><div><h3>Alunos e progresso</h3><p class="muted">Último retrato disponível; selecione o concurso para detalhar.</p></div><label>Buscar aluno <input id="analyticsSearch" type="search" placeholder="Email ou concurso"></label></div><div class="table-scroll"><table><thead><tr><th>Aluno</th><th>Concurso</th><th>Último acesso</th><th>Missões</th><th>Por matéria</th><th>Por método</th></tr></thead><tbody id="analyticsRows"></tbody></table></div></article>
+            <p class="analytics-note">Uma sessão corresponde à abertura da plataforma. Cliques em PDFs e aulas identificáveis são agrupados por material; os demais, por categoria, sem registrar conteúdo pessoal. Progresso reflete as tarefas das missões; recursos sem meta de conclusão não recebem percentual. Dados anteriores à instalação não são recuperados.</p>
+        </section>
+        <div id="managementPanel" hidden>
         <section id="requestsPanel" class="panel" aria-labelledby="requestsHeading" hidden>
             <h2 id="requestsHeading">Aguardando conferência</h2>
             <p class="muted">A fila pode incluir pessoas que ainda não pagaram. Confira no extrato o valor indicado em cada solicitação e identifique o pagamento antes de aprovar. Os dados cadastrais são autodeclarados e não comprovam a identidade do pagador.</p>
@@ -109,11 +125,13 @@
             <p id="feedbackSummary" class="muted"></p>
             <div id="feedbackList" class="request-list"></div>
         </section>
+        </div>
     </main>
 
     <script src="pcpe/access-policy.js"></script>
-    <script type="module" src="admin.js?v=5"></script>
-    <script type="module" src="admin-inbox.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="admin-dashboard.js"></script>
+    <script type="module">if (!new URLSearchParams(location.search).has("demo")) { import("./admin.js?v=5"); import("./admin-inbox.js"); }</script>
 <script>window.GABARI_CONFIG = { concurso: '', accent: '#25272b', gold: '#e8b931', storageKey: 'gabari_hidden' };</script>
     <script src="gabari.js?v=2"></script>
 </body>
