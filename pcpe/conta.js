@@ -1,14 +1,12 @@
 import { auth, db } from '../firebase-config.js';
 import { requestCheckoutUrl } from '../checkout-client.mjs';
 import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
-import { doc, onSnapshot, serverTimestamp, setDoc } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+import { doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
 const $ = id => document.getElementById(id);
 let user = null;
 let access;
-let request;
 let stopAccess;
-let stopRequest;
 let verificationTimer;
 let generation = 0;
 let authMode = 'login';
@@ -17,12 +15,12 @@ const setStatus = (message, error = false) => {
     $('status').dataset.error = String(error);
 };
 const hideAccountSections = () => {
-    ['checking', 'granted', 'purchase', 'pending'].forEach(id => { $(id).hidden = true; });
+    ['checking', 'granted', 'purchase'].forEach(id => { $(id).hidden = true; });
 };
 const render = () => {
     hideAccountSections();
     $('expired-message').hidden = true;
-    if (access === undefined || request === undefined) {
+    if (access === undefined) {
         $('checking').hidden = false;
         return;
     }
@@ -38,34 +36,16 @@ const render = () => {
     const expiry = PcpeAccessPolicy.expiresAt(access);
     if (expiry !== null && expiry !== Infinity && Date.now() >= expiry) {
         $('expired-message').hidden = false;
-        $('expired-message').textContent = request?.status === 'pending'
-            ? 'Seu plano por período PCPE venceu. Conclua o pagamento da solicitação pendente; o acesso será liberado após a confirmação.'
-            : 'Seu plano por período PCPE venceu. Para continuar estudando, escolha um plano e conclua uma nova compra.';
-    }
-    if (request?.status === 'pending') {
-        if (!['mensal', 'vitalicio'].includes(request.plan)) {
-            setStatus('A solicitação registrada contém um plano inválido. Entre em contato com o atendimento.', true);
-            return;
-        }
-        $('pending').hidden = false;
-        const plan = PlanosAcesso.getPlan(request.plan);
-        $('pending-plan').textContent = `Plano ${plan.label}: ${plan.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}.`;
-        $('pix-qr').src = `../assets/pix-${plan.id}.png`;
-        $('pix-qr').alt = `QR Code Pix do plano ${plan.label}, ${plan.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-        const text = `Olá! Solicitei o plano ${plan.label} da PCPE para a conta ${user.email}. Vou enviar o comprovante do Pix de ${plan.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}.`;
-        $('receipt-link').href = `https://wa.me/5566996884580?text=${encodeURIComponent(text)}`;
-        return;
+        $('expired-message').textContent = 'Seu plano por período PCPE venceu. Para continuar estudando, escolha um plano e conclua a compra pelo Mercado Pago.';
     }
     $('purchase').hidden = false;
-    if (request?.status === 'rejected') setStatus('A solicitação anterior foi recusada. Verifique com o atendimento antes de solicitar novamente.', true);
 };
 const startListeners = current => {
     const expected = ++generation;
     access = undefined;
-    request = undefined;
     render();
     verificationTimer = setTimeout(() => {
-        if (expected === generation && (access === undefined || request === undefined)) {
+        if (expected === generation && access === undefined) {
             setStatus('A verificação está demorando. Confira a conexão e recarregue a página se necessário.', true);
         }
     }, 15000);
@@ -74,7 +54,6 @@ const startListeners = current => {
         generation++;
         clearTimeout(verificationTimer);
         stopAccess?.();
-        stopRequest?.();
         console.error('Falha ao verificar acesso PCPE.', error);
         hideAccountSections();
         setStatus('Não foi possível verificar o acesso. Confira sua conexão e as regras do Firestore, depois recarregue a página.', true);
@@ -84,18 +63,12 @@ const startListeners = current => {
         access = snapshot.exists() ? snapshot.data() : null;
         render();
     }, onError);
-    stopRequest = onSnapshot(doc(db, 'accessRequestsPcpe', current.uid), { includeMetadataChanges: true }, snapshot => {
-        if (expected !== generation || snapshot.metadata.fromCache || snapshot.metadata.hasPendingWrites) return;
-        request = snapshot.exists() ? snapshot.data() : null;
-        render();
-    }, onError);
 };
 
 onAuthStateChanged(auth, current => {
     generation++;
     clearTimeout(verificationTimer);
     stopAccess?.();
-    stopRequest?.();
     user = current;
     setStatus('');
     $('authentication').hidden = !!current;
@@ -151,7 +124,7 @@ $('sign-out').addEventListener('click', async () => {
     catch (error) { console.error('Falha ao sair.', error); setStatus('Não foi possível encerrar a sessão. Tente novamente.', true); }
 });
 $('start-checkout').addEventListener('click', async () => {
-    const plan = new FormData($('request-form')).get('plan');
+    const plan = new FormData($('plan-form')).get('plan');
     const button = $('start-checkout');
     if (!['semanal', 'mensal', 'vitalicio'].includes(plan)) {
         setStatus('Selecione um plano para continuar.', true);
@@ -169,51 +142,8 @@ $('start-checkout').addEventListener('click', async () => {
         button.disabled = false;
     }
 });
-$('request-form').addEventListener('submit', async event => {
-    event.preventDefault();
-    if (!user || !user.email) { setStatus('Entre com uma conta com email válido para solicitar acesso.', true); return; }
-    const plan = new FormData(event.currentTarget).get('plan');
-    if (!['mensal', 'vitalicio'].includes(plan)) {
-        setStatus(plan === 'semanal'
-            ? 'A solicitação Pix manual não oferece o plano semanal. Use “Pagar com Mercado Pago”.'
-            : 'Selecione um plano válido.', true);
-        return;
-    }
-    const button = event.currentTarget.querySelector('button[type="submit"]');
-    button.disabled = true;
-    try {
-        await setDoc(doc(db, 'accessRequestsPcpe', user.uid), {
-            email: user.email, status: 'pending', plan, requestedAt: serverTimestamp()
-        });
-        setStatus('Solicitação registrada. Confira abaixo as instruções de pagamento.');
-    } catch (error) {
-        console.error('Falha ao registrar solicitação PCPE.', error);
-        setStatus('Não foi possível registrar a solicitação. Confira a conexão, a situação do acesso e as regras publicadas.', true);
-    } finally { button.disabled = false; }
-});
-$('copy-pix').addEventListener('click', async () => {
-    try {
-        if (!request || request.status !== 'pending' || !['mensal', 'vitalicio'].includes(request.plan)) {
-            throw new Error('Solicitação Pix inválida.');
-        }
-        const plan = request.plan;
-        const response = await fetch('../assets/pix-planos.json');
-        if (!response.ok) throw new Error(`Não foi possível carregar o código Pix (${response.status}).`);
-        const payloads = await response.json();
-        if (!request || request.status !== 'pending' || request.plan !== plan) {
-            throw new Error('A solicitação mudou durante a cópia.');
-        }
-        const payload = payloads[plan];
-        if (typeof payload !== 'string' || !payload) throw new Error('Código Pix indisponível para o plano.');
-        await navigator.clipboard.writeText(payload);
-        setStatus('Código Pix copiado. Confira o valor e o recebedor no aplicativo do banco.');
-    } catch (error) {
-        console.error('Falha ao copiar código Pix.', error);
-        setStatus('Não foi possível copiar o código Pix. Use o QR Code ou entre em contato com o atendimento.', true);
-    }
-});
 const initialRole = new URLSearchParams(location.search).get('cargo');
 if (['agente', 'escrivao'].includes(initialRole)) {
     document.querySelector(`input[name="cargo"][value="${initialRole}"]`).checked = true;
 }
-setInterval(() => { if (user && access !== undefined && request !== undefined) render(); }, 60000);
+setInterval(() => { if (user && access !== undefined) render(); }, 60000);

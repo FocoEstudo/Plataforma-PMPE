@@ -1,42 +1,24 @@
 # Pagamento e liberação de acesso
 
-## Fluxo Pix manual (ativo)
+## Checkout Mercado Pago
 
-The application currently uses direct Pix plus a Firebase-protected manual approval page. Checkout Pro buttons are connected to the payment screens, but automatic checkout is not active until the Worker is deployed and configured with Mercado Pago and Google Cloud secrets.
+PMPE, PPPE e PCPE usam o Checkout Pro integrado à Orders API do Worker. O estudante seleciona um plano e conclui a compra no Mercado Pago; o acesso é concedido pelo Worker somente depois que o webhook é validado e a Order é consultada como aprovada. Não há mais solicitação de Pix manual na jornada do estudante, nem desconto PMPE associado a esse fluxo.
 
-## Active Pix approval flow
+O Worker está publicado com `MP_MODE = "test"`. Um pagamento de cartão em sandbox já foi aprovado e o acesso PCPE foi liberado após o reenvio/simulação da notificação. O Pix automático ainda não foi validado. Não anuncie Pix como confirmado nem mude para produção até validar Pix, cartão, webhook e configurações de produção de ponta a ponta. As formas disponíveis no checkout dependem da configuração e elegibilidade da conta Mercado Pago. A renovação dos planos semanal e mensal exige uma nova compra.
 
-1. Publish `index.html`, `session-guard.js`, `pppe/index.html`, `pppe/session-guard.js`, `assets/pix-mensal.png`, `assets/pix-vitalicio.png`, `assets/pix-planos.json`, `admin.html`, `admin.js`, and the matching login files to the website.
-2. Publish `firestore.rules` in the Firestore Rules tab of the `estudos-pmpe` project. The rules authorize the verified Firebase account `ianitalocorp@gmail.com` to review requests and grant access; clients cannot grant access to themselves. The authorized admin can read a requesting user's profile, but cannot list all user profiles.
-3. Confirm that `ianitalocorp@gmail.com` is a Firebase Authentication account and verify its email address. The owner should use the saved private administrator address and sign in with that account. If the browser is signed in as a student, use **Trocar de conta e entrar como administrador** on the admin page first. Review each request only after confirming the Pix in the bank statement.
-4. When a student reaches the payment gate, select Mensal (R$ 24,90 for 30 days) or Vitalício (R$ 99,90, one payment) and register the selection to show its matching QR and Pix Copia e Cola. The admin queue can include accounts that have not paid yet: confirm the matching deposit in the bank statement before approving. Approval records the selected plan and payment time. A monthly access ends 30 days after approval; renewing requires another manual Pix and approval. The gate blocks expired monthly access and shows the plans again. Existing access documents without a plan remain lifetime access.
+A oferta para cada concurso é semanal por R$ 6,25 (7 dias), mensal por R$ 24,90 (30 dias) e vitalícia por R$ 99,90, todos como pagamentos únicos. Dados de estudo PCPE permanecem no navegador, separados por conta e cargo; dados da antiga prévia não são migrados automaticamente.
 
-The static Pix QR codes and payloads do not confirm payment automatically. Approval must be based on the recipient's bank statement, not a screenshot sent by the payer. PMPE promo codes, when valid, apply only to the lifetime plan.
+`planos-acesso.js` contém os valores e durações. `backend/payment-catalog.mjs` centraliza produtos e valida Orders; `backend/worker.mjs` cria Orders pela API `/v1/orders`, valida os Webhooks, consulta a Order diretamente e atualiza o acesso somente após aprovação. `checkout-client.mjs` obtém a URL do checkout com um token Firebase e valida o destino Mercado Pago. A antiga `functions/credit-card-policy.js` é isolada e não é usada por esse Worker. Nunca confie no preço nem no estado de pagamento enviados pelo navegador.
 
-PMPE and PPPE registrations request identifying profile information. These entries are self-declared and do not prove identity; the administration queue displays available profile information alongside the account email. Do not request identity documents or CPF through the public registration form.
-
-## Pix manual PCPE (implementação local)
-
-Na PCPE, a pessoa entra com email e senha em `pcpe/index.html` e registra uma solicitação de acesso por Pix para os dois cargos. O endereço `pcpe/conta.html` continua disponível para acessos existentes. O plano mensal custa R$ 24,90 e dura 30 dias a partir da aprovação; o vitalício custa R$ 99,90. Um pedido pendente não pode ser alterado pelo usuário: antes de pagar, ele deve pedir ajuda ao atendimento se precisar modificá-lo. A renovação mensal é manual e só pode ser solicitada após o vencimento.
-
-Na solicitação pendente PCPE, os arquivos `assets/pix-mensal.png`, `assets/pix-vitalicio.png` e `assets/pix-planos.json` exibem o QR Code e o Pix Copia e Cola correspondentes ao plano. Os QR Codes foram fornecidos pelo titular; confira o valor e o recebedor no banco antes de pagar. Após o vencimento, a conta mostra uma mensagem e oferece uma nova solicitação. Não há envio automático de mensagens por WhatsApp; o link disponível exige que o aluno envie a mensagem.
-O teste `node scripts/test-pix-planos.js` verifica valores, moeda, destinatário, integridade dos códigos Pix e presença das imagens; ele não decodifica os QR Codes nem substitui a conferência no aplicativo do banco.
-
-O administrador deve conferir o valor recebido no extrato antes de aprovar. O painel identifica a PCPE e o plano solicitado; a aprovação grava o acesso em `accessPcpe/{uid}`, separadamente de PMPE e PPPE. Na aprovação PCPE, uma transação relê o pedido e o acesso e impede a substituição de um acesso vigente ou inválido; a verificação de validade no painel depende do relógio do administrador. As regras avaliam o vencimento mensal usando `request.time` e `paidAt`, sem alterar acessos anteriores das outras plataformas. Dados de estudo permanecem no navegador, separados por conta e cargo; os dados da antiga prévia não são migrados automaticamente.
-
-Antes de receber pagamentos, publique os arquivos da PCPE, `admin.js` e `firestore.rules` juntos, e teste autenticação, solicitações, aprovação, recusa e renovação no Firebase de testes. As páginas de estudo são arquivos estáticos, portanto o controle visual no navegador não protege seu conteúdo contra acesso direto; conteúdo privado deve ser servido por um backend ou por regras de acesso no servidor. Nenhuma publicação é realizada automaticamente.
+Os cadastros PMPE e PPPE podem solicitar informações de perfil. Esses dados são autodeclarados e não comprovam identidade; não solicite documentos de identidade nem CPF no formulário público.
 
 Para testar as regras localmente, use o emulador Firestore com um projeto de demonstração e execute `scripts/test-firestore-pcpe.cjs` com `FIRESTORE_EMULATOR_HOST` apontando para ele. O teste requer Java, o emulador Firestore e os pacotes de desenvolvimento `firebase` e `@firebase/rules-unit-testing`; ele exige endereço local, gera um identificador de projeto isolado e apaga apenas seus próprios dados de teste. Os testes `node scripts/test-acesso-pcpe.js` e `node scripts/test-cartao-policy.js` não precisam do emulador.
-
-O Checkout Pro está conectado aos controles de compra de PMPE, PPPE e PCPE. A versão Orders API do Worker está publicada em modo `test`, e `checkout-config.mjs` aponta para a URL pública do Worker. Ainda faltam as credenciais secretas do Mercado Pago e Google Cloud, configurar o webhook de Order, publicar o site com essa URL e testar o fluxo real de ponta a ponta. A oferta definida para PMPE, PCPE e PPPE é: semanal por R$ 6,25 (7 dias), mensal por R$ 24,90 (30 dias) e vitalício por R$ 99,90, todos com pagamento único. O checkout será validado para Pix e cartão; o vitalício pode permitir até 12 parcelas, sujeito às opções e condições da conta do vendedor. Renovação semanal ou mensal exige uma nova compra. O Pix manual permanece como alternativa; o desconto promocional PMPE só é aceito nesse fluxo por enquanto.
-
-`planos-acesso.js` contém valores e durações. `backend/payment-catalog.mjs` centraliza os produtos e valida as Orders do Mercado Pago; `backend/worker.mjs` cria Orders pela API `/v1/orders`, recebe Webhooks de Order, consulta a Order diretamente e atualiza o acesso somente após confirmação. `checkout-client.mjs` obtém a URL do checkout com um token Firebase e valida o destino Mercado Pago; os botões dos três concursos usam esse cliente. A antiga `functions/credit-card-policy.js` continua sendo uma base isolada e não é usada por esse Worker. Nunca confie no preço nem no estado de pagamento enviados pelo navegador.
 
 Antes de ativar o checkout em produção, configure e teste os meios efetivamente oferecidos (inclusive Pix e cartão), as parcelas e quem arca com juros. Faça testes de ponta a ponta de pagamentos pendentes, aprovados, recusados, reembolsados e contestados, incluindo notificações repetidas e falhas temporárias do provedor. O Worker valida a assinatura, consulta o pagamento diretamente e só concede acesso após aprovação; o retorno do navegador não confirma pagamento.
 
 ## Worker Mercado Pago (Orders API publicada em modo de teste)
 
-O Worker está publicado com `MP_MODE = "test"`, sem secrets cadastrados e sem ativação de cobranças de produção. Não ative pagamentos reais até concluir a configuração e os testes abaixo.
+O Worker está publicado com `MP_MODE = "test"`. Não o altere para processar cobranças de produção até a configuração e os testes descritos abaixo serem concluídos.
 
 ### Configure the optional checkout
 

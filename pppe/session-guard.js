@@ -10,22 +10,8 @@ const paymentGateMessage = document.getElementById("paymentGateMessage");
 const paymentRequestStatus = document.getElementById("paymentRequestStatus");
 const paymentRequestHeading = document.getElementById("paymentRequestHeading");
 const paymentRequestDetail = document.getElementById("paymentRequestDetail");
-const pixKey = document.getElementById("pixKey");
-const copyPixKeyButton = document.getElementById("copyPixKeyButton");
-const pixCopyMessage = document.getElementById("pixCopyMessage");
-const pixQrImage = document.getElementById("pixQrImage");
 const paymentPlanOptions = document.getElementById("paymentPlanOptions");
-const selectPaymentPlanButton = document.getElementById("selectPaymentPlanButton");
 const startCheckoutButton = document.getElementById("startCheckoutButton");
-const pixPaymentDetails = document.getElementById("pixPaymentDetails");
-const paymentOfferLabel = document.getElementById("paymentOfferLabel");
-const paymentOfferNote = document.getElementById("paymentOfferNote");
-const ACCESS_REQUESTS_COLLECTION = "accessRequestsPppe";
-const PIX_ASSET_BASE = "../assets/";
-let paymentPlanPayloads;
-let currentPixPayload = "";
-let selectedPaymentPlan = null;
-let paymentRequestData = null;
 const profileForm = document.getElementById("profileForm");
 const profileNameInput = document.getElementById("profileName");
 const studyModeInput = document.getElementById("studyMode");
@@ -57,11 +43,9 @@ let updateDoc;
 let deleteField;
 let serverTimestamp;
 let onSnapshot;
-let runTransaction;
 let collection;
 let getDocs;
 let stopAccessListener;
-let stopRequestListener;
 let isLoadingGrantedProfile = false;
 let accessExpiryTimer;
 
@@ -134,10 +118,11 @@ const showPaymentGate = () => {
     paymentGate.hidden = false;
     paymentGateMessage.textContent = "";
     paymentGateMessage.classList.remove("text-red-700");
-    paymentRequestStatus.dataset.state = "loading";
-    paymentRequestHeading.textContent = "Preparando sua área de estudos";
-    paymentRequestDetail.textContent = "Sua experiência será vinculada a esta conta.";
-    paymentRequestStatus.querySelector(".payment-gate-status-icon").innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>';
+    setPaymentRequestStatus(
+        "ready",
+        "Escolha um plano",
+        "Após a confirmação do Mercado Pago, o acesso será ativado automaticamente nesta conta."
+    );
     document.body.dataset.sessionState = "checking";
 };
 
@@ -145,48 +130,12 @@ const setPaymentRequestStatus = (state, heading, detail) => {
     paymentRequestStatus.dataset.state = state;
     paymentRequestHeading.textContent = heading;
     paymentRequestDetail.textContent = detail;
-    const icon = state === "pending"
-        ? "fa-clock"
-        : state === "rejected" || state === "error"
-            ? "fa-circle-exclamation"
+    const icon = state === "error"
+        ? "fa-circle-exclamation"
+        : state === "ready"
+            ? "fa-credit-card"
             : "fa-spinner fa-spin";
     paymentRequestStatus.querySelector(".payment-gate-status-icon").innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i>`;
-};
-
-const showPaymentRequestStatus = status => {
-    paymentGateMessage.textContent = "";
-    paymentGateMessage.classList.remove("text-red-700");
-    if (status === "pending") {
-        setPaymentRequestStatus(
-            "pending",
-            "Solicitação de Pix registrada",
-            `Plano ${selectedPaymentPlan === "mensal" ? "mensal (30 dias)" : "vitalício"} selecionado. Confira o valor, faça o Pix e envie o comprovante pelo WhatsApp. A liberação é manual.`
-        );
-    } else if (status === "choose-plan") {
-        setPaymentRequestStatus(
-            "pending",
-            "Escolha um plano para continuar",
-            "Selecione Mensal ou Vitalício e toque em “Registrar plano e exibir Pix”."
-        );
-    } else if (status === "rejected") {
-        setPaymentRequestStatus(
-            "rejected",
-            "Selecione um plano para fazer uma nova solicitação",
-            "A solicitação anterior foi recusada. Confira com o atendimento antes de pagar novamente."
-        );
-    } else if (status === "approved") {
-        setPaymentRequestStatus(
-            "error",
-            "Seu acesso por período venceu",
-            "Escolha um plano para renovar seu acesso ou Vitalício para uma nova compra."
-        );
-    } else {
-        setPaymentRequestStatus(
-            "error",
-            "Não foi possível carregar sua área",
-            "Confira sua conexão e recarregue a página."
-        );
-    }
 };
 
 const ACCESS_DURATION_MS = Object.freeze({
@@ -226,8 +175,6 @@ const showGrantedProfile = async (user, access) => {
     scheduleAccessExpiry(access);
     stopAccessListener?.();
     stopAccessListener = undefined;
-    stopRequestListener?.();
-    stopRequestListener = undefined;
     paymentGate.hidden = true;
     gateLoading.hidden = false;
     gateLoadingMessage.textContent = "Pagamento confirmado. Carregando seu perfil...";
@@ -237,108 +184,6 @@ const showGrantedProfile = async (user, access) => {
         isLoadingGrantedProfile = false;
     }
 };
-
-const planPrice = plan => ({ semanal: 6.25, mensal: 24.9, vitalicio: 99.9 })[plan];
-const formatPlanPrice = amount => amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-const loadPaymentPlanPayloads = async () => {
-    if (!paymentPlanPayloads) {
-        const response = await fetch(new URL(`${PIX_ASSET_BASE}pix-planos.json`, window.location.href));
-        if (!response.ok) throw new Error(`Não foi possível carregar os dados Pix (${response.status}).`);
-        const payloads = await response.json();
-        if (typeof payloads.mensal !== "string" || typeof payloads.vitalicio !== "string") {
-            throw new Error("Os códigos Pix dos planos estão incompletos.");
-        }
-        paymentPlanPayloads = payloads;
-    }
-    return paymentPlanPayloads;
-};
-
-const renderPaymentPlan = async plan => {
-    if (!["mensal", "vitalicio"].includes(plan)) {
-        selectedPaymentPlan = null;
-        currentPixPayload = "";
-        pixPaymentDetails.hidden = true;
-        paymentPlanOptions.querySelectorAll('input[name="paymentPlan"]').forEach(input => { input.checked = false; });
-        pixQrImage.removeAttribute("src");
-        pixQrImage.alt = "";
-        document.querySelectorAll(".payment-price-text").forEach(element => { element.textContent = "Selecione um plano"; });
-        paymentOfferLabel.textContent = "Planos disponíveis";
-        paymentOfferNote.textContent = "Mensal ou pagamento único.";
-        return;
-    }
-    const payloads = await loadPaymentPlanPayloads();
-    selectedPaymentPlan = plan;
-    paymentPlanOptions.querySelector(`input[value="${plan}"]`).checked = true;
-    pixPaymentDetails.hidden = false;
-    const price = formatPlanPrice(planPrice(plan));
-    pixQrImage.src = `${PIX_ASSET_BASE}pix-${plan}.png`;
-    pixQrImage.alt = `QR Code Pix do plano ${plan === "mensal" ? "mensal" : "vitalício"}, ${price}`;
-    document.querySelectorAll(".payment-price-text").forEach(element => { element.textContent = price; });
-    paymentOfferLabel.textContent = plan === "mensal" ? "Plano mensal · 30 dias" : "Pagamento único";
-    paymentOfferNote.textContent = plan === "mensal" ? "Renovação manual por Pix." : "Acesso sem renovação.";
-    currentPixPayload = payloads[plan];
-};
-
-const selectPaymentPlan = async () => {
-    const plan = paymentPlanOptions.querySelector('input[name="paymentPlan"]:checked')?.value;
-    if (!["mensal", "vitalicio"].includes(plan)) {
-        showPaymentRequestStatus("choose-plan");
-        paymentGateMessage.textContent = plan === "semanal"
-            ? "O plano semanal está disponível no Checkout Pro. Use o botão “Pagar com Mercado Pago”."
-            : "";
-        return;
-    }
-    selectPaymentPlanButton.disabled = true;
-    paymentGateMessage.textContent = "";
-    try {
-        await loadPaymentPlanPayloads();
-        const requestReference = doc(db, ACCESS_REQUESTS_COLLECTION, currentUser.uid);
-        await withTimeout(runTransaction(db, async transaction => {
-            const requestSnapshot = await transaction.get(requestReference);
-            if (!requestSnapshot.exists()) {
-                transaction.set(requestReference, {
-                    email: currentUser.email || "",
-                    status: "pending",
-                    requestedAt: serverTimestamp(),
-                    plan
-                });
-                return;
-            }
-            const request = requestSnapshot.data();
-            if (request.status === "pending") {
-                if (request.plan === plan) return;
-                transaction.set(requestReference, {
-                    email: currentUser.email || "",
-                    status: "pending",
-                    requestedAt: request.requestedAt || serverTimestamp(),
-                    plan
-                });
-                return;
-            }
-            if (["approved", "rejected"].includes(request.status)) {
-                transaction.set(requestReference, {
-                    email: currentUser.email || "",
-                    status: "pending",
-                    requestedAt: serverTimestamp(),
-                    plan
-                });
-                return;
-            }
-            throw new Error("O status da solicitação não permite escolher um plano.");
-        }), PROFILE_READ_TIMEOUT_MS);
-        paymentRequestData = { ...(paymentRequestData || {}), status: "pending", plan };
-        await renderPaymentPlan(plan);
-        showPaymentRequestStatus("pending");
-    } catch (error) {
-        console.error("Não foi possível registrar o plano Pix.", error);
-        paymentGateMessage.textContent = "Não foi possível registrar o plano. Confira a conexão e as regras do Firestore e tente novamente.";
-    } finally {
-        selectPaymentPlanButton.disabled = false;
-    }
-};
-
-selectPaymentPlanButton.addEventListener("click", () => { void selectPaymentPlan(); });
 
 const startCheckout = async () => {
     const plan = paymentPlanOptions.querySelector('input[name="paymentPlan"]:checked')?.value;
@@ -360,17 +205,6 @@ const startCheckout = async () => {
 };
 
 startCheckoutButton.addEventListener("click", () => { void startCheckout(); });
-
-copyPixKeyButton.addEventListener("click", async () => {
-    try {
-        if (!currentPixPayload) throw new Error("Escolha um plano antes de copiar o Pix.");
-        await navigator.clipboard.writeText(currentPixPayload);
-        pixCopyMessage.textContent = "Código Pix copiado. Cole no app do banco em Pix Copia e Cola.";
-    } catch (error) {
-        console.error("Não foi possível copiar o código Pix.", error);
-        pixCopyMessage.textContent = "Não foi possível copiar automaticamente. Use o QR Code acima.";
-    }
-});
 
 const showProfileForUser = async user => {
     try {
@@ -556,7 +390,7 @@ try {
     auth = firebaseModule.auth;
     db = firebaseModule.db;
     ({ onAuthStateChanged, signOut, updateProfile } = authModule);
-    ({ doc, getDoc, setDoc, updateDoc, deleteField, serverTimestamp, onSnapshot, runTransaction, collection, getDocs } = firestoreModule);
+    ({ doc, getDoc, setDoc, updateDoc, deleteField, serverTimestamp, onSnapshot, collection, getDocs } = firestoreModule);
     window.PPPE_CLOUD = { auth, db, fs: firestoreModule };
 
     onAuthStateChanged(auth, async user => {
@@ -582,29 +416,17 @@ try {
                 return;
             }
             showPaymentGate();
-            stopRequestListener?.();
-            stopRequestListener = onSnapshot(doc(db, "accessRequestsPppe", user.uid), snapshot => {
-                paymentRequestData = snapshot.exists() ? snapshot.data() : null;
-                const requestPlan = paymentRequestData?.status === "pending"
-                    ? (["mensal", "vitalicio"].includes(paymentRequestData.plan) ? paymentRequestData.plan : "vitalicio")
-                    : null;
-                void renderPaymentPlan(requestPlan)
-                    .then(() => showPaymentRequestStatus(paymentRequestData?.status || "choose-plan"))
-                    .catch(error => {
-                        console.error("Não foi possível carregar o QR Code do plano.", error);
-                        paymentGateMessage.textContent = "Não foi possível carregar o Pix. Recarregue a página e tente novamente.";
-                    });
-            }, error => {
-                console.error("Não foi possível acompanhar a solicitação de acesso.", error);
-                showPaymentRequestStatus(error);
-            });
             stopAccessListener?.();
             stopAccessListener = onSnapshot(doc(db, "accessPppe", user.uid), snapshot => {
                 const access = snapshot.exists() ? snapshot.data() : null;
                 if (hasCurrentAccess(access)) {
                     void showGrantedProfile(user, access);
                 } else if (access?.active === true && ["semanal", "mensal"].includes(access.plan) && accessExpiration(access) !== null) {
-                    showPaymentRequestStatus("approved");
+                    setPaymentRequestStatus(
+                        "error",
+                        "Seu acesso por período venceu",
+                        "Escolha um plano e pague pelo Mercado Pago para renovar seu acesso."
+                    );
                 }
             }, error => {
                 console.error("Não foi possível acompanhar a confirmação do pagamento.", error);

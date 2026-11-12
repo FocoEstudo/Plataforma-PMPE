@@ -36,7 +36,7 @@
             </div>
             <p id="status" role="status" aria-live="polite">Carregando serviço de acesso...</p>
             <section id="authentication" hidden>
-                <p>Entre com sua conta existente ou crie uma conta para solicitar acesso à PCPE.</p>
+                <p>Entre com sua conta existente ou crie uma conta para comprar acesso à PCPE.</p>
                 <div class="mode-switch" role="group" aria-label="Tipo de acesso">
                     <button id="login-mode" type="button" aria-pressed="true">Entrar</button>
                     <button id="register" type="button" aria-pressed="false">Criar conta</button>
@@ -67,26 +67,16 @@
                 </section>
                 <section id="purchase" hidden>
                     <h2>Comprar acesso PCPE</h2>
-                    <p>Uma compra PCPE libera Agente e Escrivão. O pagamento é único; semanal e mensal podem ser renovados com uma nova compra.</p>
-                    <form id="request-form">
+                    <p>Uma compra PCPE libera Agente e Escrivão. Escolha um plano e pague com Pix ou cartão no checkout seguro do Mercado Pago; o acesso será liberado automaticamente após a confirmação.</p>
+                    <form id="plan-form">
                         <fieldset class="account-plans">
                             <legend>Escolha um plano</legend>
                             <label class="role-option"><input name="plan" type="radio" value="semanal" required><span><strong>Semanal — R$ 6,25</strong><small>7 dias a partir da confirmação.</small></span></label>
                             <label class="role-option"><input name="plan" type="radio" value="mensal" required><span><strong>Mensal — R$ 24,90</strong><small>30 dias a partir da confirmação.</small></span></label>
                             <label class="role-option"><input name="plan" type="radio" value="vitalicio" required><span><strong>Vitalício — R$ 99,90</strong><small>Pagamento único; acesso após a confirmação.</small></span></label>
                         </fieldset>
-                        <button class="submit-button" id="start-checkout" type="button">Pagar com Mercado Pago</button>
-                        <button class="secondary-action" type="submit">Solicitar Pix manual (aprovação manual)</button>
+                        <button class="submit-button" id="start-checkout" type="button">Pagar com Pix ou cartão</button>
                     </form>
-                </section>
-                <section id="pending" hidden>
-                    <h2>Solicitação pendente</h2>
-                    <p id="pending-plan"></p>
-                    <p>Escaneie o QR Code ou copie o código Pix. Confira o valor e os dados do recebedor no banco e envie o comprovante pelo WhatsApp. A liberação é manual.</p>
-                    <img id="pix-qr" class="pix-qr" alt="" width="220" height="220">
-                    <button class="secondary-action" id="copy-pix" type="button">Copiar Pix Copia e Cola</button>
-                    <p><a id="receipt-link" href="https://wa.me/5566996884580" target="_blank" rel="noopener noreferrer">Enviar comprovante pelo WhatsApp ↗</a></p>
-                    <p>A página atualiza o status após a análise. Para alterar um pedido pendente, entre em contato com o atendimento antes de pagar.</p>
                 </section>
             </section>
         </section>

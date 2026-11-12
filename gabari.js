@@ -123,7 +123,7 @@
             steps: [
                 'Escolha entre Agente e Escrivão e continue para a conta PCPE.',
                 'As disciplinas comuns aparecem nos dois cargos; cada um tem uma disciplina específica.',
-                'Entre na conta e solicite o plano por Pix; a liberação depende da confirmação manual.',
+                'Entre na conta PCPE, escolha um plano e pague com Pix ou cartão pelo Mercado Pago; o acesso é liberado após a confirmação do pagamento.',
                 'Consulte o edital e as retificações na página oficial da banca.'
             ]
         },
