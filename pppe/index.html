@@ -21,6 +21,29 @@
     <script src="pdf-legislacao-especial.js"></script>
     <script src="pdf-execucao-penal.js"></script>
     <script src="pdf-direitos-humanos.js"></script>
+    <script src="apostila-renderer.js"></script>
+    <script src="aprofundamento-constitucional.js"></script>
+    <script src="aprofundamento-penal.js"></script>
+    <script src="aprofundamento-processo-penal.js"></script>
+    <script src="aprofundamento-administrativo.js"></script>
+    <script src="aprofundamento-portugues.js"></script>
+    <script src="aprofundamento-direitos-humanos.js"></script>
+    <script src="aprofundamento-execucao-penal.js"></script>
+    <script src="aprofundamento-legislacao-especial.js"></script>
+    <script src="aprofundamento-legestadual.js"></script>
+    <script src="aprofundamento-etica.js"></script>
+    <script src="aprofundamento-informatica-atualidades.js"></script>    <script src="aprofundamento-complementar-portugues.js"></script>
+    <script src="aprofundamento-complementar-etica.js"></script>
+    <script src="aprofundamento-complementar-legestadual.js"></script>
+    <script src="aprofundamento-complementar-informatica.js"></script>
+    <script src="aprofundamento-complementar-atualidades.js"></script>
+    <script src="aprofundamento-complementar-administrativo.js"></script>
+    <script src="aprofundamento-complementar-constitucional.js"></script>
+    <script src="aprofundamento-complementar-penal.js"></script>
+    <script src="aprofundamento-complementar-processo-penal.js"></script>
+    <script src="aprofundamento-complementar-legislacao-especial.js"></script>
+    <script src="aprofundamento-complementar-execucao-penal.js"></script>
+    <script src="aprofundamento-complementar-direitos-humanos.js"></script>
     <script src="questoes-portugues.js"></script>
     <script src="questoes-etica.js"></script>
     <script src="questoes-legestadual.js"></script>
@@ -2356,6 +2379,7 @@
         }
     </style>
     <link rel="stylesheet" href="tema.css?v=4">
+    <link rel="stylesheet" href="apostila.css">
     <link rel="stylesheet" href="../aviso-pagamento.css">
 </head>
 
@@ -4937,39 +4961,62 @@
         }
 
         function populateTopicGuides() {
-            const esc = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const esc = window.PPPE_APOSTILA_RENDERER.escapeHtml;
             const guides = window.PMPE_TOPIC_GUIDES || {};
-            const lessonHtml = ([heading, explanation, example, alert], index, total) => `
-                <section class="mb-8">
-                    <h2>Aula ${index + 1}/${total} · ${esc(heading)}</h2>
-                    <p>${esc(explanation)}</p>
-                    <blockquote><strong>Exemplo prático:</strong> ${esc(example)}</blockquote>
-                    <p class="rounded border-l-4 border-amber-500 bg-amber-50 p-4"><strong>Ponto de atenção:</strong> ${esc(alert)}</p>
-                </section>`;
             editalModules.forEach(module => {
                 const guide = guides[module.topic];
                 const meta = (window.PPPE_MODULOS || []).find(item => item.topic === module.topic);
-                const scopeItems = (guide?.scope || meta?.escopo || []).map(item => '<li>' + esc(item) + '</li>').join('');
-                const header = '<h1>' + esc(module.topic) + '</h1><p><strong>Disciplina:</strong> ' + esc(module.sub) + '. Banca: Cebraspe.</p><section><h2>Escopo deste tema no edital</h2><ul>' + scopeItems + '</ul></section>';
-                let body;
-                if (guide?.lessons?.length) {
-                    const practice = (guide.practice || []).map((question, index) =>
-                        '<li>' + esc(question) + '<br><details class="mt-1"><summary class="cursor-pointer font-bold">Ver gabarito comentado</summary><p>' + esc(guide.answers?.[index] || '') + '</p></details></li>').join('');
-                    const sources = (guide.sources || []).map(([label, url]) =>
-                        '<li><a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a></li>').join('');
-                    body = guide.lessons.map((lesson, index) => lessonHtml(lesson, index, guide.lessons.length)).join('')
-                        + (practice ? '<section class="mb-8"><h2>Treino comentado</h2><ol>' + practice + '</ol></section>' : '')
-                        + (sources ? '<section><h2>Fontes oficiais</h2><ul>' + sources + '</ul></section>' : '');
-                } else {
-                    body = '<section><h2>Apostila</h2><p class="rounded-lg border-l-4 border-blue-600 bg-blue-50 p-4 text-slate-800">O material completo deste tema está em preparação e será liberado em breve.</p></section>';
-                }
+                const scopeItems = (guide?.scope || meta?.escopo || []).map(item => `<li>${esc(item)}</li>`).join("");
+                const lessons = guide?.lessons || [];
+                const lessonAnchors = lessons.map((_, index) => `pppe-aula-${module.moduleId}-${index + 1}`);
+                const scopeId = `pppe-escopo-${module.moduleId}`;
+                const practiceId = `pppe-treino-${module.moduleId}`;
+                const sourcesId = `pppe-fontes-${module.moduleId}`;
+                const indexItems = [
+                    `<li><a href="#${scopeId}">Escopo deste tema no edital</a></li>`,
+                    ...lessons.map(([heading], index) => `<li><a href="#${lessonAnchors[index]}">${esc(heading)}</a></li>`),
+                    ...(guide?.practice?.length ? [`<li><a href="#${practiceId}">Treino comentado</a></li>`] : []),
+                    ...(guide?.sources?.length ? [`<li><a href="#${sourcesId}">Fontes oficiais</a></li>`] : [])
+                ].join("");
+                const cover = `<section class="apostila-cover">
+                    <p class="apostila-cover-kicker">Operação PPPE · Caderno de estudos</p>
+                    <p>POLÍCIA PENAL DE PERNAMBUCO</p>
+                    <h1>${esc(module.topic)}</h1>
+                    <p class="apostila-cover-note">Material de apoio organizado pelo conteúdo programático. Use a legislação consolidada e os atos oficiais para conferir a redação vigente.</p>
+                    <p class="apostila-cover-meta">${esc(module.sub)} · Banca Cebraspe</p>
+                </section>`;
+                const index = `<nav class="apostila-index" aria-label="Nesta apostila">
+                    <h2>Roteiro da apostila</h2><ol>${indexItems}</ol>
+                </nav>`;
+                const header = `<section id="${scopeId}"><h2>Escopo deste tema no edital</h2><ul>${scopeItems}</ul></section>`;
+                const lessonHtml = lessons.map(([heading, explanation, example, alert], index) => {
+                    const blocks = window.PMPE_DEEPENING?.[module.topic]?.[index + 1];
+                    const deepeningHtml = blocks?.length
+                        ? `<div class="apostila-deepening"><h3>Conceito aprofundado, do zero</h3>${window.PPPE_APOSTILA_RENDERER.renderBlocks(blocks)}</div>`
+                        : "";
+                    return `<section class="apostila-lesson" id="${lessonAnchors[index]}">
+                        <h2>Aula ${index + 1}/${lessons.length} · ${esc(heading)}</h2>
+                        <p>${esc(explanation)}</p>
+                        <blockquote><strong>Exemplo prático:</strong> ${esc(example)}</blockquote>
+                        <p class="apostila-attention"><strong>Ponto de atenção:</strong> ${esc(alert)}</p>
+                        ${deepeningHtml}
+                    </section>`;
+                }).join("");
+                const practice = (guide?.practice || []).map((question, index) =>
+                    `<li>${esc(question)}<br><details><summary>Ver gabarito comentado</summary><p>${esc(guide.answers?.[index] || "Consulte a explicação do tema e a legislação aplicável.")}</p></details></li>`
+                ).join("");
+                const sources = (guide?.sources || []).map(([label, url]) =>
+                    `<li><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a></li>`
+                ).join("");
+                const body = guide?.lessons?.length
+                    ? `${lessonHtml}${practice ? `<section class="apostila-exercise" id="${practiceId}"><h2>Treino comentado · Cebraspe</h2><ol>${practice}</ol></section>` : ""}${sources ? `<section class="apostila-sources" id="${sourcesId}"><h2>Fontes oficiais</h2><p>Consulte as fontes para conferir o texto vigente; este material não substitui a leitura integral das normas.</p><ul>${sources}</ul></section>` : ""}`
+                    : `<section><h2>Apostila</h2><p class="apostila-essential">O material completo deste tema está em preparação. Consulte o escopo do edital e as fontes oficiais.</p></section>`;
                 materialsDatabase[module.mat] = {
-                    title: module.sub + ' · ' + module.topic,
-                    content: '<article class="topic-guide">' + header + body + '</article>'
+                    title: `${module.sub} · ${module.topic}`,
+                    content: `<article class="topic-guide">${cover}${index}${header}${body}</article>`
                 };
             });
         }
-
         const getYouTubeVideoId = videoUrl => {
             try {
                 const url = new URL(videoUrl);
@@ -6437,7 +6484,7 @@
             }
             document.getElementById('materialTitle').innerHTML = `<i class="fa-solid fa-book-open text-blue-600 mr-2"></i> ${subject}`;
             document.getElementById('materialContent').innerHTML = `
-                <div class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <div class="subject-guide-picker mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
                     <label for="subjectGuidePicker" class="block mb-3 font-bold text-slate-900">Escolha o tema do PDF:</label>
                     <select id="subjectGuidePicker" class="w-full border-slate-400 rounded p-2 mb-3 bg-white text-slate-900" onchange="openMaterialModal(this.value, true)">${options}</select>
                     <p class="text-slate-700">Os materiais são separados por tema para você estudar cada recorte do conteúdo programático.</p>

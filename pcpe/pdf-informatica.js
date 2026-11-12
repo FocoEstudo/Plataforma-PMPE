@@ -1,0 +1,14 @@
+(function () {
+  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
+  window.PMPE_TOPIC_GUIDES['Linux: sistema operacional e arquivos'] = {
+    scope: ['Linux e distribuições', 'Arquivos, diretórios e comandos', 'Permissões e segurança'],
+    lessons: [
+      ['Sistema e distribuições', 'Linux é o núcleo utilizado por diversas distribuições, que o combinam com programas e ferramentas para compor sistemas operacionais. A interface pode ser gráfica ou por linha de comando. Distribuições diferem em seus aplicativos e administradores de pacotes, portanto não presuma que todos os comandos administrativos são idênticos.', 'Uma distribuição pode oferecer uma área de trabalho gráfica e um terminal para comandos.', 'Linux, em sentido estrito, designa o núcleo; uma distribuição inclui outros componentes.'],
+      ['Arquivos e diretórios', 'O sistema organiza arquivos em uma árvore com diretório raiz representado por /. Um caminho absoluto começa na raiz; um caminho relativo é interpretado a partir do diretório atual. Em sistemas Linux, nomes de arquivos normalmente distinguem maiúsculas de minúsculas. O diretório pessoal guarda arquivos do usuário conforme a configuração do sistema.', 'O caminho /home/ana/relatorio.txt é absoluto; relatorio.txt pode ser relativo ao diretório atual.', 'Não confunda a raiz / com o diretório pessoal de um usuário.'],
+      ['Comandos básicos', 'No terminal, pwd mostra o diretório atual; ls lista entradas; cd altera o diretório atual; mkdir cria diretórios; cp copia; mv move ou renomeia; cat apresenta conteúdo. Argumentos e opções alteram o comportamento, por isso consulte a documentação antes de executar comandos. Operações destrutivas exigem atenção especial.', 'Após cd documentos, pwd permite conferir em qual diretório se está.', 'Não execute comandos obtidos de fonte desconhecida nem presuma que exclusões são reversíveis.'],
+      ['Permissões', 'Permissões tradicionais de arquivos distinguem leitura, escrita e execução para proprietário, grupo e outros usuários. Em diretórios, a execução permite atravessar o diretório, conforme as demais permissões. O comando chmod altera permissões; a administração do sistema pode utilizar mecanismos adicionais como listas de controle de acesso.', 'Um arquivo legível e gravável pelo proprietário pode ter permissões diferentes para outros usuários.', 'Permissão de execução de diretório não tem exatamente o mesmo efeito que execução de um arquivo.']
+    ],
+    practice: ['Qual símbolo representa o diretório raiz?', 'O comando pwd mostra o quê?', 'As permissões tradicionais distinguem proprietário, grupo e outros?'], answers: ['/.', 'O diretório de trabalho atual.', 'Sim, com permissões de leitura, escrita e execução para essas classes.'],
+    sources: [['GNU Coreutils', 'https://www.gnu.org/software/coreutils/manual/coreutils.html'], ['Linux Foundation', 'https://www.linuxfoundation.org/']]
+  };
+})();

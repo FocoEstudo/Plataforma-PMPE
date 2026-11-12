@@ -1,0 +1,41 @@
+(function () {
+  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
+  Object.assign(window.PPPE_QUESTOES, {
+    'Amostragem, gráficos e tabelas': [
+      { text: 'Em uma pesquisa com parte das delegacias de uma região, as delegacias selecionadas formam:', options: ['O censo.', 'Uma amostra.', 'Um parâmetro.', 'A totalidade da população.'], correct: 1, exp: 'A amostra é o subconjunto observado; a população é o conjunto definido como alvo da pesquisa.' },
+      { text: 'Qual variável é quantitativa discreta?', options: ['Número de registros por dia.', 'Cor de uma pasta.', 'Tempo de atendimento medido continuamente.', 'Categoria de ocorrência.'], correct: 0, exp: 'O número de registros é uma contagem; as categorias são qualitativas e o tempo é uma medida contínua.' },
+      { text: 'Uma amostragem divide delegacias em regiões e sorteia unidades em cada região. O desenho é:', options: ['Por conveniência.', 'Censitário.', 'Estratificado.', 'Obrigatoriamente por conglomerados.'], correct: 2, exp: 'O sorteio em cada estrato caracteriza o desenho estratificado; escolher grupos não é a mesma coisa.' },
+      { text: 'Na amostragem aleatória simples de tamanho fixo:', options: ['As unidades são escolhidas pela facilidade de acesso.', 'Cada subconjunto de mesmo tamanho tem igual probabilidade de seleção.', 'Toda unidade da população é observada.', 'Cada estrato contém necessariamente o mesmo número de unidades.'], correct: 1, exp: 'No desenho aleatório simples, os subconjuntos possíveis de mesmo tamanho têm igual probabilidade.' },
+      { text: 'De 200 registros, 50 são de uma categoria. A frequência relativa é:', options: ['5%.', '20%.', '25%.', '50%.'], correct: 2, exp: '50 dividido por 200 é 0,25, equivalente a 25%.' },
+      { text: 'Uma tabela apresenta 12 casos em A e 18 em B, sem outras categorias. A frequência relativa de B é:', options: ['18%.', '40%.', '60%.', '75%.'], correct: 2, exp: 'O total é 30; 18/30 = 0,6 = 60%.' },
+      { text: 'Para mostrar a distribuição de uma variável quantitativa por intervalos contíguos, usa-se especialmente:', options: ['Histograma.', 'Organograma.', 'Fluxograma.', 'Mapa de processos.'], correct: 0, exp: 'O histograma representa frequências em intervalos de uma variável quantitativa.' },
+      { text: 'Uma série mensal de ocorrências é adequadamente apresentada por:', options: ['Gráfico de linhas ao longo do tempo.', 'Um único setor sem legenda.', 'Uma lista sem meses.', 'Um organograma.'], correct: 0, exp: 'O gráfico de linhas facilita a leitura da evolução temporal quando os meses são identificados.' },
+      { text: 'Um indicador sobe de 40 para 50. O aumento percentual em relação ao valor inicial é:', options: ['10%.', '20%.', '25%.', '50%.'], correct: 2, exp: 'O aumento de 10 é dividido pela base inicial 40, resultando em 25%.' },
+      { text: 'Sobre gráficos e percentuais, é correto afirmar:', options: ['Uma escala truncada pode exagerar visualmente uma diferença.', 'Todo aumento de 10 unidades é aumento de 10%.', 'O denominador não altera a interpretação de uma porcentagem.', 'Uma amostra por conveniência é sempre aleatória simples.'], correct: 0, exp: 'A escala afeta a percepção visual; percentuais dependem da base e conveniência não assegura seleção aleatória.' }
+    ],
+    'Média, mediana e moda': [
+      { text: 'A média aritmética dos valores 3, 5 e 10 é:', options: ['5.', '6.', '7.', '9.'], correct: 1, exp: '(3 + 5 + 10)/3 = 18/3 = 6.' },
+      { text: 'As notas 6 e 8 têm pesos 1 e 3, respectivamente. Sua média ponderada é:', options: ['7.', '7,2.', '7,5.', '8.'], correct: 2, exp: '(6×1 + 8×3)/(1+3) = 30/4 = 7,5.' },
+      { text: 'A mediana dos valores 9, 2, 7 e 4 é:', options: ['4.', '5,5.', '6.', '7.'], correct: 1, exp: 'Ordenando 2, 4, 7 e 9, a mediana é (4+7)/2 = 5,5.' },
+      { text: 'A mediana dos valores 8, 2, 4, 10 e 6 é:', options: ['4.', '5.', '6.', '8.'], correct: 2, exp: 'Ordenados 2, 4, 6, 8, 10, o terceiro valor é 6.' },
+      { text: 'As modas de 1, 1, 2, 3 e 3 são:', options: ['Apenas 1.', 'Apenas 3.', '1 e 3.', '2 e 3.'], correct: 2, exp: '1 e 3 aparecem duas vezes cada, com frequência máxima.' },
+      { text: 'Em uma sequência, os valores 4, 4, 5, 6 e 100 foram observados. Qual afirmação é correta?', options: ['A média não é afetada por extremos.', 'A mediana é 5 e a média é maior que 5.', 'A moda é 100.', 'A mediana é 100.'], correct: 1, exp: 'O valor central ordenado é 5; a média é 119/5 = 23,8, elevada pelo valor extremo.' },
+      { text: 'Uma turma de 10 alunos tem média 6 e outra, de 30 alunos, média 8. A média das duas turmas reunidas é:', options: ['7.', '7,2.', '7,5.', '8.'], correct: 2, exp: 'É necessário ponderar pelos tamanhos: (10×6 + 30×8)/40 = 7,5.' },
+      { text: 'Qual afirmação sobre a mediana está correta?', options: ['Os dados devem ser ordenados antes de identificar o centro.', 'Ela sempre é igual à média.', 'Ela é sempre um valor observado, mesmo com número par de dados.', 'Ela é a categoria mais frequente.'], correct: 0, exp: 'Ordenar é indispensável; com quantidade par, a mediana é a média dos dois termos centrais.' },
+      { text: 'A moda pode ser utilizada para descrever:', options: ['Somente medidas contínuas.', 'A categoria mais frequente de uma variável qualitativa.', 'Somente dados com média conhecida.', 'A diferença entre máximo e mínimo.'], correct: 1, exp: 'A moda identifica o valor ou categoria mais frequente, inclusive em dados qualitativos.' },
+      { text: 'Uma tabela registra o valor 2 duas vezes e o valor 5 três vezes. A média é:', options: ['3.', '3,5.', '3,8.', '4,2.'], correct: 2, exp: '(2×2 + 5×3)/5 = 19/5 = 3,8.' }
+    ],
+    'Dispersão e probabilidade': [
+      { text: 'A amplitude dos valores 2, 5 e 9 é:', options: ['3.', '4.', '7.', '9.'], correct: 2, exp: 'A amplitude é o máximo menos o mínimo: 9 − 2 = 7.' },
+      { text: 'O desvio padrão:', options: ['É a raiz quadrada da variância e tem a mesma unidade dos dados.', 'É sempre negativo.', 'É a soma de todos os dados.', 'Tem necessariamente a unidade dos dados ao quadrado.'], correct: 0, exp: 'A variância tem unidade ao quadrado; sua raiz, o desvio padrão, retorna à unidade original.' },
+      { text: 'A variância populacional de 1, 2 e 3 é:', options: ['0.', '2/3.', '1.', '2.'], correct: 1, exp: 'A média é 2; os quadrados dos desvios somam 2. Como é população, divide-se por 3.' },
+      { text: 'Em um dado honesto de seis faces, a probabilidade de obter número par é:', options: ['1/6.', '1/3.', '1/2.', '2/3.'], correct: 2, exp: 'Os resultados favoráveis são 2, 4 e 6: 3/6 = 1/2.' },
+      { text: 'A probabilidade de não obter 6 em um lançamento de dado honesto é:', options: ['1/6.', '1/3.', '1/2.', '5/6.'], correct: 3, exp: 'P(não 6) = 1 − P(6) = 5/6.' },
+      { text: 'Se P(A)=0,5, P(B)=0,4 e P(A ∩ B)=0,2, então P(A ∪ B) é:', options: ['0,2.', '0,5.', '0,7.', '0,9.'], correct: 2, exp: 'P(A ∪ B) = 0,5 + 0,4 − 0,2 = 0,7.' },
+      { text: 'Em um dado honesto, A é obter número par e B, número maior que 4. A probabilidade de A ou B é:', options: ['1/3.', '1/2.', '2/3.', '5/6.'], correct: 2, exp: 'A união é {2, 4, 5, 6}, com quatro dos seis resultados equiprováveis.' },
+      { text: 'Se A e B são independentes, com P(A)=0,5 e P(B)=0,4, a interseção tem probabilidade:', options: ['0,1.', '0,2.', '0,4.', '0,9.'], correct: 1, exp: 'Para eventos independentes, P(A ∩ B)=P(A)P(B)=0,5×0,4=0,2.' },
+      { text: 'Uma urna contém duas bolas azuis e uma vermelha. Após retirar uma azul sem reposição, a probabilidade de azul na próxima retirada é:', options: ['1/3.', '1/2.', '2/3.', '1.'], correct: 1, exp: 'Restam uma azul e uma vermelha; uma das duas é azul.' },
+      { text: 'Acerca de eventos mutuamente exclusivos de probabilidades positivas:', options: ['São independentes necessariamente.', 'Sua interseção é vazia e eles não são independentes.', 'Sua união é vazia.', 'A probabilidade de cada um é zero.'], correct: 1, exp: 'A interseção tem probabilidade zero, enquanto o produto das probabilidades positivas é maior que zero; portanto não são independentes.' }
+    ]
+  });
+})();

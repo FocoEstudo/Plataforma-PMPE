@@ -33,7 +33,7 @@ for (const [topic, lessons] of Object.entries(catalog)) {
         assert(!lessonIds.has(lesson.source), `Aula duplicada: ${lesson.source}`);
         lessonIds.add(lesson.source);
         for (const url of lesson.urls) {
-            assert(pmpeHtml.includes(`"${url}"`), `URL não encontrada na PMPE: ${url}`);
+            assert(/^[A-Za-z0-9_-]{11}$/.test(videoId(url)), `ID inválido: ${url}`);
             assert(/^https:\/\/(?:youtu\.be\/|www\.youtube\.com\/live\/)/.test(url));
         }
         count++;
@@ -53,6 +53,9 @@ for (const [topic, lessons] of Object.entries(complementary)) {
 }
 assert.strictEqual(Object.keys(catalog).length, 26);
 assert.strictEqual(count, 67);
+assert(pmpeHtml.includes('<script src="pppe/videos-pppe.js"></script>'));
+assert(pmpeHtml.includes('<script src="pppe/videos-complementares.js"></script>'));
+assert(pmpeHtml.includes('<script src="videos-pmpe.js"></script>'));
 assert(pppeHtml.includes('<script src="videos-pppe.js"></script>'));
 assert(pppeHtml.includes('<script src="videos-complementares.js"></script>'));
 assert(!pppeHtml.includes('youtube.com/results?search_query='));

@@ -1,0 +1,36 @@
+(function () {
+  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
+  Object.assign(window.PPPE_QUESTOES, {
+    'Estatuto dos Policiais Civis de Pernambuco': [
+      {text:'O Estatuto Policial de Pernambuco é a lei estadual:',options:['6.425/1972.','8.112/1990.','14.133/2021.','11.343/2006.'],correct:0,exp:'A Lei estadual nº 6.425/1972 dispõe sobre o regime jurídico peculiar dos policiais civis.'},
+      {text:'O Estatuto Policial disciplina regime jurídico peculiar de:',options:['Funcionários policiais civis estaduais.','Exclusivamente militares federais.','Somente juízes.','Apenas servidores municipais.'],correct:0,exp:'A lei trata do regime peculiar dos funcionários policiais civis de Pernambuco.'},
+      {text:'A função policial, conforme o Estatuto, fundamenta-se em:',options:['Hierarquia e disciplina.','Ausência de normas.','Escolha pessoal de atribuições.','Publicidade irrestrita de investigações.'],correct:0,exp:'O Estatuto menciona hierarquia e disciplina na caracterização da função policial.'},
+      {text:'Quanto à leitura da lei estadual, é correto:',options:['Consultar alterações e o texto vigente.','Ignorar todas as mudanças posteriores.','Usar apenas texto informal sem conferir.','Presumir que norma militar é idêntica.'],correct:0,exp:'A legislação pode sofrer alterações; a consulta oficial atualizada é essencial.'},
+      {text:'Nos casos sem tratamento peculiar, o Estatuto prevê referência:',options:['Ao regime jurídico geral dos funcionários civis estaduais.','Apenas à legislação estrangeira.','Exclusivamente às regras municipais.','A nenhum regime jurídico.'],correct:0,exp:'A lei remete ao regime dos funcionários civis estaduais nos casos sem tratamento próprio.'},
+      {text:'Uma apuração disciplinar deve observar:',options:['Contraditório e ampla defesa.','Punição automática pela suspeita.','Ausência de procedimento.','Supressão da defesa.'],correct:0,exp:'As garantias constitucionais devem ser observadas no procedimento aplicável.'},
+      {text:'Sobre possível acumulação de cargos, deve-se:',options:['Analisar a Constituição e as normas aplicáveis ao caso.','Presumir que toda acumulação é permitida.','Ignorar compatibilidade de horários.','Considerar apenas vontade pessoal.'],correct:0,exp:'O exame depende das regras constitucionais e legais e das condições concretas.'},
+      {text:'Uma mesma conduta pode gerar consequências:',options:['Administrativas, civis e penais, conforme os respectivos pressupostos.','Apenas pessoais, nunca jurídicas.','Sempre idênticas e automáticas.','Somente internacionais.'],correct:0,exp:'As esferas possuem pressupostos próprios e devem ser avaliadas conforme o ordenamento.'},
+      {text:'Antes de aplicar penalidade, é necessário:',options:['Observar procedimento, competência e garantias aplicáveis.','Dispensar qualquer apuração.','Presumir culpabilidade pela denúncia.','Impedir apresentação de defesa.'],correct:0,exp:'A apuração e o procedimento legal protegem as garantias e a correção da decisão.'},
+      {text:'No estudo do Estatuto, deve-se:',options:['Conferir a versão consolidada e alterações.','Memorizar prazos de fonte desatualizada sem conferência.','Aplicar automaticamente regras de carreira distinta.','Desconsiderar a Constituição.'],correct:0,exp:'A versão vigente e o contexto constitucional são indispensáveis.'}
+    ],
+    'Constituição de Pernambuco: segurança pública': [
+      {text:'A segurança pública é:',options:['Dever do Estado, direito e responsabilidade de todos.','Dever exclusivo da vítima.','Responsabilidade apenas de um servidor.','Atividade privada sem previsão constitucional.'],correct:0,exp:'A Constituição relaciona segurança pública ao dever estatal e à responsabilidade de todos.'},
+      {text:'A segurança pública busca preservar:',options:['Ordem pública e incolumidade das pessoas e do patrimônio.','Somente bens de autoridades.','Apenas interesses privados de agentes.','Exclusivamente atividades comerciais.'],correct:0,exp:'A proteção da ordem e da incolumidade integra as finalidades constitucionais.'},
+      {text:'A atuação em segurança pública deve:',options:['Respeitar direitos e garantias individuais.','Dispensar legalidade.','Afastar automaticamente toda garantia.','Permitir qualquer medida sem fundamento.'],correct:0,exp:'Segurança pública deve ser exercida em conformidade com direitos e garantias.'},
+      {text:'As polícias civis são dirigidas por:',options:['Delegados de polícia de carreira.','Qualquer pessoa escolhida sem requisito legal.','Somente oficiais militares.','Juízes eleitorais.'],correct:0,exp:'A Constituição Federal prevê direção por delegados de polícia de carreira.'},
+      {text:'Às polícias civis incumbem, ressalvada a competência da União:',options:['Polícia judiciária e apuração de infrações penais, exceto militares.','Somente defesa externa.','Exclusivamente policiamento ostensivo.','Julgar definitivamente todas as infrações.'],correct:0,exp:'A atribuição constitucional ressalva a competência da União e excetua infrações penais militares.'},
+      {text:'A apuração de infrações penais militares está:',options:['Excluída da atribuição geral de apuração das polícias civis.','Sempre atribuída exclusivamente ao cidadão.','Incluída sem qualquer ressalva na competência geral da polícia civil.','Fora do sistema jurídico.'],correct:0,exp:'A Constituição Federal excepciona as infrações penais militares dessa atribuição geral.'},
+      {text:'A polícia ostensiva e a preservação da ordem pública são funções constitucionais:',options:['Das polícias militares.','Exclusivas dos arquivos públicos.','Do tribunal do júri.','Dos cartórios privados.'],correct:0,exp:'A Constituição Federal atribui essas funções às polícias militares.'},
+      {text:'A finalidade comum de segurança significa que:',options:['Cada órgão mantém suas competências próprias.','Todos os órgãos possuem competências idênticas.','A lei não pode disciplinar atribuições.','A investigação dispensa regras legais.'],correct:0,exp:'Órgãos diferentes possuem competências distintas definidas no ordenamento.'},
+      {text:'Ao estudar a Constituição estadual, é importante:',options:['Consultar a redação vigente e suas emendas.','Ignorar alterações constitucionais.','Presumir que listas nunca mudam.','Substituir o texto oficial por suposição.'],correct:0,exp:'Emendas podem alterar a redação e a organização dos órgãos.'},
+      {text:'Estatutos e leis próprias podem disciplinar:',options:['Organização, direitos, garantias e deveres dos integrantes.','Somente a cor das sedes.','Exclusivamente horários de comércio.','Assuntos sem relação com a função pública.'],correct:0,exp:'A organização e o regime dos integrantes são tratados pelas normas pertinentes.'}
+    ]
+  });
+  ['Estatuto dos Policiais Civis de Pernambuco', 'Constituição de Pernambuco: segurança pública'].forEach(topic => {
+    window.PPPE_QUESTOES[topic].forEach((question, index) => {
+      const shift = index % question.options.length;
+      question.options = question.options.slice(shift).concat(question.options.slice(0, shift));
+      question.correct = (question.correct - shift + question.options.length) % question.options.length;
+    });
+  });
+})();

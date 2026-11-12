@@ -169,7 +169,7 @@ service cloud.firestore {
 
     // Suporte e feedback ficam disponíveis a quem tem acesso a qualquer concurso.
     function hasAccess() {
-      return hasAccessPmpe() || hasAccessPppe();
+      return hasAccessPmpe() || hasAccessPppe() || hasAccessPcpe();
     }
 
     function hasAccessPppe() {
@@ -220,6 +220,18 @@ service cloud.firestore {
         && data.status in ['approved', 'rejected']
         && data.reviewedAt == request.time
         && data.diff(resource.data).affectedKeys().hasOnly(['status', 'reviewedAt']);
+    }
+
+    function isValidSyncDocPcpe(syncId) {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['key', 'value', 'deleted', 't'])
+        && data.keys().hasAll(['key', 'deleted', 't'])
+        && data.key is string
+        && data.key == syncId
+        && data.key.matches('^pcpe[A-Za-z0-9_]{0,100}$')
+        && data.deleted is bool
+        && data.t is number
+        && (!data.keys().hasAny(['value']) || data.value == null || (data.value is string && data.value.size() <= 900000));
     }
 
     function isValidSyncDocPppe(syncId) {
@@ -283,6 +295,13 @@ service cloud.firestore {
         && data.createdAt == request.time;
     }
 
+    match /pcpeProfiles/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if false;
+      allow create, update: if isOwner(userId) && hasValidProfile();
+      allow delete: if false;
+    }
+
     match /users/{userId} {
       allow get: if isOwner(userId) || isAdmin();
       allow list: if false;
@@ -292,6 +311,12 @@ service cloud.firestore {
       match /sync/{syncId} {
         allow get, list: if isOwner(userId);
         allow create, update: if isOwner(userId) && isValidSyncDoc(syncId);
+        allow delete: if isOwner(userId);
+      }
+
+      match /syncPcpe/{syncId} {
+        allow get, list: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidSyncDocPcpe(syncId);
         allow delete: if isOwner(userId);
       }
 

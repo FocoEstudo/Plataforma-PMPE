@@ -1,0 +1,41 @@
+(function () {
+  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
+  Object.assign(window.PPPE_QUESTOES, {
+    'Conceitos, objetivos e finalidades': [
+      {text:'O objeto da contabilidade é:',options:['Apenas dinheiro.','O patrimônio da entidade e suas variações.','Somente obrigações fiscais.','O mercado de ações.'],correct:1,exp:'A contabilidade estuda e evidencia o patrimônio e suas variações.'},
+      {text:'Uma finalidade da informação contábil é:',options:['Apoiar decisões dos usuários.','Substituir todos os contratos.','Eliminar qualquer risco.','Garantir lucro futuro.'],correct:0,exp:'Os relatórios auxiliam usuários a avaliar a entidade e tomar decisões.'},
+      {text:'É exemplo de usuário externo:',options:['Gerente interno.','Credor da entidade.','Funcionário do setor contábil.','Administrador interno.'],correct:1,exp:'O credor é externo; gestores e funcionários são usuários internos.'},
+      {text:'Pelo regime de competência, uma receita é reconhecida:',options:['Somente quando recebida.','No período a que se refere, atendidos os critérios aplicáveis.','Somente quando paga.','Sempre no mês seguinte.'],correct:1,exp:'O reconhecimento por competência não depende necessariamente do recebimento.'},
+      {text:'Um serviço prestado em dezembro e recebido em janeiro é receita de:',options:['Janeiro obrigatoriamente.','Dezembro, por competência.','Nenhum dos meses.','Ambos integralmente.'],correct:1,exp:'O efeito pertence ao período da prestação, atendidos os critérios aplicáveis.'},
+      {text:'Despesa e pagamento são:',options:['Sempre simultâneos.','Conceitos distintos.','Sempre receita.','Sempre ativos.'],correct:1,exp:'A despesa pode ser reconhecida em período diferente do pagamento.'},
+      {text:'A separação entre patrimônio dos sócios e da entidade significa que:',options:['Toda despesa pessoal é despesa empresarial.','Operações pessoais e empresariais não devem ser confundidas.','A entidade não pode ter patrimônio.','Os sócios nunca podem receber valores.'],correct:1,exp:'A análise contábil separa a entidade das pessoas que a integram.'},
+      {text:'A informação útil deve ser:',options:['Apenas extensa.','Relevante e representar fielmente o que pretende representar.','Sempre sigilosa.','Independente de documentação.'],correct:1,exp:'Relevância e representação fiel são características fundamentais da informação útil.'},
+      {text:'O regime de caixa considera principalmente:',options:['O movimento financeiro.','Apenas fatos futuros.','Somente bens imóveis.','O valor de mercado das ações.'],correct:0,exp:'O regime de caixa acompanha recebimentos e pagamentos.'},
+      {text:'Comparabilidade da informação:',options:['Impede análise entre períodos.','Ajuda a analisar semelhanças e diferenças.','Exige eliminar notas explicativas.','Substitui a relevância.'],correct:1,exp:'Comparabilidade facilita a identificação de semelhanças e diferenças entre informações.'}
+    ],
+    'Patrimônio, ativo, passivo e patrimônio líquido': [
+      {text:'A equação patrimonial básica é:',options:['Ativo = passivo + patrimônio líquido.','Ativo = receita − despesa.','Passivo = ativo + patrimônio líquido.','Patrimônio líquido = ativo + passivo.'],correct:0,exp:'O ativo equivale à soma do passivo com o patrimônio líquido.'},
+      {text:'Ativo de 120 e passivo de 50 resultam em patrimônio líquido de:',options:['50.','70.','120.','170.'],correct:1,exp:'PL = ativo − passivo = 120 − 50 = 70.'},
+      {text:'Uma obrigação de empréstimo a pagar é:',options:['Ativo.','Passivo.','Receita.','Patrimônio líquido.'],correct:1,exp:'A obrigação presente de pagar representa passivo quando atendidos os critérios aplicáveis.'},
+      {text:'Dinheiro em caixa constitui:',options:['Ativo.','Passivo.','Despesa.','Receita necessariamente.'],correct:0,exp:'Caixa é recurso da entidade apresentado no ativo.'},
+      {text:'Uma compra à vista de equipamento, sem outros efeitos, altera:',options:['A composição do ativo, sem alterar seu total.','Somente o patrimônio líquido.','Somente o passivo.','Receita e despesa.'],correct:0,exp:'Caixa diminui e equipamento aumenta pelo mesmo valor.'},
+      {text:'Compra financiada de equipamento por 100, sem outros efeitos, causa:',options:['Aumento do ativo e do passivo em 100.','Redução do ativo e do passivo em 100.','Aumento imediato do patrimônio líquido em 100.','Nenhuma alteração.'],correct:0,exp:'O equipamento aumenta o ativo e a obrigação aumenta o passivo.'},
+      {text:'Patrimônio líquido é:',options:['O interesse residual após deduzir passivos dos ativos.','A soma das dívidas.','Sempre igual ao caixa.','Toda receita do período.'],correct:0,exp:'É a parcela residual do ativo depois de deduzidas as obrigações reconhecidas.'},
+      {text:'Um direito a receber, em condições usuais, integra:',options:['O ativo.','O passivo.','Somente despesa.','Somente patrimônio líquido.'],correct:0,exp:'Um direito a receber é recurso reconhecido no ativo quando cumpridos os critérios.'},
+      {text:'Um fato permutativo:',options:['Necessariamente aumenta o lucro.','Altera a composição patrimonial sem alterar o patrimônio líquido por si só.','Sempre reduz o passivo.','Nunca envolve caixa.'],correct:1,exp:'O fato permutativo troca elementos sem modificar o PL naquele instante.'},
+      {text:'Se o ativo é 300 e o passivo é 180, o patrimônio líquido é:',options:['120.','180.','300.','480.'],correct:0,exp:'300 − 180 = 120.'}
+    ],
+    'Escrituração, contas e balanço patrimonial': [
+      {text:'Pelo método das partidas dobradas:',options:['Débitos e créditos totais de cada lançamento são iguais.','Todo lançamento tem apenas um débito.','Crédito sempre significa dívida.','Não há necessidade de registros.'],correct:0,exp:'O lançamento mantém igualdade entre valores debitados e creditados.'},
+      {text:'Uma conta de ativo, em regra, aumenta por:',options:['Crédito.','Débito.','Estorno obrigatório.','Saldo nulo.'],correct:1,exp:'Contas de ativo normalmente aumentam por débito.'},
+      {text:'Uma conta de passivo, em regra, aumenta por:',options:['Débito.','Crédito.','Despesa.','Receita.'],correct:1,exp:'Contas de passivo normalmente aumentam por crédito.'},
+      {text:'Na compra à vista de estoque por 100, registra-se:',options:['Débito em estoques e crédito em caixa, ambos 100.','Crédito em estoques e débito em caixa.','Débito em caixa e receita.','Somente crédito em estoques.'],correct:0,exp:'O estoque aumenta por débito e o caixa diminui por crédito.'},
+      {text:'O livro diário apresenta principalmente:',options:['Registros cronológicos.','Apenas saldos finais sem fatos.','Somente contas bancárias.','Apenas previsão orçamentária.'],correct:0,exp:'O diário registra os fatos em ordem cronológica.'},
+      {text:'O livro razão organiza as movimentações:',options:['Por conta.','Apenas por ano de abertura.','Por sócio, sem contas.','Sem débitos ou créditos.'],correct:0,exp:'O razão permite acompanhar as movimentações e o saldo de cada conta.'},
+      {text:'Um balancete equilibrado:',options:['Garante ausência de qualquer erro.','Ajuda a conferir a igualdade dos saldos, mas não detecta todos os erros.','Prova que toda despesa foi paga.','Substitui todos os documentos.'],correct:1,exp:'Erros de classificação ou omissões podem persistir mesmo com débitos e créditos iguais.'},
+      {text:'O balanço patrimonial apresenta a posição:',options:['Em determinada data.','Somente durante um século.','De receitas e despesas exclusivamente.','Somente do caixa futuro.'],correct:0,exp:'O balanço apresenta ativos, passivos e patrimônio líquido em determinada data.'},
+      {text:'Uma conta de despesa normalmente recebe:',options:['Débito.','Crédito como aumento.','Apenas lançamento sem valor.','Somente saldo de patrimônio líquido.'],correct:0,exp:'Na escrituração usual, despesas aumentam por débito.'},
+      {text:'Uma conta de receita normalmente recebe:',options:['Crédito.','Débito como aumento.','Somente estorno.','Nenhum lançamento.'],correct:0,exp:'Na escrituração usual, receitas aumentam por crédito.'}
+    ]
+  });
+})();

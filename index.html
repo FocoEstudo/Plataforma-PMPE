@@ -9,6 +9,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="dados-topicos.js"></script>
+    <script src="pppe/videos-pppe.js"></script>
+    <script src="pppe/videos-complementares.js"></script>
+    <script src="videos-pmpe.js"></script>
     <script src="aprofundamento-portugues.js"></script>
     <script src="aprofundamento-historia.js"></script>
     <script src="aprofundamento-logica.js"></script>
@@ -259,8 +262,47 @@
         .video-notes-panel {
             position: sticky;
             top: 6rem;
+            background: #0d0d0f !important;
+            color: #f8fafc !important;
         }
 
+        .video-lesson-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+            gap: .65rem;
+        }
+
+        .video-lesson-choice {
+            display: flex;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: .65rem;
+            background: #fff !important;
+            color: #1b1c20 !important;
+            padding: .8rem 1rem;
+            text-align: left;
+        }
+
+        .video-lesson-choice:hover { background: #f6f3e9 !important; border-color: #7a5600; }
+        .video-lesson-choice[aria-pressed="true"] { background: #f6f3e9 !important; border-color: #7a5600; box-shadow: 0 0 0 2px rgb(122 86 0 / 15%); }
+        .video-lesson-choice:focus-visible, .video-watched-toggle:focus-visible { outline: 3px solid #7a5600; outline-offset: 2px; }
+        .video-lesson-choice-title { color: #1b1c20 !important; font-weight: 700; }
+        .video-lesson-choice-state { flex: 0 0 auto; color: #475569 !important; font-size: .75rem; font-weight: 700; }
+        .video-lesson-choice-state.is-watched { color: #176b45 !important; }
+        .video-watched-toggle { border: 1px solid #25272b; background: #25272b; color: #fff !important; }
+        .video-watched-toggle[aria-pressed="true"] { border-color: #176b45; background: #176b45; color: #fff !important; }
+        .video-watched-toggle:disabled { cursor: not-allowed; opacity: .55; }
+        #videoTopicPicker { background: #0d0d0f !important; color: #fff !important; }
+        #videoTopicPicker option { background: #0d0d0f; color: #fff; }
+        #videoTopicPickerLabel, #videoTopicProgress, #videoCatalogNotice, #videoPlayerStatus { color: #334155 !important; }
+        #videoLessonSubject, #videoLessonExternalLink { color: #7a5600 !important; }
+        #videoLessonTitle { color: #1b1c20 !important; }
+        .video-notes-panel #videoNotesHeading { color: #f8fafc !important; }
+        .video-notes-panel .text-gray-400 { color: #cbd5e1 !important; }
+        .video-catalog-empty { grid-column: 1 / -1; border: 1px dashed #94a3b8; border-radius: .65rem; padding: 1rem; color: #475569 !important; }
         #videoLessonNotes {
             color: #173b2c;
         }
@@ -2856,38 +2898,42 @@
                 <div class="police-banner-body">
                     <span class="police-banner-eyebrow">Estudo integrado</span>
                     <h2 class="police-banner-title"><i class="fa-solid fa-circle-play mr-2" aria-hidden="true"></i>Videoaulas</h2>
-                    <p class="police-banner-text">Assista à aula e registre suas anotações ao lado. Elas ficam salvas neste navegador e separadas por aula.</p>
+                    <p class="police-banner-text">Escolha um tema do edital, selecione uma aula e registre suas anotações. O progresso e as anotações ficam salvos neste navegador.</p>
                 </div>
             </div>
-            <label for="videoLessonPicker" class="mb-5 block text-sm font-bold text-gray-200">
-                Aula do plano
-                <select id="videoLessonPicker" class="mt-2 w-full rounded border border-slate-600 bg-slate-900 p-3 text-white focus:border-emerald-500">
-                    <option value="">Carregando aulas...</option>
+            <label id="videoTopicPickerLabel" for="videoTopicPicker" class="mb-4 block text-sm font-bold">
+                Tema do edital
+                <select id="videoTopicPicker" class="mt-2 w-full rounded border border-slate-600 p-3 focus:border-emerald-500">
+                    <option value="">Carregando temas...</option>
                 </select>
             </label>
+            <p id="videoTopicProgress" class="mb-2 text-sm font-semibold" role="status" aria-live="polite"></p>
+            <p id="videoCatalogNotice" class="mb-4 text-sm">A curadoria foi conferida pelo título; uma aula pode cobrir apenas parte do assunto. Confira o edital, a versão dos programas e a legislação vigente.</p>
+            <div id="videoLessonList" class="video-lesson-list mb-5" aria-label="Aulas do tema selecionado"></div>
             <div class="video-study-layout">
                 <div class="min-w-0">
                     <div class="mb-3">
-                        <p id="videoLessonSubject" class="text-xs font-bold uppercase tracking-wider text-emerald-400"></p>
-                        <h3 id="videoLessonTitle" class="mt-1 text-xl font-bold text-white">Selecione uma aula</h3>
+                        <p id="videoLessonSubject" class="text-xs font-bold uppercase tracking-wider"></p>
+                        <h3 id="videoLessonTitle" class="mt-1 text-xl font-bold">Selecione uma aula</h3>
+                        <button id="videoLessonWatchedButton" type="button" class="video-watched-toggle mt-3 rounded-lg px-4 py-2 text-sm font-bold" disabled>Marcar como assistida</button>
+                        <p id="videoWatchStatus" class="mt-1 text-xs" role="status" aria-live="polite"></p>
                     </div>
                     <div class="video-player-shell">
                         <iframe id="lessonVideoFrame" title="Videoaula selecionada" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         <div id="videoPlayerEmpty" class="video-player-empty" hidden></div>
                     </div>
-                    <p id="videoPlayerStatus" class="mt-2 text-sm text-gray-300" role="status" aria-live="polite"></p>
-                    <a id="videoLessonExternalLink" class="mt-3 inline-block text-sm font-bold text-emerald-300 underline underline-offset-2" href="#" target="_blank" rel="noopener noreferrer">Abrir vídeo no YouTube</a>
-                    <p class="mt-3 text-sm text-gray-300">Cansado de anúncios nos vídeos? <a class="font-bold text-emerald-300 underline underline-offset-2" href="https://www.youtube.com/premium" target="_blank" rel="noopener noreferrer">Conheça o YouTube Premium</a> e assista sem interrupções.</p>
+                    <p id="videoPlayerStatus" class="mt-2 text-sm" role="status" aria-live="polite"></p>
+                    <a id="videoLessonExternalLink" class="mt-3 inline-block text-sm font-bold underline underline-offset-2" href="#" target="_blank" rel="noopener noreferrer" hidden>Abrir vídeo no YouTube</a>
+                    <p class="mt-3 text-sm">Cansado de anúncios nos vídeos? <a class="font-bold underline underline-offset-2" href="https://www.youtube.com/premium" target="_blank" rel="noopener noreferrer">Conheça o YouTube Premium</a> e assista sem interrupções.</p>
                 </div>
-                <aside class="video-notes-panel rounded-lg border border-slate-700 bg-slate-900/80 p-4" aria-labelledby="videoNotesHeading">
-                    <h3 id="videoNotesHeading" class="font-bold text-white"><i class="fa-solid fa-pen-to-square mr-2 text-emerald-400" aria-hidden="true"></i>Anotações da aula</h3>
+                <aside class="video-notes-panel rounded-lg border border-slate-700 p-4" aria-labelledby="videoNotesHeading">
+                    <h3 id="videoNotesHeading" class="font-bold"><i class="fa-solid fa-pen-to-square mr-2 text-emerald-400" aria-hidden="true"></i>Anotações da aula</h3>
                     <p class="mt-1 text-xs text-gray-400">Escreva conceitos, exemplos e dúvidas. O salvamento é automático.</p>
                     <div id="videoLessonNotes" class="video-notes-editor mt-4" data-placeholder="Suas anotações desta aula..." aria-label="Anotações da aula"></div>
                     <p id="videoNotesStatus" class="mt-2 min-h-5 text-xs text-gray-400" role="status" aria-live="polite"></p>
                 </aside>
             </div>
         </section>
-
         <section id="pdfsPanel" class="dashboard-panel glass-panel p-4 md:p-6 rounded-xl border border-slate-700" role="tabpanel" aria-labelledby="desktopTab-pdfs" hidden>
             <div class="police-banner mb-5">
                 <img class="police-banner-crest" src="assets/brasao-pmpe.png" alt="Brasão da PMPE">
@@ -4991,231 +5037,174 @@
             return `https://www.youtube.com/results?search_query=Revisao+${base}`;
         };
 
-        const getCourseLessonId = (module, lessonIndex) => `module-${module.moduleId}-lesson-${lessonIndex + 1}`;
-        const MISSION_SEQUENCE_MODULE_IDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
-        const EMBEDDED_VIDEO_LEGACY_IDS = {
-            "module-0-lesson-1": "d1_v1_1"
-        };
-        const EMBEDDED_VIDEO_URL_SEQUENCE = [
-            "https://youtu.be/22iA3PPjr7c?si=36-tYoCJr60rC3gU",
-            "https://youtu.be/nQvX_NSjP1s?si=oqB480Uc18wmJGsT",
-            "https://youtu.be/gK1g5ftu7WM?si=535ligFrx5feZ4Ys",
-            "https://youtu.be/fk8fWwAiG0U?si=4YxWF6QEyouO4O1l",
-            "https://youtu.be/xYjHxSUpJ8k?si=-TqBhdiQFnBCcZTl",
-            "https://youtu.be/UbrR7An5ZfY?si=6Rtmg_suqHq57hlv",
-            "https://youtu.be/ZYyAd8bhjHw?si=IlZuh1MHCZLdkMkw",
-            "https://youtu.be/NagfzzgrOW0?si=zQhpwF8jcLue0hWS",
-            "https://youtu.be/GmiIce_pxGw?si=0Y9u-M4ilxnx4vCx",
-            "https://youtu.be/6xtxfI6-uDw?si=pJVT5IiNojOYbaGC",
-            "https://youtu.be/bL3qKDPcwGI?si=_M_0fSHgdYbsWmx7",
-            "https://youtu.be/AjOp1Da_0_k?si=xty3eegdfirz9pXK",
-            "https://youtu.be/xp-f3mSsPUw?si=ixxBH2tk8JONj-PG",
-            "https://youtu.be/l_20kYKKZk0?si=kZ4rr82C4CFcBuUx",
-            "https://youtu.be/AIHYDa8gelo?si=6YzXJ_c5pTg_fyg_",
-            "https://www.youtube.com/live/W07-5dqmAps?si=molN3Dwfjl-M9a-a",
-            "https://youtu.be/qkmXPTeDxNA?si=HCQz4AhGaSScVXqX",
-            "https://youtu.be/erYMz7g0FMs?si=GUi0NYqN2STw_1d8",
-            "https://youtu.be/3PyTML2-fh0?si=BH8PHHOkPGQvOEy5",
-            "https://youtu.be/Xzn5YmXlz2c?si=WAfX8gi_dpg5BDbE",
-            "https://youtu.be/uBvdlyutXMY?si=w7M7n1CBKZf1WTat",
-            "https://www.youtube.com/live/a78GHr3wdwA?si=EX2G0RvnYWJkAMyb",
-            "https://youtu.be/6GSRf9AIqig?si=3yS62aolAfcMjIyO",
-            "https://youtu.be/TSGr3Y_cnz8?si=wa0AfxpaiCu8wp_u",
-            "https://youtu.be/ApjF0te77DA?si=Jd9osRLU_7TGSygS",
-            "https://www.youtube.com/live/uagsuY9H53w?si=IvbzAQMCBjW6TXuG",
-            "https://www.youtube.com/live/Zyv1VXLe11w?si=tRqbJBmqD2BXNoW7",
-            "https://youtu.be/AnzihbKCYFE?si=l_ttUtnbGH4wNbab",
-            "https://youtu.be/3fyN4DrdcOo?si=4EQd2ZvpSm5EnUk8",
-            "https://youtu.be/Ix7IlFM9xCE?si=vEcHJkdwk8TznBiM",
-            "https://youtu.be/0IpJZOvOuUs?si=_jjTGkRoET5sgrGI",
-            "https://youtu.be/w0sI3unOczM?si=2tsawgK38Sx55PAW",
-            "https://youtu.be/1-haLZcq4pA?si=SawCrbNmJvSNaYf2",
-            "https://www.youtube.com/live/3Vska6BGz4c?si=Xqp2aMPSyqVlHwsX",
-            "https://youtu.be/LGCQ0HZpTDw?si=-v_C3wNo0WogKG7U",
-            "https://youtu.be/oGpootHEeQw?si=99XTE_QdBCvI2CPe",
-            "https://youtu.be/QMkHs9kT9WE?si=vjFgFGwt81krrTpN",
-            "https://youtu.be/VikmvTpbztE?si=X47JLI3E0Rdunqr6",
-            "https://youtu.be/TVjzslm2QO4?si=-GpJfQqueZDUlmgT",
-            "https://youtu.be/Lo6_EtYiltU?si=mu9K16kxjMGTPH7t",
-            "https://youtu.be/LbVLCjrpWDA?si=FLMS4HdQyM3GfJOA",
-            "https://youtu.be/et2qWWa0kTA?si=7BM9nZYyDwUbXzI0",
-            "https://youtu.be/OZmlnzJOZ08?si=aWxSI9j6tffGYVUW",
-            "https://youtu.be/Q8L3nx1OXeU?si=qrK5Lw-WCxxb7AoW",
-            "https://youtu.be/8U3I83z-sI4?si=tCwh_Q0OFpBj56pY",
-            "https://youtu.be/uUNoVed7zdE?si=Po7BMkrv4f3KfkT5",
-            "https://youtu.be/7Gfw6nw9lFE?si=vYBSZEujnHvxvPlt",
-            "https://www.youtube.com/live/C1rAEoG9CNQ?si=9slvgf3TWxDbNirl",
-            "https://www.youtube.com/live/cSKKuN8T5D4?si=qDDOmatCWBSZ7J6o",
-            "https://youtu.be/hw-SLME2boU?si=jGXa0BUtoyohd0mC",
-            "https://www.youtube.com/live/spcb2jRG8ns?si=v7R5SRmKzC5vuYLw",
-            "https://youtu.be/bLaIROPxZSY?si=WR25Wu8AAMvrmKpW",
-            "https://www.youtube.com/live/lUp-TXC0-1c?si=zz1qZM0Rj_1Z0JEl",
-            "https://www.youtube.com/live/pYxn51GM1m4?si=n7-KcMVi_BOS29IE",
-            "https://www.youtube.com/live/0pGx7HoALFE?si=u8MMLli98RqjtC8R",
-            "https://youtu.be/GhL5F7SHDDY?si=1IStI6lvuX8BY9TP",
-            "https://youtu.be/yddfChyf3HE?si=dVKETaiwX41Ogwmx",
-            "https://youtu.be/BNVt7Vi9p7g?si=T35eDwLD9EYv8bZl",
-            "https://youtu.be/FZBgO4wArpc?si=1kZ2NpKuGPm47ZBw",
-            "https://youtu.be/G8Stjzy-87k?si=gwfttMy-h3v1SGBb",
-            "https://youtu.be/ydaUiAvvuMg?si=vbBX7aGzMaCbRQpa",
-            "https://youtu.be/9zprwzl0vm4?si=peTrpYoIkL8bRSbE",
-            "https://youtu.be/Csh_Iu5TQn0?si=UWKOfJGy6TiYnxLX",
-            "https://youtu.be/mCCM1qqAoWo?si=4jMtBgSeWrVW99vo",
-            "https://youtu.be/RZO6pTojlkg?si=LbLHjKCZQPV2JbYT",
-            "https://youtu.be/Y2B-poI4SZs?si=7Ga-oddAWNjet2iW",
-            "https://youtu.be/Rz9QWohV8wU?si=liyPGoIwEN8g7Ncg",
-            "https://youtu.be/80NM-4LJpPc?si=AS_h7XmtnPSm9a1D",
-            "https://youtu.be/OfZXNB-4mZc?si=LswxWQezad9AhaHa",
-            "https://youtu.be/GRU_vYzzMVg?si=jSwM2RqFdr5JCjPU",
-            "https://youtu.be/4CKYiVhmxZ0?si=yPX8m9XOL6tKetVT",
-            "https://youtu.be/5qG2Wnd-hAs?si=YWZ0OWu59aeD5n9y",
-            "https://www.youtube.com/live/mXPD6SGKDV8?si=wXMT6kipCnR_Rwvy",
-            "https://youtu.be/Yn9EguapweY?si=RvQWn8HuEnYafCnO",
-            "https://youtu.be/HQleRxdXkIU?si=SQEXFTUira6H0rpD",
-            "https://youtu.be/o75TOZjN9EI?si=4mI6AJ_00-HsabdV",
-            "https://youtu.be/4wbtxlz-M7c?si=qrzFgUyvDErPXkTv",
-            "https://youtu.be/MAdH6y00ylM?si=dNK5mAqoKPx7OocW",
-            "https://youtu.be/NeBmQo0z3eY?si=9tw9MJc7_ME5VnRc",
-            "https://youtu.be/HQrQLxAYZnY?si=XinqnUvtYJDmZdb1",
-            "https://youtu.be/Vvs6d22g4eM?si=8zuR3hVUWosJcgh_",
-            "https://youtu.be/behEBkfUpKk?si=vEu3zqgmXmT26_sU",
-            "https://youtu.be/2Tf4vSHKdwo?si=kPCXeLH0Q9X-JI0L",
-            "https://youtu.be/FaZEZV4qYXU?si=Y8Lo_6GDFHtRXUg_",
-            "https://youtu.be/yjqtIT_EPss?si=afL32xYYS4pDoZLH",
-            "https://youtu.be/jMiN6HbxsZM?si=QFMYPTEWO3gmY5Wt",
-            "https://youtu.be/lkAhORJ9ct0?si=GOqF-ZwvSzOkm26g",
-            "https://youtu.be/EejsxTtflTg?si=DGjtKJ8lsFkauMtB",
-            "https://youtu.be/kJfA0yeXghw?si=wwchvTiseUl-sIlP",
-            "https://youtu.be/KDgBR8OLGKQ?si=-22jujljV0vek4QD",
-            "https://youtu.be/lkAhORJ9ct0?si=x5srzXeLeteDv6FB",
-            "https://youtu.be/IPhB3UHm_fQ?si=SLS1opBQcAhjpJtU",
-            "https://youtu.be/oQmr7Ymh008?si=OTgtFcUUIqtbuHf_",
-            "https://youtu.be/OYYk-DhaoD0?si=5wwV5_2LOXvisA7L",
-            "https://youtu.be/RA21YMfH2_U?si=zRGsnEST3q7Xj6Q5",
-            "https://www.youtube.com/live/HpYiKGs6poA?si=RsmXpoSiUHArrsaj",
-            "https://youtu.be/FAS3lo7UGlE?si=kPh4hi8rSiMjGEHc",
-            "https://www.youtube.com/live/cbZz2nJiCys?si=UNdmimlmsmVCemeA",
-            "https://youtu.be/VhvCd8b9Jx8?si=UXJOuKES9qCwo-0u",
-            "https://youtu.be/OYYk-DhaoD0?si=0HJXkKeLsEmKtIo_",
-            "https://www.youtube.com/live/DMbhKUCyRfM?si=ueYviJunIiTmzn5T",
-            "https://youtu.be/lXCTBmQ2sXs?si=Py_UJV79BPNI4hmo",
-            "https://youtu.be/FAS3lo7UGlE?si=_X7AmcKEvOKkTFhy",
-            "https://youtu.be/kZlZJVye3Uc?si=Aeoc_UqaE0Ro6T1d",
-            "https://youtu.be/yI5c8tmkkNc?si=TpcXQ65Ak7EVd01Y",
-            "https://youtu.be/huwACN1L-Ck?si=SfYdRaqGhL29ORUv",
-            "https://youtu.be/Xe8gVda6WiQ?si=hHmqIx4vd7dfM2BA",
-            "https://youtu.be/fbpaGkxJvnI?si=JsgRcQuQ06USTlZN",
-            "https://youtu.be/SnfnJjpagFw?si=LJRhj6O7YHNWJiny",
-            "https://youtu.be/53S2jPGXluw?si=8NMBi8LR_JPm8jxX",
-            "https://youtu.be/YaXpMue6kH0?si=Rngl5Ajl7v9qDHZO",
-            "https://youtu.be/myKIT2VxMXo?si=BEwWiVo-AiZUWEWL",
-            "https://youtu.be/97ozWnsSq0A?si=qKjprr69t6KDyeZm",
-            "https://youtu.be/5uMooAjtVis?si=4u8gQ2cjcpVPawrt",
-            "https://youtu.be/1IRO-p95oo0?si=vfTi8znBmuq_5vGE",
-            "https://www.youtube.com/live/mSAdDgQgHcM?si=voHkmzhR7GtxeOm3",
-            "https://www.youtube.com/live/rcUJ6gwsjQo?si=tglzi9co0KUOOG2G",
-            "https://youtu.be/Y_mYgLkuEl4?si=mqC6S_TK-qoJyAvQ",
-            "https://youtu.be/6pquf3Bl5q8?si=5ulWrjHiFlYYrIgk",
-            "https://youtu.be/mE6_YVkTDr0?si=HdQqzEEwOAv4kFT2",
-            "https://youtu.be/2R0DpIdEd00?si=z-JioraRfdb1mNZw",
-            "https://www.youtube.com/live/His_TJESk6c?si=PIXn2WR9sWwg6E9h"
-        ];
-        // Cada aula aponta explicitamente para o nº (base 1) do vídeo em EMBEDDED_VIDEO_URL_SEQUENCE.
-        // Aulas sem vídeo equivalente ficam de fora até que um vídeo com o tema correto seja adicionado.
-        const EMBEDDED_VIDEO_BY_LESSON = {
-            "module-0-lesson-1": 1, "module-0-lesson-2": 2, "module-0-lesson-3": 3, "module-0-lesson-4": 4, "module-0-lesson-5": 5, "module-0-lesson-6": 6,
-            "module-1-lesson-1": 7, "module-1-lesson-2": 8, "module-1-lesson-3": 9, "module-1-lesson-4": 10, "module-1-lesson-5": 11,
-            "module-2-lesson-1": 12, "module-2-lesson-2": 13, "module-2-lesson-3": 14, "module-2-lesson-4": 15,
-            "module-3-lesson-1": 16, "module-3-lesson-2": 17, "module-3-lesson-3": 18,
-            "module-4-lesson-1": 113, "module-4-lesson-2": 19, "module-4-lesson-3": 20,
-            "module-5-lesson-1": 21, "module-5-lesson-2": 22, "module-5-lesson-3": 23, "module-5-lesson-4": 24, "module-5-lesson-5": 25, "module-5-lesson-6": 26, "module-5-lesson-7": 27,
-            "module-6-lesson-1": 28, "module-6-lesson-2": [114, 115], "module-6-lesson-3": 29, "module-6-lesson-4": 30,
-            "module-7-lesson-1": 31, "module-7-lesson-2": 32, "module-7-lesson-3": 116, "module-7-lesson-4": 33,
-            "module-8-lesson-1": 34, "module-8-lesson-2": 35, "module-8-lesson-3": 36, "module-8-lesson-4": 37, "module-8-lesson-5": 38, "module-8-lesson-6": 39,
-            "module-9-lesson-1": 40, "module-9-lesson-2": 41, "module-9-lesson-3": 42, "module-9-lesson-4": 43,
-            "module-10-lesson-1": 44, "module-10-lesson-2": 45,
-            "module-11-lesson-1": 46, "module-11-lesson-2": 47, "module-11-lesson-3": 48, "module-11-lesson-4": 49, "module-11-lesson-5": 50, "module-11-lesson-6": 51,
-            "module-11-lesson-7": 56, "module-11-lesson-8": 52, "module-11-lesson-9": 53, "module-11-lesson-10": 54, "module-11-lesson-11": 55,
-            "module-11-lesson-12": 56, "module-11-lesson-13": 57, "module-11-lesson-14": 58, "module-11-lesson-15": 59,
-            "module-12-lesson-1": 60, "module-12-lesson-2": 61, "module-12-lesson-3": 62, "module-12-lesson-4": 63, "module-12-lesson-5": 64, "module-12-lesson-6": 65,
-            "module-13-lesson-1": 67, "module-13-lesson-2": 68, "module-13-lesson-3": 66, "module-13-lesson-4": 69, "module-13-lesson-5": 70,             "module-13-lesson-6": 71, "module-13-lesson-7": 117, "module-13-lesson-8": 72,
-                        "module-14-lesson-1": 73, "module-14-lesson-2": 74, "module-14-lesson-3": 75, "module-14-lesson-4": [118, 119, 120],
-                        "module-15-lesson-1": 76, "module-15-lesson-2": 121, "module-15-lesson-3": 77, "module-15-lesson-4": 78, "module-15-lesson-5": 79, "module-15-lesson-6": 80,
-            "module-16-lesson-1": 81, "module-16-lesson-2": 82, "module-16-lesson-3": 83, "module-16-lesson-4": 84, "module-16-lesson-5": 85, "module-16-lesson-6": 86,
-            "module-16-lesson-7": 87, "module-16-lesson-8": 88, "module-16-lesson-9": 89, "module-16-lesson-10": 90, "module-16-lesson-11": 91, "module-16-lesson-12": 92,
-            "module-17-lesson-1": 93, "module-17-lesson-2": 94, "module-17-lesson-3": 95, "module-17-lesson-4": 96, "module-17-lesson-5": 97, "module-17-lesson-6": 98,
-            "module-17-lesson-7": 99, "module-17-lesson-8": 100, "module-17-lesson-9": 101, "module-17-lesson-10": 102, "module-17-lesson-11": 103, "module-17-lesson-12": 104,
-            "module-17-lesson-13": 105, "module-17-lesson-14": 122, "module-17-lesson-15": 106, "module-17-lesson-16": 107, "module-17-lesson-17": 108, "module-17-lesson-18": 109,
-            "module-17-lesson-19": 110, "module-17-lesson-20": 111, "module-17-lesson-21": 112
-        };
         const getYouTubeVideoId = videoUrl => {
             try {
                 const url = new URL(videoUrl);
                 if (url.hostname.includes("youtu.be")) return url.pathname.slice(1).split("/")[0];
-                if (url.pathname === "/watch") return url.searchParams.get("v");
-                if (url.pathname.startsWith("/live/")) return url.pathname.split("/").filter(Boolean)[1];
-                if (url.pathname.startsWith("/embed/")) return url.pathname.split("/").filter(Boolean)[1];
+                if (url.pathname === "/watch") return url.searchParams.get("v") || "";
+                if (url.pathname.startsWith("/live/") || url.pathname.startsWith("/embed/")) return url.pathname.split("/").filter(Boolean)[1] || "";
             } catch (error) {
                 console.error("URL de vídeo inválida:", videoUrl, error);
             }
             return "";
         };
-        const buildEmbeddedVideoLessonsFromSequence = () => {
-            const modulesById = new Map(editalModules.map(module => [module.moduleId, module]));
-            const sequence = [];
-            MISSION_SEQUENCE_MODULE_IDS.forEach(moduleId => {
-                const module = modulesById.get(moduleId);
-                if (!module) return;
-                const lessonTitles = getDistributedLessonTitles(module).map(cleanLessonTitle);
-                const totalLessons = lessonTitles.length || 1;
-                for (let lessonIndex = 0; lessonIndex < totalLessons; lessonIndex++) {
-                    sequence.push({
-                        id: getCourseLessonId(module, lessonIndex),
-                        module,
-                        lessonIndex,
-                        totalLessons,
-                        lessonTitle: lessonTitles[lessonIndex] || module.topic
-                    });
-                }
-            });
-            const missingVideos = sequence.filter(lesson => !EMBEDDED_VIDEO_BY_LESSON[lesson.id]);
-            if (missingVideos.length) {
-                console.warn("Aulas sem videoaula vinculada:", missingVideos.map(lesson => lesson.id));
-            }
-            return sequence.reduce((acc, lesson) => {
-                const mapped = EMBEDDED_VIDEO_BY_LESSON[lesson.id];
-                const videos = [].concat(mapped || [])
-                    .map(position => EMBEDDED_VIDEO_URL_SEQUENCE[position - 1])
-                    .filter(Boolean)
-                    .map(url => ({ url, videoId: getYouTubeVideoId(url) }))
-                    .filter(video => video.videoId);
-                if (!videos.length) return acc;
-                acc[lesson.id] = {
-                    id: lesson.id,
-                    legacyId: EMBEDDED_VIDEO_LEGACY_IDS[lesson.id] || "",
-                    subject: `${lesson.module.sub} · ${lesson.module.topic}`,
-                    title: `Aula ${lesson.lessonIndex + 1}/${lesson.totalLessons} · ${lesson.lessonTitle}`,
-                    videoId: videos[0].videoId,
-                    url: videos[0].url,
-                    videos
-                };
-                return acc;
-            }, {});
-        };
-        let EMBEDDED_VIDEO_LESSONS = {};
         const VIDEO_NOTES_STORAGE_KEY = "pmpeVideoLessonNotesV2";
         const LEGACY_VIDEO_NOTES_STORAGE_KEY = "pmpeVideoLessonNotesV1";
+        const VIDEO_WATCHED_STORAGE_KEY = "pmpeVideoLessonWatchedV1";
+        const videoTopicSlug = value => String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        let EMBEDDED_VIDEO_TOPICS = {};
+        let EMBEDDED_VIDEO_LESSONS = {};
         let videoLessonNotes = {};
         let legacyVideoNotes = {};
+        let videoLessonWatched = {};
         let videoNotesEditor = null;
         let videoNotesStorageReadFailed = false;
+        let videoWatchedStorageReadFailed = false;
         let selectedVideoLessonId = "";
+
+        const buildEmbeddedVideoLessonsByTopic = () => {
+            const topics = Object.keys(window.PMPE_TOPIC_GUIDES || {});
+            if (!window.PMPE_VIDEO_TOPIC_MAP || !window.PPPE_VIDEOS || !window.PPPE_VIDEOS_COMPLEMENTARES) {
+                console.error("Catálogo de videoaulas PMPE/PPPE não carregado.");
+                document.getElementById("videoPlayerStatus").textContent = "Não foi possível carregar o catálogo de videoaulas. Atualize a página e tente novamente.";
+                return topics.reduce((catalog, topic) => ({ ...catalog, [topic]: [] }), {});
+            }
+
+            const modulesByTopic = new Map((window.PMPE_EDITAL_MODULES || []).map(module => [module.topic, module]));
+            return topics.reduce((catalog, topic) => {
+                const mapping = window.PMPE_VIDEO_TOPIC_MAP[topic] || {};
+                const sourceLessons = (mapping.pppe || []).flatMap(sourceTopic => [
+                    ...(window.PPPE_VIDEOS[sourceTopic] || []),
+                    ...(window.PPPE_VIDEOS_COMPLEMENTARES[sourceTopic] || []).map(([videoId, title]) => ({
+                        source: `youtube-${videoId}`,
+                        title,
+                        urls: [`https://www.youtube.com/watch?v=${videoId}`]
+                    }))
+                ]);
+                const verifiedLessons = (mapping.videos || []).map(([videoId, title]) => ({
+                    source: `youtube-${videoId}`,
+                    title,
+                    urls: [`https://www.youtube.com/watch?v=${videoId}`]
+                }));
+                const seenVideoIds = new Set();
+                const module = modulesByTopic.get(topic);
+                catalog[topic] = [...sourceLessons, ...verifiedLessons].reduce((lessons, lesson, lessonIndex) => {
+                    const videos = (lesson.urls || []).map(url => ({ url, videoId: getYouTubeVideoId(url) })).filter(video => video.videoId);
+                    if (!videos.length) {
+                        console.error("Videoaula com URL inválida:", topic, lesson);
+                        return lessons;
+                    }
+                    const uniqueVideos = videos.filter(video => {
+                        if (seenVideoIds.has(video.videoId)) return false;
+                        seenVideoIds.add(video.videoId);
+                        return true;
+                    });
+                    if (!uniqueVideos.length) return lessons;
+                    const source = lesson.source || `video-${uniqueVideos[0].videoId}-${lessonIndex}`;
+                    lessons.push({
+                        id: `pmpe-${videoTopicSlug(topic)}-${videoTopicSlug(source)}`,
+                        topic,
+                        moduleId: module?.moduleId ?? null,
+                        legacyId: "",
+                        subject: module ? `${module.sub} · ${topic}` : topic,
+                        title: String(lesson.title || "Videoaula").trim(),
+                        videoId: uniqueVideos[0].videoId,
+                        url: uniqueVideos[0].url,
+                        videos: uniqueVideos
+                    });
+                    return lessons;
+                }, []);
+                return catalog;
+            }, {});
+        };
+
+        function getVideoLessonsForTopic(topic) {
+            return EMBEDDED_VIDEO_TOPICS[topic] || [];
+        }
+
+        function updateVideoTopicProgress(topic) {
+            const lessons = getVideoLessonsForTopic(topic);
+            const watchedCount = lessons.filter(lesson => videoLessonWatched[lesson.id]).length;
+            const percent = lessons.length ? Math.round((watchedCount / lessons.length) * 100) : 0;
+            document.getElementById("videoTopicProgress").textContent = lessons.length
+                ? `${watchedCount} de ${lessons.length} aulas assistidas · ${percent}% deste tema`
+                : "Nenhuma aula curada disponível para este tema.";
+        }
+
+        function renderVideoLessonList(topic) {
+            const container = document.getElementById("videoLessonList");
+            const lessons = getVideoLessonsForTopic(topic);
+            container.replaceChildren();
+            if (!lessons.length) {
+                const empty = document.createElement("p");
+                empty.className = "video-catalog-empty";
+                empty.textContent = "Ainda não há uma videoaula verificada para este tema. Use o material do edital enquanto a curadoria é ampliada.";
+                container.appendChild(empty);
+                updateVideoTopicProgress(topic);
+                return;
+            }
+
+            lessons.forEach((lesson, index) => {
+                const watched = Boolean(videoLessonWatched[lesson.id]);
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "video-lesson-choice";
+                button.setAttribute("aria-pressed", String(lesson.id === selectedVideoLessonId));
+                button.setAttribute("aria-label", `${lesson.title}${watched ? ", assistida" : ", não assistida"}`);
+                const title = document.createElement("span");
+                title.className = "video-lesson-choice-title";
+                title.textContent = `${index + 1}. ${lesson.title}`;
+                const state = document.createElement("span");
+                state.className = `video-lesson-choice-state${watched ? " is-watched" : ""}`;
+                state.textContent = watched ? "Assistida ✓" : "Não assistida";
+                button.append(title, state);
+                button.addEventListener("click", () => renderSelectedVideoLesson(lesson.id));
+                container.appendChild(button);
+            });
+            updateVideoTopicProgress(topic);
+        }
+
+        function updateVideoWatchedControl(lesson) {
+            const button = document.getElementById("videoLessonWatchedButton");
+            const watched = Boolean(videoLessonWatched[lesson.id]);
+            button.disabled = false;
+            button.setAttribute("aria-pressed", String(watched));
+            button.textContent = watched ? "Marcar como não assistida" : "Marcar como assistida";
+            document.getElementById("videoWatchStatus").textContent = videoWatchedStorageReadFailed
+                ? "O progresso não pôde ser salvo no navegador; a alteração ficará somente nesta sessão."
+                : watched ? "Videoaula marcada como assistida neste navegador." : "Marque a aula depois de assistir para acompanhar seu progresso.";
+        }
+
+        function renderEmptyVideoTopic(topic) {
+            selectedVideoLessonId = "";
+            document.getElementById("videoLessonSubject").textContent = topic || "";
+            document.getElementById("videoLessonTitle").textContent = "Videoaula em preparação";
+            document.getElementById("videoLessonWatchedButton").disabled = true;
+            document.getElementById("videoWatchStatus").textContent = "";
+            const frame = document.getElementById("lessonVideoFrame");
+            frame.removeAttribute("src");
+            frame.hidden = true;
+            const emptyState = document.getElementById("videoPlayerEmpty");
+            emptyState.hidden = false;
+            emptyState.textContent = "Não há aula selecionada para este tema. Consulte o edital e os PDFs enquanto a seleção é concluída.";
+            document.getElementById("videoLessonExternalLink").hidden = true;
+            document.getElementById("videoPlayerStatus").textContent = "";
+            const partPicker = document.getElementById("videoPartPicker");
+            if (partPicker) { partPicker.replaceChildren(); partPicker.hidden = true; }
+            if (videoNotesEditor) {
+                videoNotesEditor.setHtml("");
+                videoNotesEditor.setDisabled(true);
+            }
+            document.getElementById("videoNotesStatus").textContent = "As anotações ficam disponíveis quando uma aula estiver selecionada.";
+            renderVideoLessonList(topic);
+        }
 
         function renderSelectedVideoLesson(lessonId, partIndex = 0) {
             const lesson = EMBEDDED_VIDEO_LESSONS[lessonId];
             if (!lesson) return;
             const part = lesson.videos[partIndex] || lesson.videos[0];
             selectedVideoLessonId = lesson.id;
+            document.getElementById("videoTopicPicker").value = lesson.topic;
             document.getElementById("videoLessonSubject").textContent = lesson.subject;
             document.getElementById("videoLessonTitle").textContent = lesson.title;
             const frame = document.getElementById("lessonVideoFrame");
@@ -5223,6 +5212,7 @@
             const playerStatus = document.getElementById("videoPlayerStatus");
             const externalLink = document.getElementById("videoLessonExternalLink");
             externalLink.href = part.url;
+            externalLink.hidden = false;
             let partPicker = document.getElementById("videoPartPicker");
             if (!partPicker) {
                 partPicker = document.createElement("div");
@@ -5236,7 +5226,7 @@
                 const button = document.createElement("button");
                 button.type = "button";
                 button.textContent = `Parte ${index + 1}`;
-                button.className = `rounded-lg px-3 py-1.5 text-sm font-bold ${video === part ? "bg-emerald-400 text-emerald-950" : "bg-white/10 text-white"}`;
+                button.className = `rounded-lg px-3 py-1.5 text-sm font-bold ${index === partIndex ? "bg-emerald-400 text-emerald-950" : "bg-slate-700 text-white"}`;
                 button.addEventListener("click", () => renderSelectedVideoLesson(lesson.id, index));
                 partPicker.appendChild(button);
             });
@@ -5264,15 +5254,38 @@
             document.getElementById("videoNotesStatus").textContent = videoNotesStorageReadFailed
                 ? "Não foi possível acessar as anotações salvas; edição desativada para evitar sobrescrever seus dados."
                 : "Anotações salvas automaticamente neste navegador.";
+            updateVideoWatchedControl(lesson);
+            renderVideoLessonList(lesson.topic);
+        }
+
+        function renderVideoTopic(topic, preferredLessonId = "") {
+            const picker = document.getElementById("videoTopicPicker");
+            const lessons = getVideoLessonsForTopic(topic);
+            const selectedInTopic = lessons.some(lesson => lesson.id === selectedVideoLessonId);
+            const lessonId = preferredLessonId && lessons.some(lesson => lesson.id === preferredLessonId)
+                ? preferredLessonId
+                : selectedInTopic ? selectedVideoLessonId : lessons[0]?.id;
+            const notice = window.PMPE_VIDEO_TOPIC_MAP?.[topic]?.notice;
+            document.getElementById("videoCatalogNotice").textContent = notice || "A curadoria foi conferida pelo título; uma aula pode cobrir apenas parte do assunto. Confira o edital, a versão dos programas e a legislação vigente.";
+            if (lessonId) renderSelectedVideoLesson(lessonId);
+            else renderEmptyVideoTopic(topic);
+            if (picker.value !== topic) picker.value = topic;
         }
 
         function initializeEmbeddedVideoLessons() {
-            EMBEDDED_VIDEO_LESSONS = buildEmbeddedVideoLessonsFromSequence();
-            const picker = document.getElementById("videoLessonPicker");
-            const lessonEntries = Object.values(EMBEDDED_VIDEO_LESSONS);
-            picker.replaceChildren(new Option("Selecione uma aula", ""));
-            lessonEntries.forEach(lesson => picker.add(new Option(`${lesson.subject} · ${lesson.title}`, lesson.id)));
-            picker.disabled = lessonEntries.length === 0;
+            EMBEDDED_VIDEO_TOPICS = buildEmbeddedVideoLessonsByTopic();
+            EMBEDDED_VIDEO_LESSONS = Object.values(EMBEDDED_VIDEO_TOPICS).flat().reduce((lessons, lesson) => {
+                lessons[lesson.id] = lesson;
+                return lessons;
+            }, {});
+            const picker = document.getElementById("videoTopicPicker");
+            const topics = Object.keys(window.PMPE_TOPIC_GUIDES || {});
+            picker.replaceChildren(new Option("Selecione um tema", ""));
+            topics.forEach(topic => {
+                const count = getVideoLessonsForTopic(topic).length;
+                picker.add(new Option(`${topic} · ${count} ${count === 1 ? "aula" : "aulas"}`, topic));
+            });
+            picker.disabled = topics.length === 0;
 
             try {
                 const legacySaved = localStorage.getItem(LEGACY_VIDEO_NOTES_STORAGE_KEY);
@@ -5283,17 +5296,41 @@
                 const savedNotes = localStorage.getItem(VIDEO_NOTES_STORAGE_KEY);
                 if (savedNotes) {
                     const parsedNotes = JSON.parse(savedNotes);
-                    if (!parsedNotes || typeof parsedNotes !== "object" || Array.isArray(parsedNotes)) {
-                        throw new Error("Formato de anotações inválido.");
-                    }
+                    if (!parsedNotes || typeof parsedNotes !== "object" || Array.isArray(parsedNotes)) throw new Error("Formato de anotações inválido.");
                     videoLessonNotes = parsedNotes;
                 }
             } catch (error) {
                 videoNotesStorageReadFailed = true;
                 console.error("Não foi possível carregar as anotações das videoaulas:", error);
             }
+            try {
+                const savedWatched = localStorage.getItem(VIDEO_WATCHED_STORAGE_KEY);
+                if (savedWatched) {
+                    const parsedWatched = JSON.parse(savedWatched);
+                    if (!parsedWatched || typeof parsedWatched !== "object" || Array.isArray(parsedWatched)) throw new Error("Formato de progresso inválido.");
+                    videoLessonWatched = parsedWatched;
+                }
+            } catch (error) {
+                videoWatchedStorageReadFailed = true;
+                console.error("Não foi possível carregar o progresso das videoaulas:", error);
+            }
 
-            picker.addEventListener("change", () => renderSelectedVideoLesson(picker.value));
+            picker.addEventListener("change", () => renderVideoTopic(picker.value));
+            document.getElementById("videoLessonWatchedButton").addEventListener("click", () => {
+                if (!selectedVideoLessonId) return;
+                const nextWatched = { ...videoLessonWatched, [selectedVideoLessonId]: !videoLessonWatched[selectedVideoLessonId] };
+                videoLessonWatched = nextWatched;
+                try {
+                    localStorage.setItem(VIDEO_WATCHED_STORAGE_KEY, JSON.stringify(nextWatched));
+                    videoWatchedStorageReadFailed = false;
+                } catch (error) {
+                    videoWatchedStorageReadFailed = true;
+                    console.error("Não foi possível salvar o progresso da videoaula:", error);
+                }
+                const lesson = EMBEDDED_VIDEO_LESSONS[selectedVideoLessonId];
+                updateVideoWatchedControl(lesson);
+                renderVideoLessonList(lesson.topic);
+            });
             videoNotesEditor = PMPERichNotes.mount(document.getElementById("videoLessonNotes"), {
                 onChange: html => {
                     if (!selectedVideoLessonId || videoNotesStorageReadFailed) return;
@@ -5310,42 +5347,36 @@
             });
             if (!selectedVideoLessonId) videoNotesEditor.setDisabled(true);
             document.getElementById("scheduleContainer").addEventListener("click", event => {
-                const button = event.target instanceof Element
-                    ? event.target.closest("[data-open-video-lesson]")
-                    : null;
+                const button = event.target instanceof Element ? event.target.closest("[data-open-video-lesson]") : null;
                 if (!button) return;
-                const lessonId = button.dataset.openVideoLesson;
-                if (!EMBEDDED_VIDEO_LESSONS[lessonId]) return;
-                picker.value = lessonId;
-                renderSelectedVideoLesson(lessonId);
+                const lesson = EMBEDDED_VIDEO_LESSONS[button.dataset.openVideoLesson];
+                if (!lesson) return;
+                renderVideoTopic(lesson.topic, lesson.id);
                 window.activateDashboardView("videos");
             });
 
-            if (lessonEntries.length) {
-                picker.value = lessonEntries[0].id;
-                renderSelectedVideoLesson(picker.value);
+            const firstTopic = topics.find(topic => getVideoLessonsForTopic(topic).length) || topics[0];
+            if (firstTopic) {
+                picker.value = firstTopic;
+                renderVideoTopic(firstTopic);
             }
         }
 
         const buildVideoTasks = (dayObj, module, slot, time, cycle) => {
-            const titles = getDistributedLessonTitles(module).map(cleanLessonTitle);
-            const subjects = titles.length ? titles : [module.topic];
-            return subjects.map((subjectTitle, i) => {
-                const taskId = `d${dayObj.id}_${slot}_${i + 1}`;
-                const courseLessonId = getCourseLessonId(module, i);
-                return {
-                    id: taskId,
-                    time: `${time} · aula ${i + 1}/${subjects.length}`,
-                    subject: subjectTitle,
-                    topic: `${module.sub} · (Ciclo ${cycle}) Videoaula ${i + 1} de ${subjects.length}${titles.length ? `; leia a seção "Aula ${i + 1}/${subjects.length}" no PDF do dia` : ""}. A busca do YouTube não é curadoria: confira professor e aderência ao edital.`,
-                    type: "Teoria",
-                    icon: "fa-youtube",
-                    action: getYouTubeLinkByCycle(module.sub, subjectTitle, cycle),
-                    embeddedVideoLesson: EMBEDDED_VIDEO_LESSONS[courseLessonId] || null
-                };
-            });
+            const lessons = getVideoLessonsForTopic(module.topic);
+            return [{
+                id: `d${dayObj.id}_${slot}_1`,
+                time: `${time} · ${lessons.length} ${lessons.length === 1 ? "aula curada" : "aulas curadas"}`,
+                subject: module.topic,
+                topic: lessons.length
+                    ? `${module.sub} · (Ciclo ${cycle}) Assista às aulas selecionadas na plataforma. A seleção pode cobrir apenas parte do tema; complemente pelo edital e pelos PDFs.`
+                    : `${module.sub} · (Ciclo ${cycle}) Videoaula ainda não disponível. Consulte o PDF do tema enquanto a seleção é concluída.`,
+                type: "Teoria",
+                icon: "fa-youtube",
+                action: "",
+                embeddedVideoLessons: lessons
+            }];
         };
-
         const getPDFInstructionByCycle = (cycle) => {
             if (cycle === 1) return "Fase 1 (Reconhecimento): Leia absorvendo os conceitos gerais. Faça o mapeamento inicial.";
             if (cycle === 2) return "Fase 2 (Fichamento): Mapeamento das regras. Extraia as exceções para o Caderno de Anotações.";
@@ -5556,8 +5587,12 @@
                 const completedClass = isChecked ? 'opacity-50 line-through' : '';
 
                 let actionButtonHtml = '';
-                if (task.embeddedVideoLesson) {
-                    actionButtonHtml = `<button type="button" data-open-video-lesson="${task.embeddedVideoLesson.id}" class="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-circle-play mr-2"></i> ASSISTIR NA PLATAFORMA</button>`;
+                if (task.embeddedVideoLessons?.length) {
+                    actionButtonHtml = task.embeddedVideoLessons.map(lesson =>
+                        `<button type="button" data-open-video-lesson="${lesson.id}" class="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-solid fa-circle-play mr-2"></i>${PMPERichNotes.escapeHtml(lesson.title)}</button>`
+                    ).join('');
+                } else if (task.type === "Teoria" && task.icon === "fa-youtube") {
+                    actionButtonHtml = '<span class="text-sm font-bold text-slate-700">Videoaula em preparação</span>';
                 } else if (task.action.startsWith('http')) {
                     actionButtonHtml = `<a href="${task.action}" target="_blank" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-bold text-sm flex items-center transition-colors"><i class="fa-brands fa-youtube mr-2"></i> YOUTUBE</a>`;
                 } else {
