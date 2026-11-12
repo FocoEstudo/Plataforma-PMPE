@@ -49,6 +49,10 @@ h2 { margin: .5rem 0; color: #152b4c; font-size: clamp(2rem, 4vw, 3rem); line-he
 .badge { display: inline-block; padding: .4rem .65rem; border-radius: 2rem; font-size: .7rem; font-weight: 800; }
 .available { color: #205a3a; background: #e5f4e9; }
 .building { color: #72510b; background: #fff2cc; }
+.card { overflow: hidden; padding-top: 0; }
+.card .cover { width: calc(100% + 3.2rem); max-width: none; height: 11rem; margin: 0 -1.6rem 1.1rem; object-fit: cover; }
+.card .about { margin: .4rem 0 .9rem; color: #3c4a60; text-align: left; }
+.card .badge { margin-top: -.2rem; }
 .crest { width: 6rem; height: 6rem; margin: 1.2rem 0 .5rem; object-fit: contain; }
 .card h3 { margin: .3rem 0; color: #152b4c; font-size: 1.8rem; }
 .card p { font-size: .9rem; line-height: 1.5; }

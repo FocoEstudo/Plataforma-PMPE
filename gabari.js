@@ -114,7 +114,7 @@
             steps: [
                 'Cada concurso tem plataforma, conteúdo e acesso próprios.',
                 'Clique no cartão do concurso para o qual você vai estudar.',
-                'Nos concursos disponíveis, você será levado à tela de login; os que estão em construção mostram seu andamento.',
+                'Você será levado à tela de login do concurso escolhido.',
                 'Quer outro concurso depois? É só voltar a esta tela.'
             ]
         },
