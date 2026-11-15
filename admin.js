@@ -28,6 +28,11 @@ const sendVerificationButton = document.getElementById("sendVerificationButton")
 const refreshVerificationButton = document.getElementById("refreshVerificationButton");
 const requestsPanel = document.getElementById("requestsPanel");
 const requestList = document.getElementById("requestList");
+const complimentaryAccessForm = document.getElementById("complimentaryAccessForm");
+const complimentaryAccessEmail = document.getElementById("complimentaryAccessEmail");
+const complimentaryAccessContest = document.getElementById("complimentaryAccessContest");
+const complimentaryAccessButton = document.getElementById("complimentaryAccessButton");
+const complimentaryAccessStatus = document.getElementById("complimentaryAccessStatus");
 const signOutButton = document.getElementById("signOutButton");
 
 let auth;
@@ -41,13 +46,102 @@ let signOut;
 let collection;
 let doc;
 let getDoc;
+let getDocs;
 let onSnapshot;
 let query;
 let serverTimestamp;
 let where;
 let runTransaction;
+let limit;
+let grantComplimentaryAccess;
 let isPreparingRequests = false;
 let requestRenderVersion = 0;
+
+const grantComplimentaryAccessForAccount = async ({ email, concurso }) => {
+    const policy = window.AdminAccessPolicy;
+    if (!policy) throw new Error("A política de acesso administrativo não foi carregada.");
+
+    const normalizedEmail = policy.normalizeGrantEmail(email);
+    const contest = CONCURSOS[concurso];
+    if (!contest) throw Object.assign(new Error("Concurso inválido."), { code: "invalid-contest" });
+
+    const directoryQuery = query(
+        collection(db, "userDirectory"),
+        where("email", "==", normalizedEmail),
+        limit(2)
+    );
+    const matches = await getDocs(directoryQuery);
+    if (matches.empty) throw Object.assign(new Error("Conta verificada não encontrada."), { code: "user-not-found" });
+    if (matches.size !== 1) throw Object.assign(new Error("Email associado a mais de uma conta."), { code: "ambiguous-email" });
+
+    const accountDocument = matches.docs[0];
+    const account = accountDocument.data();
+    if (account.uid !== accountDocument.id || account.email !== normalizedEmail) {
+        throw Object.assign(new Error("O diretório de contas não passou na validação."), { code: "directory-mismatch" });
+    }
+
+    const directoryReference = doc(db, "userDirectory", accountDocument.id);
+    const accessReference = doc(db, contest.access, accountDocument.id);
+    await runTransaction(db, async transaction => {
+        const directorySnapshot = await transaction.get(directoryReference);
+        const currentAccount = directorySnapshot.exists() ? directorySnapshot.data() : null;
+        if (currentAccount?.uid !== accountDocument.id || currentAccount.email !== normalizedEmail) {
+            throw Object.assign(new Error("O diretório de contas mudou durante a liberação."), { code: "directory-mismatch" });
+        }
+        const accessSnapshot = await transaction.get(accessReference);
+        const existingAccess = accessSnapshot.exists() ? accessSnapshot.data() : null;
+        if (!policy.mayGrantComplimentaryAccess(existingAccess)) {
+            throw Object.assign(new Error("A conta já possui acesso vigente."), { code: "already-exists" });
+        }
+        transaction.set(accessReference, {
+            active: true,
+            plan: "vitalicio",
+            provider: "admin_grant",
+            amount: 0,
+            currency: "BRL",
+            paidAt: serverTimestamp(),
+            grantedBy: currentAdmin.uid
+        });
+    });
+};
+
+complimentaryAccessForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!currentAdmin || !grantComplimentaryAccess) {
+        complimentaryAccessStatus.textContent = "A sessão administrativa não está pronta. Recarregue a página.";
+        complimentaryAccessStatus.dataset.error = "true";
+        return;
+    }
+
+    const email = complimentaryAccessEmail.value.trim();
+    const concurso = complimentaryAccessContest.value;
+    const label = CONCURSOS[concurso]?.label;
+    if (!label || !window.confirm(`Conceder acesso gratuito vitalício a ${email} para ${label}?`)) return;
+
+    complimentaryAccessButton.disabled = true;
+    complimentaryAccessStatus.textContent = "Validando a conta e liberando o acesso...";
+    complimentaryAccessStatus.dataset.error = "false";
+    try {
+        await grantComplimentaryAccess({ email, concurso });
+        complimentaryAccessStatus.textContent = `Acesso vitalício gratuito liberado para ${email} em ${label}.`;
+        complimentaryAccessForm.reset();
+    } catch (error) {
+        console.error("Não foi possível conceder o acesso gratuito.", error);
+        const messages = {
+            "invalid-email": "Informe o email verificado usado na conta.",
+            "invalid-contest": "Selecione um concurso válido.",
+            "user-not-found": "Conta verificada não encontrada. Peça para a pessoa entrar uma vez na plataforma após a publicação e confira o email.",
+            "ambiguous-email": "Esse email está associado a mais de uma conta. Verifique o cadastro antes de continuar.",
+            "directory-mismatch": "Não foi possível validar os dados da conta. Tente novamente mais tarde.",
+            "already-exists": "Essa conta já possui acesso vigente neste concurso. Nenhuma alteração foi feita.",
+            "permission-denied": "A operação foi recusada. Confirme se seu email administrativo está verificado e se as regras do Firestore foram publicadas."
+        };
+        complimentaryAccessStatus.textContent = messages[error.code] || "Não foi possível liberar o acesso. Verifique a conexão e tente novamente.";
+        complimentaryAccessStatus.dataset.error = "true";
+    } finally {
+        complimentaryAccessButton.disabled = false;
+    }
+});
 
 const stopRequestsListener = () => {
     activeRequestsListener?.();
@@ -392,7 +486,8 @@ try {
     auth = firebaseAuth;
     db = firestore;
     ({ onAuthStateChanged, sendEmailVerification, reload, signOut } = authModule);
-    ({ collection, doc, getDoc, onSnapshot, query, serverTimestamp, where, runTransaction } = firestoreModule);
+    ({ collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, where, runTransaction, limit } = firestoreModule);
+    grantComplimentaryAccess = grantComplimentaryAccessForAccount;
     onAuthStateChanged(auth, user => {
         void activateAdminPage(user);
     }, error => {

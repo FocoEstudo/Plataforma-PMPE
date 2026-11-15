@@ -58,12 +58,14 @@
     const css = `
 #gabari-root{position:fixed;right:1rem;bottom:1rem;z-index:9990;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}
 #gabari-root *{box-sizing:border-box}
-#gabari-fab{width:4.2rem;height:4.2rem;border-radius:50%;border:3px solid ${cfg.gold};padding:0;background:${cfg.accent};cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.35);overflow:hidden;transition:transform .2s}
+#gabari-fab{width:4.2rem;height:4.2rem;border-radius:50%;border:3px solid ${cfg.gold};padding:0;background:${cfg.accent};cursor:grab;touch-action:none;user-select:none;box-shadow:0 10px 28px rgba(0,0,0,.35);overflow:hidden;transition:transform .2s}
+#gabari-fab:active{cursor:grabbing}
+#gabari-root.gabari-dragging #gabari-fab{transition:none}
 #gabari-fab:hover,#gabari-fab:focus-visible{transform:scale(1.08)}
 #gabari-fab:focus-visible,#gabari-root button:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px ${cfg.accent}}
 #gabari-fab svg{width:100%;height:100%;display:block}
-#gabari-bubble,#gabari-panel{max-width:min(20rem,calc(100vw - 2rem));background:#fff;color:#14213d;border-radius:1rem;border:2px solid ${cfg.accent};box-shadow:0 14px 36px rgba(0,0,0,.28)}
-#gabari-bubble{padding:.7rem .9rem;font-size:.85rem;line-height:1.4;position:relative}
+#gabari-bubble,#gabari-panel{position:fixed;z-index:9990;left:0;top:0;max-width:min(20rem,calc(100vw - 2rem));background:#fff;color:#14213d;border-radius:1rem;border:2px solid ${cfg.accent};box-shadow:0 14px 36px rgba(0,0,0,.28)}
+#gabari-bubble{padding:.7rem .9rem;font-size:.85rem;line-height:1.4}
 #gabari-bubble[hidden],#gabari-panel[hidden]{display:none}
 #gabari-panel{width:20rem;overflow:hidden;display:flex;flex-direction:column;max-height:calc(100vh - 7rem)}
 #gabari-panel[hidden]{display:none}
@@ -324,7 +326,7 @@
                 </div>
                 <div class="gabari-foot"><button type="button" id="gabari-tip">Outra dica</button><button type="button" id="gabari-hide">Esconder o Gabari</button></div>
             </section>
-            <button type="button" id="gabari-fab" aria-label="Abrir o Gabari, mascote de apoio" aria-expanded="false" aria-controls="gabari-panel">${avatar}</button>`;
+            <button type="button" id="gabari-fab" title="Arraste ou use Shift + setas para reposicionar o Gabari" aria-label="Abrir o Gabari, mascote de apoio. Arraste ou use Shift mais as setas para reposicionar." aria-keyshortcuts="Shift+ArrowUp Shift+ArrowDown Shift+ArrowLeft Shift+ArrowRight" aria-expanded="false" aria-controls="gabari-panel">${avatar}</button>`;
         const restore = document.createElement('button');
         restore.id = 'gabari-restore';
         restore.type = 'button';
@@ -340,6 +342,128 @@
         const say = $('gabari-say');
         const guideBox = $('gabari-guide');
         const actions = $('gabari-actions');
+        const POSITION_KEY = 'gabari_position';
+        const EDGE_GAP = 8;
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
+        let dragStart = null;
+        let dragged = false;
+        let suppressClick = false;
+
+        function positionOverlays() {
+            const fabRect = fab.getBoundingClientRect();
+            [bubble, panel].forEach(overlay => {
+                if (overlay.hidden) return;
+                const overlayRect = overlay.getBoundingClientRect();
+                const left = fabRect.left + fabRect.width / 2 < window.innerWidth / 2
+                    ? fabRect.left
+                    : fabRect.right - overlayRect.width;
+                const top = fabRect.top >= overlayRect.height + EDGE_GAP * 2
+                    ? fabRect.top - overlayRect.height - EDGE_GAP
+                    : fabRect.bottom + EDGE_GAP;
+                overlay.style.left = `${clamp(left, EDGE_GAP, window.innerWidth - overlayRect.width - EDGE_GAP)}px`;
+                overlay.style.top = `${clamp(top, EDGE_GAP, window.innerHeight - overlayRect.height - EDGE_GAP)}px`;
+                overlay.style.right = 'auto';
+                overlay.style.bottom = 'auto';
+            });
+        }
+
+        function applyStoredPosition() {
+            const stored = store.get(POSITION_KEY);
+            if (!stored) return;
+            let position;
+            try {
+                position = JSON.parse(stored);
+            } catch (error) {
+                console.warn('A posição salva do Gabari está inválida; mantendo a posição padrão.', error);
+                store.del(POSITION_KEY);
+                return;
+            }
+            if (!Number.isFinite(position?.x) || !Number.isFinite(position?.y)) {
+                store.del(POSITION_KEY);
+                return;
+            }
+            const maxX = Math.max(0, window.innerWidth - fab.offsetWidth - EDGE_GAP * 2);
+            const maxY = Math.max(0, window.innerHeight - fab.offsetHeight - EDGE_GAP);
+            root.style.left = `${EDGE_GAP + clamp(position.x, 0, 1) * maxX}px`;
+            root.style.top = `${EDGE_GAP + clamp(position.y, 0, 1) * maxY}px`;
+            root.style.right = 'auto';
+            root.style.bottom = 'auto';
+            positionOverlays();
+        }
+
+        function savePosition() {
+            const rect = fab.getBoundingClientRect();
+            const maxX = Math.max(1, window.innerWidth - fab.offsetWidth - EDGE_GAP * 2);
+            const maxY = Math.max(1, window.innerHeight - fab.offsetHeight - EDGE_GAP * 2);
+            store.set(POSITION_KEY, JSON.stringify({
+                x: clamp(rect.left - EDGE_GAP, 0, maxX) / maxX,
+                y: clamp(rect.top - EDGE_GAP, 0, maxY) / maxY
+            }));
+        }
+
+        fab.addEventListener('pointerdown', event => {
+            if (!event.isPrimary || event.button !== 0) return;
+            const rect = fab.getBoundingClientRect();
+            dragStart = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, left: rect.left, top: rect.top };
+            dragged = false;
+            fab.setPointerCapture(event.pointerId);
+        });
+        fab.addEventListener('pointermove', event => {
+            if (!dragStart || event.pointerId !== dragStart.pointerId) return;
+            const deltaX = event.clientX - dragStart.x;
+            const deltaY = event.clientY - dragStart.y;
+            if (!dragged && Math.hypot(deltaX, deltaY) < 6) return;
+            dragged = true;
+            root.classList.add('gabari-dragging');
+            const maxX = window.innerWidth - fab.offsetWidth - EDGE_GAP;
+            const maxY = window.innerHeight - fab.offsetHeight - EDGE_GAP;
+            root.style.left = `${clamp(dragStart.left + deltaX, EDGE_GAP, maxX)}px`;
+            root.style.top = `${clamp(dragStart.top + deltaY, EDGE_GAP, maxY)}px`;
+            root.style.right = 'auto';
+            root.style.bottom = 'auto';
+            positionOverlays();
+            event.preventDefault();
+        });
+        const finishDrag = event => {
+            if (!dragStart || event.pointerId !== dragStart.pointerId) return;
+            if (dragged) {
+                savePosition();
+                suppressClick = true;
+                window.setTimeout(() => { suppressClick = false; }, 0);
+            }
+            dragStart = null;
+            root.classList.remove('gabari-dragging');
+        };
+        fab.addEventListener('pointerup', finishDrag);
+        fab.addEventListener('pointercancel', finishDrag);
+        fab.addEventListener('keydown', event => {
+            if (!event.shiftKey || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+            const rect = fab.getBoundingClientRect();
+            const maxX = window.innerWidth - fab.offsetWidth - EDGE_GAP;
+            const maxY = window.innerHeight - fab.offsetHeight - EDGE_GAP;
+            const deltaX = event.key === 'ArrowLeft' ? -16 : event.key === 'ArrowRight' ? 16 : 0;
+            const deltaY = event.key === 'ArrowUp' ? -16 : event.key === 'ArrowDown' ? 16 : 0;
+            root.style.left = `${clamp(rect.left + deltaX, EDGE_GAP, maxX)}px`;
+            root.style.top = `${clamp(rect.top + deltaY, EDGE_GAP, maxY)}px`;
+            root.style.right = 'auto';
+            root.style.bottom = 'auto';
+            savePosition();
+            positionOverlays();
+            event.preventDefault();
+        });
+        fab.addEventListener('click', event => {
+            if (suppressClick) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                suppressClick = false;
+                return;
+            }
+            setOpen(panel.hidden);
+        });
+        window.addEventListener('resize', () => {
+            applyStoredPosition();
+            positionOverlays();
+        });
 
         function renderGuide() {
             const guide = GUIDES[currentContext()] || GUIDES.home;
@@ -377,6 +501,7 @@
                 bubble.hidden = true;
                 say.textContent = greeting() + ' Dica: ' + pickTip();
                 renderGuide();
+                positionOverlays();
                 panel.querySelector('button').focus();
             } else {
                 fab.focus({ preventScroll: true });
@@ -386,7 +511,6 @@
         new MutationObserver(() => { if (!panel.hidden) renderGuide(); })
             .observe(document.body, { attributes: true, attributeFilter: ['data-active-view', 'data-session-state'] });
 
-        fab.addEventListener('click', () => setOpen(panel.hidden));
         panel.querySelector('.gabari-close').addEventListener('click', () => setOpen(false));
         $('gabari-tip').addEventListener('click', () => { say.textContent = 'Dica: ' + pickTip(); });
         $('gabari-hide').addEventListener('click', () => {
@@ -398,6 +522,7 @@
             store.del(cfg.storageKey);
             root.hidden = false;
             restore.hidden = true;
+            applyStoredPosition();
         });
         document.addEventListener('keydown', event => { if (event.key === 'Escape' && !panel.hidden) setOpen(false); });
 
@@ -406,6 +531,7 @@
             restore.hidden = false;
             return;
         }
+        applyStoredPosition();
 
         // Saudação discreta, uma vez por sessão, só depois que a interface estiver visível
         if (!sessionStorage.getItem('gabari_greeted')) {
@@ -417,6 +543,7 @@
                 try { sessionStorage.setItem('gabari_greeted', '1'); } catch (e) { /* ignora */ }
                 bubble.textContent = greeting();
                 bubble.hidden = false;
+                positionOverlays();
                 fab.classList.add('gabari-wave');
                 window.setTimeout(() => { bubble.hidden = true; }, 9000);
             };

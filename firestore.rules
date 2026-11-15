@@ -384,6 +384,19 @@ service cloud.firestore {
       }
     }
 
+    match /userDirectory/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create, update: if isOwner(userId)
+        && request.auth.token.email_verified == true
+        && request.resource.data.keys().hasAll(['uid', 'email', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['uid', 'email', 'updatedAt'])
+        && request.resource.data.uid == userId
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if isOwner(userId);
+    }
+
     match /tickets/{ticketId} {
       allow get: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
       allow list: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
@@ -400,7 +413,7 @@ service cloud.firestore {
     }
 
     match /access/{userId} {
-      allow get: if isOwner(userId);
+      allow get: if isOwner(userId) || isAdmin();
       allow list: if false;
       allow create, update: if isAdmin();
       allow delete: if false;
@@ -422,7 +435,7 @@ service cloud.firestore {
     }
 
     match /accessPppe/{userId} {
-      allow get: if isOwner(userId);
+      allow get: if isOwner(userId) || isAdmin();
       allow list: if false;
       allow create, update: if isAdmin();
       allow delete: if false;

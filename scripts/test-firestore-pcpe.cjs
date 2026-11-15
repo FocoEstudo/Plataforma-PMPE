@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = require('@firebase/rules-unit-testing');
-const { doc, getDoc, setDoc, updateDoc, deleteField, serverTimestamp, Timestamp, runTransaction } = require('firebase/firestore');
+const { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, deleteField, serverTimestamp, Timestamp, runTransaction, query, where } = require('firebase/firestore');
 const policy = require('../pcpe/access-policy.js');
 
 async function main() {
@@ -21,14 +21,42 @@ async function main() {
         firestore: { host, port: Number(port), rules }
     });
     try {
-        const owner = env.authenticatedContext('student-a', { email: 'student-a@example.test' }).firestore();
+        const owner = env.authenticatedContext('student-a', {
+            email: 'student-a@example.test', email_verified: true
+        }).firestore();
         const other = env.authenticatedContext('student-b', { email: 'student-b@example.test' }).firestore();
         const thirdStudent = env.authenticatedContext('student-c', { email: 'student-c@example.test' }).firestore();
+        const unverifiedStudent = env.authenticatedContext('student-unverified', {
+            email: 'student-unverified@example.test', email_verified: false
+        }).firestore();
         const admin = env.authenticatedContext('administrator', { email: adminEmail, email_verified: true }).firestore();
         const unverifiedAdmin = env.authenticatedContext('administrator', { email: adminEmail, email_verified: false }).firestore();
         const ownerRequest = doc(owner, 'accessRequestsPcpe', 'student-a');
         const ownerAccess = doc(owner, 'accessPcpe', 'student-a');
         const pending = plan => ({ email: 'student-a@example.test', status: 'pending', plan, requestedAt: serverTimestamp() });
+
+        const ownerDirectory = doc(owner, 'userDirectory', 'student-a');
+        await assertSucceeds(setDoc(ownerDirectory, {
+            uid: 'student-a', email: 'student-a@example.test', updatedAt: serverTimestamp()
+        }));
+        await assertFails(getDoc(doc(other, 'userDirectory', 'student-a')));
+        await assertFails(setDoc(doc(other, 'userDirectory', 'student-a'), {
+            uid: 'student-a', email: 'student-a@example.test', updatedAt: serverTimestamp()
+        }));
+        await assertFails(setDoc(ownerDirectory, {
+            uid: 'student-b', email: 'student-b@example.test', updatedAt: serverTimestamp()
+        }));
+        await assertFails(setDoc(ownerDirectory, {
+            uid: 'student-a', email: 'unverified@example.test', updatedAt: serverTimestamp()
+        }));
+        await assertFails(setDoc(doc(unverifiedStudent, 'userDirectory', 'student-unverified'), {
+            uid: 'student-unverified', email: 'student-unverified@example.test', updatedAt: serverTimestamp()
+        }));
+        await assertFails(getDocs(collection(owner, 'userDirectory')));
+        await assertSucceeds(getDocs(query(collection(admin, 'userDirectory'), where('email', '==', 'student-a@example.test'))));
+        await assertFails(getDocs(collection(unverifiedAdmin, 'userDirectory')));
+        await assertFails(deleteDoc(doc(other, 'userDirectory', 'student-a')));
+        await assertSucceeds(deleteDoc(ownerDirectory));
 
         await assertFails(setDoc(ownerAccess, { active: true, plan: 'vitalicio' }));
         await assertFails(setDoc(doc(other, 'accessRequestsPcpe', 'student-a'), pending('mensal')));
@@ -113,6 +141,9 @@ async function main() {
         await assertSucceeds(setDoc(doc(admin, 'accessPppe', 'student-a'), {
             active: true, provider: 'pix_manual', amount: 99.9, currency: 'BRL', plan: 'vitalicio'
         }));
+        await assertSucceeds(getDoc(doc(admin, 'access', 'student-a')));
+        await assertSucceeds(getDoc(doc(admin, 'accessPppe', 'student-a')));
+        await assertFails(getDoc(doc(unverifiedAdmin, 'access', 'student-a')));
         await assertFails(updateDoc(adminPppeRequest, {
             status: 'approved', reviewedAt: serverTimestamp()
         }));
@@ -146,7 +177,7 @@ async function main() {
         });
         assert.equal((await getDoc(doc(owner, 'access', 'student-a'))).data().active, true);
         assert.equal((await getDoc(doc(owner, 'accessPppe', 'student-a'))).data().active, true);
-        console.log('OK: regras Pix PCPE, PMPE e PPPE, validade semanal/mensal, renovação, aprovação concorrente e acessos legados.');
+        console.log('OK: diretório restrito, regras de acesso PMPE, PCPE e PPPE, validade, renovação, aprovação concorrente e acessos legados.');
     } finally {
         await env.clearFirestore();
         await env.cleanup();

@@ -43,6 +43,10 @@
         .identity-details dd { margin: 0; overflow-wrap: anywhere; }
         .identity-note { color: #617267; font-size: .75rem; }
         .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .9rem; }
+        .grant-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); align-items: end; gap: .8rem; margin-top: 1rem; }
+        .grant-form label { display: grid; gap: .35rem; color: #42584a; font-size: .85rem; font-weight: 700; }
+        .grant-form input, .grant-form select { min-height: 2.7rem; width: 100%; padding: .55rem .65rem; border: 1px solid #bfd2c4; border-radius: .6rem; background: #fff; color: #173b2c; font: inherit; }
+        .grant-form input:focus-visible, .grant-form select:focus-visible { outline: 3px solid #9acda6; outline-offset: 2px; }
         button, .link-button {
             min-height: 2.7rem;
             padding: .65rem .9rem;
@@ -105,6 +109,24 @@
             <p class="analytics-note">Uma sessão corresponde à abertura da plataforma. Cliques em PDFs e aulas identificáveis são agrupados por material; os demais, por categoria, sem registrar conteúdo pessoal. Progresso reflete as tarefas das missões; recursos sem meta de conclusão não recebem percentual. Dados anteriores à instalação não são recuperados.</p>
         </section>
         <div id="managementPanel" hidden>
+        <section class="panel" aria-labelledby="complimentaryAccessHeading">
+            <h2 id="complimentaryAccessHeading">Liberar acesso gratuito</h2>
+            <p class="muted">Concede acesso vitalício à conta já cadastrada, sem cobrança. A pessoa precisa confirmar o email e entrar na plataforma ao menos uma vez após a publicação. O checkout para quem vai pagar continua disponível normalmente.</p>
+            <form id="complimentaryAccessForm" class="grant-form">
+                <label>Email da conta
+                    <input id="complimentaryAccessEmail" type="email" autocomplete="email" maxlength="254" required>
+                </label>
+                <label>Concurso
+                    <select id="complimentaryAccessContest" required>
+                        <option value="pmpe">PMPE</option>
+                        <option value="pppe">PPPE</option>
+                        <option value="pcpe">PCPE</option>
+                    </select>
+                </label>
+                <button id="complimentaryAccessButton" class="primary" type="submit">Conceder acesso vitalício</button>
+            </form>
+            <p id="complimentaryAccessStatus" class="status" role="status" aria-live="polite"></p>
+        </section>
         <section id="requestsPanel" class="panel" aria-labelledby="requestsHeading" hidden>
             <h2 id="requestsHeading">Aguardando conferência</h2>
             <p class="muted">A fila pode incluir pessoas que ainda não pagaram. Confira no extrato o valor indicado em cada solicitação e identifique o pagamento antes de aprovar. Os dados cadastrais são autodeclarados e não comprovam a identidade do pagador.</p>
@@ -130,10 +152,11 @@
     </main>
 
     <script src="pcpe/access-policy.js"></script>
+    <script src="admin-access-policy.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="admin-dashboard.js"></script>
     <script type="module">if (!new URLSearchParams(location.search).has("demo")) { import("./admin.js?v=5"); import("./admin-inbox.js"); }</script>
 <script>window.GABARI_CONFIG = { concurso: '', accent: '#25272b', gold: '#e8b931', storageKey: 'gabari_hidden' };</script>
-    <script src="gabari.js?v=2"></script>
+    <script src="gabari.js?v=3"></script>
 </body>
 </html>
