@@ -40,3 +40,6 @@ body { background: var(--cream-page); color: var(--cream-ink); }
 .faq details { border-bottom-color: var(--cream-line); }
 .showcase, .device, .phone { border-color: var(--cream-gold); }
 :focus-visible { outline-color: #765c31; }
+@media (max-width: 360px) {
+    .brand { font-size: 1rem; letter-spacing: .035em; }
+}

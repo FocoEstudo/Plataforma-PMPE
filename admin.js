@@ -7,18 +7,10 @@ const CONCURSOS = {
 const formatPrice = value => `R$ ${value.toFixed(2).replace(".", ",")}`;
 const requestPrice = (request, config) => request.promoCode && request.plan !== "mensal" ? 74.9
     : request.plan === "mensal" ? 24.9 : config.price;
-const accessExpiration = access => {
-    if (!access || access.active !== true) return null;
-    if (access.plan === undefined || access.plan === "vitalicio") return Infinity;
-    if (access.plan !== "mensal" || typeof access.paidAt?.toMillis !== "function") return null;
-    const paidAt = access.paidAt.toMillis();
-    return Number.isSafeInteger(paidAt) && paidAt >= 0 ? paidAt + 30 * 24 * 60 * 60 * 1000 : null;
-};
 const mayApproveExpiredAccess = (access, now = Date.now()) => {
     if (!access || access.active === false) return true;
     if (access.active !== true || !Number.isFinite(now)) return false;
-    const expiration = accessExpiration(access);
-    return expiration !== null && expiration !== Infinity && now >= expiration;
+    return window.AdminAccessPolicy.mayGrantComplimentaryAccess(access, now);
 };
 const adminStatus = document.getElementById("adminStatus");
 const loginLink = document.getElementById("loginLink");

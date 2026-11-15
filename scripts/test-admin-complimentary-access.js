@@ -20,6 +20,11 @@ assert.equal(mayGrantComplimentaryAccess({
 assert.equal(mayGrantComplimentaryAccess({
   active: true,
   plan: "semanal",
+  paidAt: timestamp(now - 6 * 24 * 60 * 60 * 1000)
+}, now), false);
+assert.equal(mayGrantComplimentaryAccess({
+  active: true,
+  plan: "semanal",
   paidAt: timestamp(now - 7 * 24 * 60 * 60 * 1000)
 }, now), true);
 assert.equal(mayGrantComplimentaryAccess({ active: true, plan: "vitalicio" }, now), false);
@@ -32,4 +37,4 @@ assert.equal(mayGrantComplimentaryAccess({
 }, now), false);
 assert.equal(mayGrantComplimentaryAccess(null, Number.NaN), false);
 
-console.log("OK: validação do email e proteção contra sobrescrever acessos vigentes.");
+console.log("OK: planos semanais/mensais vencidos e proteção contra sobrescrever acessos vigentes.");
