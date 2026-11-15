@@ -1,4 +1,17 @@
-﻿/* Última camada visual: a paleta é definida pelo tema de cada concurso. */
+﻿/* Paleta compartilhada pelas três plataformas. */
+:root {
+  --theme-primary:#183457; --theme-primary-dark:#0b1c34; --theme-accent:#d9e3ef;
+  --theme-accent-light:#eef4fc; --theme-on-accent:#10243e; --theme-ink:#18283d;
+  --theme-link:#234d7c; --theme-tint:#f1f5fa; --theme-line:#c7d3e2;
+  --theme-page:#f4f7fb; --theme-focus:#28588a; --theme-chart:#28588a;
+  --t-dark:#0b1c34; --t-main:#183457; --t-mid:#285078; --t-gold:#d9e3ef;
+  --t-gold-soft:#eef4fc; --t-accent2:#587392; --t-red:#587392; --t-ink:#18283d;
+  --t-link:#234d7c; --t-tint:#f1f5fa; --t-line:#c7d3e2; --t-on-main:#fff;
+  --t-page-1:#e7edf5; --t-page-2:#f6f8fb; --t-page-3:#e5ebf3;
+  --pp-navy:#183457; --pp-blue:#234d7c; --pp-sky:#7695b5; --pp-gold:#d9e3ef;
+  --pp-gold-soft:#eef4fc; --pp-red:#587392; --pp-ink:#18283d; --pp-muted:#52657b;
+  --pp-line:#c7d3e2; --pp-tint:#f1f5fa; --pp-bg:#f4f7fb;
+}
 body { color: var(--theme-ink); }
 :focus-visible { outline-color: var(--theme-focus); }
 input[type="checkbox"], input[type="radio"], progress { accent-color: var(--theme-primary); }
@@ -76,3 +89,9 @@ body:not(.skull-bg) { background: var(--theme-page); color: var(--theme-ink); }
 .curriculum-card li { color: #fff; }
 body :is(.nav-cta,.hero-cta,.final-cta) { color: var(--theme-on-accent) !important; }
 body .bg-emerald-400.text-emerald-950 { color: var(--theme-on-accent) !important; }
+body.skull-bg { background:linear-gradient(180deg,var(--t-page-1),var(--t-page-2),var(--t-page-3)); }
+.dashboard-home-hero,.dashboard-home-hero.glass-panel,.police-banner,.profile-form-header { background:linear-gradient(110deg,var(--theme-primary-dark),var(--theme-primary)); }
+.dashboard-nav-item.is-active { background:linear-gradient(90deg,rgba(217,221,225,.25),rgba(217,221,225,.05)); }
+.platform-header,header.platform-header { box-shadow:none; }
+.fc-back { background:linear-gradient(145deg,#fff,var(--theme-tint)); }
+.payment-gate-intro { background:linear-gradient(120deg,var(--theme-primary-dark),var(--theme-primary)); }

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="assets/gabari.svg?v=1">
     <title>Operação PMPE | Plataforma de Estudos</title>
     <script src="cloud-sync.js"></script>
     <link rel="stylesheet" href="mission-videos.css">
@@ -2385,7 +2386,8 @@
     </style>
     <link rel="stylesheet" href="tema-pmpe.css?v=4">
     <link rel="stylesheet" href="aviso-pagamento.css">
-    <link rel="stylesheet" href="tema-final-pmpe.css?v=1">
+    <link rel="stylesheet" href="tema-final-pmpe.css?v=3">
+    <link rel="stylesheet" href="video-workspace.css">
 </head>
 
 <body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home" data-session-state="checking">
@@ -4871,7 +4873,7 @@
                 }).join("")
                 : "";
             const lessonHtml = distributedLessons.length
-                ? `<h2 class="mt-2">Visão geral do tema da missão</h2><p>Comece por esta visão geral curta: ela apresenta os conceitos centrais antes das aulas detalhadas.</p>${baseHtml}<h2 class="mt-10 border-t pt-6">Aulas detalhadas (na ordem das videoaulas)</h2>${trailHtml}`
+                ? `<h2 class="mt-2">Visão geral do tema da missão</h2><p>Comece por esta visão geral curta: ela apresenta os conceitos centrais antes das aulas detalhadas.</p>${baseHtml}<h2 class="mt-10 border-t pt-6">Aulas detalhadas do material</h2>${trailHtml}`
                 : `${baseHtml}${supplementDeepHtml}`;
             const sourceHtml = (guide.sources || []).map(([label, url]) =>
                 `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></li>`
@@ -4924,13 +4926,13 @@
                 }).join("");
                 const count = (items.match(/<li>/g) || []).length;
                 return count > 1
-                    ? `<h3>Estude por tema</h3><p>As aulas seguem a ordem das videoaulas, que revisitam o mesmo assunto em rodadas (conceito, roteiro integral, comparação). Para estudar um assunto de uma vez só, siga a lista abaixo.</p><ul>${items}</ul>`
+                    ? `<h3>Estude por tema</h3><p>Use a lista para localizar os assuntos deste material. As videoaulas são recursos complementares e podem apresentar um recorte diferente.</p><ul>${items}</ul>`
                     : "";
             })();
             const distributedTopicsHtml = distributedLessons.length
                 ? `<section class="my-6 rounded-lg border border-indigo-200 bg-indigo-50 p-5 text-slate-900">
                     <h2 class="mt-0">Roteiro do dia: videoaulas e PDF são os mesmos temas</h2>
-                    <p>As ${distributedLessons.length} videoaulas da missão correspondem, na mesma ordem e com o mesmo título, às ${distributedLessons.length} aulas detalhadas desta apostila. Leia primeiro a visão geral, assista à videoaula e leia a seção correspondente antes de passar à próxima.</p>
+                    <p>O material e as videoaulas são organizados pelo tema da missão, mas não são transcrições um do outro. Compare os títulos e use a seção mais próxima para complementar seus estudos; uma videoaula pode cobrir apenas parte do assunto.</p>
                     <ol>${distributedLessons.map(([heading], index) => `<li><a href="#${lessonAnchor(index)}">${cleanHeading(heading)}</a></li>`).join("")}</ol>
                     ${themeGroupsHtml}
                     <details class="mt-3"><summary>Buscas complementares no YouTube</summary>
@@ -8419,6 +8421,7 @@
 <script>window.GABARI_CONFIG = { concurso: 'PMPE', accent: '#25272b', gold: '#e8b931', storageKey: 'gabari_hidden' };</script>
     <script src="gabari.js?v=2"></script>
     <script src="questoes-pmpe-complementares.js"></script>
+    <script src="video-workspace.js"></script>
     <script src="simulado-engine.js"></script>
     <script src="redacao.js"></script>
 </body>

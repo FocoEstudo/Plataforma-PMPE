@@ -1,0 +1,17 @@
+.video-workspace-layout { align-items:start; }
+.video-workspace-sidebar { min-width:0; border:1px solid var(--theme-line,#cbd5e1); border-radius:1rem; background:#fff; color:var(--theme-ink,#172033); overflow:hidden; }
+.video-workspace-tabs { display:flex; border-bottom:1px solid var(--theme-line,#cbd5e1); }
+.video-workspace-tabs button { flex:1; padding:.9rem .65rem; background:transparent; color:var(--theme-ink,#172033); font-weight:700; border:0; border-bottom:3px solid transparent; }
+.video-workspace-tabs button[aria-selected="true"] { border-bottom-color:var(--theme-primary,#202a78); background:var(--theme-tint,#f0f2fa); }
+.video-workspace-lessons { padding:1rem; }
+.video-workspace-lessons label { color:var(--theme-ink,#172033); }
+.video-workspace-lessons select,.video-workspace-search input { display:block; width:100%; margin-top:.4rem; padding:.7rem; border:1px solid var(--theme-line,#cbd5e1); border-radius:.5rem; background:#fff; color:var(--theme-ink,#172033); }
+.video-workspace-search { display:block; font-size:.875rem; font-weight:700; }
+.video-workspace-count { margin:.8rem 0; color:#465268; font-size:.8rem; }
+.video-workspace-list,.video-workspace-lessons .video-lesson-list { display:grid; gap:.45rem; max-height:28rem; overflow:auto; }
+.video-workspace-lesson { width:100%; padding:.75rem; border:1px solid var(--theme-line,#cbd5e1); border-radius:.55rem; background:#fff; color:var(--theme-ink,#172033); text-align:left; font-size:.85rem; line-height:1.4; }
+.video-workspace-lesson[aria-pressed="true"] { border-color:var(--theme-primary,#202a78); background:var(--theme-tint,#f0f2fa); font-weight:700; }
+.video-workspace-sidebar .video-notes-panel { border:0; border-radius:0; }
+.video-workspace-sidebar [hidden] { display:none !important; }
+.video-workspace-sidebar :focus-visible { outline:3px solid var(--theme-focus,#293b91); outline-offset:2px; }
+@media (max-width:767px) { .video-workspace-sidebar { margin-top:1rem; } }

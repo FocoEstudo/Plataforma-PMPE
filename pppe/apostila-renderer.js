@@ -19,5 +19,21 @@
     const rest = [...list.slice(0, start), ...list.slice(end)];
     return `<aside class="apostila-essential"><p><strong>Essencial desta aula · ${escapeHtml(list[start][1])}</strong></p>${summary.map(renderBlock).join("")}</aside>${rest.map(renderBlock).join("")}`;
   }
-  global.PPPE_APOSTILA_RENDERER = Object.freeze({ escapeHtml, renderBlocks });
+  function renderVideoReferences(topic) {
+    const lessons = (global.PPPE_VIDEOS && global.PPPE_VIDEOS[topic]) || [];
+    const supplementary = (global.PPPE_VIDEOS_COMPLEMENTARES && global.PPPE_VIDEOS_COMPLEMENTARES[topic]) || [];
+    const entries = [
+      ...lessons.flatMap(lesson => (Array.isArray(lesson.urls) ? lesson.urls : []).map(url => [lesson.title, url])),
+      ...supplementary.map(([id, title]) => [title, `https://www.youtube.com/watch?v=${id}`])
+    ];
+    const seen = new Set();
+    const links = entries.filter(([title, url]) => {
+      if (!title || typeof url !== 'string' || !/^https:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\//i.test(url) || seen.has(url)) return false;
+      seen.add(url);
+      return true;
+    }).map(([title, url]) => `<li><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a></li>`).join('');
+    if (!links) return '';
+    return `<section class="apostila-video-references"><h2>Videoaulas relacionadas ao tema</h2><p>As aulas foram selecionadas pelo tema; esta apostila não é uma transcrição e cada vídeo pode abordar apenas parte do conteúdo. Confira o edital e as fontes oficiais.</p><ul>${links}</ul></section>`;
+  }
+  global.PPPE_APOSTILA_RENDERER = Object.freeze({ escapeHtml, renderBlocks, renderVideoReferences });
 })(window);

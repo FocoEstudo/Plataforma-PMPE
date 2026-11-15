@@ -6,6 +6,9 @@
 .mission-videos summary { cursor:pointer; font-weight:700; padding:.4rem 0; }
 .mission-video-list { display:grid; gap:.5rem; margin:.6rem 0 0; padding:0; list-style:none; }
 .mission-video-row { display:flex; flex-wrap:wrap; gap:.6rem; justify-content:space-between; align-items:center; padding:.7rem; border:1px solid #496f5b; border-radius:.5rem; background:#18392b; }
+.mission-video-info { display:flex; align-items:flex-start; gap:.65rem; min-width:0; flex:1 1 14rem; }
+.mission-video-info strong { overflow-wrap:anywhere; }
+.mission-video-number { display:grid; place-items:center; flex:0 0 2rem; height:2rem; border-radius:50%; background:#fff; color:var(--theme-ink,#173b2c); font-size:.8rem; font-weight:800; }
 .mission-video-status { display:block; font-size:.78rem; color:#d5f4e3; margin-top:.3rem; }
 .mission-video-actions { display:flex; flex-wrap:wrap; gap:.35rem; }
 .mission-video-actions button, .mission-video-watch { padding:.45rem .65rem; border:1px solid #95d7ad; border-radius:.4rem; background:#ecfff2; color:#123b25; font-weight:700; font-size:.8rem; }

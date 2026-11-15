@@ -307,23 +307,23 @@
     "2": [
       [
         "h",
-        "1. Conceito aprofundado, do zero ? Acentuação: regras gerais e sílaba tônica"
+        "1. Acentuação: tonicidade e regras gerais"
       ],
       [
         "p",
-        "A acentuação gráfica marca certos padrões de tonicidade e terminações. Oxítonas são acentuadas em regras como as terminadas em a(s), e(s), o(s), em(ens); paroxítonas recebem acento em terminações específicas, entre elas l, n, r, x, i(s), us, ã(s), ão(s), um(uns) e ditongo; proparoxítonas são todas acentuadas. A identificação exige separar sílabas e localizar a tônica, sem confundir acento gráfico com intensidade da fala. O Acordo retirou acentos em casos como ‘ideia’, ‘assembleia’, ‘voo’ e ‘leem’, mas manteve distinções importantes, como ‘pôde’ e ‘pode’. A regra deve ser aplicada pela posi??o t?nica e pela termina??o, n?o pela extens?o da palavra."
+        "A sílaba tônica é pronunciada com maior intensidade, com ou sem acento gráfico: café e servidor são oxítonas, porque a última sílaba é tônica; relatório e registro são paroxítonas, porque a penúltima é tônica; público e lâmpada são proparoxítonas, porque a antepenúltima é tônica. Classificar a tonicidade é o primeiro passo; o segundo é verificar a terminação e a regra aplicável. Todas as proparoxítonas são acentuadas. Acentuam-se, entre outras, oxítonas terminadas em a, e, o, em e ens, e paroxítonas terminadas em ditongo. A regra de hiato exige análise própria, que aparece na aula seguinte."
       ],
       [
         "h",
-        "2. Roteiro para resolver uma quest?o Cebraspe"
+        "2. Roteiro para resolver uma questão"
       ],
       [
         "ol",
         [
-          "Leia o enunciado e localize a palavra ou estrutura que controla a rela??o em ?Acentuação: regras gerais e sílaba tônica?.",
-          "Reconstrua a rela??o sint?tica ou sem?ntica sem se apoiar apenas no nome da regra.",
-          "Compare a reda??o original com a proposta da banca: verifique se sentido, referente e corre??o foram preservados.",
-          "Justifique a resposta indicando a pista textual e o efeito produzido."
+          "Separe as sílabas e pronuncie a palavra para identificar a sílaba tônica.",
+          "Conte da última sílaba para classificar a palavra como oxítona, paroxítona ou proparoxítona.",
+          "Verifique a terminação e a regra correspondente; não confunda tonicidade com presença de acento.",
+          "Confira se o comando pergunta pela mesma regra de acentuação ou apenas pela mesma posição da sílaba tônica."
         ]
       ],
       [
@@ -332,11 +332,11 @@
       ],
       [
         "p",
-        "Situa??o: Em ‘relatório’, a tônica recai na antepenúltima sílaba, por isso a palavra é proparoxítona e recebe acento. Leitura: A regra se resolve pela rela??o demonstr?vel no enunciado; n?o basta memorizar um r?tulo."
+        "Exemplo: em relatório (re-la-TÓ-rio), a sílaba TÓ é a penúltima; trata-se de paroxítona terminada em ditongo. Em público (PÚ-bli-co), a sílaba PÚ é a antepenúltima; trata-se de proparoxítona. As duas são acentuadas, mas por regras diferentes."
       ],
       [
         "h",
-        "4. Ponto de aten??o"
+        "4. Ponto de atenção"
       ],
       [
         "p",
@@ -344,23 +344,23 @@
       ],
       [
         "h",
-        "5. Exerc?cio de fixa??o"
+        "5. Exercício de fixação"
       ],
       [
         "p",
-        "Explique, sem consultar o texto, qual crit?rio de ?Acentuação: regras gerais e sílaba tônica? resolve a situa??o acima e qual erro de prova deve ser evitado. Gabarito comentado: O n?cleo de ?Acentuação: regras gerais e sílaba tônica? ?: A acentuação gráfica marca certos padrões de tonicidade e terminações. Oxítonas são acentuadas em regras como as terminadas em a(s), e(s), o(s), em(ens); paroxítonas recebem acento em terminações específicas, entre elas l, n, r, x, i(s), us, ã(s), ão(s), um(uns) e ditongo; proparoxítonas são todas acentuadas. A identificação exige separar sílabas e localizar a tônica, sem confundir acento gráfico com intensidade da fala. O Acordo retirou acentos em casos como ‘ideia’, ‘assembleia’, ‘voo’ e ‘leem’, mas manteve distinções importantes, como ‘pôde’ e ‘pode’. A regra deve ser aplicada pela posi??o t?nica e pela termina??o, n?o pela extens?o da palavra. Aplica??o ao exemplo: Em ‘relatório’, a tônica recai na antepenúltima sílaba, por isso a palavra é proparoxítona e recebe acento. A regra se resolve pela rela??o demonstr?vel no enunciado; n?o basta memorizar um r?tulo."
+        "Julgue: relatório e público são acentuadas por serem proparoxítonas. Gabarito: errado. Relatório é paroxítona terminada em ditongo; público é proparoxítona. A presença de acento nas duas não significa que a regra seja a mesma."
       ],
       [
         "h",
-        "6. Resumo de revis?o"
+        "6. Resumo de revisão"
       ],
       [
         "ul",
         [
-          "Tema: Acentuação: regras gerais e sílaba tônica.",
-          "Leia o enunciado e localize a palavra ou estrutura que controla a rela??o em ?Acentuação: regras gerais e sílaba tônica?.",
-          "Compare a reda??o original com a proposta da banca: verifique se sentido, referente e corre??o foram preservados.",
-          "Pegadinha: Classifique pela sílaba tônica antes de aplicar a regra. O acento diferencial não desapareceu em todos os casos."
+          "Oxítona: última sílaba tônica; paroxítona: penúltima; proparoxítona: antepenúltima.",
+          "Toda proparoxítona é acentuada; não se pode concluir o inverso.",
+          "Relatório é paroxítona terminada em ditongo; público é proparoxítona.",
+          "A análise de hiatos e acentos diferenciais exige regras próprias."
         ]
       ]
     ],

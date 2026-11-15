@@ -9,6 +9,7 @@ const app = read('pcpe/index.html');
 const login = read('pcpe/login.html');
 const guard = read('pcpe/session-guard.js');
 const rules = read('firestore.rules');
+assert.match(app, /aprofundamento-edital-agente\.js/);
 const scripts = [...app.matchAll(/<script\s+src="([^"]+)"/g)].map(match => match[1].split('?')[0]).filter(src => !/^https?:/.test(src));
 for (const src of scripts) assert(fs.existsSync(path.resolve(root, 'pcpe', src)), `Script ausente: ${src}`);
 assert.match(login, /authApi\.db, "pcpeProfiles"/);
@@ -43,5 +44,32 @@ for (const role of ['agente', 'escrivao']) {
       assert(question.text && question.exp);
     }
   }
+  const syllabusScript = app.match(/<div id="pcpeSyllabus"[\s\S]*?<script>\s*([\s\S]*?)<\/script>/);
+  assert(syllabusScript, 'Script da aba Conteúdos ausente');
+  class Element {
+    constructor(tag) { this.tag = tag; this.children = []; this.dataset = {}; this.attributes = {}; this.textContent = ''; }
+    append(...children) { this.children.push(...children); }
+    setAttribute(name, value) { this.attributes[name] = value; }
+    addEventListener() {}
+  }
+  const syllabus = new Element('div');
+  const dashboard = new Element('div');
+  const document = {
+    createElement: tag => new Element(tag),
+    getElementById: id => id === 'pcpeSyllabus' ? syllabus : null,
+    querySelector: selector => selector === '.dashboard-shortcuts' ? dashboard : null
+  };
+  const dashboardScript = app.match(/<div class="dashboard-shortcuts" aria-label="Progresso por matéria"><\/div>\s*<script>\s*([\s\S]*?)<\/script>/);
+  assert(dashboardScript, 'Script dos cards do painel ausente');
+  vm.runInNewContext(dashboardScript[1], { window: context.window, document });
+  assert.equal(dashboard.children.length, new Set(modules.map(module => module.sub)).size);
+  assert(dashboard.children.every(card => card.children[0]?.tag === 'img' && card.children[0].src === '../assets/capa-pcpe.jpg'));
+  assert(fs.existsSync(path.join(root, 'assets', 'capa-pcpe.jpg')), 'Imagem dos cards da PCPE ausente');
+  vm.runInNewContext(syllabusScript[1], { window: context.window, document });
+  const renderedText = node => [node.textContent, ...node.children.map(renderedText)].join(' ');
+  assert(
+    renderedText(syllabus).includes(role === 'agente' ? 'Lei 6.123/1968 e regime geral' : 'Princípios arquivísticos'),
+    `${role}: subitens do edital não aparecem na aba Conteúdos`
+  );
   console.log(`OK: ${role}, ${modules.length} módulos com guia, questões e videoaula.`);
 }

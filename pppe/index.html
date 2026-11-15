@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../assets/gabari.svg?v=1">
     <title>Operação PPPE | Plataforma de Estudos</title>
     <script src="cloud-sync.js"></script>
     <link rel="stylesheet" href="../mission-videos.css">
@@ -2386,7 +2387,8 @@
     <link rel="stylesheet" href="tema.css?v=4">
     <link rel="stylesheet" href="apostila.css">
     <link rel="stylesheet" href="../aviso-pagamento.css">
-    <link rel="stylesheet" href="tema-final.css?v=1">
+    <link rel="stylesheet" href="tema-final.css?v=3">
+    <link rel="stylesheet" href="../video-workspace.css">
 </head>
 
 <body class="skull-bg min-h-screen pb-10 w-full max-w-full" data-active-view="home" data-session-state="checking">
@@ -2602,10 +2604,11 @@
 
             <div class="header-actions">
                 <div class="countdown-panel glass-panel px-6 py-2 rounded-xl text-center border-blue-500/50">
-                    <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Sua aprovação começa hoje</p>
-                    <div id="countdown" class="font-tactical text-2xl text-white tracking-widest">
-                        -- DIAS --:--:--
+                    <p class="text-xs text-gray-400 uppercase tracking-wider mb-1">Prova Policial Penal · 21 mar 2027</p>
+                    <div id="countdown" data-exam-date="2027-03-21" class="font-tactical text-2xl text-white tracking-widest">
+                        Calculando...
                     </div>
+                    <a class="text-xs" href="https://www.cebraspe.org.br/concursos/SEAP_PE_26" target="_blank" rel="noopener noreferrer">Confira o cronograma Cebraspe</a>
                 </div>
                 <div class="header-popover-wrap">
                     <button type="button" class="header-action-button" aria-label="Abrir perfil do estudante"
@@ -5019,7 +5022,7 @@
                     : `<section><h2>Apostila</h2><p class="apostila-essential">O material completo deste tema está em preparação. Consulte o escopo do edital e as fontes oficiais.</p></section>`;
                 materialsDatabase[module.mat] = {
                     title: `${module.sub} · ${module.topic}`,
-                    content: `<article class="topic-guide">${cover}${index}${header}${body}</article>`
+                    content: `<article class="topic-guide">${cover}${index}${header}${window.PPPE_APOSTILA_RENDERER.renderVideoReferences(module.topic)}${body}</article>`
                 };
             });
         }
@@ -6836,8 +6839,6 @@
             document.getElementById('customModal').classList.remove('flex');
         };
 
-        document.getElementById("countdown").innerHTML = "A DEFINIR";
-
         window.addEventListener('DOMContentLoaded', () => {
             try {
                 if (!window.dbPopulated) {
@@ -7415,6 +7416,8 @@
     </script>
 <script>window.GABARI_CONFIG = { concurso: 'PPPE', accent: '#0a1448', gold: '#e0b43c', storageKey: 'pppe_gabari_hidden' };</script>
     <script src="../gabari.js?v=2"></script>
+    <script src="../video-workspace.js"></script>
+    <script src="../countdown-exam.js"></script>
     <script src="../simulado-engine.js"></script>
     <script src="../redacao.js"></script>
 </body>

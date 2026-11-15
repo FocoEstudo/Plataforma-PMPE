@@ -14,6 +14,9 @@
 .apostila-index { padding: 1rem 1.4rem; border: 1px solid #d2e3d8; background: #f5faf6; }
 .apostila-index ol { padding-left: 1.3rem; }
 .apostila-index li { padding: .18rem 0; }
+.apostila-video-references { margin: 1.5rem 0; padding: 1rem 1.4rem; border: 1px solid var(--theme-line, #cbd5e1); background: var(--theme-tint, #f1f5f9); }
+.apostila-video-references h2 { margin-top: 0; }
+.apostila-video-references a { color: var(--theme-link, #234d7c); text-decoration: underline; overflow-wrap: anywhere; }
 .apostila-deepening { margin: 1.5rem 0 2rem; padding: .2rem 1.15rem 1rem; border-left: 4px solid #176b45; background: #f8fbf8; }
 .apostila-essential { margin: 1rem 0; padding: .35rem 1rem; border-left: 4px solid #07804a; background: #eaf7ef; }
 .apostila-exercise { padding: 1rem 1.2rem; border: 1px solid #d7e7dc; border-left: 4px solid #d09a16; background: #fffaf0; }
