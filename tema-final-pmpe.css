@@ -1,1 +1,12 @@
-﻿@import url("tema-final-base.css?v=3");
+@import url("tema-final-base.css?v=5");
+
+:root {
+  --theme-primary:#25272b; --theme-primary-dark:#0d0d0f; --theme-accent:#e8b931;
+  --theme-accent-light:#ffd86b; --theme-on-accent:#302a20; --theme-ink:#1b1c20;
+  --theme-link:#7a5600; --theme-tint:#f8efd9; --theme-line:#e4d5b6;
+  --theme-page:#fff8e8; --theme-focus:#7a5600; --theme-chart:#7a5600;
+  --t-dark:#0d0d0f; --t-main:#25272b; --t-mid:#3d4047; --t-gold:#e8b931;
+  --t-gold-soft:#ffd86b; --t-accent2:#c4202c; --t-red:#c4202c; --t-ink:#1b1c20;
+  --t-link:#7a5600; --t-tint:#f8efd9; --t-line:#e4d5b6; --t-on-main:#ffd86b;
+  --t-page-1:#f6edda; --t-page-2:#fff9eb; --t-page-3:#f3e9d4;
+}

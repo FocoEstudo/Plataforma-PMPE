@@ -8,17 +8,25 @@ const base = read('tema-final-base.css');
 
 for (const file of ['tema-final-pmpe.css', 'pppe/tema-final.css', 'pcpe/tema-final.css']) {
     const theme = read(file);
-    assert.match(theme, /@import url\("(?:\.\.\/)?tema-final-base\.css\?v=3"\)/);
-    assert.doesNotMatch(theme, /--theme-primary\s*:/, `${file} não deve substituir a paleta comum`);
+    assert.match(theme, /@import url\("(?:\.\.\/)?tema-final-base\.css\?v=5"\)/);
+    if (file !== 'tema-final-pmpe.css') {
+        assert.doesNotMatch(theme, /--theme-primary\s*:/, `${file} deve manter a paleta compartilhada`);
+    }
 }
+assert.match(read('tema-final-pmpe.css'), /--theme-primary:\s*#25272b/);
 for (const file of ['index.html', 'login.html', 'pppe/index.html', 'pppe/login.html', 'pcpe/index.html', 'pcpe/login.html']) {
-    assert.match(read(file), /tema-final(?:-pmpe)?\.css\?v=3/, `${file} deve carregar a paleta atual`);
+    assert.match(read(file), /tema-final(?:-pmpe)?\.css\?v=5/, `${file} deve carregar a paleta atual`);
 }
 for (const file of ['index.html', 'pppe/index.html', 'pcpe/index.html']) {
     const html = read(file);
     assert.match(html, /video-workspace\.css/);
     assert.match(html, /video-workspace\.js/);
+    assert.match(html, /id="sidebarToggle"[^>]+aria-controls="mainPlatformSidebar"/);
+    assert.match(html, /id="mainPlatformSidebar"/);
+    assert.match(html, /sidebar-toggle\.js/);
 }
+assert.match(read('tema-painel.css'), /body\.sidebar-collapsed\s+\.platform-sidebar/);
+assert.match(read('tema-painel.css'), /body\.sidebar-collapsed\s+main\.max-w-7xl\s*\{\s*width:\s*100%;\s*max-width:\s*none;/);
 function luminance(hex) {
     const rgb = hex.match(/[\da-f]{2}/gi).map(value => parseInt(value, 16) / 255)
         .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);

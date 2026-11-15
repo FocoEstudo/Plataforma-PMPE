@@ -82,7 +82,15 @@ for (const role of ['agente', 'escrivao']) {
       'Problemas aritméticos': ['Conjuntos numéricos e medidas', 'Proporção, divisão e porcentagem', 'Equações, inequações e sistemas', 'Funções e gráficos', 'Contagem, PA, PG e probabilidade', 'Geometria e matrizes'],
       'Estruturas e argumentação lógica': ['Predicados e quantificadores', 'Negação e ordem dos quantificadores'],
       'Escrituração, contas e balanço patrimonial': ['Fatos e escrituração', 'Contas, livros e regimes', 'Operações e ajustes', 'Balancete, balanço e DRE', 'Normas brasileiras de contabilidade'],
-      'Amostragem, gráficos e tabelas': ['Amostragem', 'Tamanho amostral', 'Probabilidade condicional e independência', 'Assimetria e curtose']
+      'Amostragem, gráficos e tabelas': ['Amostragem', 'Tamanho amostral', 'Probabilidade condicional e independência', 'Assimetria e curtose'],
+      'Estatuto da Juventude (Lei nº 12.852/2013)': [
+        'Objeto, faixa etária e relação com o ECA',
+        'Princípios e diretrizes das políticas de juventude',
+        'Direitos à educação, profissionalização, trabalho e saúde',
+        'Direitos à cultura, comunicação, esporte, território e mobilidade',
+        'Segurança pública, acesso à Justiça e participação cidadã',
+        'Sistema Nacional de Juventude (SINAJUVE)'
+      ]
     };
     for (const [topic, titles] of Object.entries(required)) {
       const guide = w.PMPE_TOPIC_GUIDES[topic];

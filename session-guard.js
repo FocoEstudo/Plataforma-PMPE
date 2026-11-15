@@ -39,7 +39,6 @@ let updateProfile;
 let doc;
 let getDoc;
 let setDoc;
-let deleteDoc;
 let updateDoc;
 let deleteField;
 let serverTimestamp;
@@ -398,7 +397,7 @@ try {
     auth = firebaseModule.auth;
     db = firebaseModule.db;
     ({ onAuthStateChanged, signOut, updateProfile } = authModule);
-    ({ doc, getDoc, setDoc, deleteDoc, updateDoc, deleteField, serverTimestamp, onSnapshot, collection, getDocs } = firestoreModule);
+    ({ doc, getDoc, setDoc, updateDoc, deleteField, serverTimestamp, onSnapshot, collection, getDocs } = firestoreModule);
     window.PMPE_CLOUD = { auth, db, fs: firestoreModule };
 
     onAuthStateChanged(auth, async user => {
@@ -408,16 +407,6 @@ try {
             return;
         }
         currentUser = user;
-        const directoryReference = doc(db, "userDirectory", user.uid);
-        if (user.email && user.emailVerified) {
-            void setDoc(directoryReference, {
-                uid: user.uid,
-                email: user.email,
-                updatedAt: serverTimestamp()
-            }).catch(error => console.error("Não foi possível atualizar o diretório de contas verificadas.", error));
-        } else {
-            void deleteDoc(directoryReference).catch(error => console.error("Não foi possível remover o email não verificado do diretório.", error));
-        }
         document.body.dataset.sessionState = "checking";
         gate.hidden = false;
         gateLoading.hidden = false;

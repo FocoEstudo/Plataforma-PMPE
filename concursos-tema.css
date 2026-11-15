@@ -1,0 +1,42 @@
+:root {
+    color-scheme: light;
+    --cream-page: #fff8e8;
+    --cream-surface: #fffdf5;
+    --cream-tint: #f8efd9;
+    --cream-ink: #2d2e28;
+    --cream-muted: #625f55;
+    --cream-line: #e4d5b6;
+    --cream-olive: #41483c;
+    --cream-dark: #282c26;
+    --cream-gold: #c8aa6d;
+}
+
+body { background: var(--cream-page); color: var(--cream-ink); }
+.site-header, footer { background: var(--cream-dark); }
+.hero { background: linear-gradient(115deg, #282c26, #41483c 62%, #5c6251); }
+.section:not(.qg), .gabari-section { background-color: var(--cream-page); }
+.qg { background: var(--cream-tint); }
+.gabari-section { color: var(--cream-ink); }
+.card, .steps-grid article, .plan, .faq details, .feature-grid article {
+    background: var(--cream-surface);
+    border-color: var(--cream-line);
+    color: var(--cream-ink);
+}
+.card h3, .steps-grid h3, .plan h3, .faq summary, .feature-grid h3,
+.section h2, .gabari-section h2 { color: var(--cream-ink); }
+.card p, .steps-grid p, .plan p, .faq details p, .feature-grid p,
+.section .intro, .footnote { color: var(--cream-muted); }
+.eyebrow, .text-link, .salary small a { color: #68522f; }
+.hero .eyebrow, .hero .text-link { color: #f0e5c9; }
+.hero .text-link:hover { color: #fffdf7; }
+.gabari-section p { color: var(--cream-muted); }
+.gabari-section .eyebrow { color: #68522f; }
+.button.gold { background: #d5bd85; color: #302a20; }
+.button.gold:hover { background: #ebd9ad; color: #302a20; }
+.button.navy { background: var(--cream-olive); color: #fffdf7; }
+.button.navy:hover { background: var(--cream-dark); color: #fffdf7; }
+.badge.available, .badge.best { background: var(--cream-tint); color: #51432b; }
+.plan.recommended { border-color: var(--cream-gold); box-shadow: 0 12px 30px #4c43231a; }
+.faq details { border-bottom-color: var(--cream-line); }
+.showcase, .device, .phone { border-color: var(--cream-gold); }
+:focus-visible { outline-color: #765c31; }

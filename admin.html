@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#105737">
+    <meta name="theme-color" content="#282c26">
     <link rel="icon" type="image/svg+xml" href="assets/gabari.svg?v=1">
     <title>Administração | Operação PMPE</title>
     <style>
         :root {
             color-scheme: light;
             font-family: Inter, Arial, sans-serif;
-            color: #173b2c;
-            background: #f3f8f4;
+            color: #2d2e28;
+            background: #f6f2e8;
         }
 
         * { box-sizing: border-box; }
@@ -20,47 +20,46 @@
             min-height: 100vh;
             margin: 0;
             padding: 1rem;
-            background: radial-gradient(ellipse at top left, rgba(154, 205, 166, .35), transparent 42rem), #f3f8f4;
+            background: radial-gradient(ellipse at top left, rgba(200, 170, 109, .2), transparent 42rem), #f6f2e8;
         }
 
         main { width: min(100%, 52rem); margin: 2rem auto; }
-        header, .panel, .request-card { background: #fff; border: 1px solid #d7e7dc; border-radius: 1rem; }
+        header, .panel, .request-card { background: #fffdf7; border: 1px solid #ddd2bd; border-radius: 1rem; }
         header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem; }
         h1 { margin: 0; font-size: clamp(1.3rem, 4vw, 1.8rem); }
         h2 { margin: 0; font-size: 1.15rem; }
         p { line-height: 1.55; }
-        .eyebrow { margin: 0 0 .35rem; color: #176b45; font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+        .eyebrow { margin: 0 0 .35rem; color: #68522f; font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
         .panel { margin-top: 1rem; padding: 1.25rem; }
-        .muted { color: #617267; }
-        .status { min-height: 1.5rem; margin: .6rem 0 0; color: #176b45; }
+        .muted { color: #625f55; }
+        .status { min-height: 1.5rem; margin: .6rem 0 0; color: #41483c; }
         .status[data-error="true"] { color: #b42318; }
         .request-list { display: grid; gap: .75rem; margin-top: 1rem; }
         .request-card { padding: 1rem; }
         .request-card p { margin: .35rem 0; overflow-wrap: anywhere; }
         .identity-heading { margin: .9rem 0 .45rem; font-size: .9rem; }
-        .identity-details { display: grid; grid-template-columns: minmax(7rem, .35fr) minmax(0, 1fr); gap: .35rem .8rem; margin: 0; padding: .8rem; background: #f5f9f6; border: 1px solid #e2eee5; border-radius: .65rem; font-size: .84rem; }
-        .identity-details dt { color: #617267; font-weight: 700; }
+        .identity-details { display: grid; grid-template-columns: minmax(7rem, .35fr) minmax(0, 1fr); gap: .35rem .8rem; margin: 0; padding: .8rem; background: #f4efe3; border: 1px solid #ddd2bd; border-radius: .65rem; font-size: .84rem; }
+        .identity-details dt { color: #625f55; font-weight: 700; }
         .identity-details dd { margin: 0; overflow-wrap: anywhere; }
-        .identity-note { color: #617267; font-size: .75rem; }
+        .identity-note { color: #625f55; font-size: .75rem; }
         .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .9rem; }
-        .grant-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); align-items: end; gap: .8rem; margin-top: 1rem; }
-        .grant-form label { display: grid; gap: .35rem; color: #42584a; font-size: .85rem; font-weight: 700; }
-        .grant-form input, .grant-form select { min-height: 2.7rem; width: 100%; padding: .55rem .65rem; border: 1px solid #bfd2c4; border-radius: .6rem; background: #fff; color: #173b2c; font: inherit; }
-        .grant-form input:focus-visible, .grant-form select:focus-visible { outline: 3px solid #9acda6; outline-offset: 2px; }
+        .grant-filter { display: grid; gap: .35rem; margin-top: 1rem; color: #514b3d; font-size: .85rem; font-weight: 700; }
+        .grant-filter input { min-height: 2.7rem; width: 100%; padding: .55rem .65rem; border: 1px solid #cfc3aa; border-radius: .6rem; background: #fffdf7; color: #2d2e28; font: inherit; }
+        .grant-filter input:focus-visible { outline: 3px solid #c8aa6d; outline-offset: 2px; }
         button, .link-button {
             min-height: 2.7rem;
             padding: .65rem .9rem;
-            border: 1px solid #bfd2c4;
+            border: 1px solid #cfc3aa;
             border-radius: .6rem;
-            background: #fff;
-            color: #105737;
+            background: #fffdf7;
+            color: #68522f;
             font: inherit;
             font-weight: 750;
             text-decoration: none;
             cursor: pointer;
         }
-        .primary { border-color: #176b45; background: #176b45; color: #fff; }
-        .reply-box { width: 100%; margin-top: .6rem; padding: .6rem; border: 1px solid #bfd2c4; border-radius: .6rem; font: inherit; }
+        .primary { border-color: #41483c; background: #41483c; color: #fffdf7; }
+        .reply-box { width: 100%; margin-top: .6rem; padding: .6rem; border: 1px solid #cfc3aa; border-radius: .6rem; font: inherit; }
         .danger { border-color: #f0c5c1; color: #a52c22; }
         button:disabled { cursor: wait; opacity: .65; }
         [hidden] { display: none !important; }
@@ -71,7 +70,7 @@
             header { align-items: flex-start; flex-direction: column; }
         }
     </style>
-    <link rel="stylesheet" href="admin-analytics.css">
+    <link rel="stylesheet" href="admin-analytics.css?v=3">
 </head>
 <body>
     <main>
@@ -111,20 +110,14 @@
         <div id="managementPanel" hidden>
         <section class="panel" aria-labelledby="complimentaryAccessHeading">
             <h2 id="complimentaryAccessHeading">Liberar acesso gratuito</h2>
-            <p class="muted">Concede acesso vitalício à conta já cadastrada, sem cobrança. A pessoa precisa confirmar o email e entrar na plataforma ao menos uma vez após a publicação. O checkout para quem vai pagar continua disponível normalmente.</p>
-            <form id="complimentaryAccessForm" class="grant-form">
-                <label>Email da conta
-                    <input id="complimentaryAccessEmail" type="email" autocomplete="email" maxlength="254" required>
-                </label>
-                <label>Concurso
-                    <select id="complimentaryAccessContest" required>
-                        <option value="pmpe">PMPE</option>
-                        <option value="pppe">PPPE</option>
-                        <option value="pcpe">PCPE</option>
-                    </select>
-                </label>
-                <button id="complimentaryAccessButton" class="primary" type="submit">Conceder acesso vitalício</button>
-            </form>
+            <p class="muted">Aqui aparecem as contas que já entraram na plataforma. Confira o email, o concurso e o último acesso; o botão libera o acesso vitalício para aquele concurso. O checkout continua disponível para quem vai pagar.</p>
+            <label class="grant-filter">Filtrar por email, concurso ou UID
+                <input id="complimentaryAccessSearch" type="search" autocomplete="off" placeholder="Digite para localizar uma conta">
+            </label>
+            <div id="complimentaryAccessUsers" class="request-list" aria-live="polite">
+                <p class="muted">Carregando contas que entraram...</p>
+            </div>
+            <p id="complimentaryAccessListStatus" class="status" role="status" aria-live="polite"></p>
             <p id="complimentaryAccessStatus" class="status" role="status" aria-live="polite"></p>
         </section>
         <section id="requestsPanel" class="panel" aria-labelledby="requestsHeading" hidden>
@@ -155,7 +148,7 @@
     <script src="admin-access-policy.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="admin-dashboard.js"></script>
-    <script type="module">if (!new URLSearchParams(location.search).has("demo")) { import("./admin.js?v=5"); import("./admin-inbox.js"); }</script>
+    <script type="module">if (!new URLSearchParams(location.search).has("demo")) { import("./admin.js?v=6"); import("./admin-inbox.js"); }</script>
 <script>window.GABARI_CONFIG = { concurso: '', accent: '#25272b', gold: '#e8b931', storageKey: 'gabari_hidden' };</script>
     <script src="gabari.js?v=3"></script>
 </body>

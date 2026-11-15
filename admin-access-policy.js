@@ -11,14 +11,6 @@
         mensal: 30 * 24 * 60 * 60 * 1000
     });
 
-    function normalizeGrantEmail(value) {
-        const email = typeof value === "string" ? value.trim() : "";
-        if (!email || email.length > 254 || /\s/.test(email) || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
-            throw Object.assign(new Error("Informe um email válido da conta cadastrada."), { code: "invalid-email" });
-        }
-        return email;
-    }
-
     function mayGrantComplimentaryAccess(access, now = Date.now()) {
         if (!Number.isFinite(now)) return false;
         if (!access || access.active !== true) return true;
@@ -31,5 +23,5 @@
         return now >= paidAt + duration;
     }
 
-    return Object.freeze({ normalizeGrantEmail, mayGrantComplimentaryAccess });
+    return Object.freeze({ mayGrantComplimentaryAccess });
 });

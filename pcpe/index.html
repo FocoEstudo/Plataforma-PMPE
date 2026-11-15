@@ -36,7 +36,9 @@
     <script src="../videos-pmpe.js"></script>
     <script src="videos-pcpe.js"></script>
     <script src="pdf-informatica.js"></script>
+    <script src="pdf-estatuto-juventude.js"></script>
     <script src="questoes-informatica.js"></script>
+    <script src="questoes-estatuto-juventude.js"></script>
     <script src="pdf-legestadual.js"></script>
     <script src="questoes-legestadual.js"></script>
     <script src="pdf-arquivologia.js"></script>
@@ -75,8 +77,9 @@
     <script src="aprofundamento-arquivologia.js"></script>
     <script src="aprofundamento-linux-legestadual.js"></script>
     <script src="aprofundamento-edital-agente.js"></script>
+    <script src="aprofundamento-estatuto-juventude.js"></script>
     <script src="apostila-interpretacao.js"></script>
-    <script type="module" src="session-guard.js"></script>
+    <script type="module" src="session-guard.js?v=2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -2395,16 +2398,16 @@
             .fc-card { min-height: 20rem; }
         }
     </style>
-    <link rel="stylesheet" href="tema.css?v=4">
+    <link rel="stylesheet" href="tema.css?v=8">
     <style>
       #videoLessonsPanel select, #quizFilter, #subjectGuidePicker { background-color: #fff !important; color: #172b45 !important; border: 1px solid #718096 !important; }
       #videoLessonsPanel select option, #quizFilter option, #subjectGuidePicker option { background: #fff !important; color: #172b45 !important; }
       #videoLessonsPanel label { color: #172b45 !important; }
       body .text-emerald-300, body .text-emerald-400, body .text-green-300, body .text-green-400 { color: #176b45; }
     </style>
-    <link rel="stylesheet" href="../aviso-pagamento.css">
+    <link rel="stylesheet" href="../aviso-pagamento.css?v=3">
     <link rel="stylesheet" href="../pppe/apostila.css">
-    <link rel="stylesheet" href="tema-final.css?v=3">
+    <link rel="stylesheet" href="tema-final.css?v=5">
     <link rel="stylesheet" href="../video-workspace.css">
 </head>
 
@@ -2546,7 +2549,7 @@
         </div>
     </div>
 
-    <aside class="platform-sidebar" aria-label="Menu principal">
+    <aside class="platform-sidebar" id="mainPlatformSidebar" aria-label="Menu principal">
         <div class="sidebar-brand">
             <img
                 src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg"
@@ -2604,6 +2607,9 @@
     <header class="platform-header sticky top-0 z-50 border-b backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4">
+                <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Recolher menu lateral" aria-controls="mainPlatformSidebar" aria-expanded="true" title="Recolher menu lateral">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                </button>
                 <img
                     src="https://images.tcdn.com.br/img/editor/up/598190/PCPE_BRASAO.jpg"
                     alt="Brasão da Polícia Civil de Pernambuco" class="brand-crest"
@@ -2771,7 +2777,7 @@
                     <option value="">Carregando aulas...</option>
                 </select>
             </label>
-            <p class="mb-5 text-sm text-gray-300">As aulas são selecionadas por assunto e podem cobrir apenas parte do tema. Complemente pelo edital e pelos PDFs e confira atualizações da legislação e versões dos programas.</p>
+            <p class="mb-5 text-sm text-gray-300">Todo o conteúdo programático está organizado por assunto nos módulos e guias/PDFs da aba Conteúdos. As videoaulas são complementares e podem abordar apenas parte do tema; confira também o edital oficial e a legislação vigente.</p>
             <div class="video-study-layout">
                 <div class="min-w-0">
                     <div class="mb-3">
@@ -4992,7 +4998,7 @@
                 time: `${time} · aula 1/1`,
                 subject: module.topic,
                 topic: lessons.length
-                    ? `${module.sub} · (Ciclo ${cycle}) Assista às aulas selecionadas dentro da plataforma. Elas podem cobrir apenas parte do tema; complemente pelo PDF e confira atualizações.`
+                    ? `${module.sub} · (Ciclo ${cycle}) Assista às videoaulas como complemento. Use o guia/PDF do módulo para estudar o programa completo e confira o edital oficial e a legislação vigente.`
                     : `${module.sub} · (Ciclo ${cycle}) Consulte a apostila do tema e as fontes oficiais.`,
                 type: "Teoria",
                 icon: "fa-youtube",
@@ -7200,6 +7206,7 @@
         })();
     </script>
 <script>window.GABARI_CONFIG = { concurso: 'PCPE', accent: '#0a1448', gold: '#e0b43c', storageKey: 'pcpe_gabari_hidden' };</script>
+    <script src="../sidebar-toggle.js?v=1"></script>
     <script src="../gabari.js?v=3"></script>
     <script src="../video-workspace.js"></script>
     <script src="../countdown-exam.js"></script>

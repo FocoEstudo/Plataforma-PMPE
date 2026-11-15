@@ -28,10 +28,9 @@ const sendVerificationButton = document.getElementById("sendVerificationButton")
 const refreshVerificationButton = document.getElementById("refreshVerificationButton");
 const requestsPanel = document.getElementById("requestsPanel");
 const requestList = document.getElementById("requestList");
-const complimentaryAccessForm = document.getElementById("complimentaryAccessForm");
-const complimentaryAccessEmail = document.getElementById("complimentaryAccessEmail");
-const complimentaryAccessContest = document.getElementById("complimentaryAccessContest");
-const complimentaryAccessButton = document.getElementById("complimentaryAccessButton");
+const complimentaryAccessUsers = document.getElementById("complimentaryAccessUsers");
+const complimentaryAccessSearch = document.getElementById("complimentaryAccessSearch");
+const complimentaryAccessListStatus = document.getElementById("complimentaryAccessListStatus");
 const complimentaryAccessStatus = document.getElementById("complimentaryAccessStatus");
 const signOutButton = document.getElementById("signOutButton");
 
@@ -39,6 +38,7 @@ let auth;
 let db;
 let currentAdmin;
 let activeRequestsListener;
+let activeGrantAccountsListener;
 let onAuthStateChanged;
 let sendEmailVerification;
 let reload;
@@ -46,47 +46,49 @@ let signOut;
 let collection;
 let doc;
 let getDoc;
-let getDocs;
 let onSnapshot;
 let query;
 let serverTimestamp;
 let where;
 let runTransaction;
 let limit;
-let grantComplimentaryAccess;
+let orderBy;
 let isPreparingRequests = false;
 let requestRenderVersion = 0;
+let grantAccounts = [];
+let hasLoadedGrantAccounts = false;
+let grantAccountsLoadError = false;
 
-const grantComplimentaryAccessForAccount = async ({ email, concurso }) => {
+const stopGrantAccountsListener = () => {
+    activeGrantAccountsListener?.();
+    activeGrantAccountsListener = undefined;
+    grantAccounts = [];
+    hasLoadedGrantAccounts = false;
+    grantAccountsLoadError = false;
+    complimentaryAccessUsers.replaceChildren();
+    complimentaryAccessListStatus.textContent = "";
+    complimentaryAccessStatus.textContent = "";
+};
+
+const grantComplimentaryAccessForAccount = async account => {
     const policy = window.AdminAccessPolicy;
     if (!policy) throw new Error("A política de acesso administrativo não foi carregada.");
 
-    const normalizedEmail = policy.normalizeGrantEmail(email);
-    const contest = CONCURSOS[concurso];
-    if (!contest) throw Object.assign(new Error("Concurso inválido."), { code: "invalid-contest" });
-
-    const directoryQuery = query(
-        collection(db, "userDirectory"),
-        where("email", "==", normalizedEmail),
-        limit(2)
-    );
-    const matches = await getDocs(directoryQuery);
-    if (matches.empty) throw Object.assign(new Error("Conta verificada não encontrada."), { code: "user-not-found" });
-    if (matches.size !== 1) throw Object.assign(new Error("Email associado a mais de uma conta."), { code: "ambiguous-email" });
-
-    const accountDocument = matches.docs[0];
-    const account = accountDocument.data();
-    if (account.uid !== accountDocument.id || account.email !== normalizedEmail) {
-        throw Object.assign(new Error("O diretório de contas não passou na validação."), { code: "directory-mismatch" });
+    const contest = CONCURSOS[account?.concurso];
+    if (!account || typeof account.uid !== "string" || !account.uid
+        || typeof account.email !== "string" || !account.email
+        || !contest || account.id !== `${account.uid}_${account.concurso}`) {
+        throw Object.assign(new Error("Registro de acesso inválido."), { code: "invalid-account" });
     }
 
-    const directoryReference = doc(db, "userDirectory", accountDocument.id);
-    const accessReference = doc(db, contest.access, accountDocument.id);
+    const analyticsReference = doc(db, "analyticsUsers", account.id);
+    const accessReference = doc(db, contest.access, account.uid);
     await runTransaction(db, async transaction => {
-        const directorySnapshot = await transaction.get(directoryReference);
-        const currentAccount = directorySnapshot.exists() ? directorySnapshot.data() : null;
-        if (currentAccount?.uid !== accountDocument.id || currentAccount.email !== normalizedEmail) {
-            throw Object.assign(new Error("O diretório de contas mudou durante a liberação."), { code: "directory-mismatch" });
+        const analyticsSnapshot = await transaction.get(analyticsReference);
+        const currentAccount = analyticsSnapshot.exists() ? analyticsSnapshot.data() : null;
+        if (currentAccount?.uid !== account.uid || currentAccount.email !== account.email
+            || currentAccount.concurso !== account.concurso) {
+            throw Object.assign(new Error("O registro de login mudou durante a liberação."), { code: "account-not-found" });
         }
         const accessSnapshot = await transaction.get(accessReference);
         const existingAccess = accessSnapshot.exists() ? accessSnapshot.data() : null;
@@ -105,47 +107,72 @@ const grantComplimentaryAccessForAccount = async ({ email, concurso }) => {
     });
 };
 
-complimentaryAccessForm.addEventListener("submit", async event => {
-    event.preventDefault();
-    if (!currentAdmin || !grantComplimentaryAccess) {
-        complimentaryAccessStatus.textContent = "A sessão administrativa não está pronta. Recarregue a página.";
-        complimentaryAccessStatus.dataset.error = "true";
+const renderGrantAccounts = () => {
+    if (grantAccountsLoadError) return;
+    const filter = complimentaryAccessSearch.value.trim().toLocaleLowerCase("pt-BR");
+    const visibleAccounts = grantAccounts.filter(account => {
+        const label = CONCURSOS[account.concurso].label;
+        return `${account.email} ${account.uid} ${label}`.toLocaleLowerCase("pt-BR").includes(filter);
+    });
+    complimentaryAccessUsers.replaceChildren();
+
+    if (!hasLoadedGrantAccounts) {
+        complimentaryAccessListStatus.textContent = "Carregando contas que entraram...";
+        return;
+    }
+    if (!visibleAccounts.length) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "muted";
+        emptyMessage.textContent = grantAccounts.length
+            ? "Nenhuma conta corresponde ao filtro."
+            : "Nenhum login foi registrado ainda. A lista atualiza quando alguém entra na plataforma.";
+        complimentaryAccessUsers.append(emptyMessage);
+        complimentaryAccessListStatus.textContent = grantAccounts.length
+            ? `${grantAccounts.length} registros de login carregados.`
+            : "";
         return;
     }
 
-    const email = complimentaryAccessEmail.value.trim();
-    const concurso = complimentaryAccessContest.value;
-    const label = CONCURSOS[concurso]?.label;
-    if (!label || !window.confirm(`Conceder acesso gratuito vitalício a ${email} para ${label}?`)) return;
+    visibleAccounts.forEach(account => complimentaryAccessUsers.append(buildGrantAccountCard(account)));
+    complimentaryAccessListStatus.textContent = `Mostrando ${visibleAccounts.length} de ${grantAccounts.length} registros de login recentes.`;
+};
 
-    complimentaryAccessButton.disabled = true;
+const grantAccountAccess = async (account, button) => {
+    const contest = CONCURSOS[account.concurso];
+    if (!currentAdmin) {
+        complimentaryAccessStatus.textContent = "Entre novamente como administrador.";
+        complimentaryAccessStatus.dataset.error = "true";
+        return;
+    }
+    if (!window.confirm(`Conceder acesso gratuito vitalício a ${account.email} para ${contest.label}?`)) return;
+
+    button.disabled = true;
     complimentaryAccessStatus.textContent = "Validando a conta e liberando o acesso...";
     complimentaryAccessStatus.dataset.error = "false";
     try {
-        await grantComplimentaryAccess({ email, concurso });
-        complimentaryAccessStatus.textContent = `Acesso vitalício gratuito liberado para ${email} em ${label}.`;
-        complimentaryAccessForm.reset();
+        await grantComplimentaryAccessForAccount(account);
+        complimentaryAccessStatus.textContent = `Acesso vitalício gratuito liberado para ${account.email} em ${contest.label}.`;
     } catch (error) {
         console.error("Não foi possível conceder o acesso gratuito.", error);
         const messages = {
-            "invalid-email": "Informe o email verificado usado na conta.",
-            "invalid-contest": "Selecione um concurso válido.",
-            "user-not-found": "Conta verificada não encontrada. Peça para a pessoa entrar uma vez na plataforma após a publicação e confira o email.",
-            "ambiguous-email": "Esse email está associado a mais de uma conta. Verifique o cadastro antes de continuar.",
-            "directory-mismatch": "Não foi possível validar os dados da conta. Tente novamente mais tarde.",
+            "invalid-account": "Não foi possível validar este registro. Atualize a página e tente novamente.",
+            "account-not-found": "O registro de login mudou. Aguarde a lista atualizar e tente novamente.",
             "already-exists": "Essa conta já possui acesso vigente neste concurso. Nenhuma alteração foi feita.",
             "permission-denied": "A operação foi recusada. Confirme se seu email administrativo está verificado e se as regras do Firestore foram publicadas."
         };
         complimentaryAccessStatus.textContent = messages[error.code] || "Não foi possível liberar o acesso. Verifique a conexão e tente novamente.";
         complimentaryAccessStatus.dataset.error = "true";
     } finally {
-        complimentaryAccessButton.disabled = false;
+        button.disabled = false;
     }
-});
+};
+
+complimentaryAccessSearch.addEventListener("input", renderGrantAccounts);
 
 const stopRequestsListener = () => {
     activeRequestsListener?.();
     activeRequestsListener = undefined;
+    stopGrantAccountsListener();
     requestRenderVersion += 1;
     requestsPanel.hidden = true;
     requestList.replaceChildren();
@@ -184,6 +211,33 @@ const appendIdentityDetail = (details, label, value) => {
     const description = document.createElement("dd");
     description.textContent = value;
     details.append(term, description);
+};
+
+const buildGrantAccountCard = account => {
+    const card = document.createElement("article");
+    card.className = "request-card";
+
+    const heading = document.createElement("h3");
+    heading.className = "identity-heading";
+    heading.textContent = account.email;
+
+    const details = document.createElement("dl");
+    details.className = "identity-details";
+    appendIdentityDetail(details, "Concurso", CONCURSOS[account.concurso].label);
+    appendIdentityDetail(details, "Último acesso", formatRequestDate(account.lastSeen));
+    appendIdentityDetail(details, "UID", account.uid);
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    const grantButton = document.createElement("button");
+    grantButton.type = "button";
+    grantButton.className = "primary";
+    grantButton.textContent = `Liberar acesso vitalício — ${CONCURSOS[account.concurso].label}`;
+    grantButton.addEventListener("click", () => void grantAccountAccess(account, grantButton));
+    actions.append(grantButton);
+
+    card.append(heading, details, actions);
+    return card;
 };
 
 const buildWhatsappLink = (profile, withMessage = false, requestData = null) => {
@@ -342,6 +396,47 @@ const startRequestsListener = () => {
     activeRequestsListener = () => unsubscribers.forEach(unsubscribe => unsubscribe());
 };
 
+const startGrantAccountsListener = () => {
+    stopGrantAccountsListener();
+    grantAccountsLoadError = false;
+    complimentaryAccessListStatus.textContent = "Carregando contas que entraram...";
+    complimentaryAccessListStatus.dataset.error = "false";
+    const recentLogins = query(
+        collection(db, "analyticsUsers"),
+        orderBy("lastSeen", "desc"),
+        limit(100)
+    );
+    activeGrantAccountsListener = onSnapshot(recentLogins, snapshot => {
+        const validAccounts = [];
+        let invalidRecords = 0;
+        snapshot.docs.forEach(accountSnapshot => {
+            const account = { id: accountSnapshot.id, ...accountSnapshot.data() };
+            if (typeof account.uid === "string" && account.uid
+                && typeof account.email === "string" && account.email
+                && CONCURSOS[account.concurso]
+                && account.id === `${account.uid}_${account.concurso}`) {
+                validAccounts.push(account);
+            } else {
+                invalidRecords += 1;
+            }
+        });
+        if (invalidRecords) console.warn(`Ignorando ${invalidRecords} registro(s) de login inválido(s).`);
+        grantAccounts = validAccounts;
+        hasLoadedGrantAccounts = true;
+        renderGrantAccounts();
+        complimentaryAccessListStatus.dataset.error = "false";
+    }, error => {
+        console.error("Não foi possível carregar as contas que entraram na plataforma.", error);
+        activeGrantAccountsListener = undefined;
+        grantAccounts = [];
+        hasLoadedGrantAccounts = false;
+        grantAccountsLoadError = true;
+        complimentaryAccessUsers.replaceChildren();
+        complimentaryAccessListStatus.textContent = "Falha ao carregar os usuários. Confira as regras do Firestore e tente novamente.";
+        complimentaryAccessListStatus.dataset.error = "true";
+    });
+};
+
 const reviewRequest = async (uid, decision, card, concurso) => {
     const config = CONCURSOS[concurso];
     const buttons = card.querySelectorAll("button");
@@ -417,6 +512,7 @@ const activateAdminPage = async user => {
         verificationActions.hidden = true;
         setStatus(`Conectado como ${user.email}. Confira o recebimento no banco antes de aprovar cada pedido.`);
         startRequestsListener();
+        startGrantAccountsListener();
     } catch (error) {
         console.error("Não foi possível confirmar a sessão administrativa.", error);
         setStatus("Não foi possível validar sua sessão. Entre novamente e tente de novo.", true);
@@ -486,8 +582,7 @@ try {
     auth = firebaseAuth;
     db = firestore;
     ({ onAuthStateChanged, sendEmailVerification, reload, signOut } = authModule);
-    ({ collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, where, runTransaction, limit } = firestoreModule);
-    grantComplimentaryAccess = grantComplimentaryAccessForAccount;
+    ({ collection, doc, getDoc, onSnapshot, query, serverTimestamp, where, runTransaction, limit, orderBy } = firestoreModule);
     onAuthStateChanged(auth, user => {
         void activateAdminPage(user);
     }, error => {

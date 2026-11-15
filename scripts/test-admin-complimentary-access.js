@@ -1,15 +1,10 @@
 "use strict";
 
 const assert = require("node:assert/strict");
-const {
-  normalizeGrantEmail,
-  mayGrantComplimentaryAccess
-} = require("../admin-access-policy.js");
+const { mayGrantComplimentaryAccess } = require("../admin-access-policy.js");
 
 const now = 2_000_000_000_000;
 const timestamp = value => ({ toMillis: () => value });
-assert.equal(normalizeGrantEmail("  aluno@example.com "), "aluno@example.com");
-assert.throws(() => normalizeGrantEmail("email-invalido"), { code: "invalid-email" });
 assert.equal(mayGrantComplimentaryAccess(null, now), true);
 assert.equal(mayGrantComplimentaryAccess({ active: false }, now), true);
 assert.equal(mayGrantComplimentaryAccess({

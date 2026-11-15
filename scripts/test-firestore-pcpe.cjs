@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = require('@firebase/rules-unit-testing');
-const { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, deleteField, serverTimestamp, Timestamp, runTransaction, query, where } = require('firebase/firestore');
+const { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteField, serverTimestamp, Timestamp, runTransaction, query, where } = require('firebase/firestore');
 const policy = require('../pcpe/access-policy.js');
 
 async function main() {
@@ -26,37 +26,22 @@ async function main() {
         }).firestore();
         const other = env.authenticatedContext('student-b', { email: 'student-b@example.test' }).firestore();
         const thirdStudent = env.authenticatedContext('student-c', { email: 'student-c@example.test' }).firestore();
-        const unverifiedStudent = env.authenticatedContext('student-unverified', {
-            email: 'student-unverified@example.test', email_verified: false
-        }).firestore();
         const admin = env.authenticatedContext('administrator', { email: adminEmail, email_verified: true }).firestore();
         const unverifiedAdmin = env.authenticatedContext('administrator', { email: adminEmail, email_verified: false }).firestore();
         const ownerRequest = doc(owner, 'accessRequestsPcpe', 'student-a');
         const ownerAccess = doc(owner, 'accessPcpe', 'student-a');
         const pending = plan => ({ email: 'student-a@example.test', status: 'pending', plan, requestedAt: serverTimestamp() });
 
-        const ownerDirectory = doc(owner, 'userDirectory', 'student-a');
-        await assertSucceeds(setDoc(ownerDirectory, {
-            uid: 'student-a', email: 'student-a@example.test', updatedAt: serverTimestamp()
-        }));
-        await assertFails(getDoc(doc(other, 'userDirectory', 'student-a')));
-        await assertFails(setDoc(doc(other, 'userDirectory', 'student-a'), {
-            uid: 'student-a', email: 'student-a@example.test', updatedAt: serverTimestamp()
-        }));
-        await assertFails(setDoc(ownerDirectory, {
-            uid: 'student-b', email: 'student-b@example.test', updatedAt: serverTimestamp()
-        }));
-        await assertFails(setDoc(ownerDirectory, {
-            uid: 'student-a', email: 'unverified@example.test', updatedAt: serverTimestamp()
-        }));
-        await assertFails(setDoc(doc(unverifiedStudent, 'userDirectory', 'student-unverified'), {
-            uid: 'student-unverified', email: 'student-unverified@example.test', updatedAt: serverTimestamp()
-        }));
-        await assertFails(getDocs(collection(owner, 'userDirectory')));
-        await assertSucceeds(getDocs(query(collection(admin, 'userDirectory'), where('email', '==', 'student-a@example.test'))));
-        await assertFails(getDocs(collection(unverifiedAdmin, 'userDirectory')));
-        await assertFails(deleteDoc(doc(other, 'userDirectory', 'student-a')));
-        await assertSucceeds(deleteDoc(ownerDirectory));
+        const ownerLogin = doc(owner, 'analyticsUsers', 'student-a_pcpe');
+        const loginRecord = {
+            uid: 'student-a', concurso: 'pcpe', email: 'student-a@example.test',
+            firstSeen: serverTimestamp(), lastSeen: serverTimestamp(), progress: ''
+        };
+        await assertSucceeds(setDoc(ownerLogin, loginRecord));
+        await assertFails(setDoc(doc(other, 'analyticsUsers', 'student-a_pcpe'), loginRecord));
+        await assertFails(getDocs(collection(owner, 'analyticsUsers')));
+        await assertSucceeds(getDocs(query(collection(admin, 'analyticsUsers'), where('email', '==', 'student-a@example.test'))));
+        await assertFails(getDocs(collection(unverifiedAdmin, 'analyticsUsers')));
 
         await assertFails(setDoc(ownerAccess, { active: true, plan: 'vitalicio' }));
         await assertFails(setDoc(doc(other, 'accessRequestsPcpe', 'student-a'), pending('mensal')));

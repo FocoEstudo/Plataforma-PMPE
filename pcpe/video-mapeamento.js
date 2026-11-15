@@ -18,7 +18,8 @@ window.PCPE_VIDEO_MAP = {
         ['Aplicação da lei penal', ['Lei penal no tempo e no espaço']],
         ['Crimes contra a pessoa', ['Crimes contra a pessoa']],
         ['Crimes contra o patrimônio', ['Crimes contra o patrimônio']],
-        ['Crimes contra a fé pública e contra a administração pública', ['Crimes contra a administração pública']]
+        ['Crimes contra a fé pública e contra a administração pública', ['Crimes contra a administração pública']],
+        ['Estatuto da Juventude (Lei nº 12.852/2013)', ['Estatuto da Juventude', 'Estatuto da Juventude: aula complementar', 'Estatuto da Juventude: visão geral']]
     ],
     processual: [
         ['Ação penal e sujeitos do processo', ['Ação penal']],
@@ -37,3 +38,10 @@ window.PCPE_VIDEO_MAP = {
         ['Sistema operacional Windows', ['Janelas no Windows', 'Windows 11 para concursos']]
     ]
 };
+
+const youthTopic = 'Estatuto da Juventude (Lei nº 12.852/2013)';
+const combinedTopic = 'Maria da Penha, Estatuto da Pessoa Idosa e Estatuto da Juventude';
+const youthVideoTitles = new Set(window.PCPE_VIDEO_MAP.penal.find(([topic]) => topic === youthTopic)[1]);
+if (window.PPPE_VIDEOS?.[combinedTopic]) {
+    window.PPPE_VIDEOS[youthTopic] = window.PPPE_VIDEOS[combinedTopic].filter(video => youthVideoTitles.has(video.title));
+}

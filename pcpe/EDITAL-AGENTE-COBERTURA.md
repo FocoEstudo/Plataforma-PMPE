@@ -1,6 +1,6 @@
 # PCPE Agente — matriz de cobertura do programa fornecido
 
-Referência de trabalho: programa do item 22.2.3 transcrito na solicitação. Não foi possível autenticar aqui o edital, a data ou o conteúdo cortado; confirme tudo no documento oficial. A cobertura representa **existência de aula**, não certificação de suficiência, atualidade nem equivalência a questões reais. A coluna Situação distingue cobertura de estudo (A) de **resumo introdutório que precisa de lei seca/exercícios adicionais** (R). Na maioria dos itens novos o aprofundamento é curto; por isso, são R. Conteúdo existente varia em profundidade.
+Referência: Edital PCPE e retificação oficial dos subitens 22.2.3.1 (Agente) e 22.2.5.1 (Escrivão), que inclui o Estatuto da Juventude (Lei nº 12.852/2013) em Noções de Direito Penal. A matriz registra onde cada item está organizado para estudo; não certifica, por si só, a suficiência pedagógica nem substitui a leitura da legislação consolidada e do edital vigente. A coluna Situação distingue cobertura de estudo (A) de resumo introdutório (R), que deve ser acompanhado da fonte oficial indicada.
 
 Cada código abaixo corresponde ao nome exato de um módulo; os guias dos módulos alimentam a apostila e cada aula tem aprofundamento. O vídeo existente pertence ao módulo como um todo e **não necessariamente cobre a aula específica**; os módulos reutilizam seus bancos anteriores, não são bancos especializados novos. Não foram inventadas videoaulas nem questões de cinco alternativas. O aluno deve complementar os itens R com fontes oficiais e questões.
 
@@ -28,6 +28,7 @@ Cada código abaixo corresponde ao nome exato de um módulo; os guias dos módul
 | PE3 | Crimes contra a pessoa |
 | PE4 | Crimes contra o patrimônio |
 | PE5 | Crimes contra a fé pública e contra a administração pública |
+| JU | Estatuto da Juventude (Lei nº 12.852/2013) |
 | PP | Inquérito policial |
 | PP2 | Prisão: flagrante, temporária, preventiva, fiança e liberdade provisória |
 | PP3 | Medidas cautelares, citação, sentença, ações autônomas e procedimentos |
@@ -118,6 +119,7 @@ Cada código abaixo corresponde ao nome exato de um módulo; os guias dos módul
 | Lei 14.344/2022 — violência contra criança e adolescente | PE3 | R |
 | Lei 9.605/1998 — crimes ambientais | PE3 | R |
 | Lei 10.826/2003 — armas | PE3 | R |
+| Item 20, subitens 22.2.3.1 e 22.2.5.1 — Lei 12.852/2013, Estatuto da Juventude | JU | R |
 | Lei 11.343/2006 — drogas | PE3 | R |
 | Aplicação da lei processual penal no tempo | PP | R |
 | Disposições constitucionais processuais penais | PP | R |
@@ -208,7 +210,7 @@ Cada código abaixo corresponde ao nome exato de um módulo; os guias dos módul
 
 ## Aulas complementares individualizadas
 
-Além das aulas existentes e das 48 revisões iniciais, cada linha abaixo identifica uma aula, seu exemplo e seu mini-exercício. As aulas são introdutórias e não substituem o estudo da legislação consolidada.
+Além dos conteúdos dos módulos, cada linha abaixo identifica uma aula complementar, seu exemplo e seu mini-exercício. As aulas são introdutórias e não substituem o estudo da legislação consolidada.
 
 | Módulo | Aula |
 |---|---|
@@ -234,9 +236,16 @@ Além das aulas existentes e das 48 revisões iniciais, cada linha abaixo identi
 | ES | Quartis, decis e percentis |
 | ES | Variância e desvio padrão |
 | ES | Estimativa do tamanho da amostra |
+| JU | Objeto, faixa etária e relação com o ECA |
+| JU | Princípios e diretrizes das políticas de juventude |
+| JU | Direitos à educação, profissionalização, trabalho e saúde |
+| JU | Direitos à cultura, comunicação, esporte, território e mobilidade |
+| JU | Segurança pública, acesso à Justiça e participação cidadã |
+| JU | Sistema Nacional de Juventude (SINAJUVE) |
 
 ## Fontes e limitações
 
+* [Retificação oficial do Edital PCPE — Cebraspe](https://cdn.cebraspe.org.br/concursos/PC_PE_26/arquivos/C335A790C2386E779A43F3A77EC4951ED8D2D044B99B94305A47B4777EFDA48D.pdf): subitens 22.2.3.1 e 22.2.5.1; [Lei nº 12.852/2013 — Planalto](https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/lei/l12852.htm).
 * [Alepe Legis](https://legis.alepe.pe.gov.br/): consultar versões atualizadas e alterações das leis e da Constituição estadual; a LC 137 institui o PCCV e a LC 317 trata de atribuições e garantias do delegado.
 * [Legislação federal](https://www.planalto.gov.br/ccivil_03/), [Manual de Redação](https://www.gov.br/planalto/pt-br/assuntos/administracao-publica/manual-de-redacao-da-presidencia-da-republica) e [NBC/CFC](https://cfc.org.br/tecnica/normas-brasileiras-de-contabilidade/).
 * LC 137/2008, LC 317/2015, Lei 6.123/1968, Lei 6.425/1972 e arts. 101–105-B receberam introdução, não exposição artigo a artigo; não há garantia de consolidação normativa automática.

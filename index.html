@@ -26,7 +26,7 @@
     <script src="aprofundamento-dh-1.js"></script>
     <script src="aprofundamento-dh-2.js"></script>
     <script src="aprofundamento-dh-3.js"></script>
-    <script type="module" src="session-guard.js"></script>
+    <script type="module" src="session-guard.js?v=2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -2384,9 +2384,9 @@
             .fc-card { min-height: 20rem; }
         }
     </style>
-    <link rel="stylesheet" href="tema-pmpe.css?v=4">
-    <link rel="stylesheet" href="aviso-pagamento.css">
-    <link rel="stylesheet" href="tema-final-pmpe.css?v=3">
+    <link rel="stylesheet" href="tema-pmpe.css?v=8">
+    <link rel="stylesheet" href="aviso-pagamento.css?v=3">
+    <link rel="stylesheet" href="tema-final-pmpe.css?v=5">
     <link rel="stylesheet" href="video-workspace.css">
 </head>
 
@@ -2527,7 +2527,7 @@
         </div>
     </div>
 
-    <aside class="platform-sidebar" aria-label="Menu principal">
+    <aside class="platform-sidebar" id="mainPlatformSidebar" aria-label="Menu principal">
         <div class="sidebar-brand">
             <img
                 src="assets/brasao-pmpe.png"
@@ -2585,6 +2585,9 @@
     <header class="platform-header sticky top-0 z-50 border-b backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4">
+                <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Recolher menu lateral" aria-controls="mainPlatformSidebar" aria-expanded="true" title="Recolher menu lateral">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                </button>
                 <img
                     src="assets/brasao-pmpe.png"
                     alt="Brasão da Polícia Militar de Pernambuco" class="brand-crest"
@@ -8419,6 +8422,7 @@
         })();
     </script>
 <script>window.GABARI_CONFIG = { concurso: 'PMPE', accent: '#25272b', gold: '#e8b931', storageKey: 'gabari_hidden' };</script>
+    <script src="sidebar-toggle.js?v=1"></script>
     <script src="gabari.js?v=3"></script>
     <script src="questoes-pmpe-complementares.js"></script>
     <script src="video-workspace.js"></script>

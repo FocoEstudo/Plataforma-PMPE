@@ -11,6 +11,7 @@
   const shared = (window.PPPE_MODULOS || []).filter(module => Object.prototype.hasOwnProperty.call(allowed, module.sub) && (!allowed[module.sub] || allowed[module.sub].test(module.topic)));
   const additional = [
     { sub: 'Noções de Informática', topic: 'Linux: sistema operacional e arquivos', escopo: ['Linux, comandos e permissões'] },
+    { sub: 'Noções de Direito Penal', topic: 'Estatuto da Juventude (Lei nº 12.852/2013)', escopo: ['Lei nº 12.852/2013: princípios, direitos, políticas públicas e SINAJUVE'] },
     { sub: 'Legislação Estadual', topic: 'Estatuto dos Policiais Civis de Pernambuco', escopo: ['Regime jurídico e deveres dos policiais civis de Pernambuco'] },
     { sub: 'Legislação Estadual', topic: 'Constituição de Pernambuco: segurança pública', escopo: ['Organização da segurança pública no Estado de Pernambuco'] },
     { sub: 'Raciocínio Lógico', topic: 'Estruturas e argumentação lógica', escopo: ['Proposições, conectivos e argumentos'] },
