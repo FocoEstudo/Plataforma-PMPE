@@ -2327,6 +2327,7 @@
         .mm-tree ul > li::before { content: ""; position: absolute; left: 0; top: 1.15rem; width: .9rem; border-top: 2px solid var(--mm-color, #176b45); }
         .mm-node { display: inline-block; max-width: 44rem; text-align: left; border-radius: .6rem; padding: .35rem .75rem; font-size: .85rem; line-height: 1.4; border: 1.5px solid var(--mm-color, #176b45); background: #fff; color: #153a29; }
         .mm-node.has-children { cursor: pointer; font-weight: 700; }
+        .mm-node.has-children:focus-visible { outline: 3px solid #facc15; outline-offset: 3px; }
         .mm-node.has-children::after { content: " ▸"; color: var(--mm-color, #176b45); }
         li.is-open > .mm-node.has-children::after { content: " ▾"; }
         li:not(.is-open) > ul { display: none; }
@@ -2666,7 +2667,7 @@
             <div class="dashboard-home-hero glass-panel rounded-2xl">
                 <div class="dashboard-home-copy">
                     <p class="text-xs font-bold tracking-[0.2em] uppercase">Operação PMPE</p>
-                    <h2 id="dashboardWelcomeTitle" class="dashboard-home-title">Soldado Ian de Pernambuco</h2>
+                    <h2 id="dashboardWelcomeTitle" class="dashboard-home-title">Sua preparação começa aqui</h2>
                     <p>Seu espaço de preparação: conteúdos, missões diárias, simulados e redação em um só lugar.</p>
                     <a class="dashboard-home-credit" href="https://penoticias.com.br/blog/pmpe-mobiliza-mais-de-4-mil-policiais-para-garantir-seguranca-de-folioes-e-torcedores-em-pernambuco/"
                         target="_blank" rel="noopener noreferrer">Imagem de fundo: PE Notícias</a>
@@ -2939,7 +2940,7 @@
                 </div>
                 <aside class="video-notes-panel rounded-lg border border-slate-700 p-4" aria-labelledby="videoNotesHeading">
                     <h3 id="videoNotesHeading" class="font-bold"><i class="fa-solid fa-pen-to-square mr-2 text-emerald-400" aria-hidden="true"></i>Anotações da aula</h3>
-                    <p class="mt-1 text-xs text-gray-400">Escreva conceitos, exemplos e dúvidas. O salvamento é automático.</p>
+                    <p class="mt-1 text-xs text-gray-400">Organize conceitos e exemplos, cole capturas diretamente no texto e baixe suas anotações quando quiser. O salvamento é automático neste navegador.</p>
                     <div id="videoLessonNotes" class="video-notes-editor mt-4" data-placeholder="Suas anotações desta aula..." aria-label="Anotações da aula"></div>
                     <p id="videoNotesStatus" class="mt-2 min-h-5 text-xs text-gray-400" role="status" aria-live="polite"></p>
                 </aside>
@@ -3195,13 +3196,13 @@
                         <h4 class="font-bold text-white" id="errorFormTitle">Novo registro</h4>
                         <span class="text-xs text-gray-400" id="errorSaveStatus">Rascunho salvo automaticamente.</span>
                     </div>
-                    <input id="errSubject" type="text" maxlength="120" placeholder="Matéria / tema (ex.: Direito Constitucional - Art. 5º)"
+                    <input id="errSubject" type="text" maxlength="120" placeholder="Matéria / tema (ex.: Direito Constitucional - Art. 5º)" aria-label="Matéria ou tema"
                         class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500">
-                    <textarea id="errQuestion" rows="3" maxlength="2000" placeholder="Questão ou situação em que errei..."
+                    <textarea id="errQuestion" rows="3" maxlength="2000" placeholder="Questão ou situação em que errei..." aria-label="Questão ou situação em que errei"
                         class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
-                    <textarea id="errCause" rows="2" maxlength="1000" placeholder="Por que errei? (desatenção, não sabia, confundi conceitos...)"
+                    <textarea id="errCause" rows="2" maxlength="1000" placeholder="Por que errei? (desatenção, não sabia, confundi conceitos...)" aria-label="Causa do erro"
                         class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
-                    <textarea id="errRule" rows="4" maxlength="3000" placeholder="Regra correta / resposta certa com minhas palavras..."
+                    <textarea id="errRule" rows="4" maxlength="3000" placeholder="Regra correta / resposta certa com minhas palavras..." aria-label="Regra correta ou resposta certa"
                         class="w-full bg-slate-950 border border-slate-600 rounded p-2 text-sm text-gray-200 outline-none focus:border-red-500"></textarea>
                     <div class="flex flex-wrap gap-2">
                         <button type="button" onclick="saveErrorEntry()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-4 py-2 rounded text-sm"><i class="fa-solid fa-floppy-disk mr-1"></i> SALVAR NO CADERNO</button>
@@ -3211,7 +3212,7 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <h4 class="font-bold text-white">Registros salvos (<span id="errCount">0</span>)</h4>
-                        <input id="errFilter" type="search" placeholder="Filtrar..." class="bg-slate-950 border border-slate-600 rounded p-1 text-sm text-gray-200 w-36">
+                        <input id="errFilter" type="search" placeholder="Filtrar..." aria-label="Filtrar caderno de erros" class="bg-slate-950 border border-slate-600 rounded p-1 text-sm text-gray-200 w-36">
                     </div>
                     <div id="errList" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1"></div>
                 </div>
@@ -3506,7 +3507,7 @@
                 { name: 'Rosa', value: '#f9a8d4' },
                 { name: 'Azul', value: '#93c5fd' }
             ];
-            const ALLOWED_TAGS = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'BR', 'DIV', 'P', 'SPAN']);
+            const ALLOWED_TAGS = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'BR', 'DIV', 'P', 'SPAN', 'UL', 'OL', 'LI', 'IMG']);
             const COLOR_RE = /^(?:rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*(?:0|1|0?\.\d+)\s*)?\)|#[0-9a-f]{3,8})$/i;
 
             const escapeHtml = text => String(text).replace(/[&<>"']/g, ch =>
@@ -3522,6 +3523,15 @@
                     if (child.nodeType !== Node.ELEMENT_NODE) return;
                     const tag = child.tagName;
                     if (tag === 'SCRIPT' || tag === 'STYLE') return;
+                    if (tag === 'IMG') {
+                        const src = child.getAttribute('src') || '';
+                        if (!/^data:image\/(?:jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(src) || src.length > 1500000) return;
+                        const image = document.createElement('img');
+                        image.src = src;
+                        image.alt = (child.getAttribute('alt') || 'Captura da videoaula').slice(0, 200);
+                        target.appendChild(image);
+                        return;
+                    }
                     if (!ALLOWED_TAGS.has(tag)) { cleanInto(child, target); return; }
                     if (tag === 'SPAN') {
                         const bg = (child.style.backgroundColor || '').trim();
@@ -3534,6 +3544,9 @@
                     }
                     const name = tag === 'STRONG' ? 'b' : tag === 'EM' ? 'i' : tag.toLowerCase();
                     const element = document.createElement(name);
+                    if (tag === 'UL' && child.getAttribute('data-list-style') === 'dash') {
+                        element.setAttribute('data-list-style', 'dash');
+                    }
                     if (name !== 'br') cleanInto(child, element);
                     target.appendChild(element);
                 });
@@ -3557,64 +3570,334 @@
                 return button;
             };
 
-            const mount = (editor, { onChange } = {}) => {
+            const mount = (editor, { onChange, enhanced = false, getDownloadName, onStatus } = {}) => {
                 const toolbar = document.createElement('div');
                 toolbar.className = 'rich-toolbar';
                 toolbar.setAttribute('role', 'toolbar');
-                toolbar.setAttribute('aria-label', 'Formatação do texto');
+                toolbar.setAttribute('aria-label', enhanced ? 'Formatação das anotações da aula' : 'Formatação do texto');
                 editor.classList.add('rich-editor');
                 editor.contentEditable = 'true';
                 editor.setAttribute('role', 'textbox');
                 editor.setAttribute('aria-multiline', 'true');
 
-                const ensureFocus = () => {
+                let savedRange = null;
+                let activeHighlight = null;
+                let highlightModeRange = null;
+                const highlightColors = new Map();
+                HL_COLORS.forEach(color => {
+                    const probe = document.createElement('span');
+                    probe.style.backgroundColor = color.value;
+                    document.body.appendChild(probe);
+                    highlightColors.set(window.getComputedStyle(probe).backgroundColor, color.value);
+                    highlightColors.set(color.value.toLowerCase(), color.value);
+                    probe.remove();
+                });
+                const canonicalHighlightColor = color =>
+                    highlightColors.get(String(color || '').toLowerCase()) ||
+                    highlightColors.get(String(color || '')) ||
+                    null;
+                const report = message => { if (onStatus) onStatus(message); };
+                const currentList = () => {
                     const selection = window.getSelection();
-                    if (!selection.rangeCount || !editor.contains(selection.anchorNode)) editor.focus();
+                    if (!selection.rangeCount || !editor.contains(selection.anchorNode)) return null;
+                    let node = selection.anchorNode.nodeType === Node.ELEMENT_NODE
+                        ? selection.anchorNode
+                        : selection.anchorNode.parentElement;
+                    while (node && node !== editor) {
+                        if (node.tagName === 'UL' || node.tagName === 'OL') return node;
+                        node = node.parentElement;
+                    }
+                    return null;
+                };
+                const currentHighlight = () => {
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount || !editor.contains(selection.anchorNode)) return null;
+                    let node = selection.anchorNode.nodeType === Node.ELEMENT_NODE
+                        ? selection.anchorNode
+                        : selection.anchorNode.parentElement;
+                    while (node && node !== editor) {
+                        const color = canonicalHighlightColor(window.getComputedStyle(node).backgroundColor);
+                        if (color) return color;
+                        node = node.parentElement;
+                    }
+                    return canonicalHighlightColor(document.queryCommandValue('hiliteColor'));
+                };
+                const sameRange = (first, second) => first && second &&
+                    first.startContainer === second.startContainer && first.startOffset === second.startOffset &&
+                    first.endContainer === second.endContainer && first.endOffset === second.endOffset;
+                const setPressed = (button, pressed) => {
+                    button.classList.toggle('is-active', pressed);
+                    button.setAttribute('aria-pressed', String(pressed));
+                };
+                const syncToolbarState = () => {
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount || !editor.contains(selection.anchorNode)) {
+                        activeHighlight = null;
+                        highlightModeRange = null;
+                        toolbar.querySelectorAll('[aria-pressed]').forEach(button => setPressed(button, false));
+                        return;
+                    }
+                    const list = currentList();
+                    toolbar.querySelectorAll('[data-format-command]').forEach(button => {
+                        let pressed = document.queryCommandState(button.dataset.formatCommand);
+                        if (button.dataset.formatCommand === 'insertUnorderedList' &&
+                            list && list.tagName === 'UL' && list.dataset.listStyle === 'dash') pressed = false;
+                        setPressed(button, pressed);
+                    });
+                    const selectedHighlight = currentHighlight();
+                    if (selectedHighlight) {
+                        activeHighlight = selectedHighlight;
+                        highlightModeRange = null;
+                    } else if (!sameRange(selection.getRangeAt(0), highlightModeRange)) {
+                        activeHighlight = null;
+                        highlightModeRange = null;
+                    }
+                    toolbar.querySelectorAll('[data-highlight-color]').forEach(button => {
+                        setPressed(button, button.dataset.highlightColor === activeHighlight);
+                    });
+                    const dashList = toolbar.querySelector('[data-list-style-command="dash"]');
+                    if (dashList) setPressed(dashList, Boolean(list && list.tagName === 'UL' && list.dataset.listStyle === 'dash'));
+                };
+                const rememberSelection = () => {
+                    const selection = window.getSelection();
+                    if (selection.rangeCount && editor.contains(selection.anchorNode)) {
+                        savedRange = selection.getRangeAt(0).cloneRange();
+                    }
+                };
+                const restoreSelection = range => {
+                    const targetRange = range || savedRange;
+                    if (targetRange && editor.contains(targetRange.startContainer) && editor.contains(targetRange.endContainer)) {
+                        editor.focus();
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(targetRange);
+                        savedRange = targetRange.cloneRange();
+                        return true;
+                    }
+                    editor.focus();
+                    return false;
                 };
                 const run = command => {
-                    ensureFocus();
+                    restoreSelection();
                     document.execCommand('styleWithCSS', false, false);
                     document.execCommand(command);
+                    rememberSelection();
                     notify();
+                    syncToolbarState();
                 };
                 const highlight = color => {
-                    ensureFocus();
+                    restoreSelection();
+                    const normalizedColor = canonicalHighlightColor(color);
+                    const toggleOff = color !== 'transparent' &&
+                        (currentHighlight() === normalizedColor || activeHighlight === normalizedColor);
+                    const appliedColor = toggleOff ? 'transparent' : color;
                     document.execCommand('styleWithCSS', false, true);
-                    document.execCommand('hiliteColor', false, color);
+                    document.execCommand('hiliteColor', false, appliedColor);
                     document.execCommand('styleWithCSS', false, false);
+                    rememberSelection();
+                    activeHighlight = appliedColor === 'transparent' ? null : normalizedColor;
+                    const selection = window.getSelection();
+                    highlightModeRange = selection.rangeCount && selection.getRangeAt(0).collapsed
+                        ? selection.getRangeAt(0).cloneRange()
+                        : null;
                     notify();
+                    syncToolbarState();
                 };
                 const notify = () => { if (onChange) onChange(sanitizeHtml(editor.innerHTML)); };
+                const insertHtml = html => {
+                    restoreSelection();
+                    document.execCommand('insertHTML', false, html);
+                    rememberSelection();
+                    notify();
+                    syncToolbarState();
+                };
 
                 const bold = makeButton('rich-btn', 'Negrito', '<b>N</b>');
+                bold.dataset.formatCommand = 'bold';
+                bold.setAttribute('aria-pressed', 'false');
                 bold.addEventListener('click', () => run('bold'));
                 const italic = makeButton('rich-btn', 'Itálico', '<i>I</i>');
+                italic.dataset.formatCommand = 'italic';
+                italic.setAttribute('aria-pressed', 'false');
                 italic.addEventListener('click', () => run('italic'));
                 toolbar.append(bold, italic);
+                if (enhanced) {
+                    const underline = makeButton('rich-btn', 'Sublinhado', '<u>S</u>');
+                    underline.dataset.formatCommand = 'underline';
+                    underline.setAttribute('aria-pressed', 'false');
+                    underline.addEventListener('click', () => run('underline'));
+                    const bulletList = makeButton('rich-btn', 'Lista com marcadores', '<i class="fa-solid fa-list-ul" aria-hidden="true"></i>');
+                    bulletList.dataset.formatCommand = 'insertUnorderedList';
+                    bulletList.setAttribute('aria-pressed', 'false');
+                    bulletList.addEventListener('click', () => run('insertUnorderedList'));
+                    const numberedList = makeButton('rich-btn', 'Lista numerada', '<i class="fa-solid fa-list-ol" aria-hidden="true"></i>');
+                    numberedList.dataset.formatCommand = 'insertOrderedList';
+                    numberedList.setAttribute('aria-pressed', 'false');
+                    numberedList.addEventListener('click', () => run('insertOrderedList'));
+                    const dashList = makeButton('rich-btn', 'Lista com hífens', '<i class="fa-solid fa-minus" aria-hidden="true"></i>');
+                    dashList.dataset.listStyleCommand = 'dash';
+                    dashList.setAttribute('aria-pressed', 'false');
+                    dashList.addEventListener('click', () => {
+                        restoreSelection();
+                        const list = currentList();
+                        if (list && list.tagName === 'UL' && list.dataset.listStyle === 'dash') {
+                            document.execCommand('insertUnorderedList');
+                        } else if (list && list.tagName === 'UL') {
+                            list.setAttribute('data-list-style', 'dash');
+                        } else {
+                            document.execCommand('insertUnorderedList');
+                            const nextList = currentList();
+                            if (nextList && nextList.tagName === 'UL') nextList.setAttribute('data-list-style', 'dash');
+                        }
+                        rememberSelection();
+                        notify();
+                        syncToolbarState();
+                    });
+                    toolbar.append(underline, bulletList, numberedList, dashList);
+
+                    const structure = document.createElement('select');
+                    structure.className = 'rich-btn rich-structure-select';
+                    structure.setAttribute('aria-label', 'Inserir seção estruturada');
+                    structure.innerHTML = '<option value="">Inserir seção...</option><option value="Conceito">Conceito</option><option value="Explicação">Explicação</option><option value="Exemplo">Exemplo</option><option value="Dúvida">Dúvida</option><option value="Resumo">Resumo</option><option value="Atenção">Atenção</option>';
+                    structure.addEventListener('change', () => {
+                        if (!structure.value) return;
+                        const title = escapeHtml(structure.value);
+                        insertHtml(`<p><strong>${title}</strong></p><p><br></p>`);
+                        structure.value = '';
+                    });
+                    toolbar.appendChild(structure);
+                }
                 HL_COLORS.forEach(color => {
                     const swatch = makeButton('rich-swatch', `Marca-texto ${color.name.toLowerCase()}`, '');
                     swatch.style.backgroundColor = color.value;
+                    swatch.dataset.highlightColor = color.value;
+                    swatch.setAttribute('aria-pressed', 'false');
                     swatch.addEventListener('click', () => highlight(color.value));
                     toolbar.appendChild(swatch);
                 });
                 const eraser = makeButton('rich-btn', 'Remover marca-texto', '<i class="fa-solid fa-eraser" aria-hidden="true"></i>');
                 eraser.addEventListener('click', () => highlight('transparent'));
                 toolbar.appendChild(eraser);
+                if (enhanced) {
+                    const download = makeButton('rich-btn', 'Baixar anotações em HTML', '<i class="fa-solid fa-download" aria-hidden="true"></i>');
+                    download.addEventListener('click', () => {
+                        const title = getDownloadName ? getDownloadName() : 'anotacoes-da-aula';
+                        const filename = `${String(title || 'anotacoes-da-aula').replace(/[<>:"/\\|?*\x00-\x1f]/g, '-').slice(0, 100)}.html`;
+                        const content = `<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>${escapeHtml(title || 'Anotações da aula')}</title><style>body{font:16px/1.6 system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;color:#172033}img{display:block;max-width:100%;height:auto;margin:1rem 0}ul[data-list-style="dash"]{list-style:none;padding-left:1.5rem}ul[data-list-style="dash"] li::before{content:"- ";margin-left:-1.5rem}</style><main>${sanitizeHtml(editor.innerHTML)}</main></html>`;
+                        try {
+                            const url = URL.createObjectURL(new Blob([content], { type: 'text/html;charset=utf-8' }));
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = filename;
+                            link.click();
+                            setTimeout(() => URL.revokeObjectURL(url), 1000);
+                            report('Download das anotações iniciado.');
+                        } catch (error) {
+                            console.error('Não foi possível preparar o download das anotações.', error);
+                            report('Não foi possível preparar o download. Tente novamente.');
+                        }
+                    });
+                    toolbar.appendChild(download);
+                }
                 editor.parentNode.insertBefore(toolbar, editor);
 
-                editor.addEventListener('input', notify);
-                editor.addEventListener('paste', event => {
-                    event.preventDefault();
-                    const text = (event.clipboardData || window.clipboardData).getData('text/plain');
-                    document.execCommand('insertText', false, text);
+                document.addEventListener('selectionchange', () => {
+                    rememberSelection();
+                    syncToolbarState();
                 });
-                editor.addEventListener('blur', () => {
-                    const clean = sanitizeHtml(editor.innerHTML);
-                    if (clean !== editor.innerHTML) editor.innerHTML = clean;
+                editor.addEventListener('keyup', () => {
+                    rememberSelection();
+                    syncToolbarState();
+                });
+                editor.addEventListener('mouseup', () => {
+                    rememberSelection();
+                    syncToolbarState();
+                });
+                editor.addEventListener('input', () => {
+                    notify();
+                    syncToolbarState();
+                });
+                editor.addEventListener('paste', event => {
+                    const clipboard = event.clipboardData || window.clipboardData;
+                    const images = clipboard && clipboard.files
+                        ? Array.from(clipboard.files).filter(file => file.type.startsWith('image/'))
+                        : [];
+                    if (!images.length) {
+                        event.preventDefault();
+                        const text = clipboard ? clipboard.getData('text/plain') : '';
+                        document.execCommand('insertText', false, text);
+                        notify();
+                        return;
+                    }
+                    event.preventDefault();
+                    const insertionRange = savedRange && editor.contains(savedRange.startContainer)
+                        ? savedRange.cloneRange()
+                        : null;
+                    const encodeImage = file => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onerror = () => reject(reader.error || new Error('Falha ao ler a imagem.'));
+                        reader.onload = () => {
+                            const image = document.createElement('img');
+                            image.onerror = () => reject(new Error('Formato de imagem não reconhecido.'));
+                            image.onload = () => {
+                                const scale = Math.min(1, 1400 / image.naturalWidth, 1000 / image.naturalHeight);
+                                const canvas = document.createElement('canvas');
+                                canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+                                canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+                                const context = canvas.getContext('2d');
+                                if (!context) { reject(new Error('Não foi possível processar a imagem.')); return; }
+                                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                                let quality = 0.82;
+                                let data = canvas.toDataURL('image/jpeg', quality);
+                                while (data.length > 1400000 && quality > 0.5) {
+                                    quality -= 0.1;
+                                    data = canvas.toDataURL('image/jpeg', quality);
+                                }
+                                if (data.length > 1400000) { reject(new Error('A captura excede o limite de tamanho.')); return; }
+                                resolve(data);
+                            };
+                            image.src = String(reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    (async () => {
+                        try {
+                            for (const file of images) {
+                                const data = await encodeImage(file);
+                                const range = savedRange && editor.contains(savedRange.startContainer)
+                                    ? savedRange.cloneRange()
+                                    : insertionRange;
+                                if (!range || !editor.contains(range.startContainer)) {
+                                    report('A captura não foi inserida porque a anotação mudou durante o processamento.');
+                                    return;
+                                }
+                                restoreSelection(range);
+                                const selection = window.getSelection();
+                                const activeRange = selection.getRangeAt(0);
+                                activeRange.deleteContents();
+                                const image = document.createElement('img');
+                                image.src = data;
+                                image.alt = 'Captura da videoaula';
+                                const spacer = document.createElement('br');
+                                const fragment = document.createDocumentFragment();
+                                fragment.append(image, spacer);
+                                activeRange.insertNode(fragment);
+                                activeRange.setStartAfter(spacer);
+                                activeRange.collapse(true);
+                                selection.removeAllRanges();
+                                selection.addRange(activeRange);
+                                rememberSelection();
+                                notify();
+                            }
+                        } catch (error) {
+                            console.error('Não foi possível inserir a captura nas anotações.', error);
+                            report('Não foi possível inserir a captura. Tente uma imagem menor ou baixe as anotações antes de continuar.');
+                        }
+                    })();
                 });
 
                 return {
-                    setHtml(html) { editor.innerHTML = sanitizeHtml(html); },
+                    setHtml(html) { savedRange = null; editor.innerHTML = sanitizeHtml(html); },
                     getHtml: () => sanitizeHtml(editor.innerHTML),
                     setDisabled(disabled) {
                         editor.contentEditable = disabled ? 'false' : 'true';
@@ -5349,6 +5632,9 @@
                 window.dispatchEvent(new CustomEvent("mission-videos:changed"));
             });
             videoNotesEditor = PMPERichNotes.mount(document.getElementById("videoLessonNotes"), {
+                enhanced: true,
+                getDownloadName: () => EMBEDDED_VIDEO_LESSONS[selectedVideoLessonId]?.title || "anotacoes-da-aula",
+                onStatus: message => { document.getElementById("videoNotesStatus").textContent = message; },
                 onChange: html => {
                     if (!selectedVideoLessonId || videoNotesStorageReadFailed) return;
                     const updatedNotes = { ...videoLessonNotes, [selectedVideoLessonId]: html };
@@ -7436,6 +7722,10 @@
                 bySubject.get(module.sub).push(module);
             });
             container.textContent = '';
+            if (!bySubject.size) {
+                container.textContent = 'Nenhum PDF disponível no momento.';
+                return;
+            }
             bySubject.forEach((modules, subject) => {
                 const group = document.createElement('section');
                 group.className = 'pdf-subject';
@@ -8100,6 +8390,7 @@
                 document.addEventListener('keydown', e => {
                     if ($('flashcardsPanel').hidden || e.ctrlKey || e.metaKey || e.altKey) return;
                     if (/^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) return;
+                    if (e.target.closest && e.target.closest('button, a, [role="button"], [role="link"]')) return;
                     if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
                     else if (['1', '2', '3'].includes(e.key)) grade(Number(e.key) - 1);
                     else if (e.key === 'ArrowRight' && idx < queue.length) { idx += 1; renderCard(); }
@@ -8133,6 +8424,9 @@
                     opts.children.forEach(c => ul.appendChild(c));
                     li.appendChild(ul);
                     box.classList.add('has-children');
+                    box.setAttribute('role', 'button');
+                    box.setAttribute('tabindex', '0');
+                    box.setAttribute('aria-expanded', String(Boolean(opts.open)));
                     if (opts.open) li.classList.add('is-open');
                 }
                 return li;
@@ -8198,8 +8492,10 @@
             function setAllOpen(open) {
                 document.querySelectorAll('#mmCanvas li').forEach(li => {
                     if (!li.querySelector(':scope > ul')) return;
-                    if (open || li.querySelector(':scope > .mm-root-node')) li.classList.add('is-open');
-                    else li.classList.remove('is-open');
+                    const shouldOpen = open || Boolean(li.querySelector(':scope > .mm-root-node'));
+                    li.classList.toggle('is-open', shouldOpen);
+                    const box = li.querySelector(':scope > .mm-node.has-children');
+                    if (box) box.setAttribute('aria-expanded', String(shouldOpen));
                 });
             }
 
@@ -8209,9 +8505,20 @@
                 fillMapThemes();
                 $('mmSubject').addEventListener('change', () => { fillMapThemes(); renderMap(); });
                 $('mmTheme').addEventListener('change', renderMap);
+                const toggleMindmapNode = box => {
+                    const isOpen = box.parentElement.classList.toggle('is-open');
+                    box.setAttribute('aria-expanded', String(isOpen));
+                };
                 $('mmCanvas').addEventListener('click', e => {
                     const box = e.target.closest('.mm-node.has-children');
-                    if (box) box.parentElement.classList.toggle('is-open');
+                    if (box) toggleMindmapNode(box);
+                });
+                $('mmCanvas').addEventListener('keydown', e => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    const box = e.target.closest('.mm-node.has-children');
+                    if (!box || e.target !== box) return;
+                    e.preventDefault();
+                    toggleMindmapNode(box);
                 });
                 $('mmExpand').addEventListener('click', () => setAllOpen(true));
                 $('mmCollapse').addEventListener('click', () => setAllOpen(false));
