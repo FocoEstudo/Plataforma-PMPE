@@ -1,5 +1,5 @@
 (function () {
-  window.PMPE_DEEPENING = window.PMPE_DEEPENING || {};
+  window.PCPE_DEEPENING = window.PCPE_DEEPENING || {};
   const L = (titulo, explicacao, roteiro, exemplo, atencao, resumo, exercicio) => [
     ['h', titulo], ['p', explicacao],
     ['h', 'Roteiro de resolução'], ['ol', roteiro],
@@ -8,7 +8,7 @@
     ['h', 'Resumo de revisão'], ['ul', resumo],
     ['h', 'Mini-exercício (estilo Cebraspe)'], ['p', exercicio]
   ];
-  Object.assign(window.PMPE_DEEPENING, {
+  Object.assign(window.PCPE_DEEPENING, {
     'Linux: sistema operacional e arquivos': {
       1: L('Explicação: Linux, kernel e distribuições',
         'Linux é o núcleo (kernel) do sistema; uma distribuição, como Debian, Ubuntu ou Fedora, reúne o núcleo com programas e ferramentas. É software livre e de código aberto. O shell interpreta comandos digitados no terminal. O sistema diferencia maiúsculas de minúsculas em nomes de arquivos.',

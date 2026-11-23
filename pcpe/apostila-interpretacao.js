@@ -1,8 +1,8 @@
 (function () {
   'use strict';
   const topic = 'Compreensão, interpretação e tipologia textual';
-  const guide = window.PMPE_TOPIC_GUIDES && window.PMPE_TOPIC_GUIDES[topic];
-  if (!guide || !window.PMPE_DEEPENING) {
+  const guide = window.PCPE_TOPIC_GUIDES && window.PCPE_TOPIC_GUIDES[topic];
+  if (!guide || !window.PCPE_DEEPENING) {
     console.error('Apostila de interpretação não carregada: guia ou aprofundamentos ausentes.');
     return;
   }
@@ -54,5 +54,5 @@
     console.error('Apostila de interpretação não carregada: número inesperado de aulas.');
     return;
   }
-  window.PMPE_DEEPENING[topic] = Object.fromEntries(lessons.map((item, index) => [index + 1, item.blocks]));
+  window.PCPE_DEEPENING[topic] = Object.fromEntries(lessons.map((item, index) => [index + 1, item.blocks]));
 })();

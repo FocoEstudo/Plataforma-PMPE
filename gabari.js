@@ -348,6 +348,7 @@
         let dragStart = null;
         let dragged = false;
         let suppressClick = false;
+        let navAdjusted = false;
 
         function positionOverlays() {
             const fabRect = fab.getBoundingClientRect();
@@ -391,6 +392,36 @@
             positionOverlays();
         }
 
+        function avoidMobileDashboardNav() {
+            const nav = document.querySelector('.mobile-dashboard-nav');
+            if (window.innerWidth > 767 || !nav || !nav.getClientRects().length) return;
+
+            const navRect = nav.getBoundingClientRect();
+            const rootRect = root.getBoundingClientRect();
+            const overlaps = rootRect.left < navRect.right
+                && rootRect.right > navRect.left
+                && rootRect.top < navRect.bottom
+                && rootRect.bottom > navRect.top;
+            if (!overlaps) return;
+
+            root.style.top = `${Math.max(EDGE_GAP, navRect.top - rootRect.height - EDGE_GAP)}px`;
+            root.style.bottom = 'auto';
+            navAdjusted = true;
+        }
+
+        function applyResponsivePosition() {
+            if (navAdjusted && !store.get(POSITION_KEY)) {
+                root.style.removeProperty('left');
+                root.style.removeProperty('top');
+                root.style.removeProperty('right');
+                root.style.removeProperty('bottom');
+            }
+            navAdjusted = false;
+            applyStoredPosition();
+            avoidMobileDashboardNav();
+            positionOverlays();
+        }
+
         function savePosition() {
             const rect = fab.getBoundingClientRect();
             const maxX = Math.max(1, window.innerWidth - fab.offsetWidth - EDGE_GAP * 2);
@@ -414,6 +445,7 @@
             const deltaY = event.clientY - dragStart.y;
             if (!dragged && Math.hypot(deltaX, deltaY) < 6) return;
             dragged = true;
+            navAdjusted = false;
             root.classList.add('gabari-dragging');
             const maxX = window.innerWidth - fab.offsetWidth - EDGE_GAP;
             const maxY = window.innerHeight - fab.offsetHeight - EDGE_GAP;
@@ -427,6 +459,8 @@
         const finishDrag = event => {
             if (!dragStart || event.pointerId !== dragStart.pointerId) return;
             if (dragged) {
+                avoidMobileDashboardNav();
+                positionOverlays();
                 savePosition();
                 suppressClick = true;
                 window.setTimeout(() => { suppressClick = false; }, 0);
@@ -438,6 +472,7 @@
         fab.addEventListener('pointercancel', finishDrag);
         fab.addEventListener('keydown', event => {
             if (!event.shiftKey || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+            navAdjusted = false;
             const rect = fab.getBoundingClientRect();
             const maxX = window.innerWidth - fab.offsetWidth - EDGE_GAP;
             const maxY = window.innerHeight - fab.offsetHeight - EDGE_GAP;
@@ -447,6 +482,7 @@
             root.style.top = `${clamp(rect.top + deltaY, EDGE_GAP, maxY)}px`;
             root.style.right = 'auto';
             root.style.bottom = 'auto';
+            avoidMobileDashboardNav();
             savePosition();
             positionOverlays();
             event.preventDefault();
@@ -461,8 +497,7 @@
             setOpen(panel.hidden);
         });
         window.addEventListener('resize', () => {
-            applyStoredPosition();
-            positionOverlays();
+            applyResponsivePosition();
         });
 
         function renderGuide() {
@@ -522,7 +557,7 @@
             store.del(cfg.storageKey);
             root.hidden = false;
             restore.hidden = true;
-            applyStoredPosition();
+            applyResponsivePosition();
         });
         document.addEventListener('keydown', event => { if (event.key === 'Escape' && !panel.hidden) setOpen(false); });
 
@@ -531,7 +566,7 @@
             restore.hidden = false;
             return;
         }
-        applyStoredPosition();
+        applyResponsivePosition();
 
         // Saudação discreta, uma vez por sessão, só depois que a interface estiver visível
         if (!sessionStorage.getItem('gabari_greeted')) {

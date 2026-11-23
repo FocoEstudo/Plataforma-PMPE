@@ -1,6 +1,6 @@
 (function () {
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  window.PMPE_TOPIC_GUIDES['Linux: sistema operacional e arquivos'] = {
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  window.PCPE_TOPIC_GUIDES['Linux: sistema operacional e arquivos'] = {
     scope: ['Linux e distribuições', 'Arquivos, diretórios e comandos', 'Permissões e segurança'],
     lessons: [
       ['Sistema e distribuições', 'Linux é o núcleo utilizado por diversas distribuições, que o combinam com programas e ferramentas para compor sistemas operacionais. A interface pode ser gráfica ou por linha de comando. Distribuições diferem em seus aplicativos e administradores de pacotes, portanto não presuma que todos os comandos administrativos são idênticos.', 'Uma distribuição pode oferecer uma área de trabalho gráfica e um terminal para comandos.', 'Linux, em sentido estrito, designa o núcleo; uma distribuição inclui outros componentes.'],

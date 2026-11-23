@@ -16,6 +16,8 @@ for (const bankFile of bankFiles) {
   vm.runInNewContext(fs.readFileSync(bankFile, 'utf8'), context, { filename: bankFile });
 }
 const bank = context.window.PCPE_QUESTOES_AGENTE;
+const simuladoEngine = fs.readFileSync(path.join(__dirname, '..', 'simulado-engine.js'), 'utf8');
+assert.match(simuladoEngine, /if \(app\.id === 'pcpe' && window\.PCPE_ROLE !== 'escrivao'\) return agenteBank\(\);/);
 const disciplines = ['Legislação Estadual', 'Noções de Direito Constitucional', 'Noções de Direito Administrativo', 'Noções de Direito Penal', 'Noções de Direito Processual Penal', 'Língua Portuguesa', 'Noções de Informática', 'Raciocínio Lógico', 'Contabilidade Geral', 'Estatística'];
 const ids = new Set(), texts = new Set(), letters = [0, 0, 0, 0, 0], errors = [];
 for (const discipline of disciplines) {

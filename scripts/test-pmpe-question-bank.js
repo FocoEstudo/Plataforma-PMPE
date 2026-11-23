@@ -24,11 +24,27 @@ assert.ok(bankStart >= 0 && bankEnd > bankStart, 'Could not isolate the legacy P
 const sandbox = { window: {}, console: { warn() {} }, Math, Date, Map, Set };
 vm.createContext(sandbox);
 const legacyJson = vm.runInContext(
-    `${modules[0]}\n${source.slice(bankStart, bankEnd)}\npopulateMassiveDatabase(); JSON.stringify(baseQuizTemplates)`,
+    `${modules[0]}\n${source.slice(bankStart, bankEnd)}\npopulateMassiveDatabase(); JSON.stringify({ pools: baseQuizTemplates, modules: editalModules.map(module => ({ topic: module.topic, bank: module.questionBank, coverage: module.questionCoverage })) })`,
     sandbox,
     { timeout: 10000 }
 );
-const before = JSON.parse(legacyJson);
+const legacy = JSON.parse(legacyJson);
+const before = legacy.pools;
+assert.ok(legacy.modules.length > 0 && legacy.modules.length % 2 === 0, 'Daily mission topics must form complete two-topic batteries');
+for (const module of legacy.modules) {
+    assert.equal(module.bank?.length, 10, `${module.topic}: daily battery must contain 10 questions`);
+    assert.equal(new Set(module.bank.map(question => question.text)).size, 10,
+        `${module.topic}: daily battery questions must be distinct`);
+    assert(module.coverage.every(entry => entry.available >= entry.required && entry.required > 0),
+        `${module.topic}: daily battery must cover every required subtopic`);
+    for (const question of module.bank) {
+        assert(question.text && question.exp, `${module.topic}: question or explanation is missing`);
+        assert(Array.isArray(question.options) && question.options.length === 4,
+            `${module.topic}: expected four alternatives in the procedural battery`);
+        assert.equal(question.options[question.correct] !== undefined, true,
+            `${module.topic}: answer key is invalid`);
+    }
+}
 
 const supplementWindow = {};
 const supplementPath = path.join(root, 'questoes-pmpe-complementares.js');

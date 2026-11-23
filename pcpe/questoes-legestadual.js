@@ -1,6 +1,6 @@
 (function () {
-  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
-  Object.assign(window.PPPE_QUESTOES, {
+  window.PCPE_QUESTOES = window.PCPE_QUESTOES || {};
+  Object.assign(window.PCPE_QUESTOES, {
     'Estatuto dos Policiais Civis de Pernambuco': [
       {text:'O Estatuto Policial de Pernambuco é a lei estadual:',options:['6.425/1972.','8.112/1990.','14.133/2021.','11.343/2006.'],correct:0,exp:'A Lei estadual nº 6.425/1972 dispõe sobre o regime jurídico peculiar dos policiais civis.'},
       {text:'O Estatuto Policial disciplina regime jurídico peculiar de:',options:['Funcionários policiais civis estaduais.','Exclusivamente militares federais.','Somente juízes.','Apenas servidores municipais.'],correct:0,exp:'A lei trata do regime peculiar dos funcionários policiais civis de Pernambuco.'},
@@ -27,7 +27,7 @@
     ]
   });
   ['Estatuto dos Policiais Civis de Pernambuco', 'Constituição de Pernambuco: segurança pública'].forEach(topic => {
-    window.PPPE_QUESTOES[topic].forEach((question, index) => {
+    window.PCPE_QUESTOES[topic].forEach((question, index) => {
       const shift = index % question.options.length;
       question.options = question.options.slice(shift).concat(question.options.slice(0, shift));
       question.correct = (question.correct - shift + question.options.length) % question.options.length;

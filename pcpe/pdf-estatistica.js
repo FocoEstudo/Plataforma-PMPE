@@ -1,6 +1,6 @@
 (function () {
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  Object.assign(window.PMPE_TOPIC_GUIDES, {
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  Object.assign(window.PCPE_TOPIC_GUIDES, {
     'Amostragem, gráficos e tabelas': {
       scope: ['População e amostra', 'Amostragem probabilística', 'Leitura de tabelas e gráficos'],
       lessons: [

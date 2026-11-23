@@ -1,5 +1,5 @@
 (function () {
-  window.PMPE_DEEPENING = window.PMPE_DEEPENING || {};
+  window.PCPE_DEEPENING = window.PCPE_DEEPENING || {};
   const L = (titulo, explicacao, roteiro, exemplo, atencao, resumo, exercicio) => [
     ['h', titulo], ['p', explicacao],
     ['h', 'Roteiro de resolução'], ['ol', roteiro],
@@ -8,7 +8,7 @@
     ['h', 'Resumo de revisão'], ['ul', resumo],
     ['h', 'Mini-exercício (estilo Cebraspe)'], ['p', exercicio]
   ];
-  Object.assign(window.PMPE_DEEPENING, {
+  Object.assign(window.PCPE_DEEPENING, {
     'Estruturas e argumentação lógica': {
       1: L('Explicação: o que é proposição',
         'Proposição é uma sentença declarativa que pode ser classificada como verdadeira ou falsa, e apenas uma das duas (princípios da não contradição e do terceiro excluído). Perguntas, ordens, exclamações e sentenças abertas, como “x + 2 = 5” ou “ele é policial” sem referência definida, não são proposições. Proposição simples tem uma única afirmação; composta liga simples por conectivos.',

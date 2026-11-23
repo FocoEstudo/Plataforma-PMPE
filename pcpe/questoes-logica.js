@@ -1,6 +1,6 @@
 (function () {
-  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
-  Object.assign(window.PPPE_QUESTOES, {
+  window.PCPE_QUESTOES = window.PCPE_QUESTOES || {};
+  Object.assign(window.PCPE_QUESTOES, {
     'Estruturas e argumentação lógica': [
       {text:'Qual sentença é uma proposição?',options:['Feche a porta!','Quantos anos você tem?','Recife é capital de Pernambuco.','x é maior que 3, sem definição de x.'],correct:2,exp:'É uma afirmação com valor lógico; ordem, pergunta e sentença aberta não são proposições.'},
       {text:'A conjunção p e q é verdadeira quando:',options:['Ambas são verdadeiras.','Pelo menos uma é verdadeira.','Ambas são falsas.','p é falsa e q verdadeira.'],correct:0,exp:'A conjunção só é verdadeira se as duas parcelas forem verdadeiras.'},

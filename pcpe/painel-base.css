@@ -2267,8 +2267,8 @@ body {
         .mm-node.mm-leaf-core { background: #f3faf5; }
         .mm-leaf-label { display: block; font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; opacity: .8; }
         /* Atendimento e feedback */
-        .desk-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
-        .desk-card { background: linear-gradient(160deg, #fff, #f1f8f3); border: 1px solid #cfe3d6; border-radius: .9rem; padding: 1rem 1.1rem; color: #153a29; display: flex; flex-direction: column; gap: .8rem; }
+        .desk-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+        .desk-card { min-width: 0; background: linear-gradient(160deg, #fff, #f1f8f3); border: 1px solid #cfe3d6; border-radius: .9rem; padding: 1rem 1.1rem; color: #153a29; display: flex; flex-direction: column; gap: .8rem; }
         .desk-card h3 { font-size: 1.05rem; font-weight: 800; color: #103a28; }
         .desk-card label { display: flex; flex-direction: column; gap: .25rem; font-size: .72rem; font-weight: 700; color: #35634a; text-transform: uppercase; letter-spacing: .05em; }
         .desk-card input, .desk-card select, .desk-card textarea { background: #fff; color: #103a28; border: 1px solid #b9d3c1; border-radius: .5rem; padding: .55rem .65rem; font-size: .9rem; font-weight: 500; text-transform: none; letter-spacing: 0; width: 100%; }

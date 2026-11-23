@@ -1,6 +1,6 @@
 (function () {
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  window.PMPE_TOPIC_GUIDES['Estatuto da Juventude (Lei nº 12.852/2013)'] = {
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  window.PCPE_TOPIC_GUIDES['Estatuto da Juventude (Lei nº 12.852/2013)'] = {
     scope: [
       'Lei nº 12.852/2013: disposições gerais, princípios e diretrizes',
       'Direitos dos jovens e políticas públicas de juventude',

@@ -1,6 +1,6 @@
 (function () {
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  Object.assign(window.PMPE_TOPIC_GUIDES, {
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  Object.assign(window.PCPE_TOPIC_GUIDES, {
     'Estatuto dos Policiais Civis de Pernambuco': {
       scope: ['Regime jurídico peculiar dos policiais civis', 'Hierarquia e disciplina', 'Responsabilidade e garantias'],
       lessons: [

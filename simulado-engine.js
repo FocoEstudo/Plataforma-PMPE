@@ -36,6 +36,8 @@
         return result;
     };
     const bank = () => {
+        if (app.id === 'pcpe' && window.PCPE_ROLE !== 'escrivao') return agenteBank();
+        const questionSource = app.id === 'pcpe' ? window.PCPE_QUESTOES : window.PPPE_QUESTOES;
         let pools = window.PMPE_QUIZ_POOLS;
         if ((!pools || !Object.values(pools).some(pool => Array.isArray(pool) && pool.length)) && originalOpenQuiz) {
             try {
@@ -70,8 +72,8 @@
                 });
             });
         }
-        if (!Object.keys(result).length && window.PPPE_QUESTOES) {
-            Object.entries(window.PPPE_QUESTOES).forEach(([topic, questions]) => {
+        if (!Object.keys(result).length && questionSource) {
+            Object.entries(questionSource).forEach(([topic, questions]) => {
                 if (!Array.isArray(questions)) return;
                 const valid = questions.filter(question => question && typeof question.text === 'string'
                     && Array.isArray(question.options) && Number.isInteger(question.correct))
@@ -79,11 +81,11 @@
                 if (valid.length) result[topic] = valid;
             });
         }
-        if ((app.id === 'pppe' || app.id === 'pcpe') && window.PPPE_QUESTOES) {
+        if ((app.id === 'pppe' || app.id === 'pcpe') && questionSource) {
             Object.keys(result).forEach(subject => delete result[subject]);
             const modules = app.id === 'pcpe' ? (window.PCPE_MODULOS || []) : (window.PPPE_MODULOS || []);
             const disciplineByTopic = new Map(modules.map(module => [module.topic, module.sub]));
-            Object.entries(window.PPPE_QUESTOES).forEach(([topic, questions]) => {
+            Object.entries(questionSource).forEach(([topic, questions]) => {
                 const subject = disciplineByTopic.get(topic);
                 if (!subject || !Array.isArray(questions)) return;
                 const pool = result[subject] || (result[subject] = []);
@@ -92,17 +94,6 @@
                         || question.options.length < 2 || !Number.isInteger(question.correct)
                         || question.correct < 0 || question.correct >= question.options.length) return;
                     pool.push({ ...question, topic, subject, options: [...question.options] });
-                });
-            });
-        }
-        if (app.id === 'pcpe' && window.PCPE_ROLE !== 'escrivao' && window.PCPE_QUESTOES_AGENTE) {
-            Object.entries(window.PCPE_QUESTOES_AGENTE).forEach(([subject, questions]) => {
-                if (!Array.isArray(questions)) return;
-                const pool = result[subject] || (result[subject] = []);
-                questions.forEach(q => {
-                    if (q && typeof q.text === 'string' && Array.isArray(q.options) && q.options.length === 5
-                        && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < 5)
-                        pool.push({ ...q, subject, options: [...q.options] });
                 });
             });
         }
@@ -183,8 +174,8 @@
         const isAgente = app.id === 'pcpe' && window.PCPE_ROLE !== 'escrivao';
         if (selector && Object.keys(pools).length) {
             const previous = selector.value;
-            selector.replaceChildren(new Option(`Misto · ${app.name}`, 'todos'));
-            if (isAgente) selector.add(new Option('Simulado Oficial PCPE Agente · 60 questões', 'oficial-agente'));
+            selector.replaceChildren(new Option(isAgente ? 'Misto PCPE Agente · múltipla escolha A–E' : `Misto · ${app.name}`, 'todos'));
+            if (isAgente) selector.add(new Option('Prova completa PCPE Agente · 60 questões A–E', 'oficial-agente'));
             Object.keys(pools).forEach(subject => selector.add(new Option(subject, subject)));
             selector.value = pools[previous] || (isAgente && previous === 'oficial-agente') ? previous : 'todos';
         }
@@ -209,10 +200,10 @@
         const description = panel.querySelector('p');
         if (description) description.textContent = `Escolha uma disciplina ou o simulado misto. As questões são selecionadas sem repetição até o esgotamento do banco; ao fim do ciclo, a lista é reiniciada. Após selecionar uma alternativa, você verá a correção e a resposta ficará registrada. Banco do ${app.name}.`;
         if (isAgente) {
-            description.textContent = 'O modo oficial segue P1 (20) e P2 (40), com 1 ponto por acerto e sem penalidade por erro ou branco. Após selecionar uma alternativa, você verá a correção e a resposta ficará registrada. Não deixe respostas em branco. As quatro horas da prova real incluem a redação. O banco de cinco alternativas ainda está em construção; o modo oficial só inicia quando houver questões suficientes. As demais práticas podem incluir itens de 4 alternativas (banco de treino).';
+            description.textContent = 'O simulador do cargo de Agente usa exclusivamente questões autorais de múltipla escolha com cinco alternativas (A–E), no nível e formato de referência CEBRASPE e limitadas ao conteúdo programático PCPE estudado na plataforma. As provas anteriores servem de referência de formato e dificuldade; seus enunciados não são copiados nem reescritos. A prova completa tem distribuição estimada entre P1 (20) e P2 (40); confira o edital vigente para os parâmetros oficiais.';
             if (!document.getElementById('simEngineExamHelp')) {
                 const help = document.createElement('div'); help.id = 'simEngineExamHelp'; help.className = 'sim-engine-muted';
-                help.innerHTML = '<p>Distribuição estimada: Estadual 3, Constitucional 5, Administrativo 4, Penal 5, Processual Penal 3; Português 12, Informática 6, Raciocínio Lógico 10, Contabilidade 6, Estatística 6. O edital não divulga quantidades por disciplina. A opção proporcional ao banco conserva os blocos de 20 e 40.</p><p><strong>Provas anteriores:</strong> consulte a <a href="https://www.cebraspe.org.br/concursos/" target="_blank" rel="noopener noreferrer">página oficial de concursos do Cebraspe</a>, procure provas e gabaritos de polícia civil e resolva-os cronometrando; revise erros e compare o conteúdo ao edital vigente. As questões deste modo são originais em estilo Cebraspe, não reproduções de provas anteriores.</p>';
+                help.innerHTML = '<p>Distribuição estimada: Estadual 3, Constitucional 5, Administrativo 4, Penal 5, Processual Penal 3; Português 12, Informática 6, Raciocínio Lógico 10, Contabilidade 6, Estatística 6. O edital pode não divulgar quantidades por disciplina; confira o edital vigente. A opção proporcional ao banco conserva os blocos estimados de 20 e 40.</p><p><strong>Referência de formato:</strong> consulte a <a href="https://www.cebraspe.org.br/concursos/" target="_blank" rel="noopener noreferrer">página oficial de concursos do Cebraspe</a> para provas e gabaritos anteriores de polícia civil. As questões desta plataforma são originais e não reproduzem nem parafraseiam itens de provas anteriores.</p>';
                 panel.appendChild(help);
             }
         }
@@ -303,12 +294,13 @@
     const open = filterOverride => {
         startPanel();
         const selector = document.getElementById('quizFilter');
-        const filter = filterOverride || selector?.value || 'todos';
-        const official = app.id === 'pcpe' && window.PCPE_ROLE !== 'escrivao' && filter === 'oficial-agente';
+        const isAgente = app.id === 'pcpe' && window.PCPE_ROLE !== 'escrivao';
+        const filter = isAgente ? filterOverride || selector?.value || 'todos' : filterOverride || selector?.value || 'todos';
+        const official = isAgente && filter === 'oficial-agente';
         const count = official ? 60 : Number(document.getElementById('simEngineQuantity')?.value || 60);
         const selected = official ? selectOfficial(document.getElementById('simEngineDistribution')?.value || 'estimated') : selectQuestions(filter, count);
         if (selected.error) { renderSetupError(selected.error); return; }
-        const minutes = Number(document.getElementById('simEngineMinutes')?.value || 90);
+        const minutes = official ? 240 : Number(document.getElementById('simEngineMinutes')?.value || 90);
         clearInterval(timerId);
         const startedAt = Date.now();
         const rawGoal = Number(document.getElementById('simEngineGoal')?.value);

@@ -1,6 +1,6 @@
 (function () {
-  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
-  Object.assign(window.PPPE_QUESTOES, {
+  window.PCPE_QUESTOES = window.PCPE_QUESTOES || {};
+  Object.assign(window.PCPE_QUESTOES, {
     'Conceitos, objetivos e finalidades': [
       {text:'O objeto da contabilidade é:',options:['Apenas dinheiro.','O patrimônio da entidade e suas variações.','Somente obrigações fiscais.','O mercado de ações.'],correct:1,exp:'A contabilidade estuda e evidencia o patrimônio e suas variações.'},
       {text:'Uma finalidade da informação contábil é:',options:['Apoiar decisões dos usuários.','Substituir todos os contratos.','Eliminar qualquer risco.','Garantir lucro futuro.'],correct:0,exp:'Os relatórios auxiliam usuários a avaliar a entidade e tomar decisões.'},

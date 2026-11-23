@@ -1,5 +1,5 @@
 (function () {
-  window.PMPE_DEEPENING = window.PMPE_DEEPENING || {};
+  window.PCPE_DEEPENING = window.PCPE_DEEPENING || {};
   const L = (titulo, explicacao, roteiro, exemplo, atencao, resumo, exercicio) => [
     ['h', titulo], ['p', explicacao],
     ['h', 'Roteiro de resolução'], ['ol', roteiro],
@@ -8,7 +8,7 @@
     ['h', 'Resumo de revisão'], ['ul', resumo],
     ['h', 'Mini-exercício (estilo Cebraspe)'], ['p', exercicio]
   ];
-  Object.assign(window.PMPE_DEEPENING, {
+  Object.assign(window.PCPE_DEEPENING, {
     'Conceitos, objetivos e finalidades': {
       1: L('Explicação: objeto e finalidade da contabilidade',
         'A contabilidade estuda, registra e evidencia o patrimônio das entidades e suas variações. Sua finalidade é fornecer informação útil a usuários, como gestores, investidores, credores e o Fisco, para tomada de decisões.',

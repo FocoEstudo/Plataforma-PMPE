@@ -226,5 +226,10 @@ sub(/<\/body>/, `<script>window.GABARI_CONFIG = { concurso: 'PPPE', accent: '#0a
     <script src="../gabari.js?v=2"></script>
 </body>`, 'gabari');
 
+if (html.includes('O material completo deste tema está em preparação')
+    || html.includes('const baseQuizTemplates = {};')) {
+    throw new Error('Geração interrompida: o modelo contém apostilas placeholder ou banco de questões vazio.');
+}
+
 fs.writeFileSync(path.join(root, 'pppe', 'index.html'), html, 'utf8');
 console.log('pppe/index.html gerado:', html.length, 'bytes;', modules.length, 'módulos;', subjects.length, 'matérias');

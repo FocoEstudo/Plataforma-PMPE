@@ -1,6 +1,6 @@
 (function () {
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  Object.assign(window.PMPE_TOPIC_GUIDES, {
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  Object.assign(window.PCPE_TOPIC_GUIDES, {
     'Conceitos, objetivos e finalidades': {
       scope: ['Objeto e finalidade da contabilidade', 'Informação contábil', 'Regime de competência'],
       lessons: [

@@ -1,6 +1,6 @@
 (function () {
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  Object.assign(window.PMPE_TOPIC_GUIDES, {
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  Object.assign(window.PCPE_TOPIC_GUIDES, {
     'Arquivo: conceito, princípios e funções': {
       scope: ['Conceito de arquivo', 'Princípios arquivísticos', 'Ciclo de vida dos documentos'],
       lessons: [

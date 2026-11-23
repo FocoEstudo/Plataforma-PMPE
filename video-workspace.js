@@ -19,8 +19,19 @@
                 supportPanel.setAttribute('aria-labelledby', tab.id);
             }
         };
+        const updateDashboardPanelLabels = () => {
+            document.querySelectorAll('[role="tab"][data-open-dashboard-view][aria-selected="true"]').forEach(tab => {
+                if (!tab.getClientRects().length) return;
+                const panelId = tab.getAttribute('aria-controls');
+                const panel = panelId && document.getElementById(panelId);
+                if (panel && panel.getAttribute('aria-labelledby') !== tab.id) {
+                    panel.setAttribute('aria-labelledby', tab.id);
+                }
+            });
+            updateSupportLabel();
+        };
         if (supportPanel) {
-            new MutationObserver(updateSupportLabel).observe(supportPanel, {
+            new MutationObserver(updateDashboardPanelLabels).observe(supportPanel, {
                 attributes: true,
                 attributeFilter: ['data-support-view']
             });
@@ -28,7 +39,7 @@
 
         const mobileNav = document.querySelector('.mobile-dashboard-nav');
         if (!mobileNav) {
-            updateSupportLabel();
+            updateDashboardPanelLabels();
             return;
         }
         const navLabel = mobileNav.getAttribute('aria-label') || 'Navegação inferior';
@@ -59,7 +70,7 @@
                 }
             }
             updateOverflowIndicators();
-            updateSupportLabel();
+            updateDashboardPanelLabels();
         };
         const scheduleReveal = () => window.requestAnimationFrame(revealActiveTab);
         new MutationObserver(scheduleReveal).observe(mobileNav, {

@@ -1,6 +1,6 @@
 (function () {
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  Object.assign(window.PMPE_TOPIC_GUIDES, {
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  Object.assign(window.PCPE_TOPIC_GUIDES, {
     'Estruturas e argumentação lógica': {
       scope: ['Proposições e conectivos', 'Tabelas-verdade', 'Validade de argumentos'],
       lessons: [

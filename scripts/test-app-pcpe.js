@@ -15,6 +15,36 @@ assert.match(coverage, /22\.2\.3\.1/);
 assert.match(coverage, /22\.2\.5\.1/);
 const scripts = [...app.matchAll(/<script\s+src="([^"]+)"/g)].map(match => match[1].split('?')[0]).filter(src => !/^https?:/.test(src));
 for (const src of scripts) assert(fs.existsSync(path.resolve(root, 'pcpe', src)), `Script ausente: ${src}`);
+const sharedContentScripts = scripts
+  .filter(src => /^\.\.\/pppe\/(?:pdf-|questoes-|aprofundamento-)/.test(src))
+  .map(src => path.basename(src))
+  .sort();
+assert.deepEqual(sharedContentScripts, [
+  'aprofundamento-administrativo.js',
+  'aprofundamento-complementar-administrativo.js',
+  'aprofundamento-complementar-constitucional.js',
+  'aprofundamento-complementar-informatica.js',
+  'aprofundamento-complementar-penal.js',
+  'aprofundamento-complementar-processo-penal.js',
+  'aprofundamento-complementar-portugues.js',
+  'aprofundamento-constitucional.js',
+  'aprofundamento-informatica-atualidades.js',
+  'aprofundamento-penal.js',
+  'aprofundamento-portugues.js',
+  'aprofundamento-processo-penal.js',
+  'pdf-administrativo.js',
+  'pdf-constitucional.js',
+  'pdf-info-atualidades.js',
+  'pdf-penal.js',
+  'pdf-portugues.js',
+  'pdf-processo-penal.js',
+  'questoes-administrativo.js',
+  'questoes-constitucional.js',
+  'questoes-info-atualidades.js',
+  'questoes-penal.js',
+  'questoes-portugues.js',
+  'questoes-processo-penal.js'
+].sort(), 'A PCPE deve compartilhar apenas os materiais dos seis grupos com videoaulas correspondentes.');
 assert.match(login, /authApi\.db, "pcpeProfiles"/);
 assert.match(login, /getPostLoginPage = \(\) => "index\.html"/);
 assert.match(guard, /concurso: "pcpe"/);
@@ -29,7 +59,7 @@ for (const role of ['agente', 'escrivao']) {
   for (const src of scripts.filter(src => !['cloud-sync.js', '../gabari.js', '../sidebar-toggle.js'].includes(src))) {
     vm.runInNewContext(read(path.join('pcpe', src)), context, { filename: src });
   }
-  const { PCPE_MODULOS: modules, PMPE_TOPIC_GUIDES: guides, PPPE_QUESTOES: questions } = context.window;
+  const { PCPE_MODULOS: modules, PCPE_TOPIC_GUIDES: guides, PCPE_QUESTOES: questions } = context.window;
   assert(modules.length > 30);
   assert(modules.some(m => m.sub === (role === 'agente' ? 'Contabilidade Geral' : 'Noções de Arquivologia')));
   assert(!modules.some(m => m.sub === (role === 'agente' ? 'Noções de Arquivologia' : 'Contabilidade Geral')));
@@ -37,16 +67,27 @@ for (const role of ['agente', 'escrivao']) {
   assert.equal(youthModule?.sub, 'Noções de Direito Penal', `${role}: Estatuto da Juventude ausente do programa`);
   assert(guides[youthModule.topic].lessons.length >= 5, `${role}: guia incompleto do Estatuto da Juventude`);
   assert(guides[youthModule.topic].sources.some(([, url]) => url.includes('/l12852.htm')), `${role}: fonte oficial do Estatuto da Juventude ausente`);
-  assert.equal(Object.keys(context.window.PMPE_DEEPENING[youthModule.topic] || {}).length, guides[youthModule.topic].lessons.length, `${role}: aprofundamento incompleto do Estatuto da Juventude`);
+  assert.equal(Object.keys(context.window.PCPE_DEEPENING[youthModule.topic] || {}).length, guides[youthModule.topic].lessons.length, `${role}: aprofundamento incompleto do Estatuto da Juventude`);
+  for (const topic of ['Compreensão, interpretação e tipologia textual', 'Sistema operacional Windows']) {
+    assert(guides[topic]?.lessons?.length >= 4, `${role}: falta apostila PCPE do Dia 1 para ${topic}`);
+    assert.equal(questions[topic]?.length, 10, `${role}: a bateria PCPE do Dia 1 precisa de 10 questões para ${topic}`);
+  }
+  const dayTwoTopic = 'Princípios fundamentais e direitos e deveres individuais e coletivos';
+  assert.equal(questions[dayTwoTopic]?.length, 10, `${role}: a bateria PCPE do Dia 2 precisa de 10 questões para ${dayTwoTopic}`);
+  assert.equal(new Set(questions[dayTwoTopic].map(question => question.text)).size, 10, `${role}: as questões do Dia 2 precisam ser distintas`);
+  assert(guides[dayTwoTopic]?.lessons?.length >= 7, `${role}: falta apostila baseada nas videoaulas do Dia 2`);
+  assert(context.window.PPPE_VIDEOS[dayTwoTopic]?.some(video => video.title === 'Princípios fundamentais'), `${role}: vídeo de princípios fundamentais ausente do tópico do Dia 2`);
+  assert(context.window.PPPE_VIDEOS[dayTwoTopic]?.some(video => video.title === 'Direitos individuais e coletivos'), `${role}: vídeo de direitos individuais e coletivos ausente do tópico do Dia 2`);
   for (const module of modules) {
-    assert(guides[module.topic]?.lessons?.length >= 4, `${role}: falta guia de ${module.topic}`);
+    assert(guides[module.topic]?.lessons?.length >= 4, `${role}: guia incompleto de ${module.topic}`);
     const inherited = context.window.PPPE_VIDEOS[module.topic] || [];
     const extra = context.window.PPPE_VIDEOS_COMPLEMENTARES[module.topic] || [];
     assert(inherited.length || extra.length, `${role}: falta videoaula de ${module.topic}`);
     for (const [id, title] of extra) assert(/^[A-Za-z0-9_-]{11}$/.test(id) && title, `${module.topic}: vídeo inválido`);
     const bank = questions[module.topic];
-    assert(bank?.length >= 10, `${role}: faltam questões de ${module.topic}`);
-    for (const question of bank) {
+    assert.equal(bank?.length, 10, `${role}: banco incompleto para ${module.topic}`);
+    assert.equal(new Set(bank.map(question => question.text)).size, 10, `${role}: questões repetidas em ${module.topic}`);
+    for (const question of bank || []) {
       assert.equal(question.options.length, 4);
       assert(Number.isInteger(question.correct) && question.correct >= 0 && question.correct < 4);
       assert(question.text && question.exp);
@@ -79,5 +120,5 @@ for (const role of ['agente', 'escrivao']) {
     renderedText(syllabus).includes(role === 'agente' ? 'Lei 6.123/1968 e regime geral' : 'Princípios arquivísticos'),
     `${role}: subitens do edital não aparecem na aba Conteúdos`
   );
-  console.log(`OK: ${role}, ${modules.length} módulos com guia, questões e videoaula.`);
+  console.log(`OK: ${role}, Dia 1 com apostilas e bateria PCPE; ${modules.length} módulos catalogados.`);
 }

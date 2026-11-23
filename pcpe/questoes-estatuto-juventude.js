@@ -1,6 +1,6 @@
 (function () {
-  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
-  window.PPPE_QUESTOES['Estatuto da Juventude (Lei nº 12.852/2013)'] = [
+  window.PCPE_QUESTOES = window.PCPE_QUESTOES || {};
+  window.PCPE_QUESTOES['Estatuto da Juventude (Lei nº 12.852/2013)'] = [
     { text: 'Segundo a Lei nº 12.852/2013, considera-se jovem a pessoa com idade entre:', options: ['12 e 18 anos.', '15 e 29 anos.', '18 e 30 anos.', '16 e 24 anos.'], correct: 1, exp: 'O Estatuto da Juventude considera jovens as pessoas entre quinze e vinte e nove anos.' },
     { text: 'Sobre a relação entre o Estatuto da Juventude e o ECA, assinale a correta.', options: ['O Estatuto da Juventude revoga o ECA para todos os maiores de quinze anos.', 'O ECA só se aplica a menores de quinze anos.', 'Para adolescentes de quinze a dezoito anos, o ECA continua aplicável quando não houver conflito com as normas de proteção integral.', 'A faixa etária do Estatuto da Juventude altera a maioridade penal.'], correct: 2, exp: 'A lei preserva a aplicação do ECA aos adolescentes quando compatível com as normas de proteção integral.' },
     { text: 'A Lei nº 12.852/2013 institui:', options: ['O Estatuto da Juventude e o Sistema Nacional de Juventude (SINAJUVE).', 'Um código penal especial para pessoas de quinze a vinte e nove anos.', 'Um órgão policial nacional para investigação de atos juvenis.', 'A substituição dos conselhos de direitos da criança e do adolescente.'], correct: 0, exp: 'A lei trata dos direitos dos jovens, das políticas públicas de juventude e institui o SINAJUVE.' },

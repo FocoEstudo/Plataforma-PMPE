@@ -1,7 +1,7 @@
 // Seleção por assunto e título: vídeos podem cobrir apenas parte do programa.
 window.PCPE_VIDEO_MAP = {
     constitucional: [
-        ['Princípios fundamentais e direitos e deveres individuais e coletivos', ['Direitos individuais e coletivos']],
+        ['Princípios fundamentais e direitos e deveres individuais e coletivos', ['Princípios fundamentais', 'Direitos individuais e coletivos']],
         ['Organização do Estado e intervenção', ['Organização político-administrativa', 'Federalismo']],
         ['Organização dos Poderes e funções essenciais à justiça', ['Organização dos Poderes', 'Poderes do Estado e suas funções']],
         ['Defesa do Estado e das instituições democráticas e segurança pública', ['Defesa do Estado e das instituições democráticas', 'Segurança pública', 'Artigo 144: segurança pública']]

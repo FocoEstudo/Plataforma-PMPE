@@ -1,6 +1,6 @@
 (function () {
   const topic = 'Estatuto da Juventude (Lei nº 12.852/2013)';
-  const guide = window.PMPE_TOPIC_GUIDES?.[topic];
+  const guide = window.PCPE_TOPIC_GUIDES?.[topic];
   if (!guide || guide.lessons.length !== 6 || guide.practice.length !== 6 || guide.answers.length !== 6) {
     throw new Error('O guia completo do Estatuto da Juventude precisa ser carregado antes do aprofundamento.');
   }
@@ -38,10 +38,10 @@
     }
   ];
 
-  window.PMPE_DEEPENING = window.PMPE_DEEPENING || {};
-  window.PMPE_DEEPENING[topic] = {};
+  window.PCPE_DEEPENING = window.PCPE_DEEPENING || {};
+  window.PCPE_DEEPENING[topic] = {};
   details.forEach((detail, index) => {
-    window.PMPE_DEEPENING[topic][index + 1] = [
+    window.PCPE_DEEPENING[topic][index + 1] = [
       ['h', 'Resumo essencial'],
       ['p', detail.summary],
       ['h', 'Exemplo resolvido'],

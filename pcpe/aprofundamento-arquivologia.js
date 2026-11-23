@@ -1,5 +1,5 @@
 (function () {
-  window.PMPE_DEEPENING = window.PMPE_DEEPENING || {};
+  window.PCPE_DEEPENING = window.PCPE_DEEPENING || {};
   const L = (titulo, explicacao, roteiro, exemplo, atencao, resumo, exercicio) => [
     ['h', titulo], ['p', explicacao],
     ['h', 'Roteiro de resolução'], ['ol', roteiro],
@@ -8,7 +8,7 @@
     ['h', 'Resumo de revisão'], ['ul', resumo],
     ['h', 'Mini-exercício (estilo Cebraspe)'], ['p', exercicio]
   ];
-  Object.assign(window.PMPE_DEEPENING, {
+  Object.assign(window.PCPE_DEEPENING, {
     'Arquivo: conceito, princípios e funções': {
       1: L('Explicação: conceito de arquivo',
         'Pela Lei nº 8.159/1991, arquivos são conjuntos de documentos produzidos e recebidos por órgãos públicos, instituições de caráter público e entidades privadas, em decorrência do exercício de atividades específicas, qualquer que seja o suporte da informação ou a natureza dos documentos. O termo também designa a instituição e o local de guarda. Arquivo não se confunde com coleção, reunida por critério temático ou de interesse, sem vínculo orgânico.',

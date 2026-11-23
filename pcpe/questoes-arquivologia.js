@@ -1,6 +1,6 @@
 (function () {
-  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
-  Object.assign(window.PPPE_QUESTOES, {
+  window.PCPE_QUESTOES = window.PCPE_QUESTOES || {};
+  Object.assign(window.PCPE_QUESTOES, {
     'Arquivo: conceito, princípios e funções': [
       {text:'Arquivo, como conjunto documental, compreende documentos:',options:['Produzidos e recebidos no exercício das atividades de uma pessoa ou entidade.','Somente livros publicados.','Somente papéis antigos.','Apenas notícias de jornais.'],correct:0,exp:'Os documentos arquivísticos se originam das atividades do produtor, independentemente do suporte.'},
       {text:'O princípio da proveniência orienta:',options:['Misturar fundos de todos os produtores.','Manter identificados e separados os documentos de produtores distintos.','Descartar o contexto de criação.','Organizar tudo apenas por cor.'],correct:1,exp:'A proveniência preserva a origem dos documentos e distingue os fundos.'},

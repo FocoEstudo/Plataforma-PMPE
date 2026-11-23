@@ -1,8 +1,8 @@
 (function () {
   'use strict';
   if (window.PCPE_ROLE === 'escrivao') return;
-  window.PMPE_TOPIC_GUIDES = window.PMPE_TOPIC_GUIDES || {};
-  window.PMPE_DEEPENING = window.PMPE_DEEPENING || {};
+  window.PCPE_TOPIC_GUIDES = window.PCPE_TOPIC_GUIDES || {};
+  window.PCPE_DEEPENING = window.PCPE_DEEPENING || {};
   // Cada linha contém título, explicação, exemplo, atenção e questão com gabarito.
   const dados = {
     'Legislação estadual: regime geral e leis complementares': [
@@ -132,8 +132,8 @@
   };
   Object.entries(dados).forEach(([topic, rows]) => {
     const destino = destinos[topic];
-    const guide = window.PMPE_TOPIC_GUIDES[destino];
-    const deep = window.PMPE_DEEPENING[destino];
+    const guide = window.PCPE_TOPIC_GUIDES[destino];
+    const deep = window.PCPE_DEEPENING[destino];
     if (!guide || !deep) throw new Error('Material PCPE ausente: ' + destino);
     guide.scope = [...(guide.scope || []), ...rows.map(row => row[0])];
     guide.practice = guide.practice || [];

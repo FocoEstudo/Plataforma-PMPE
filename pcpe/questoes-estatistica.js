@@ -1,6 +1,6 @@
 (function () {
-  window.PPPE_QUESTOES = window.PPPE_QUESTOES || {};
-  Object.assign(window.PPPE_QUESTOES, {
+  window.PCPE_QUESTOES = window.PCPE_QUESTOES || {};
+  Object.assign(window.PCPE_QUESTOES, {
     'Amostragem, gráficos e tabelas': [
       { text: 'Em uma pesquisa com parte das delegacias de uma região, as delegacias selecionadas formam:', options: ['O censo.', 'Uma amostra.', 'Um parâmetro.', 'A totalidade da população.'], correct: 1, exp: 'A amostra é o subconjunto observado; a população é o conjunto definido como alvo da pesquisa.' },
       { text: 'Qual variável é quantitativa discreta?', options: ['Número de registros por dia.', 'Cor de uma pasta.', 'Tempo de atendimento medido continuamente.', 'Categoria de ocorrência.'], correct: 0, exp: 'O número de registros é uma contagem; as categorias são qualitativas e o tempo é uma medida contínua.' },
