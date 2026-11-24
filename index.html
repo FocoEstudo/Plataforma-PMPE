@@ -5264,7 +5264,7 @@
                         <a href="#teoria-${materialKey}">Teoria e exemplos</a> ·
                         <a href="#treino-${materialKey}">Fixação comentada</a> ·
                         <a href="#competencias-${materialKey}">Competências esperadas</a>
-                        ${combinedSourceHtml ? ` · <a href="#fontes-${materialKey}">Fontes oficiais</a>` : ""}
+                        ${combinedSourceHtml || guide.sourceNote ? ` · <a href="#fontes-${materialKey}">Fontes e elaboração</a>` : ""}
                     </nav>
                     <section id="programa-${materialKey}">
                         <h2>1. Conteúdo programático coberto neste PDF</h2>
@@ -5307,7 +5307,7 @@
                         </ul>
                         <blockquote><strong>Checagem de domínio:</strong> faça um resumo de 60 segundos e confira se mencionou cada subtópico programático.</blockquote>
                     </section>
-                    ${combinedSourceHtml ? `<section id="fontes-${materialKey}"><h2>5. Fontes para consulta</h2><p>Use estas fontes para conferir o texto vigente. Em legislação, a apostila orienta o estudo, mas não substitui a leitura integral da norma consolidada.</p><ul>${combinedSourceHtml}</ul></section>` : ""}
+                    ${combinedSourceHtml || guide.sourceNote ? `<section id="fontes-${materialKey}"><h2>5. Fontes e elaboração</h2>${guide.sourceNote ? `<p><strong>Nota de elaboração:</strong> ${guide.sourceNote}</p>` : ""}${combinedSourceHtml ? `<p>Use estas referências para conferir o conteúdo e, em legislação, consulte a redação integral e vigente da norma.</p><ul>${combinedSourceHtml}</ul>` : ""}</section>` : ""}
                 </article>`;
                 materialsDatabase[materialKey] = { title: `${module.sub} · ${module.topic}`, content: topicContent };
             });

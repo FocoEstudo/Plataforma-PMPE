@@ -5103,7 +5103,7 @@
                 const indexItems = ['<li><a href="#' + prefix + '-escopo">Escopo do edital</a></li>']
                     .concat(lessons.map(([heading], index) => '<li><a href="#' + anchors[index] + '">' + esc(heading) + '</a></li>'))
                     .concat(guide?.practice?.length ? ['<li><a href="#' + prefix + '-treino">Treino comentado</a></li>'] : [])
-                    .concat(guide?.sources?.length ? ['<li><a href="#' + prefix + '-fontes">Fontes oficiais</a></li>'] : []).join('');
+                    .concat(guide?.sources?.length || guide?.sourceNote ? ['<li><a href="#' + prefix + '-fontes">Fontes e elaboração</a></li>'] : []).join('');
                 const header = '<section class="apostila-cover"><p class="apostila-cover-kicker">Operação PCPE · Caderno de estudos</p><p>POLÍCIA CIVIL DE PERNAMBUCO</p><h1>' + esc(module.topic) + '</h1><p class="apostila-cover-note">Material de apoio para a preparação. Confira o edital e a legislação em suas versões oficiais vigentes.</p><p class="apostila-cover-meta">' + esc(module.sub) + '</p></section>'
                     + '<nav class="apostila-index" aria-label="Nesta apostila"><h2>Roteiro da apostila</h2><ol>' + indexItems + '</ol></nav>'
                     + '<section id="' + prefix + '-escopo"><h2>Escopo deste tema no edital</h2><ul>' + scopeItems + '</ul></section>';
@@ -5115,7 +5115,7 @@
                         '<li><a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a></li>').join('');
                     body = guide.lessons.map((lesson, index) => lessonHtml(lesson, index, guide.lessons.length, module.topic, anchors[index])).join('')
                         + (practice ? '<section class="apostila-exercise mb-8" id="' + prefix + '-treino"><h2>Treino comentado</h2><ol>' + practice + '</ol></section>' : '')
-                        + (sources ? '<section class="apostila-sources" id="' + prefix + '-fontes"><h2>Fontes oficiais</h2><ul>' + sources + '</ul></section>' : '');
+                        + (sources || guide.sourceNote ? '<section class="apostila-sources" id="' + prefix + '-fontes"><h2>Fontes e elaboração</h2>' + (guide.sourceNote ? '<p><strong>Nota de elaboração:</strong> ' + esc(guide.sourceNote) + '</p>' : '') + (sources ? '<ul>' + sources + '</ul>' : '') + '</section>' : '');
                 } else {
                     body = '<section><h2>Apostila</h2><p class="rounded-lg border-l-4 border-blue-600 bg-blue-50 p-4 text-slate-800">Não há guia cadastrado para este tema. Consulte o programa e as fontes oficiais.</p></section>';
                 }

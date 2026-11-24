@@ -1,5 +1,6 @@
 // Dados curriculares temáticos usados para montar apostilas por tema da missão.
 // Cada unidade liga escopo, explicação, exemplo, alerta, treino comentado e competência esperada.
+const NO_CAPTION_SOURCE_NOTE = "Material complementar elaborado a partir do título da videoaula e do escopo do edital, com consulta às fontes públicas indicadas quando o tema exige. Como a legenda não está disponível, este conteúdo não é uma transcrição nem atribui exemplos específicos ao professor.";
 window.PMPE_TOPIC_GUIDES = {
   "Compreensão, Interpretação e Tipologia": {
     scope: ["Leitura literal e inferência", "Tipos textuais: narração, descrição, exposição, argumentação e injunção", "Gêneros textuais e finalidade comunicativa"],
@@ -24,6 +25,7 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["Porque apaga a presença, a diversidade e a resistência dos povos indígenas que já habitavam o território.", "A capitania organizou ocupação colonial; engenhos produziram açúcar para exportação e se apoiaram em concentração de terras e trabalho escravizado."]
   },
   "Proposições Lógicas e Conectivos": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
     scope: ["Proposições simples e compostas", "Conjunção, disjunção, condicional e bicondicional", "Negação e leitura de sentenças"],
     lessons: [
       ["Sentenças, proposições e valores lógicos", "Proposição é uma frase declarativa à qual a lógica atribui exatamente um valor: verdadeiro ou falso. Uma pergunta, ordem, pedido ou exclamação não é proposição, porque não afirma algo avaliável como V/F. Também não é proposição completa uma sentença aberta cuja verdade depende de variável sem valor, como ‘x é maior que 3’. Contradições aparentes e frases sobre si mesmas exigem cuidado, pois podem fugir da lógica proposicional elementar.", "‘A viatura está na garagem’ pode ser avaliada como V ou F. ‘Feche a porta!’ expressa ordem, e ‘x+2=5’ depende do valor de x.", "Presença de verbo não basta. Verifique se é declaração e se os termos estão definidos para atribuir V ou F."],
@@ -76,6 +78,8 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["À viatura: referência anafórica.", "Catáfora: antecipa a determinação explicada depois dos dois-pontos."]
   },
   "Invasões Holandesas e Nassau": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
+    sources: [["Diário de Pernambuco — Herança holandesa: o Recife de Maurício de Nassau", "https://www.diariodepernambuco.com.br/noticia/vidaurbana/2017/06/heranca-holandesa-o-recife-de-mauricio-de-nassau.html"]],
     scope: ["Contexto econômico da ocupação neerlandesa", "Companhia das Índias Ocidentais e presença em Pernambuco", "Governo de Maurício de Nassau"],
     lessons: [
       ["União Ibérica e interesses neerlandeses", "Entre 1580 e 1640, Portugal e Espanha estiveram sob a mesma monarquia, período chamado União Ibérica. A disputa entre a Espanha e as Províncias Unidas neerlandesas afetou o comércio do açúcar, no qual comerciantes dos Países Baixos participavam do financiamento, transporte e refino. A criação da Companhia das Índias Ocidentais (WIC) reuniu interesses comerciais e militares. Pernambuco era estratégico pela produção açucareira e pelo acesso ao porto do Recife.", "Interrompido ou ameaçado o acesso às redes de açúcar, controlar áreas produtoras e portos tornou-se um objetivo econômico e militar.", "Não reduza as invasões a uma rivalidade religiosa: comércio, guerra europeia e açúcar se combinam."],
@@ -87,6 +91,7 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["Urbanização/obras, empréstimos para reerguer engenhos, tolerância religiosa relativa e apoio a estudos artísticos e científicos.", "A cobrança mais dura das dívidas e tensões posteriores enfraqueceram a aliança com proprietários e contribuíram para a revolta."]
   },
   "Disjunções e Condicional (Se...Então)": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
     scope: ["Disjunção inclusiva e exclusiva", "Condicional e bicondicional", "Tabelas-verdade e situações práticas"],
     lessons: [
       ["Disjunção inclusiva e exclusiva", "A disjunção inclusiva p∨q (‘p ou q’) aceita que uma ou ambas as partes sejam verdadeiras; seu único caso falso é F/F. A exclusiva, muitas vezes escrita como ‘ou...ou’, é verdadeira quando exatamente uma parte é verdadeira e falsa quando ambas coincidem. O contexto ajuda a reconhecer qual sentido o enunciado pretende, mas a tabela deve seguir o conectivo formal apresentado.", "‘A equipe usa rádio ou telefone’ pode permitir os dois meios (inclusiva). ‘O código será A ou B, mas não ambos’ explicita exclusividade.", "Não presuma que todo ‘ou’ cotidiano seja exclusivo. Procure expressões como ‘mas não ambos’ ou a definição do problema."],
@@ -174,6 +179,8 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["Phishing: engenharia social para capturar credenciais.", "Incremental copia mudanças desde a cópia anterior; diferencial copia mudanças desde a última cópia completa."]
   },
   "Segurança Pública (Art. 144) e Extradição": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
+    sources: [["Constituição da República Federativa do Brasil — texto compilado", "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"]],
     scope: ["Art. 144: órgãos e finalidades da segurança pública", "Atribuições constitucionais da Polícia Militar", "Nacionalidade e extradição (art. 12)"],
     lessons: [
       ["Segurança pública e órgãos do art. 144", "O art. 144 define segurança pública como dever do Estado, direito e responsabilidade de todos, voltada à preservação da ordem pública e da incolumidade das pessoas e do patrimônio. O rol constitucional inclui Polícia Federal, PRF, PFF, polícias civis, polícias militares e corpos de bombeiros militares, além das polícias penais federal, estaduais e distrital. As atribuições são distribuídas; um órgão não assume automaticamente a função de outro.", "A Polícia Civil exerce polícia judiciária e apuração de infrações penais, ressalvadas competências da União e crimes militares; isso difere do policiamento ostensivo da PM.", "Associe cada instituição ao texto constitucional. Guardas municipais têm previsão própria e não devem ser confundidas com os órgãos listados nos incisos."],
@@ -185,12 +192,19 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["Polícia ostensiva e preservação da ordem pública.", "Não, conforme art. 5º, LI, da Constituição."]
   },
   "Lei de Drogas, ECA e Maria da Penha": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
+    sources: [
+      ["Lei de Drogas — Lei nº 11.343/2006", "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11343.htm"],
+      ["Estatuto da Criança e do Adolescente — Lei nº 8.069/1990", "https://www.planalto.gov.br/ccivil_03/leis/l8069.htm"],
+      ["Lei Maria da Penha — Lei nº 11.340/2006 (texto consolidado)", "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/Lei/L11340.htm"],
+      ["Lei nº 15.125/2025 — monitoração eletrônica em medida protetiva", "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15125.htm"]
+    ],
     scope: ["Lei nº 11.343/2006: porte para uso e tráfico", "Lei nº 8.069/1990: proteção integral e ato infracional", "Lei nº 11.340/2006: contexto e formas de violência"],
     lessons: [
       ["Lei de Drogas: uso pessoal e tráfico", "A Lei 11.343/2006 diferencia condutas para consumo pessoal (art. 28) e tráfico (art. 33). No Tema 506 (RE 635.659), o STF decidiu que não constitui infração penal adquirir, guardar, depositar, transportar ou trazer consigo cannabis para consumo pessoal; até 40 g ou seis plantas fêmeas há presunção relativa de uso pessoal. A substância continua proibida e pode ser apreendida; a decisão prevê advertência e comparecimento a programa ou curso educativo em procedimento não penal. A presunção pode ser afastada por elementos concretos de tráfico, com justificativa, e o juiz pode reconhecer uso pessoal mesmo acima do limite. A tese trata de cannabis, não de todas as drogas. O art. 33 reúne verbos como importar, vender, oferecer, transportar, guardar e ter em depósito; a classificação considera a lei, as circunstâncias e as provas.", "Apreensão de cannabis dentro do limite não gera condenação criminal por porte para uso pessoal; quantidade não é salvo-conduto para tráfico, nem limite absoluto que torne automaticamente traficante quem o ultrapassa.", "Não chame o porte para uso pessoal de cannabis de crime após o Tema 506, nem diga que a decisão legalizou a droga ou abrangeu todas as substâncias. Consulte a tese vigente e a fonte oficial do STF."],
       ["ECA: proteção integral e ato infracional", "O Estatuto da Criança e do Adolescente adota a proteção integral e define criança como pessoa até 12 anos incompletos e adolescente como pessoa entre 12 e 18 anos, com hipóteses legais específicas de aplicação excepcional até 21 anos. A criança que pratica ato infracional fica sujeita a medidas de proteção; ao adolescente podem ser aplicadas medidas socioeducativas, mediante procedimento e garantias legais. A internação é excepcional e obedece às hipóteses e limites previstos no Estatuto.", "A idade de 12 anos completos já corresponde à adolescência para os efeitos do ECA; a resposta estatal depende da faixa etária e do procedimento legal.", "Não atribua medida socioeducativa à criança nem trate internação como consequência automática."],
       ["Lei Maria da Penha: contexto e formas", "A Lei 11.340/2006 cria mecanismos de prevenção e enfrentamento da violência doméstica e familiar contra a mulher. O art. 5º descreve contextos doméstico, familiar e de relação íntima de afeto; coabitação não é requisito universal. O art. 7º enumera as formas de violência, incluindo a violência vicária prevista no inciso VI do texto vigente, além das formas dos incisos I a V. A identificação considera a conduta e o contexto legal.", "Reter documentos, destruir bens ou controlar recursos econômicos pode configurar violência patrimonial, conforme circunstâncias legais.", "Não exija moradia conjunta em todas as hipóteses. Classifique a forma de violência pelo conteúdo legal vigente, não pelo nome informal dado ao conflito."],
-      ["Proteção, medidas e atendimento", "A lei prevê prevenção, assistência, atendimento especializado e medidas protetivas de urgência, que buscam reduzir risco e proteger direitos. Medida protetiva não equivale a condenação penal; pode coexistir com investigação e processo. A atuação de agentes deve observar encaminhamentos, registro e regras institucionais vigentes, priorizando segurança e dignidade da vítima e dependentes.", "Afastamento ou proibição de contato pode ser medida protetiva conforme decisão e requisitos; não é, por si só, pena definitiva.", "Em caso prático, identifique contexto, forma de violência, risco e providência legal possível; não invente consequência automática."]
+      ["Proteção, medidas e atendimento", "A lei prevê prevenção, assistência, atendimento especializado e medidas protetivas de urgência, que buscam reduzir risco e proteger direitos. Medida protetiva não equivale a condenação penal; pode coexistir com investigação e processo. Desde a Lei nº 15.125/2025, a medida protetiva pode ser cumulada com monitoração eletrônica do agressor, com dispositivo de segurança para alertar a vítima sobre eventual aproximação. A atuação de agentes deve observar encaminhamentos, registro e regras institucionais vigentes, priorizando segurança e dignidade da vítima e dependentes.", "Afastamento ou proibição de contato pode ser medida protetiva conforme decisão e requisitos; a monitoração eletrônica também pode ser cumulada nos casos previstos. Nenhuma delas é, por si só, pena definitiva.", "Em caso prático, identifique contexto, forma de violência, risco e providência legal possível; não invente consequência automática."]
     ],
     practice: ["Cite três verbos do art. 33 da Lei de Drogas.", "Qual é a diferença de tratamento entre criança e adolescente que pratica ato infracional?", "O que decidiu o STF no Tema 506 sobre a posse de cannabis para uso pessoal?"],
     answers: ["Por exemplo: guardar, transportar e vender.", "A criança fica sujeita a medidas de proteção; ao adolescente podem ser aplicadas medidas socioeducativas, conforme procedimento legal.", "Não é infração penal; há presunção relativa de uso pessoal até 40 g ou seis plantas fêmeas. A substância segue proibida, e a decisão não se estende automaticamente a outras drogas."]
@@ -208,6 +222,8 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["Porque a regra depende de a palavra ser oxítona, paroxítona, proparoxítona ou apresentar hiato.", "‘A’ é artigo definido; ‘revisou’ é verbo."]
   },
   "Sintaxe, Concordância, Regência, Crase e Pontuação": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
+    sources: [["Manual de Redação da Presidência da República — PDF oficial", "https://www.gov.br/planalto/pt-br/centrais-de-conteudo/publicacoes/manual-de-redacao/manual-de-redacao-da-presidencia-da-republica.pdf"]],
     subject: "Língua Portuguesa",
     materialKey: "mat_extra_portugues_sintaxe",
     scope: ["Sintaxe da oração e do período", "Concordância nominal e verbal", "Regência nominal e verbal e emprego da crase", "Pontuação e significação das palavras"],
@@ -271,6 +287,7 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["Modus ponens, uma forma válida de dedução.", "17 elementos."]
   },
   "Sequências Numéricas e Figurais": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
     subject: "Raciocínio Lógico Matemático",
     materialKey: "mat_extra_logica_sequencias",
     scope: ["Sequências numéricas", "Padrões e sequências de figuras", "Identificação e validação de regularidades"],
@@ -332,24 +349,32 @@ window.PMPE_TOPIC_GUIDES = {
     answers: ["União, Estados, Distrito Federal e Municípios.", "Polícia ostensiva e preservação da ordem pública."]
   },
   "Pacto de San José e Sistema Interamericano": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
+    sources: [["Convenção Americana sobre Direitos Humanos — Decreto nº 678/1992", "https://www.planalto.gov.br/ccivil_03/decreto/1990-1994/d0678.htm"]],
     subject: "Direitos Humanos e Legislação Extravagante",
     materialKey: "mat_extra_dh_pacto",
     scope: ["Convenção Americana sobre Direitos Humanos (Pacto de San José da Costa Rica)", "Direitos protegidos e garantias judiciais", "Comissão e Corte Interamericanas de Direitos Humanos"],
     lessons: [
-      ["Convenção e direitos protegidos", "O Pacto de San José é tratado regional de direitos humanos adotado no âmbito da Organização dos Estados Americanos. Protege, entre outros, vida, integridade pessoal, liberdade, garantias judiciais, proteção judicial, liberdade de expressão e direitos políticos, nos termos da Convenção. Sua aplicação deve ser estudada com o texto do tratado e as obrigações assumidas pelo Brasil.", "A Convenção prevê garantias judiciais e proteção judicial, além de direitos substantivos.", "Não confunda o Pacto com a DUDH: são instrumentos diferentes em natureza, âmbito e mecanismos."],
-      ["Sistema de proteção interamericano", "A Comissão Interamericana recebe petições, monitora a situação de direitos humanos e pode submeter casos à Corte nos termos da Convenção. A Corte Interamericana exerce competência contenciosa em relação aos Estados que a reconheceram e competência consultiva; decisões e medidas seguem as regras do sistema. O acesso individual ocorre inicialmente perante a Comissão, sujeito aos requisitos de admissibilidade.", "Uma pessoa apresenta petição ao sistema perante a Comissão; não ajuíza diretamente um caso contencioso individual na Corte.", "Estude competência, legitimidade, admissibilidade e etapas sem atribuir à Comissão poderes judiciais da Corte."],
+      ["Convenção e direitos protegidos", "O Pacto de San José é tratado regional de direitos humanos adotado no âmbito da Organização dos Estados Americanos. Protege, entre outros, vida (art. 4º), integridade pessoal (art. 5º), liberdade (art. 7º), garantias judiciais (art. 8º), liberdade de expressão (art. 13), associação (art. 16) e proteção judicial (art. 25). Sua aplicação deve ser estudada com o texto do tratado e as obrigações assumidas pelo Brasil.", "Uma denúncia de prisão ilegal pode envolver liberdade pessoal e o direito de recorrer a um juiz; são garantias distintas, ainda que relacionadas.", "Não confunda o Pacto com a DUDH: são instrumentos diferentes em natureza, âmbito e mecanismos."],
+      ["Sistema de proteção interamericano", "A Comissão Interamericana recebe petições individuais, monitora a situação de direitos humanos e pode submeter casos à Corte nos termos da Convenção. A petição individual é apresentada inicialmente à Comissão; a admissibilidade considera requisitos como o esgotamento dos recursos internos disponíveis, o prazo previsto na Convenção e a ausência de duplicidade internacional, com exceções convencionais. A Corte exerce competência contenciosa em relação aos Estados que a reconheceram e competência consultiva; não recebe diretamente petições individuais como um tribunal de primeira instância.", "Uma pessoa apresenta petição ao sistema perante a Comissão; não ajuíza diretamente um caso contencioso individual na Corte.", "Estude competência, legitimidade, admissibilidade e etapas sem atribuir à Comissão poderes judiciais da Corte."],
       ["Garantias e aplicação", "A Convenção estabelece garantias processuais, legalidade, liberdade pessoal e proteção judicial, com parâmetros sobre restrições e deveres estatais. O Brasil incorporou o tratado e reconheceu a jurisdição contenciosa da Corte nos termos do instrumento correspondente; a posição hierárquica interna deve ser estudada conforme a Constituição e a jurisprudência aplicável.", "O direito a recurso efetivo perante autoridades competentes é distinto de uma garantia de resultado favorável.", "Diferencie dever de respeitar e garantir direitos, recurso interno e mecanismo internacional de proteção."]
     ],
     practice: ["Qual órgão recebe inicialmente petições individuais no sistema interamericano?", "O Pacto de San José e a DUDH são o mesmo instrumento?"],
     answers: ["A Comissão Interamericana de Direitos Humanos, observados os requisitos de admissibilidade.", "Não. São instrumentos distintos, com natureza, âmbito e mecanismos diferentes."]
   },
   "Crimes Hediondos e Crimes de Preconceito": {
+    sourceNote: NO_CAPTION_SOURCE_NOTE,
+    sources: [
+      ["Lei dos Crimes Hediondos — Lei nº 8.072/1990", "https://www.planalto.gov.br/ccivil_03/leis/l8072.htm"],
+      ["Crimes de preconceito — Lei nº 7.716/1989 (texto compilado)", "https://www.planalto.gov.br/ccivil_03/leis/l7716compilado.htm"],
+      ["Lei nº 14.532/2023 — alteração da Lei nº 7.716/1989", "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2023/lei/l14532.htm"]
+    ],
     subject: "Direitos Humanos e Legislação Extravagante",
     materialKey: "mat_extra_leis_hediondos_preconceito",
     scope: ["Lei nº 8.072/1990: crimes hediondos e consequências legais", "Lei nº 7.716/1989: crimes resultantes de preconceito de raça ou cor", "Leitura do texto legal e alterações vigentes"],
     lessons: [
-      ["Crimes hediondos", "A Lei nº 8.072/1990 define os crimes considerados hediondos e estabelece consequências penais e processuais próprias, além de alcançar delitos equiparados previstos na Constituição e na legislação. A classificação depende do tipo penal e das alterações legislativas vigentes; não se cria por analogia. Regime, progressão e demais efeitos devem ser lidos na redação atual e em conjunto com a legislação penal.", "Para classificar um delito, confira se ele está no rol legal ou se é equiparado por previsão normativa.", "Não presuma que todo crime grave é juridicamente hediondo nem use resumos desatualizados do rol."],
-      ["Lei dos crimes de preconceito", "A Lei nº 7.716/1989 tipifica condutas resultantes de discriminação ou preconceito de raça, cor, etnia, religião ou procedência nacional, conforme os tipos e alterações legais. Para resolver uma questão, identifique o comportamento descrito, o elemento discriminatório e o tipo legal aplicável, sem confundir figuras penais distintas.", "Impedir acesso a estabelecimento por motivo discriminatório deve ser analisado à luz do tipo correspondente e de seus elementos.", "Use a redação vigente da lei e não substitua a análise típica por rótulos genéricos."],
+      ["Crimes hediondos", "A Lei nº 8.072/1990 define os crimes considerados hediondos e estabelece consequências penais e processuais próprias, além de alcançar delitos equiparados previstos na Constituição e na legislação. Entre os exemplos previstos no rol estão homicídio qualificado, latrocínio, estupro e estupro de vulnerável; a lista legal, e não a gravidade percebida do fato, determina a classificação. Regime, progressão e demais efeitos devem ser lidos na redação atual e em conjunto com a legislação penal.", "Para classificar um delito, confira se ele está no rol legal ou se é equiparado por previsão normativa.", "Não presuma que todo crime grave é juridicamente hediondo nem use resumos desatualizados do rol."],
+      ["Lei dos crimes de preconceito", "A Lei nº 7.716/1989 tipifica condutas resultantes de discriminação ou preconceito de raça, cor, etnia, religião ou procedência nacional, conforme os tipos e alterações legais. A Lei nº 14.532/2023 inseriu na Lei nº 7.716/1989 o crime de injúria racial (art. 2º-A), distinguindo-o da injúria comum e exigindo a análise dos elementos legais. Para resolver uma questão, identifique o comportamento descrito, o elemento discriminatório e o tipo aplicável.", "Impedir acesso a estabelecimento por motivo discriminatório deve ser analisado à luz do tipo correspondente; ofender alguém em razão de raça ou cor exige examinar o art. 2º-A e suas circunstâncias.", "Use a redação vigente da lei e não substitua a análise típica por rótulos genéricos."],
       ["Tipificação e leitura da lei", "A leitura de lei seca exige conferir verbo do tipo, sujeito ativo, contexto, elemento subjetivo, consumação, pena e eventuais causas de aumento. Alterações posteriores podem mudar nomes, penas e abrangência; por isso, o estudo deve usar texto consolidado e separar lei penal de interpretação doutrinária.", "Compare dois artigos verificando primeiro o núcleo verbal e a circunstância que diferencia cada figura.", "Não conclua tipificação apenas pela consequência moral do fato: verifique todos os elementos legais."]
     ],
     practice: ["Como saber se um crime é hediondo para fins da Lei nº 8.072/1990?", "Que elementos devem ser verificados na aplicação da Lei nº 7.716/1989?"],

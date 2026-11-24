@@ -7,6 +7,12 @@
   const sharedGuides = window.PMPE_TOPIC_GUIDES || {};
   const sharedDeepening = window.PMPE_DEEPENING || {};
   const sharedQuestions = window.PPPE_QUESTOES || {};
+  const noCaptionSourceNote = 'Material complementar elaborado a partir do título da videoaula e do escopo do edital, com consulta às fontes públicas indicadas quando o tema exige. Como a legenda não está disponível, este conteúdo não é uma transcrição nem atribui exemplos específicos ao professor.';
+  const noCaptionTopics = new Set([
+    'Estruturas e argumentação lógica',
+    'Defesa do Estado e das instituições democráticas e segurança pública',
+    'Pontuação e colocação dos pronomes átonos'
+  ]);
 
   const copyGuide = guide => ({
     ...guide,
@@ -23,6 +29,10 @@
     if (!localGuide?.lessons?.length) {
       const sourceGuide = sharedGuides[topic];
       if (sourceGuide?.lessons?.length) pcpeGuides[topic] = copyGuide(sourceGuide);
+    }
+
+    if (noCaptionTopics.has(topic) && pcpeGuides[topic]?.lessons?.length) {
+      pcpeGuides[topic].sourceNote = noCaptionSourceNote;
     }
 
     if (!pcpeDeepening[topic] || !Object.keys(pcpeDeepening[topic]).length) {
