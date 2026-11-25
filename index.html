@@ -7,6 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="assets/gabari.svg?v=1">
     <title>Operação PMPE | Plataforma de Estudos</title>
     <script src="cloud-sync.js"></script>
+    <script src="video-playback.js"></script>
     <link rel="stylesheet" href="mission-videos.css">
     <script src="mission-videos.js"></script>
     <link rel="stylesheet" href="planejamento.css">
@@ -3449,6 +3450,7 @@
         function activateDashboardView(view, focusTab = false) {
             if (!Object.hasOwn(dashboardPanels, view)) return;
 
+            window.PMPE_VIDEO_PLAYBACK.saveView(view);
             document.body.dataset.activeView = view;
             Object.entries(dashboardPanels).forEach(([panelView, panel]) => {
                 const isActive = panelView === view ||
@@ -3625,6 +3627,55 @@
                 const sameRange = (first, second) => first && second &&
                     first.startContainer === second.startContainer && first.startOffset === second.startOffset &&
                     first.endContainer === second.endContainer && first.endOffset === second.endOffset;
+                const isBoldNode = node => {
+                    let element = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+                    while (element && element !== editor) {
+                        if (element.tagName === 'B' || element.tagName === 'STRONG') return true;
+                        const weight = window.getComputedStyle(element).fontWeight;
+                        if (weight === 'bold' || Number.parseInt(weight, 10) >= 600) return true;
+                        element = element.parentElement;
+                    }
+                    return false;
+                };
+                const isRangeEntirelyBold = range => {
+                    if (range.collapsed) return isBoldNode(range.startContainer);
+                    const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+                    const textNodes = [];
+                    while (walker.nextNode()) {
+                        const node = walker.currentNode;
+                        if (node.nodeValue && range.intersectsNode(node)) textNodes.push(node);
+                    }
+                    return textNodes.length > 0 && textNodes.every(isBoldNode);
+                };
+                const removeBoldFromSelection = range => {
+                    const fragment = range.extractContents();
+                    const stripBold = node => {
+                        Array.from(node.childNodes).forEach(child => {
+                            stripBold(child);
+                            if (child.nodeType !== Node.ELEMENT_NODE) return;
+                            if (child.tagName === 'B' || child.tagName === 'STRONG') {
+                                const parent = child.parentNode;
+                                while (child.firstChild) parent.insertBefore(child.firstChild, child);
+                                parent.removeChild(child);
+                            } else if (child.tagName === 'SPAN') {
+                                child.style.removeProperty('font-weight');
+                            }
+                        });
+                    };
+                    stripBold(fragment);
+                    const first = fragment.firstChild;
+                    const last = fragment.lastChild;
+                    range.insertNode(fragment);
+                    if (first && last) {
+                        const selection = window.getSelection();
+                        const restoredRange = document.createRange();
+                        restoredRange.setStartBefore(first);
+                        restoredRange.setEndAfter(last);
+                        selection.removeAllRanges();
+                        selection.addRange(restoredRange);
+                        savedRange = restoredRange.cloneRange();
+                    }
+                };
                 const setPressed = (button, pressed) => {
                     button.classList.toggle('is-active', pressed);
                     button.setAttribute('aria-pressed', String(pressed));
@@ -3639,7 +3690,9 @@
                     }
                     const list = currentList();
                     toolbar.querySelectorAll('[data-format-command]').forEach(button => {
-                        let pressed = document.queryCommandState(button.dataset.formatCommand);
+                        let pressed = button.dataset.formatCommand === 'bold'
+                            ? isRangeEntirelyBold(selection.getRangeAt(0))
+                            : document.queryCommandState(button.dataset.formatCommand);
                         if (button.dataset.formatCommand === 'insertUnorderedList' &&
                             list && list.tagName === 'UL' && list.dataset.listStyle === 'dash') pressed = false;
                         setPressed(button, pressed);
@@ -3679,8 +3732,14 @@
                 };
                 const run = command => {
                     restoreSelection();
-                    document.execCommand('styleWithCSS', false, false);
-                    document.execCommand(command);
+                    const selection = window.getSelection();
+                    const range = selection.rangeCount ? selection.getRangeAt(0) : null;
+                    if (command === 'bold' && range && !range.collapsed && isRangeEntirelyBold(range)) {
+                        removeBoldFromSelection(range);
+                    } else {
+                        document.execCommand('styleWithCSS', false, false);
+                        document.execCommand(command);
+                    }
                     rememberSelection();
                     notify();
                     syncToolbarState();
@@ -5531,15 +5590,16 @@
                 emptyState.textContent = "Para assistir dentro da plataforma, abra-a por um endereço HTTP ou HTTPS. Uma página aberta diretamente do computador não envia a identificação de origem exigida pelo YouTube.";
                 playerStatus.textContent = "Você ainda pode abrir o vídeo diretamente no YouTube pelo link abaixo.";
             } else {
-                const embedUrl = new URL(`https://www.youtube.com/embed/${part.videoId}`);
-                embedUrl.searchParams.set("rel", "0");
-                embedUrl.searchParams.set("origin", window.location.origin);
-                frame.src = embedUrl.toString();
                 frame.title = `Videoaula: ${lesson.title}`;
                 frame.hidden = false;
                 emptyState.hidden = true;
                 emptyState.textContent = "";
                 playerStatus.textContent = "";
+                void window.PMPE_VIDEO_PLAYBACK.play(frame, {
+                    lessonId: lesson.id,
+                    partIndex,
+                    videoId: part.videoId
+                }, playerStatus);
             }
             const notesHtml = videoLessonNotes[lesson.id] ?? videoLessonNotes[lesson.legacyId];
             const legacyText = legacyVideoNotes[lesson.id] ?? legacyVideoNotes[lesson.legacyId] ?? "";
@@ -5552,7 +5612,7 @@
             renderVideoLessonList(lesson.topic);
         }
 
-        function renderVideoTopic(topic, preferredLessonId = "") {
+        function renderVideoTopic(topic, preferredLessonId = "", preferredPartIndex = 0) {
             const picker = document.getElementById("videoTopicPicker");
             const lessons = getVideoLessonsForTopic(topic);
             const selectedInTopic = lessons.some(lesson => lesson.id === selectedVideoLessonId);
@@ -5561,7 +5621,7 @@
                 : selectedInTopic ? selectedVideoLessonId : lessons[0]?.id;
             const notice = window.PMPE_VIDEO_TOPIC_MAP?.[topic]?.notice;
             document.getElementById("videoCatalogNotice").textContent = notice || "A curadoria foi conferida pelo título; uma aula pode cobrir apenas parte do assunto. Confira o edital, a versão dos programas e a legislação vigente.";
-            if (lessonId) renderSelectedVideoLesson(lessonId);
+            if (lessonId) renderSelectedVideoLesson(lessonId, preferredLessonId === lessonId ? preferredPartIndex : 0);
             else renderEmptyVideoTopic(topic);
             if (picker.value !== topic) picker.value = topic;
         }
@@ -5614,6 +5674,41 @@
                 const lesson = EMBEDDED_VIDEO_LESSONS[selectedVideoLessonId];
                 if (lesson) { updateVideoWatchedControl(lesson); renderVideoLessonList(lesson.topic); }
             });
+            window.addEventListener("pmpe:sync-updated", event => {
+                const keys = new Set(event.detail?.keys || []);
+                if (keys.has(VIDEO_NOTES_STORAGE_KEY)) {
+                    try {
+                        const savedNotes = JSON.parse(localStorage.getItem(VIDEO_NOTES_STORAGE_KEY) || "{}");
+                        if (!savedNotes || typeof savedNotes !== "object" || Array.isArray(savedNotes)) throw new Error("Formato de anotações inválido.");
+                        videoLessonNotes = savedNotes;
+                        videoNotesStorageReadFailed = false;
+                        const lesson = EMBEDDED_VIDEO_LESSONS[selectedVideoLessonId];
+                        if (lesson) videoNotesEditor.setHtml(savedNotes[lesson.id] ?? savedNotes[lesson.legacyId] ?? "");
+                        videoNotesEditor.setDisabled(false);
+                    } catch (error) {
+                        videoNotesStorageReadFailed = true;
+                        videoNotesEditor.setDisabled(true);
+                        document.getElementById("videoNotesStatus").textContent = "Não foi possível carregar as anotações sincronizadas; edição desativada para evitar sobrescrever seus dados.";
+                        console.error("Não foi possível carregar as anotações sincronizadas:", error);
+                    }
+                }
+                if (keys.has(VIDEO_WATCHED_STORAGE_KEY)) {
+                    try {
+                        const savedWatched = JSON.parse(localStorage.getItem(VIDEO_WATCHED_STORAGE_KEY) || "{}");
+                        if (!savedWatched || typeof savedWatched !== "object" || Array.isArray(savedWatched)) throw new Error("Formato de progresso inválido.");
+                        videoLessonWatched = savedWatched;
+                        videoWatchedStorageReadFailed = false;
+                        const lesson = EMBEDDED_VIDEO_LESSONS[selectedVideoLessonId];
+                        if (lesson) {
+                            updateVideoWatchedControl(lesson);
+                            renderVideoLessonList(lesson.topic);
+                        }
+                    } catch (error) {
+                        videoWatchedStorageReadFailed = true;
+                        console.error("Não foi possível carregar o progresso sincronizado:", error);
+                    }
+                }
+            });
             picker.addEventListener("change", () => renderVideoTopic(picker.value));
             document.getElementById("videoLessonWatchedButton").addEventListener("click", () => {
                 if (!selectedVideoLessonId) return;
@@ -5658,11 +5753,19 @@
                 window.activateDashboardView("videos");
             });
 
-            const firstTopic = topics.find(topic => getVideoLessonsForTopic(topic).length) || topics[0];
-            if (firstTopic) {
-                picker.value = firstTopic;
-                renderVideoTopic(firstTopic);
+            const resume = window.PMPE_VIDEO_PLAYBACK.restore(EMBEDDED_VIDEO_LESSONS);
+            if (resume) {
+                const lesson = EMBEDDED_VIDEO_LESSONS[resume.lessonId];
+                renderVideoTopic(lesson.topic, lesson.id, resume.partIndex);
+            } else {
+                const firstTopic = topics.find(topic => getVideoLessonsForTopic(topic).length) || topics[0];
+                if (firstTopic) {
+                    picker.value = firstTopic;
+                    renderVideoTopic(firstTopic);
+                }
             }
+            const savedView = window.PMPE_VIDEO_PLAYBACK.restoreView();
+            if (savedView) window.activateDashboardView(savedView);
         }
 
         const buildVideoTasks = (dayObj, module, slot, time, cycle) => {

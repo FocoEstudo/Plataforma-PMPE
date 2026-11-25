@@ -49,6 +49,10 @@
             refresh();
         }
         window.addEventListener('mission-videos:changed', refresh);
+        window.addEventListener('pmpe:sync-updated', event => {
+            const keys = event.detail && Array.isArray(event.detail.keys) ? event.detail.keys : [];
+            if (keys.includes(watchedKey) || keys.includes(startedKey)) refresh();
+        });
         window.addEventListener('storage', event => { if (event.key === watchedKey || event.key === startedKey) { announce(); } });
     });
 })();

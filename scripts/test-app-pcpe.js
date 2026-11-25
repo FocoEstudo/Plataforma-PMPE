@@ -56,7 +56,7 @@ assert.match(read('pcpe/conta.html'), /location\.replace\(new URL\("index\.html"
 assert.match(read('pcpe/estudos.html'), /location\.replace\(new URL\('index\.html'/);
 for (const role of ['agente', 'escrivao']) {
   const context = { window: { PCPE_ROLE: role } };
-  for (const src of scripts.filter(src => !['cloud-sync.js', '../gabari.js', '../sidebar-toggle.js'].includes(src))) {
+  for (const src of scripts.filter(src => !['cloud-sync.js', '../gabari.js', '../sidebar-toggle.js', '../video-playback.js'].includes(src))) {
     vm.runInNewContext(read(path.join('pcpe', src)), context, { filename: src });
   }
   const { PCPE_MODULOS: modules, PCPE_TOPIC_GUIDES: guides, PCPE_QUESTOES: questions } = context.window;

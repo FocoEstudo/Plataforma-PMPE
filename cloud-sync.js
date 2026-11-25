@@ -178,14 +178,22 @@
     function listen() {
         ctx.fs.onSnapshot(ctx.fs.collection(ctx.db, 'users', ctx.uid, 'sync'), snap => {
             let updated = false;
+            const updatedKeys = [];
             snap.docChanges().forEach(change => {
                 if (change.type === 'removed' || change.doc.metadata.hasPendingWrites) return;
                 const r = change.doc.data();
                 if (!r || !isSynced(r.key)) return;
                 const local = meta[r.key];
-                if ((r.t || 0) > (local ? local.t : 0)) { applyRemote(r.key, r); updated = true; }
+                if ((r.t || 0) > (local ? local.t : 0)) {
+                    applyRemote(r.key, r);
+                    updated = true;
+                    updatedKeys.push(r.key);
+                }
             });
-            if (updated) showUpdateBanner();
+            if (updated) {
+                window.dispatchEvent(new CustomEvent('pmpe:sync-updated', { detail: { keys: updatedKeys } }));
+                showUpdateBanner();
+            }
         }, error => console.warn('Escuta de sincronização indisponível.', error));
     }
 
@@ -196,12 +204,12 @@
         box.setAttribute('role', 'alert');
         box.style.cssText = 'position:fixed;left:50%;bottom:4.5rem;transform:translateX(-50%);z-index:95;display:flex;gap:.8rem;align-items:center;padding:.6rem 1rem;border-radius:.8rem;background:#102e20;color:#fff;border:1px solid #d4af37;font:600 .85rem Inter,Arial,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3)';
         const text = document.createElement('span');
-        text.textContent = 'Seu progresso foi atualizado em outro dispositivo.';
+        text.textContent = 'Atualizações de outro dispositivo recebidas sem interromper sua aula.';
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.textContent = 'Atualizar agora';
+        btn.textContent = 'Fechar';
         btn.style.cssText = 'background:#d4af37;color:#102e20;border:0;border-radius:.5rem;padding:.35rem .7rem;font-weight:800;cursor:pointer';
-        btn.addEventListener('click', () => window.location.reload());
+        btn.addEventListener('click', () => box.remove());
         box.append(text, btn);
         document.body.appendChild(box);
     }
