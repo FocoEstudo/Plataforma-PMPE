@@ -10,6 +10,8 @@ const login = read('pcpe/login.html');
 const guard = read('pcpe/session-guard.js');
 const rules = read('firestore.rules');
 assert.match(app, /aprofundamento-edital-agente\.js/);
+assert.match(app, /ciclo-estudos\.js/);
+assert.match(app, /pcpeCycleRoot/);
 const coverage = read('pcpe/EDITAL-AGENTE-COBERTURA.md');
 assert.match(coverage, /22\.2\.3\.1/);
 assert.match(coverage, /22\.2\.5\.1/);
