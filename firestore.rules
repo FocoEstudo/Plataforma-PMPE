@@ -143,6 +143,36 @@ service cloud.firestore {
         || (!profile.keys().hasAny(newFields) && hasValidLegacyIdentity(profile));
     }
 
+    function hasValidPcpeReminderDevice(userId) {
+      let reminder = request.resource.data;
+      return reminder.keys().hasAll(['uid', 'enabled', 'subscription', 'timeZone', 'times', 'updatedAt'])
+        && reminder.keys().hasOnly(['uid', 'enabled', 'subscription', 'timeZone', 'times', 'updatedAt'])
+        && reminder.uid == userId
+        && reminder.enabled is bool
+        && reminder.timeZone == 'America/Recife'
+        && reminder.times is list
+        && reminder.times.size() == 3
+        && reminder.times.hasOnly(['08:00', '14:00', '19:00'])
+        && reminder.times.hasAll(['08:00', '14:00', '19:00'])
+        && reminder.subscription is map
+        && reminder.subscription.keys().hasAll(['endpoint', 'keys'])
+        && reminder.subscription.keys().hasOnly(['endpoint', 'expirationTime', 'keys'])
+        && reminder.subscription.endpoint is string
+        && reminder.subscription.endpoint.matches('^https://[^ ]+$')
+        && reminder.subscription.endpoint.size() <= 2048
+        && (!reminder.subscription.keys().hasAny(['expirationTime'])
+          || reminder.subscription.expirationTime == null
+          || reminder.subscription.expirationTime is number)
+        && reminder.subscription.keys is map
+        && reminder.subscription.keys.keys().hasAll(['auth', 'p256dh'])
+        && reminder.subscription.keys.keys().hasOnly(['auth', 'p256dh'])
+        && reminder.subscription.keys.auth is string
+        && reminder.subscription.keys.auth.size() <= 128
+        && reminder.subscription.keys.p256dh is string
+        && reminder.subscription.keys.p256dh.size() <= 256
+        && reminder.updatedAt == request.time;
+    }
+
     function hasValidProfile() {
       let profile = request.resource.data;
       return profile.keys().hasAll(['displayName', 'email', 'updatedAt'])
@@ -357,6 +387,16 @@ service cloud.firestore {
       allow list: if false;
       allow create, update: if isOwner(userId) && hasValidProfile();
       allow delete: if false;
+    }
+
+    match /pcpeStudyReminders/{userId}/devices/{deviceId} {
+      allow get, list: if isOwner(userId) && hasAccessPcpe();
+      allow create, update: if isOwner(userId) && hasAccessPcpe() && hasValidPcpeReminderDevice(userId);
+      allow delete: if isOwner(userId);
+    }
+
+    match /pcpeStudyReminders/{userId}/deliveryState/{deliveryId} {
+      allow read, write: if false;
     }
 
     match /users/{userId} {

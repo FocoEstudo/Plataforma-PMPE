@@ -1,10 +1,14 @@
 import { getProduct, verifyMarketplaceOrder } from "./payment-catalog.mjs";
+import { buildPushPayload } from "@block65/webcrypto-web-push";
 
 const FIREBASE_LOOKUP_URL = "https://identitytoolkit.googleapis.com/v1/accounts:lookup";
 const FIRESTORE_API_URL = "https://firestore.googleapis.com/v1";
 const MERCADO_PAGO_API_URL = "https://api.mercadopago.com";
 const PAYMENT_AMOUNT = 99.9;
 const PAYMENT_ITEM_ID = "pmpe-access";
+const PCPE_STUDY_TIME_ZONE = "America/Recife";
+const PCPE_STUDY_BLOCK_STARTS = ["08:00", "14:00", "19:00"];
+const VAPID_SUBJECT = "https://focoestudo.github.io/";
 
 let cachedGoogleToken;
 let googleTokenExpiresAt = 0;
@@ -140,6 +144,178 @@ const updateDocument = async (env, collection, documentId, fields, googleToken) 
         body: JSON.stringify({ fields })
     });
     if (!response.ok) throw new Error(`Firestore document update failed (${response.status}).`);
+};
+
+const deleteDocument = async (env, collection, documentId, googleToken) => {
+    const response = await fetch(firestoreDocumentUrl(env, collection, documentId), {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${googleToken}` }
+    });
+    if (!response.ok && response.status !== 404) {
+        throw new Error(`Firestore document deletion failed (${response.status}).`);
+    }
+};
+
+const listEnabledPcpeReminderDevices = async (env, googleToken) => {
+    const url = `${FIRESTORE_API_URL}/projects/${encodeURIComponent(env.FIREBASE_PROJECT_ID)}/databases/(default)/documents:runQuery`;
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${googleToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            structuredQuery: {
+                from: [{ collectionId: "devices", allDescendants: true }],
+                where: {
+                    fieldFilter: {
+                        field: { fieldPath: "enabled" },
+                        op: "EQUAL",
+                        value: { booleanValue: true }
+                    }
+                },
+                limit: 1000
+            }
+        })
+    });
+    if (!response.ok) throw new Error(`Firestore reminder query failed (${response.status}).`);
+    const rows = await response.json();
+    return rows.filter(row => row.document).map(row => row.document);
+};
+
+const mapFields = value => value?.mapValue?.fields || {};
+const stringField = value => typeof value?.stringValue === "string" ? value.stringValue : "";
+
+const hasPcpeAccess = (fields, now) => {
+    if (fields.active?.booleanValue !== true) return false;
+    const plan = stringField(fields.plan);
+    if (!plan || plan === "vitalicio") return true;
+    const duration = plan === "semanal" ? 7 * 24 * 60 * 60 * 1000
+        : plan === "mensal" ? 30 * 24 * 60 * 60 * 1000
+            : null;
+    const paidAt = Date.parse(fields.paidAt?.timestampValue || "");
+    return duration !== null && Number.isFinite(paidAt) && now < paidAt + duration;
+};
+
+const getScheduledPcpeBlock = scheduledTime => {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {
+        timeZone: PCPE_STUDY_TIME_ZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+    }).formatToParts(new Date(scheduledTime)).map(part => [part.type, part.value]));
+    const time = `${parts.hour}:${parts.minute}`;
+    return PCPE_STUDY_BLOCK_STARTS.includes(time)
+        ? { time, date: `${parts.year}-${parts.month}-${parts.day}` }
+        : null;
+};
+
+export const sendPcpeStudyReminders = async (event, env) => {
+    requireEnv(env, [
+        "FIREBASE_PROJECT_ID",
+        "GOOGLE_SERVICE_ACCOUNT_EMAIL",
+        "GOOGLE_PRIVATE_KEY",
+        "PCPE_PUSH_VAPID_PUBLIC_KEY",
+        "PCPE_PUSH_VAPID_PRIVATE_KEY"
+    ]);
+
+    const scheduled = getScheduledPcpeBlock(event.scheduledTime || Date.now());
+    if (!scheduled) {
+        console.error("O horário acionado não corresponde a um bloco PCPE configurado.", event.cron);
+        return;
+    }
+
+    const googleToken = await getGoogleAccessToken(env);
+    const devices = await listEnabledPcpeReminderDevices(env, googleToken);
+    const deliveryKey = `${scheduled.date}:${scheduled.time}`;
+    const now = Date.now();
+    let sent = 0;
+    let failed = 0;
+    let expired = 0;
+
+    for (const document of devices) {
+        const documentPath = (document.name || "").split("/documents/")[1] || "";
+        const pathParts = documentPath.split("/");
+        if (pathParts.length !== 4
+            || pathParts[0] !== "pcpeStudyReminders"
+            || pathParts[2] !== "devices") continue;
+
+        const [, uid, , deviceId] = pathParts;
+        const fields = document.fields || {};
+        const subscriptionFields = mapFields(fields.subscription);
+        const keyFields = mapFields(subscriptionFields.keys);
+        const endpoint = stringField(subscriptionFields.endpoint);
+        const subscription = {
+            endpoint,
+            expirationTime: subscriptionFields.expirationTime?.integerValue
+                ? Number(subscriptionFields.expirationTime.integerValue)
+                : null,
+            keys: {
+                auth: stringField(keyFields.auth),
+                p256dh: stringField(keyFields.p256dh)
+            }
+        };
+        const times = (fields.times?.arrayValue?.values || []).map(stringField);
+
+        if (stringField(fields.uid) !== uid
+            || stringField(fields.timeZone) !== PCPE_STUDY_TIME_ZONE
+            || !times.includes(scheduled.time)
+            || !endpoint.startsWith("https://")
+            || !subscription.keys.auth
+            || !subscription.keys.p256dh) continue;
+
+        try {
+            const accessDocument = await readDocument(env, "accessPcpe", uid, googleToken);
+            if (!accessDocument || !hasPcpeAccess(accessDocument.fields || {}, now)) continue;
+
+            const deliveryCollection = `pcpeStudyReminders/${uid}/deliveryState`;
+            const previousDelivery = await readDocument(env, deliveryCollection, deviceId, googleToken);
+            if (stringField(previousDelivery?.fields?.lastSentKey) === deliveryKey) continue;
+
+            const blockNumber = PCPE_STUDY_BLOCK_STARTS.indexOf(scheduled.time) + 1;
+            const startHour = Number(scheduled.time.slice(0, 2));
+            const endTime = `${String((startHour + 2) % 24).padStart(2, "0")}:${scheduled.time.slice(3)}`;
+            const payload = await buildPushPayload({
+                data: JSON.stringify({
+                    title: `Hora de estudar · Bloco ${blockNumber}`,
+                    body: `Seu bloco começa agora: ${scheduled.time}–${endTime} · 80 min de teoria + 40 min de questões.`,
+                    url: "https://focoestudo.github.io/Plataforma-PMPE/pcpe/index.html#missionsSection",
+                    tag: `pcpe-estudo-${deliveryKey}`
+                }),
+                options: { ttl: 3600, urgency: "high" }
+            }, subscription, {
+                subject: VAPID_SUBJECT,
+                publicKey: env.PCPE_PUSH_VAPID_PUBLIC_KEY,
+                privateKey: env.PCPE_PUSH_VAPID_PRIVATE_KEY
+            });
+            const pushResponse = await fetch(endpoint, payload);
+            if (pushResponse.status === 404 || pushResponse.status === 410) {
+                await deleteDocument(env, `pcpeStudyReminders/${uid}/devices`, deviceId, googleToken);
+                await deleteDocument(env, deliveryCollection, deviceId, googleToken);
+                expired++;
+                continue;
+            }
+            if (!pushResponse.ok) throw new Error(`Push service returned ${pushResponse.status}.`);
+
+            await updateDocument(env, deliveryCollection, deviceId, {
+                lastSentKey: { stringValue: deliveryKey },
+                lastSentAt: { timestampValue: new Date().toISOString() }
+            }, googleToken);
+            sent++;
+        } catch (error) {
+            console.error("Não foi possível enviar um lembrete PCPE.", {
+                uid,
+                status: error.status || null,
+                message: error.message
+            });
+            failed++;
+        }
+    }
+
+    console.info("Lembretes PCPE processados.", { time: scheduled.time, sent, failed, expired });
 };
 
 const verifyFirebaseIdToken = async (request, env) => {
@@ -642,6 +818,9 @@ const processProductWebhook = async (request, env) => {
 };
 
 export default {
+    async scheduled(event, env, ctx) {
+        ctx.waitUntil(sendPcpeStudyReminders(event, env));
+    },
     async fetch(request, env) {
         const url = new URL(request.url);
         if (url.pathname === "/health" && request.method === "GET") {

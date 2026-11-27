@@ -180,7 +180,6 @@ const createPixPayment = onCall(
     };
   }
 );
-
 const verifyWebhookSignature = (request, dataId) => {
   const signatureHeader = request.get("x-signature") || "";
   const requestId = request.get("x-request-id") || "";
@@ -364,3 +363,4 @@ exports.cancelCardSubscription = onCall(
     }
   }
 );
+

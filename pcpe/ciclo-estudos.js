@@ -22,12 +22,24 @@
         'Legislação Estadual',
         'Noções de Arquivologia'
     ];
-    const BASE_DAYS = 42;
+    const BASE_CYCLE_DAYS = 42;
     const REVIEW_THRESHOLD = 65;
     const THEORY_SECONDS = 80 * 60;
     const QUESTIONS_SECONDS = 40 * 60;
     const REVIEW_SECONDS = 25 * 60;
+    const STUDY_TIME_ZONE = 'America/Recife';
+    const STUDY_BLOCK_STARTS = ['08:00', '14:00', '19:00'];
+    const STUDY_BLOCK_DURATION_MINUTES = 120;
     const STORAGE_PREFIX = 'pmpePcpeStudyCycleV1';
+
+    function getBlockSchedule(startTime) {
+        const [hours, minutes] = String(startTime).split(':').map(Number);
+        const endMinutes = (hours * 60 + minutes + STUDY_BLOCK_DURATION_MINUTES) % (24 * 60);
+        return {
+            start: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
+            end: `${String(Math.floor(endMinutes / 60)).padStart(2, '0')}:${String(endMinutes % 60).padStart(2, '0')}`
+        };
+    }
 
     const isoToday = () => {
         const now = new Date();
@@ -54,7 +66,7 @@
     }
 
     function getPhase(state) {
-        return state.expanded || state.completedStudyDays >= BASE_DAYS ? 'expansion' : 'base';
+        return state.expanded || state.totalCompletedDays >= BASE_CYCLE_DAYS ? 'expansion' : 'base';
     }
 
     function isWeeklyReview(state) {
@@ -377,6 +389,11 @@
                 #missionsSection.pcpe-cycle-active > .relative, #missionsSection.pcpe-cycle-active > .mt-8 { display:none !important; }
                 .pcpe-cycle-panel{display:grid;gap:1rem;color:#1d2a36;min-width:0}
                 .pcpe-cycle-header,.pcpe-cycle-controls,.pcpe-cycle-card-head,.pcpe-cycle-timer{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+                .pcpe-cycle-reminders{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:1rem;border:1px solid #bfdbfe;border-radius:.75rem;background:#eff6ff;color:#1e3a8a}
+                .pcpe-cycle-reminders p{font-size:.82rem}
+                .pcpe-cycle-reminders button{border:0;border-radius:.5rem;padding:.65rem .85rem;background:#1d4ed8;color:#fff;font-size:.8rem;font-weight:800;cursor:pointer}
+                .pcpe-cycle-reminders button:disabled{opacity:.65;cursor:wait}
+                .pcpe-cycle-reminder-status{flex-basis:100%;font-size:.75rem}
                 .pcpe-cycle-header{padding:1.25rem;border-radius:1rem;background:linear-gradient(135deg,#10295e,#164c3e);color:white}
                 .pcpe-cycle-header h2{font-size:1.35rem;font-weight:900;margin:.25rem 0 0}
                 .pcpe-cycle-kicker{font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#2563eb}
@@ -438,6 +455,8 @@
                 .pcpe-cycle-complete{display:flex;justify-content:flex-end}
                 @media(max-width:640px){
                     .pcpe-cycle-header,.pcpe-cycle-controls{align-items:stretch}
+                    .pcpe-cycle-reminders{align-items:stretch;flex-direction:column}
+                    .pcpe-cycle-reminders button{width:100%;white-space:normal}
                     .pcpe-cycle-header .pcpe-cycle-progress{text-align:left}
                     .pcpe-cycle-controls{flex-direction:column}
                     .pcpe-cycle-controls>*{width:100%}
@@ -478,6 +497,83 @@
             return getLawSources(window.PCPE_TOPIC_GUIDES, topic, subject)
                 .map(([label, url]) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Abrir lei seca · ${escapeHtml(label)}</a>`)
                 .join('');
+        }
+
+        function encodeApplicationServerKey(value) {
+            const padding = '='.repeat((4 - value.length % 4) % 4);
+            const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/');
+            return Uint8Array.from(atob(base64), character => character.charCodeAt(0));
+        }
+
+        function getReminderDeviceId() {
+            const storageKey = 'pcpeStudyReminderDeviceV1';
+            let deviceId = localStorage.getItem(storageKey);
+            if (!deviceId) {
+                deviceId = typeof crypto.randomUUID === 'function'
+                    ? crypto.randomUUID()
+                    : Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, '0')).join('');
+                localStorage.setItem(storageKey, deviceId);
+            }
+            return deviceId;
+        }
+
+        async function toggleStudyReminders(button) {
+            const status = root.querySelector('[data-reminder-status]');
+            button.disabled = true;
+            if (status) status.textContent = 'Configurando notificações...';
+            try {
+                const cloud = window.PCPE_CLOUD;
+                const user = cloud?.auth?.currentUser;
+                if (!user || !cloud?.db || !cloud?.fs) throw new Error('Entre na sua conta PCPE para ativar os lembretes.');
+                if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+                    throw new Error('Este navegador não oferece suporte a notificações push.');
+                }
+                if (!window.PCPE_PUSH_VAPID_PUBLIC_KEY) {
+                    throw new Error('A chave pública de notificações ainda não foi configurada.');
+                }
+
+                const { doc, setDoc, serverTimestamp } = cloud.fs;
+                const reference = doc(cloud.db, 'pcpeStudyReminders', user.uid, 'devices', getReminderDeviceId());
+                if (state.remindersEnabled) {
+                    await setDoc(reference, { uid: user.uid, enabled: false, updatedAt: serverTimestamp() }, { merge: true });
+                    state.remindersEnabled = false;
+                    save();
+                    button.textContent = 'Ativar lembretes';
+                    if (status) status.textContent = 'Lembretes desativados neste dispositivo.';
+                    return;
+                }
+
+                let permission = Notification.permission;
+                if (permission === 'default') permission = await Notification.requestPermission();
+                if (permission !== 'granted') throw new Error('Permita notificações para receber os lembretes. Verifique as configurações do navegador.');
+
+                const registration = await navigator.serviceWorker.register('./pcpe-study-reminder-sw.js', { scope: './' });
+                const readyRegistration = await navigator.serviceWorker.ready;
+                const pushRegistration = readyRegistration || registration;
+                const existingSubscription = await pushRegistration.pushManager.getSubscription();
+                const subscription = existingSubscription || await pushRegistration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: encodeApplicationServerKey(window.PCPE_PUSH_VAPID_PUBLIC_KEY)
+                });
+
+                await setDoc(reference, {
+                    uid: user.uid,
+                    enabled: true,
+                    subscription: subscription.toJSON(),
+                    timeZone: STUDY_TIME_ZONE,
+                    times: STUDY_BLOCK_STARTS,
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                state.remindersEnabled = true;
+                save();
+                button.textContent = 'Desativar lembretes';
+                if (status) status.textContent = `Lembretes ativos para ${STUDY_BLOCK_STARTS.join(', ')} (horário de Pernambuco).`;
+            } catch (error) {
+                console.error('Não foi possível configurar os lembretes de estudo PCPE:', error);
+                if (status) status.textContent = error.message || 'Não foi possível configurar os lembretes.';
+            } finally {
+                button.disabled = false;
+            }
         }
 
         function getVideoLessons(topic) {
@@ -587,7 +683,7 @@
                 </article>` : day.topics.map((item, index) => `
                 <article class="pcpe-cycle-card">
                     <div class="pcpe-cycle-card-head">
-                        <span class="pcpe-cycle-kicker">BLOCO ${index + 1} · 120 MIN</span>
+                        <span class="pcpe-cycle-kicker">BLOCO ${index + 1} · ${getBlockSchedule(STUDY_BLOCK_STARTS[index]).start}–${getBlockSchedule(STUDY_BLOCK_STARTS[index]).end} · 120 MIN</span>
                         <strong>${escapeHtml(item.subject)}</strong>
                     </div>
                     <h3>${escapeHtml(item.topic)}</h3>
@@ -633,6 +729,17 @@
                             <span>${state.completedStudyDays} dias de estudo concluídos</span>
                         </div>
                     </header>
+                    <section class="pcpe-cycle-reminders">
+                        <div>
+                            <strong>Horários fixos · Pernambuco</strong>
+                            <p>Blocos: ${STUDY_BLOCK_STARTS.map((start, index) => {
+                                const schedule = getBlockSchedule(start);
+                                return `${index + 1}º ${schedule.start}–${schedule.end}`;
+                            }).join(' · ')}</p>
+                            <p data-reminder-status aria-live="polite">${state.remindersEnabled ? 'Lembretes push ativos neste dispositivo.' : 'Ative notificações push para receber um aviso no início de cada bloco, mesmo com a plataforma fechada.'}</p>
+                        </div>
+                        <button type="button" data-toggle-reminders>${state.remindersEnabled ? 'Desativar lembretes' : 'Ativar lembretes'}</button>
+                    </section>
                     <div class="pcpe-cycle-controls">
                         <label class="pcpe-cycle-history-picker">Dia da missão
                             <select data-cycle-history>
@@ -641,7 +748,7 @@
                             </select>
                         </label>
                         <button type="button" data-phase-toggle ${historical ? 'disabled' : ''}>${phase === 'base' ? 'Liberar matérias complementares agora' : 'Voltar à base do núcleo duro'}</button>
-                        <span>Expansão automática após ${BASE_DAYS} dias de estudo</span>
+                        <span>Expansão automática após 6 ciclos completos (42 dias)</span>
                     </div>
                     ${historical ? '<p class="pcpe-cycle-history-note">Você está consultando um dia já concluído. Escolha “Dia atual” no seletor para continuar o ciclo.</p>' : ''}
                     ${historical && day.status?.completed ? `
@@ -697,6 +804,9 @@
         }
 
         function bind() {
+            root.querySelector('[data-toggle-reminders]')?.addEventListener('click', event => {
+                void toggleStudyReminders(event.currentTarget);
+            });
             root.querySelector('[data-cycle-history]')?.addEventListener('change', event => {
                 selectDay(state, event.currentTarget.value);
                 save();
@@ -981,11 +1091,12 @@
     return {
         BASE_SUBJECTS,
         COMPLEMENTARY_SUBJECTS,
-        BASE_DAYS,
+        BASE_CYCLE_DAYS,
         REVIEW_THRESHOLD,
         THEORY_SECONDS,
         QUESTIONS_SECONDS,
         REVIEW_SECONDS,
+        getBlockSchedule,
         isoToday,
         circularTopics,
         getVideoLessonsForTopic,

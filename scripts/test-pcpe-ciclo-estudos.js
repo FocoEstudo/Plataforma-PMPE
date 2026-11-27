@@ -23,7 +23,27 @@ assert.equal(
     api.circularTopics(modules, 'base', 0).every((item, index) => item.subject === api.BASE_SUBJECTS[index]),
     true
 );
-assert.equal(api.getPhase({ ...baseState, completedStudyDays: api.BASE_DAYS }), 'expansion');
+assert.equal(api.getPhase({ ...baseState, totalCompletedDays: api.BASE_CYCLE_DAYS - 1 }), 'base');
+assert.equal(api.getPhase({ ...baseState, totalCompletedDays: api.BASE_CYCLE_DAYS }), 'expansion');
+const sixthWeekReview = api.buildDay(modules, {
+    ...baseState,
+    totalCompletedDays: 41,
+    completedStudyDays: 36,
+    completedCycleDays: 6,
+    cursor: 108
+});
+assert.equal(sixthWeekReview.review, true);
+assert.equal(sixthWeekReview.phase, 'base');
+const firstDayAfterReview = api.buildDay(modules, {
+    ...baseState,
+    totalCompletedDays: 42,
+    completedStudyDays: 36,
+    completedCycleDays: 0,
+    cursor: 108
+});
+assert.equal(firstDayAfterReview.cycleDayNumber, 1);
+assert.equal(firstDayAfterReview.phase, 'expansion');
+assert.notDeepEqual(firstDayAfterReview.topics, api.circularTopics(modules, 'base', 0));
 const mappedVideos = [
     { moduleId: 7, title: 'Video 1' },
     { moduleId: '7', title: 'Video 2' },
