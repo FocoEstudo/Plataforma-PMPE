@@ -3,11 +3,6 @@
     if (typeof module === 'object' && module.exports) module.exports = api;
     if (root) {
         root.PCPE_STUDY_CYCLE = api;
-        if (typeof document !== 'undefined') {
-            const start = () => api.mount(document.getElementById('pcpeCycleRoot'));
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-            else start();
-        }
     }
 })(typeof window !== 'undefined' ? window : null, function () {
     'use strict';
@@ -24,10 +19,14 @@
         'Raciocínio Lógico',
         'Estatística',
         'Contabilidade Geral',
-        'Legislação Estadual'
+        'Legislação Estadual',
+        'Noções de Arquivologia'
     ];
     const BASE_DAYS = 42;
     const REVIEW_THRESHOLD = 65;
+    const THEORY_SECONDS = 80 * 60;
+    const QUESTIONS_SECONDS = 40 * 60;
+    const REVIEW_SECONDS = 25 * 60;
     const STORAGE_PREFIX = 'pmpePcpeStudyCycleV1';
 
     const isoToday = () => {
@@ -40,6 +39,18 @@
             subject,
             topic: module.topic
         }));
+    }
+
+    function getVideoLessonsForTopic(catalog, module) {
+        if (!module || !Array.isArray(catalog)) return [];
+        if (module.moduleId !== undefined && module.moduleId !== null) {
+            const moduleId = String(module.moduleId);
+            return catalog.filter(lesson => String(lesson.moduleId) === moduleId);
+        }
+        return catalog.filter(lesson =>
+            lesson.topic === module.topic ||
+            (module.topic && typeof lesson.subject === 'string' && lesson.subject.endsWith(` · ${module.topic}`))
+        );
     }
 
     function getPhase(state) {
@@ -70,9 +81,24 @@
 
     function buildDay(modules, state) {
         const today = isoToday();
+        const nextSequence = (Number(state.totalCompletedDays) || 0) + 1;
+        if (state.reopenedDay && state.reopenedDay.sequence === nextSequence) {
+            return {
+                ...state.reopenedDay,
+                id: `cycle-${nextSequence}`,
+                sequence: nextSequence,
+                date: state.reopenedDay.date || today,
+                completedStudyDays: state.completedStudyDays,
+                completedCycleDays: state.completedCycleDays
+            };
+        }
         if (isWeeklyReview(state)) {
             return {
+                id: `cycle-${nextSequence}`,
+                sequence: nextSequence,
+                cycleDayNumber: (Number(state.completedCycleDays) || 0) % 7 + 1,
                 date: today,
+                phase: getPhase(state),
                 review: true,
                 topics: state.weakTopics && state.weakTopics.length
                     ? state.weakTopics
@@ -82,7 +108,11 @@
             };
         }
         return {
+            id: `cycle-${nextSequence}`,
+            sequence: nextSequence,
+            cycleDayNumber: (Number(state.completedCycleDays) || 0) % 7 + 1,
             date: today,
+            phase: getPhase(state),
             review: false,
             topics: circularTopics(modules, getPhase(state), state.cursor),
             completedStudyDays: state.completedStudyDays,
@@ -125,14 +155,192 @@
             cursor: 0,
             completedStudyDays: 0,
             completedCycleDays: 0,
+            totalCompletedDays: 0,
             expanded: false,
             blockStarted: false,
             activeBlock: 0,
             dailyStatus: {},
+            history: [],
+            selectedDayId: null,
             records: [],
             lawRead: {},
             timer: null
         };
+    }
+
+    function createBlockProgress(dayId) {
+        return {
+            dayId,
+            block: 0,
+            phase: 'theory',
+            remainingSeconds: THEORY_SECONDS,
+            running: false,
+            endsAt: null,
+            completed: false
+        };
+    }
+
+    function advanceBlockProgress(progress) {
+        const next = { ...progress, running: false, endsAt: null };
+        if (next.phase === 'theory') {
+            next.phase = 'questions';
+            next.remainingSeconds = QUESTIONS_SECONDS;
+        } else if (next.block < 2) {
+            next.block += 1;
+            next.phase = 'theory';
+            next.remainingSeconds = THEORY_SECONDS;
+        } else {
+            next.completed = true;
+            next.remainingSeconds = 0;
+        }
+        return next;
+    }
+
+    function recordQuizResult(state, day, result) {
+        const total = Number(result?.total);
+        const correct = Number(result?.correct);
+        const blockIndex = (day?.topics || []).findIndex(item => item.topic === result?.topic);
+        if (
+            blockIndex < 0 ||
+            !Number.isInteger(total) || total < 0 ||
+            !Number.isInteger(correct) || correct < 0 || correct > total
+        ) return false;
+
+        if (!Array.isArray(state.records)) state.records = [];
+        if (!state.dailyStatus || typeof state.dailyStatus !== 'object') state.dailyStatus = {};
+        if (result.source === 'manual') {
+            state.records = state.records.filter(record =>
+                !(record.source === 'manual' && record.dayId === day.id && record.topic === result.topic)
+            );
+        }
+        state.records.push({
+            topic: result.topic,
+            total,
+            correct,
+            date: day.date || isoToday(),
+            dayId: day.id,
+            source: result.source || 'quiz'
+        });
+        const dayRecords = state.records.filter(record =>
+            record.dayId === day.id && record.topic === result.topic
+        );
+        const status = state.dailyStatus[day.id] || {};
+        status[`block${blockIndex}`] = dayRecords.reduce((sum, record) => ({
+            total: sum.total + (Number(record.total) || 0),
+            correct: sum.correct + (Number(record.correct) || 0)
+        }), { total: 0, correct: 0 });
+        state.dailyStatus[day.id] = status;
+        return true;
+    }
+
+    function getLawSources(guides, topic, subject) {
+        const officialSources = (guides && guides[topic] && Array.isArray(guides[topic].sources)
+            ? guides[topic].sources
+            : []).filter(source =>
+            Array.isArray(source) &&
+            typeof source[0] === 'string' &&
+            typeof source[1] === 'string' &&
+            /^https:\/\/(?:www\.)?(?:planalto\.gov\.br|legis\.alepe\.pe\.gov\.br)\//i.test(source[1])
+        );
+        if (officialSources.length) return officialSources.slice(0, 4);
+
+        const title = String(topic || '').toLowerCase();
+        const subjectName = String(subject || '').toLowerCase();
+        if (/legislação estadual/.test(subjectName) || /pernambuco|estadual/.test(title)) {
+            return [['Portal oficial da legislação de Pernambuco · Alepe Legis', 'https://legis.alepe.pe.gov.br/']];
+        }
+        if (/direito processual penal/.test(subjectName)) {
+            return [['Código de Processo Penal · Planalto', 'https://www.planalto.gov.br/ccivil_03/decreto-lei/del3689.htm']];
+        }
+        if (/direito penal/.test(subjectName) && /aplicação da lei penal|teoria geral do crime|crimes contra/.test(title)) {
+            return [['Código Penal · Planalto', 'https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm']];
+        }
+        if (/direito constitucional/.test(subjectName)) {
+            return [['Constituição Federal · Planalto', 'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm']];
+        }
+        return [['Portal oficial da legislação federal · Planalto', 'https://www.planalto.gov.br/ccivil_03/']];
+    }
+
+    function archiveDay(state, day, status = {}) {
+        if (!Array.isArray(state.history)) state.history = [];
+        if (state.history.some(item => item.id === day.id)) return state.history;
+        state.history.push({
+            id: day.id,
+            sequence: day.sequence || state.totalCompletedDays + 1,
+            cycleDayNumber: day.cycleDayNumber || ((day.sequence - 1) % 7) + 1,
+            date: day.date || isoToday(),
+            review: Boolean(day.review),
+            phase: day.phase || getPhase(state),
+            topics: (day.topics || []).map(item => ({ ...item })),
+            status: { ...status }
+        });
+        return state.history;
+    }
+
+    function selectDay(state, id) {
+        state.selectedDayId = id || null;
+        return state.selectedDayId
+            ? (state.history || []).find(item => item.id === state.selectedDayId) || null
+            : null;
+    }
+
+    function reopenLastCompletedDay(state, id) {
+        const history = Array.isArray(state.history) ? state.history : [];
+        const last = history[history.length - 1];
+        if (!last || last.id !== id || !last.status?.completed) return null;
+
+        history.pop();
+        state.totalCompletedDays = Math.max(0, (Number(state.totalCompletedDays) || history.length + 1) - 1);
+        state.completedCycleDays = ((Number(state.completedCycleDays) || 0) + 6) % 7;
+        if (!last.review) {
+            state.completedStudyDays = Math.max(0, (Number(state.completedStudyDays) || 0) - 1);
+            state.cursor = Math.max(0, (Number(state.cursor) || 0) - 3);
+        }
+
+        const sequence = state.totalCompletedDays + 1;
+        const reopened = {
+            ...last,
+            id: `cycle-${sequence}`,
+            sequence,
+            cycleDayNumber: state.completedCycleDays + 1,
+            status: { ...last.status, completed: false }
+        };
+        state.dailyStatus = state.dailyStatus || {};
+        state.dailyStatus[reopened.id] = {
+            ...reopened.status,
+            topics: reopened.topics.map(item => ({ ...item })),
+            completed: false
+        };
+        state.reopenedDay = reopened;
+        state.selectedDayId = null;
+        state.activeBlock = 0;
+        state.blockProgress = createBlockProgress(reopened.id);
+        return reopened;
+    }
+
+    function migrateHistory(state) {
+        if (!Array.isArray(state.history) || !state.history.length) {
+            state.history = Object.entries(state.dailyStatus || {})
+                .filter(([, status]) => status && status.completed && Array.isArray(status.topics))
+                .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+                .map(([date, status], index) => ({
+                    id: `legacy-${index + 1}`,
+                    sequence: index + 1,
+                    cycleDayNumber: index % 7 + 1,
+                    date,
+                    review: Boolean(status.weeklyReview || status.weeklyErrors || status.weeklyEssay),
+                    phase: 'base',
+                    topics: status.topics.map(item => typeof item === 'string' ? { subject: '', topic: item } : ({ ...item })),
+                    status: { ...status }
+                }));
+            state.totalCompletedDays = Math.max(Number(state.totalCompletedDays) || 0, state.history.length);
+            if (state.history.length && !Number(state.completedCycleDays)) state.completedCycleDays = state.history.length % 7;
+            if (!Number(state.completedStudyDays)) {
+                state.completedStudyDays = state.history.filter(item => !item.review).length;
+            }
+        }
+        state.totalCompletedDays = Math.max(Number(state.totalCompletedDays) || 0, state.history.length);
+        return state;
     }
 
     function mount(root) {
@@ -152,10 +360,13 @@
         if (!Array.isArray(state.records)) state.records = [];
         if (!state.dailyStatus || typeof state.dailyStatus !== 'object') state.dailyStatus = {};
         if (!state.lawRead || typeof state.lawRead !== 'object') state.lawRead = {};
+        migrateHistory(state);
 
         const modules = Array.isArray(window.PCPE_MODULOS) ? window.PCPE_MODULOS : [];
         let day = buildDay(modules, state);
         let timer = null;
+        let reviewTimer = null;
+        let historical = false;
 
         root.closest('#missionsSection')?.classList.add('pcpe-cycle-active');
         if (!document.getElementById('pcpeCycleStyles')) {
@@ -164,7 +375,7 @@
             style.textContent = `
                 #missionsSection.pcpe-cycle-active > .flex, #missionsSection.pcpe-cycle-active > p,
                 #missionsSection.pcpe-cycle-active > .relative, #missionsSection.pcpe-cycle-active > .mt-8 { display:none !important; }
-                .pcpe-cycle-panel{display:grid;gap:1rem;color:#1d2a36}
+                .pcpe-cycle-panel{display:grid;gap:1rem;color:#1d2a36;min-width:0}
                 .pcpe-cycle-header,.pcpe-cycle-controls,.pcpe-cycle-card-head,.pcpe-cycle-timer{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
                 .pcpe-cycle-header{padding:1.25rem;border-radius:1rem;background:linear-gradient(135deg,#10295e,#164c3e);color:white}
                 .pcpe-cycle-header h2{font-size:1.35rem;font-weight:900;margin:.25rem 0 0}
@@ -176,9 +387,12 @@
                 .pcpe-cycle-controls button,.pcpe-cycle-review button,.pcpe-cycle-performance button,.pcpe-cycle-timer button,.pcpe-cycle-complete button{border:0;border-radius:.55rem;padding:.65rem .85rem;font-weight:800;cursor:pointer;background:#174d3a;color:white}
                 .pcpe-cycle-controls span{font-size:.78rem;color:#52605a}
                 .pcpe-cycle-review{padding:1rem;border:2px solid #dc2626;border-radius:.75rem;background:#fff4f4;color:#7f1d1d}
-                .pcpe-cycle-blocks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
-                .pcpe-cycle-card{display:grid;gap:.65rem;padding:1rem;border:1px solid #cbd5df;border-radius:.85rem;background:white;box-shadow:0 8px 24px rgba(15,23,42,.08)}
+                .pcpe-cycle-blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start;gap:.75rem}
+                .pcpe-cycle-card{display:grid;align-content:start;gap:.65rem;min-width:0;padding:1rem;border:1px solid #cbd5df;border-radius:.85rem;background:white;box-shadow:0 8px 24px rgba(15,23,42,.08)}
+                .pcpe-cycle-card h3,.pcpe-cycle-card strong,.pcpe-cycle-coverage summary{overflow-wrap:anywhere}
                 .pcpe-cycle-card h3{font-size:1.05rem;font-weight:900;line-height:1.35}
+                .pcpe-cycle-card-head{align-items:flex-start}
+                .pcpe-cycle-card-head strong{flex:1;text-align:right}
                 .pcpe-cycle-card label{display:flex;align-items:flex-start;gap:.5rem;font-size:.84rem}
                 .pcpe-cycle-card input[type=checkbox]{margin-top:.15rem}
                 .pcpe-cycle-phases{display:grid;gap:.35rem;font-size:.78rem;font-weight:800}
@@ -186,7 +400,28 @@
                 .pcpe-cycle-phases span+span{background:#fff7ed;color:#9a3412}
                 .pcpe-cycle-block-button{border:0;border-radius:.45rem;padding:.45rem .65rem;font-weight:800;background:#2563eb;color:white}
                 .pcpe-cycle-block-button:disabled{background:#9ca3af;cursor:default}
-                .pcpe-cycle-law-check{border-top:1px solid #e2e8f0;padding-top:.65rem}
+                .pcpe-cycle-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem}
+                .pcpe-cycle-actions button{width:100%;min-width:0;white-space:normal;overflow-wrap:anywhere;border:1px solid #174d3a;border-radius:.45rem;padding:.55rem .58rem;font-size:.75rem;line-height:1.3;font-weight:800;background:#fff;color:#174d3a;cursor:pointer}
+                .pcpe-cycle-actions button:nth-child(2){border-color:#1d4ed8;color:#1d4ed8}
+                .pcpe-cycle-actions button:nth-child(3){border-color:#b45309;color:#9a3412}
+                .pcpe-cycle-coverage{padding:.65rem;border:1px solid #d5e0e8;border-radius:.55rem;background:#f8fafc;color:#25364a;font-size:.78rem}
+                .pcpe-cycle-coverage summary{cursor:pointer;font-weight:900}
+                .pcpe-cycle-coverage ul{padding-left:1.25rem;list-style:disc}
+                .pcpe-cycle-coverage-note{padding:.5rem;border-left:3px solid #d97706;background:#fff7ed}
+                .pcpe-cycle-video-list{display:grid;gap:.45rem;padding-left:1.25rem;list-style:decimal}
+                .pcpe-cycle-video-list li{display:grid;gap:.3rem}
+                .pcpe-cycle-video-list button{justify-self:start;max-width:100%;white-space:normal;overflow-wrap:anywhere;border:0;border-radius:.4rem;padding:.4rem .55rem;background:#1d4ed8;color:white;font-size:.72rem;font-weight:800}
+                .pcpe-cycle-video-list label{font-size:.72rem}
+                .pcpe-cycle-video-list small,.pcpe-cycle-no-video{font-size:.68rem;color:#59697a}
+                .pcpe-cycle-history-picker{display:grid;gap:.25rem;font-size:.78rem;font-weight:900}
+                .pcpe-cycle-history-picker select{width:min(100%,28rem);min-width:0;border:1px solid #94a3b8;border-radius:.45rem;padding:.5rem;background:white;color:#1d2a36}
+                .pcpe-cycle-history-note{padding:.75rem;border-radius:.6rem;background:#eff6ff;color:#1e3a8a;font-size:.82rem}
+                .pcpe-cycle-history-note button{margin-top:.55rem;border:0;border-radius:.45rem;padding:.5rem .7rem;background:#174d3a;color:#fff;font-size:.78rem;font-weight:800;cursor:pointer}
+                .pcpe-cycle-law-check{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.65rem;border:1px solid #b6d7c6;border-radius:.55rem;background:#effaf2;font-size:.8rem;font-weight:800}
+                .pcpe-cycle-law-check strong{color:#9a3412}
+                .pcpe-cycle-law-check input:checked+span{color:#166534}
+                .pcpe-cycle-law-actions{display:flex;flex-wrap:wrap;gap:.4rem}
+                .pcpe-cycle-law-actions a{min-width:0;max-width:100%;overflow-wrap:anywhere;border:1px solid #166534;border-radius:.45rem;padding:.45rem .6rem;background:#fff;color:#166534;font-size:.74rem;font-weight:800;text-decoration:none}
                 .pcpe-cycle-performance{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
                 .pcpe-cycle-performance label{display:grid;gap:.25rem;font-size:.75rem;font-weight:800}
                 .pcpe-cycle-performance input{width:100%;border:1px solid #94a3b8;border-radius:.45rem;padding:.55rem;color:#172b45}
@@ -201,7 +436,19 @@
                 .pcpe-cycle-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;padding:1rem;border-radius:.75rem;background:#f8fafc;border:1px solid #dbe3ea}
                 .pcpe-cycle-metrics h3{grid-column:1/-1;font-weight:900}
                 .pcpe-cycle-complete{display:flex;justify-content:flex-end}
-                @media(max-width:900px){.pcpe-cycle-blocks{grid-template-columns:1fr}.pcpe-cycle-metrics{grid-template-columns:1fr}}
+                @media(max-width:640px){
+                    .pcpe-cycle-header,.pcpe-cycle-controls{align-items:stretch}
+                    .pcpe-cycle-header .pcpe-cycle-progress{text-align:left}
+                    .pcpe-cycle-controls{flex-direction:column}
+                    .pcpe-cycle-controls>*{width:100%}
+                    .pcpe-cycle-controls button{white-space:normal}
+                    .pcpe-cycle-actions{grid-template-columns:1fr}
+                    .pcpe-cycle-performance{grid-template-columns:1fr}
+                    .pcpe-cycle-performance button{grid-column:auto}
+                    .pcpe-cycle-timer>div:last-child{width:100%}
+                    .pcpe-cycle-timer button{width:100%}
+                }
+                @media(max-width:380px){.pcpe-cycle-card{padding:.75rem}.pcpe-cycle-header h2{font-size:1.1rem}}
             `;
             document.head.appendChild(style);
         }
@@ -215,26 +462,117 @@
         }
 
         function previousTopics() {
-            const stored = state.dailyStatus[previousDayKey()];
-            return stored && Array.isArray(stored.topics) ? stored.topics : [];
+            const previous = state.history[state.history.length - 1];
+            return previous && Array.isArray(previous.topics) ? previous.topics : [];
         }
 
-        function previousDayKey() {
-            const date = new Date();
-            date.setDate(date.getDate() - 1);
-            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        function getModule(topic) {
+            return modules.find(module => module.topic === topic) || null;
+        }
+
+        function requiresLawReading(subject) {
+            return /Direito|Legislação/.test(subject || '');
+        }
+
+        function lawSourcesHtml(topic, subject) {
+            return getLawSources(window.PCPE_TOPIC_GUIDES, topic, subject)
+                .map(([label, url]) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Abrir lei seca · ${escapeHtml(label)}</a>`)
+                .join('');
+        }
+
+        function getVideoLessons(topic) {
+            const module = (window.PMPE_EDITAL_MODULES || []).find(item => item.topic === topic) || getModule(topic);
+            return getVideoLessonsForTopic(window.PCPE_VIDEO_CATALOG, module);
+        }
+
+        function isVideoWatched(id) {
+            try {
+                const watched = JSON.parse(localStorage.getItem('pcpeVideoLessonWatchedV1') || '{}');
+                return Boolean(watched && watched[id]);
+            } catch (error) {
+                console.error('Não foi possível ler o progresso das videoaulas:', error);
+                return false;
+            }
+        }
+
+        function videoCoverageHtml(topic) {
+            const module = getModule(topic);
+            const scope = Array.isArray(module?.escopo) && module.escopo.length ? module.escopo : [topic];
+            const lessons = getVideoLessons(topic);
+            const watchedCount = lessons.filter(lesson => isVideoWatched(lesson.id)).length;
+            const scopeHtml = scope.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+            const videosHtml = lessons.length
+                ? `<ol class="pcpe-cycle-video-list">${lessons.map(lesson => `
+                    <li>
+                        <button type="button" data-cycle-open-video="${escapeHtml(lesson.id)}">Assistir: ${escapeHtml(lesson.title)}</button>
+                        <label><input type="checkbox" data-cycle-video-watched="${escapeHtml(lesson.id)}" ${isVideoWatched(lesson.id) ? 'checked' : ''}>
+                            Aula assistida</label>
+                        <small>Título identificado como aula complementar deste tópico; não presuma que cobre todo o escopo. Confira todos os itens no PDF.</small>
+                    </li>`).join('')}</ol>`
+                : '<p class="pcpe-cycle-no-video">Não há videoaula verificada vinculada a este tópico. Estude todo o escopo pelo PDF/apostila.</p>';
+            return `<details class="pcpe-cycle-coverage" open>
+                <summary data-cycle-video-summary data-scope-count="${scope.length}">Escopo completo do edital · ${scope.length} itens · Videoaulas assistidas ${watchedCount}/${lessons.length}</summary>
+                <p><strong>Conteúdo que precisa ser estudado por inteiro:</strong></p>
+                <ul>${scopeHtml}</ul>
+                <p class="pcpe-cycle-coverage-note">Videoaulas são complementares. O título da aula não garante cobertura integral; use o PDF acima para fechar todos os itens listados.</p>
+                ${videosHtml}
+            </details>`;
+        }
+
+        function refreshVideoProgress() {
+            root.querySelectorAll('.pcpe-cycle-coverage').forEach(details => {
+                const summary = details.querySelector('[data-cycle-video-summary]');
+                const inputs = [...details.querySelectorAll('[data-cycle-video-watched]')];
+                if (!summary) return;
+                const watchedCount = inputs.filter(input => isVideoWatched(input.dataset.cycleVideoWatched)).length;
+                summary.textContent = `Escopo completo do edital · ${summary.dataset.scopeCount} itens · Videoaulas assistidas ${watchedCount}/${inputs.length}`;
+                inputs.forEach(input => {
+                    input.checked = isVideoWatched(input.dataset.cycleVideoWatched);
+                });
+            });
+        }
+
+        function handleCycleQuizCompleted(event) {
+            const result = event.detail;
+            const currentDay = buildDay(modules, state);
+            if (!result || result.dayId !== currentDay.id || !recordQuizResult(state, currentDay, result)) {
+                console.error('Não foi possível associar o resultado da bateria ao card PCPE:', result);
+                return;
+            }
+            save();
+            render();
         }
 
         function render() {
-            day = buildDay(modules, state);
+            const selectedDay = selectDay(state, state.selectedDayId);
+            historical = Boolean(selectedDay);
+            day = selectedDay || buildDay(modules, state);
             state.weakTopics = weakTopics(state.records);
-            const reviewRequired = Boolean(previousTopics().length);
-            const currentStatus = state.dailyStatus[day.date] || {};
-            if (!day.review) currentStatus.topics = day.topics;
-            state.dailyStatus[day.date] = currentStatus;
-            save();
-            const phase = getPhase(state);
-            const dayNumber = state.completedCycleDays % 7 + 1;
+            const dayKey = day.id;
+            const currentStatus = state.dailyStatus[dayKey] || day.status || {};
+            const reviewRequired = !historical && Boolean(previousTopics().length && !currentStatus.review24h);
+            if (!historical && !day.review) {
+                if (!state.blockProgress || state.blockProgress.dayId !== day.id) {
+                    state.blockProgress = createBlockProgress(day.id);
+                    state.activeBlock = 0;
+                }
+                state.activeBlock = state.blockProgress.block;
+                if (!currentStatus.review24h && (!state.reviewTimer || state.reviewTimer.dayId !== day.id)) {
+                    state.reviewTimer = {
+                        dayId: day.id,
+                        remainingSeconds: REVIEW_SECONDS,
+                        running: false,
+                        endsAt: null
+                    };
+                }
+            }
+            if (!historical) {
+                if (!day.review) currentStatus.topics = day.topics;
+                state.dailyStatus[dayKey] = currentStatus;
+                save();
+            }
+            const phase = day.phase || getPhase(state);
+            const dayNumber = historical ? (day.cycleDayNumber || ((day.sequence - 1) % 7) + 1) : state.completedCycleDays % 7 + 1;
             const metrics = aggregateMetrics(state.records);
 
             const blockCards = day.review ? `
@@ -243,9 +581,9 @@
                     <h3>Revisão geral, simulados de erros e redação</h3>
                     <p>Não avance matéria nova. Revise os tópicos vermelhos, faça uma bateria de erros e produza 1 redação.</p>
                     ${state.weakTopics.map(item => `<p class="pcpe-cycle-weak">${escapeHtml(item.topic)} · ${item.percent}%</p>`).join('')}
-                    <label><input type="checkbox" data-weekly-review ${currentStatus.weeklyReview ? 'checked' : ''}> Revisão geral concluída</label>
-                    <label><input type="checkbox" data-weekly-errors ${currentStatus.weeklyErrors ? 'checked' : ''}> Simulado de erros concluído</label>
-                    <label><input type="checkbox" data-weekly-essay ${currentStatus.weeklyEssay ? 'checked' : ''}> 1 redação concluída</label>
+                    <label><input type="checkbox" data-weekly-review ${currentStatus.weeklyReview ? 'checked' : ''} ${historical ? 'disabled' : ''}> Revisão geral concluída</label>
+                    <label><input type="checkbox" data-weekly-errors ${currentStatus.weeklyErrors ? 'checked' : ''} ${historical ? 'disabled' : ''}> Simulado de erros concluído</label>
+                    <label><input type="checkbox" data-weekly-essay ${currentStatus.weeklyEssay ? 'checked' : ''} ${historical ? 'disabled' : ''}> 1 redação concluída</label>
                 </article>` : day.topics.map((item, index) => `
                 <article class="pcpe-cycle-card">
                     <div class="pcpe-cycle-card-head">
@@ -253,25 +591,32 @@
                         <strong>${escapeHtml(item.subject)}</strong>
                     </div>
                     <h3>${escapeHtml(item.topic)}</h3>
+                    <div class="pcpe-cycle-actions">
+                        <button type="button" data-cycle-pdf="${escapeHtml(item.topic)}">Abrir PDF/Apostila</button>
+                        <button type="button" data-cycle-quiz="${escapeHtml(item.topic)}">Fazer bateria do tópico</button>
+                    </div>
+                    ${videoCoverageHtml(item.topic)}
                     <div class="pcpe-cycle-phases">
                         <span>80 min · Teoria/PDF</span>
                         <span>40 min · Questões</span>
                     </div>
-                    <button type="button" data-activate-block="${index}" class="pcpe-cycle-block-button" ${state.activeBlock === index ? 'disabled' : ''}>
-                        ${state.activeBlock === index ? 'Bloco ativo' : 'Ativar este bloco'}
-                    </button>
-                    <label class="pcpe-law-check">
-                        <input type="checkbox" data-law-topic="${escapeHtml(item.topic)}" ${state.lawRead[item.topic] ? 'checked' : ''}>
-                        Leitura de lei seca concluída
-                    </label>
+                    <span class="pcpe-cycle-kicker">${index < state.activeBlock || state.blockProgress?.completed ? 'BLOCO CONCLUÍDO' : index === state.activeBlock ? 'BLOCO ATIVO' : 'PRÓXIMO BLOCO'}</span>
+                    ${requiresLawReading(item.subject) ? `
+                    <div class="pcpe-cycle-law-reading">
+                        <label class="pcpe-cycle-law-check">
+                            <input type="checkbox" data-law-topic="${escapeHtml(item.topic)}" ${state.lawRead[item.topic] ? 'checked' : ''} ${historical ? 'disabled' : ''}>
+                            <span>Leitura de lei seca · ${state.lawRead[item.topic] ? 'Concluída' : 'Pendente'}</span>
+                        </label>
+                        <div class="pcpe-cycle-law-actions">${lawSourcesHtml(item.topic, item.subject)}</div>
+                    </div>` : ''}
                     <form class="pcpe-cycle-performance" data-performance-block="${index}">
-                        <label>Total de questões feitas
-                            <input type="number" min="0" max="500" name="total" value="${escapeHtml(currentStatus[`block${index}`]?.total || '')}">
+                        <label>Questões extras feitas
+                            <input type="number" min="0" max="500" name="total" value="${escapeHtml(currentStatus[`manualBlock${index}`]?.total ?? currentStatus[`block${index}`]?.total ?? '')}" ${historical ? 'disabled' : ''}>
                         </label>
-                        <label>Acertos
-                            <input type="number" min="0" max="500" name="correct" value="${escapeHtml(currentStatus[`block${index}`]?.correct || '')}">
+                        <label>Acertos extras
+                            <input type="number" min="0" max="500" name="correct" value="${escapeHtml(currentStatus[`manualBlock${index}`]?.correct ?? currentStatus[`block${index}`]?.correct ?? '')}" ${historical ? 'disabled' : ''}>
                         </label>
-                        <button type="submit">Registrar desempenho</button>
+                        <button type="submit" ${historical ? 'disabled' : ''}>Registrar questões extras</button>
                     </form>
                     ${renderTopicMetric(item.topic, metrics)}
                 </article>`).join('');
@@ -280,7 +625,7 @@
                 <section class="pcpe-cycle-panel">
                     <header class="pcpe-cycle-header">
                         <div>
-                            <span class="pcpe-cycle-kicker">CICLO CONTÍNUO PCPE · ${phase === 'base' ? 'FASE 1 · BASE' : 'FASE 2 · EXPANSÃO'}</span>
+                            <span class="pcpe-cycle-kicker">${historical ? `CONSULTA DO DIA ${day.sequence} · ` : 'CICLO CONTÍNUO PCPE · '}${phase === 'base' ? 'FASE 1 · BASE' : 'FASE 2 · EXPANSÃO'}</span>
                             <h2>Meta diária: 360 min · 6 horas líquidas</h2>
                         </div>
                         <div class="pcpe-cycle-progress">
@@ -289,29 +634,45 @@
                         </div>
                     </header>
                     <div class="pcpe-cycle-controls">
-                        <button type="button" data-phase-toggle>${phase === 'base' ? 'Liberar matérias complementares agora' : 'Voltar à base do núcleo duro'}</button>
+                        <label class="pcpe-cycle-history-picker">Dia da missão
+                            <select data-cycle-history>
+                                <option value="" ${historical ? '' : 'selected'}>Dia atual · ${day.review ? 'revisão semanal' : 'próximo dia do ciclo'}</option>
+                                ${state.history.map(item => `<option value="${escapeHtml(item.id)}" ${historical && item.id === day.id ? 'selected' : ''}>Dia ${item.sequence} · ${item.review ? 'Revisão geral' : item.topics.map(topic => escapeHtml(topic.topic)).join(' / ')} · ${escapeHtml(item.date)}</option>`).join('')}
+                            </select>
+                        </label>
+                        <button type="button" data-phase-toggle ${historical ? 'disabled' : ''}>${phase === 'base' ? 'Liberar matérias complementares agora' : 'Voltar à base do núcleo duro'}</button>
                         <span>Expansão automática após ${BASE_DAYS} dias de estudo</span>
                     </div>
+                    ${historical ? '<p class="pcpe-cycle-history-note">Você está consultando um dia já concluído. Escolha “Dia atual” no seletor para continuar o ciclo.</p>' : ''}
+                    ${historical && day.status?.completed ? `
+                    <aside class="pcpe-cycle-history-note">
+                        <strong>Dia concluído</strong>
+                        ${day.id === state.history[state.history.length - 1]?.id
+                            ? '<button type="button" data-reopen-day>Desmarcar dia concluído</button>'
+                            : '<p>Para desmarcar este dia, reabra primeiro o dia concluído mais recente.</p>'}
+                    </aside>` : ''}
                     ${reviewRequired ? `
                     <aside class="pcpe-cycle-review" data-review-24h>
                         <strong>Revisão obrigatória de 24 horas · 25 min</strong>
                         <p>Revise antes do Bloco 1: ${previousTopics().map(topic => escapeHtml(topic.topic || topic)).join(', ')}</p>
-                        <button type="button" data-review-done ${currentStatus.review24h ? 'disabled' : ''}>${currentStatus.review24h ? 'Revisão concluída' : 'Concluir revisão de 25 min'}</button>
+                        <div class="pcpe-cycle-timer">
+                            <strong data-review-timer>25:00</strong>
+                            <button type="button" data-review-toggle ${currentStatus.review24h ? 'disabled' : ''}>${currentStatus.review24h ? 'Revisão concluída' : state.reviewTimer?.running ? 'Pausar revisão' : state.reviewTimer?.remainingSeconds < REVIEW_SECONDS ? 'Continuar revisão' : 'Iniciar revisão'}</button>
+                        </div>
                     </aside>` : ''}
                     <div class="pcpe-cycle-blocks">${blockCards}</div>
-                    ${day.review ? '' : `
+                    ${day.review || historical ? '' : `
                     <section class="pcpe-cycle-timer" data-cycle-timer>
                         <div>
-                            <span id="pcpeCycleTimerPhase">Teoria · 80 min</span>
-                            <strong id="pcpeCycleTimerDisplay">80:00</strong>
+                            <span data-cycle-timer-phase>Teoria · 80 min</span>
+                            <strong data-cycle-timer-display>80:00</strong>
                         </div>
                         <div>
-                            <button type="button" data-timer-toggle>Iniciar</button>
-                            <button type="button" data-timer-next>Avançar fase</button>
+                            <button type="button" data-timer-toggle ${state.blockProgress?.completed ? 'disabled' : ''}>${state.blockProgress?.running ? 'Pausar' : 'Iniciar'}</button>
                         </div>
                     </section>`}
                     <div class="pcpe-cycle-complete">
-                        <button type="button" data-cycle-complete ${currentStatus.completed ? 'disabled' : ''}>
+                        <button type="button" data-cycle-complete ${currentStatus.completed || historical || (!day.review && !state.blockProgress?.completed) ? 'disabled' : ''}>
                             ${currentStatus.completed ? 'Dia concluído' : day.review ? 'Concluir dia de revisão geral' : 'Concluir dia de estudo'}
                         </button>
                     </div>
@@ -331,40 +692,127 @@
             const metric = metrics.find(item => item.topic === topic);
             if (!metric) return '';
             return `<p class="pcpe-cycle-metric ${metric.percent < REVIEW_THRESHOLD ? 'pcpe-cycle-weak' : ''}">
-                Rendimento acumulado: ${metric.percent}%${metric.percent < REVIEW_THRESHOLD ? ' · revisão prioritária' : ''}
+                Questões registradas: ${metric.correct}/${metric.total} acertos · ${metric.percent}%${metric.percent < REVIEW_THRESHOLD ? ' · revisão prioritária' : ''}
             </p>`;
         }
 
         function bind() {
+            root.querySelector('[data-cycle-history]')?.addEventListener('change', event => {
+                selectDay(state, event.currentTarget.value);
+                save();
+                render();
+            });
+            root.querySelector('[data-reopen-day]')?.addEventListener('click', event => {
+                if (!historical || day.id !== state.history[state.history.length - 1]?.id) return;
+                if (!window.confirm('Desmarcar este dia e retomá-lo como a missão atual? O cronômetro do dia será reiniciado; os registros de questões e lei seca serão mantidos.')) return;
+                if (!reopenLastCompletedDay(state, day.id)) {
+                    console.error('Não foi possível reabrir o último dia concluído do ciclo PCPE.', day.id);
+                    return;
+                }
+                save();
+                render();
+            });
             root.querySelector('[data-phase-toggle]')?.addEventListener('click', () => {
+                if (historical) return;
                 state.expanded = !state.expanded;
                 save();
                 render();
             });
-            root.querySelector('[data-review-done]')?.addEventListener('click', event => {
-                const status = state.dailyStatus[day.date] || {};
-                status.review24h = true;
-                state.dailyStatus[day.date] = status;
+            root.querySelector('[data-review-toggle]')?.addEventListener('click', event => {
+                if (historical) return;
+                const review = state.reviewTimer;
+                if (!review || review.dayId !== day.id) return;
+                if (review.running) {
+                    review.remainingSeconds = Math.max(0, Math.ceil((review.endsAt - Date.now()) / 1000));
+                    review.running = false;
+                    review.endsAt = null;
+                } else {
+                    review.running = true;
+                    review.endsAt = Date.now() + review.remainingSeconds * 1000;
+                }
                 save();
-                event.currentTarget.disabled = true;
-                event.currentTarget.textContent = 'Revisão concluída';
+                event.currentTarget.textContent = review.running ? 'Pausar revisão' : 'Continuar revisão';
+                setupReviewTimer();
             });
             root.querySelectorAll('[data-law-topic]').forEach(input => {
                 input.addEventListener('change', () => {
+                    if (historical) return;
                     state.lawRead[input.dataset.lawTopic] = input.checked;
+                    const status = input.parentElement.querySelector('span');
+                    if (status) status.textContent = `Leitura de lei seca · ${input.checked ? 'Concluída' : 'Pendente'}`;
                     save();
                 });
             });
-            root.querySelectorAll('[data-activate-block]').forEach(button => {
+            root.querySelectorAll('[data-cycle-video-watched]').forEach(input => {
+                input.addEventListener('change', () => {
+                    const watchedKey = 'pcpeVideoLessonWatchedV1';
+                    let watched = {};
+                    try {
+                        watched = JSON.parse(localStorage.getItem(watchedKey) || '{}');
+                        if (!watched || typeof watched !== 'object' || Array.isArray(watched)) watched = {};
+                    } catch (error) {
+                        console.error('Não foi possível ler o progresso das videoaulas:', error);
+                    }
+                    watched[input.dataset.cycleVideoWatched] = input.checked;
+                    try {
+                        localStorage.setItem(watchedKey, JSON.stringify(watched));
+                        window.dispatchEvent(new CustomEvent('mission-videos:changed'));
+                        refreshVideoProgress();
+                    } catch (error) {
+                        console.error('Não foi possível salvar o progresso da videoaula:', error);
+                        input.checked = !input.checked;
+                        alert('Não foi possível salvar a aula assistida neste navegador.');
+                    }
+                });
+            });
+            root.querySelectorAll('[data-cycle-open-video]').forEach(button => {
                 button.addEventListener('click', () => {
-                    state.activeBlock = Number(button.dataset.activateBlock);
-                    save();
-                    render();
+                    if (typeof window.openPcpeVideoLesson === 'function') {
+                        window.openPcpeVideoLesson(button.dataset.cycleOpenVideo);
+                    }
+                });
+            });
+            root.querySelectorAll('[data-cycle-pdf]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const topic = button.dataset.cyclePdf;
+                    const module = (window.PMPE_EDITAL_MODULES || modules).find(item => item.topic === topic);
+                    const index = (window.PMPE_EDITAL_MODULES || modules).findIndex(item => item.topic === topic);
+                    if (module?.mat) window.openMaterialModal(module.mat);
+                    else if (index >= 0) window.openMaterialModal(`mat_mission_${index + 1}`);
+                    else window.activateDashboardView('pdfs');
+                });
+            });
+            root.querySelectorAll('[data-cycle-video]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const topic = button.dataset.cycleVideo;
+                    window.activateDashboardView('videos');
+                    const picker = document.getElementById('videoLessonPicker');
+                    if (picker) {
+                        const option = [...picker.options].find(item =>
+                            item.text.toLowerCase().includes(topic.toLowerCase()) ||
+                            topic.toLowerCase().includes(item.text.toLowerCase())
+                        );
+                        if (option) {
+                            picker.value = option.value;
+                            picker.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+            root.querySelectorAll('[data-cycle-quiz]').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (typeof window.openCycleTopicQuiz === 'function') {
+                        window.openCycleTopicQuiz(button.dataset.cycleQuiz, historical ? null : day.id);
+                    } else {
+                        window.activateDashboardView('simulations');
+                    }
                 });
             });
             root.querySelectorAll('[data-performance-block]').forEach(form => {
                 form.addEventListener('submit', event => {
                     event.preventDefault();
+                    if (historical) return;
                     const index = Number(form.dataset.performanceBlock);
                     const total = Number(new FormData(form).get('total'));
                     const correct = Number(new FormData(form).get('correct'));
@@ -373,30 +821,40 @@
                         return;
                     }
                     const item = day.topics[index];
-                    state.records.push({ topic: item.topic, total, correct, date: day.date });
-                    const status = state.dailyStatus[day.date] || {};
-                    status[`block${index}`] = { total, correct };
-                    state.dailyStatus[day.date] = status;
+                    if (!recordQuizResult(state, day, { topic: item.topic, total, correct, source: 'manual' })) {
+                        alert('Não foi possível associar o resultado ao tópico deste bloco.');
+                        return;
+                    }
+                    const status = state.dailyStatus[day.id] || {};
+                    status[`manualBlock${index}`] = { total, correct };
+                    state.dailyStatus[day.id] = status;
                     save();
                     render();
                 });
             });
             root.querySelectorAll('[data-weekly-review],[data-weekly-errors],[data-weekly-essay]').forEach(input => {
                 input.addEventListener('change', () => {
-                    const status = state.dailyStatus[day.date] || {};
+                    if (historical) return;
+                    const status = state.dailyStatus[day.id] || {};
                     if (input.hasAttribute('data-weekly-review')) status.weeklyReview = input.checked;
                     if (input.hasAttribute('data-weekly-errors')) status.weeklyErrors = input.checked;
                     if (input.hasAttribute('data-weekly-essay')) status.weeklyEssay = input.checked;
-                    state.dailyStatus[day.date] = status;
+                    state.dailyStatus[day.id] = status;
                     save();
                 });
             });
             root.querySelector('[data-cycle-complete]')?.addEventListener('click', event => {
-                const status = state.dailyStatus[day.date] || {};
+                if (historical) return;
+                const status = state.dailyStatus[day.id] || {};
                 if (status.completed) return;
                 if (!day.review && previousTopics().length && !status.review24h) {
                     alert('Conclua a revisão obrigatória de 24 horas antes de concluir o dia.');
                     root.querySelector('[data-review-24h]')?.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+                if (!day.review && !state.blockProgress?.completed) {
+                    alert('Conclua os três blocos de 120 minutos, incluindo as fases de 80 minutos de teoria e 40 minutos de questões.');
+                    root.querySelector('[data-cycle-timer]')?.scrollIntoView({ behavior: 'smooth' });
                     return;
                 }
                 if (day.review && !(status.weeklyReview && status.weeklyErrors && status.weeklyEssay)) {
@@ -404,12 +862,16 @@
                     return;
                 }
                 status.completed = true;
-                state.dailyStatus[day.date] = status;
+                state.dailyStatus[day.id] = status;
+                archiveDay(state, day, status);
+                state.totalCompletedDays += 1;
                 state.completedCycleDays = (state.completedCycleDays + 1) % 7;
                 if (!day.review) {
                     state.completedStudyDays += 1;
                     state.cursor += 3;
                 }
+                state.reopenedDay = null;
+                state.selectedDayId = null;
                 save();
                 event.currentTarget.disabled = true;
                 event.currentTarget.textContent = 'Dia concluído';
@@ -419,67 +881,100 @@
         }
 
         function setupTimer() {
+            if (timer) window.clearInterval(timer);
+            timer = null;
             const timerElement = root.querySelector('[data-cycle-timer]');
             if (!timerElement) return;
-            const phaseElement = timerElement.querySelector('#pcpeCycleTimerPhase');
-            const display = timerElement.querySelector('#pcpeCycleTimerDisplay');
+            const progress = state.blockProgress;
+            if (!progress || progress.dayId !== day.id) return;
+            const phaseElement = timerElement.querySelector('[data-cycle-timer-phase]');
+            const display = timerElement.querySelector('[data-cycle-timer-display]');
             const toggle = timerElement.querySelector('[data-timer-toggle]');
-            const next = timerElement.querySelector('[data-timer-next]');
-            let mode = 'theory';
-            let remaining = 80 * 60;
-            let running = false;
-            let endTime = 0;
-            const activeTopic = day.topics[state.activeBlock] || day.topics[0];
-            if (activeTopic) phaseElement.textContent = `Bloco ${state.activeBlock + 1} · ${activeTopic.topic} · 80 min`;
+            const activeTopic = day.topics[progress.block] || day.topics[0];
+            const phaseLabel = progress.phase === 'theory' ? 'Teoria · 80 min' : 'Questões · 40 min';
 
             const show = () => {
                 const subjectLabel = activeTopic ? `${activeTopic.topic} · ` : '';
-                const total = mode === 'theory' ? `${subjectLabel}Teoria · 80 min` : `${subjectLabel}Questões · 40 min`;
-                phaseElement.textContent = total;
-                display.textContent = `${String(Math.floor(remaining / 60)).padStart(2, '0')}:${String(remaining % 60).padStart(2, '0')}`;
+                phaseElement.textContent = progress.completed
+                    ? 'Todos os blocos concluídos'
+                    : `Bloco ${progress.block + 1} · ${subjectLabel}${phaseLabel}`;
+                display.textContent = `${String(Math.floor(progress.remainingSeconds / 60)).padStart(2, '0')}:${String(progress.remainingSeconds % 60).padStart(2, '0')}`;
             };
-            const switchMode = () => {
-                mode = mode === 'theory' ? 'questions' : 'theory';
-                remaining = mode === 'theory' ? 80 * 60 : 40 * 60;
+            const finishPhase = () => {
+                state.blockProgress = advanceBlockProgress(progress);
+                state.activeBlock = state.blockProgress.block;
+                save();
+                render();
+            };
+            const update = () => {
+                if (!progress.running) return;
+                progress.remainingSeconds = Math.max(0, Math.ceil((progress.endsAt - Date.now()) / 1000));
                 show();
+                if (progress.remainingSeconds === 0) finishPhase();
             };
             toggle.addEventListener('click', () => {
-                const status = state.dailyStatus[day.date] || {};
+                if (historical) return;
+                const status = state.dailyStatus[day.id] || {};
                 if (!day.review && previousTopics().length && !status.review24h) {
                     alert('Conclua a revisão obrigatória de 24 horas antes de iniciar o Bloco 1.');
                     root.querySelector('[data-review-24h]')?.scrollIntoView({ behavior: 'smooth' });
                     return;
                 }
-                if (running) {
-                    remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
-                    running = false;
-                    toggle.textContent = 'Continuar';
+                if (progress.running) {
+                    progress.remainingSeconds = Math.max(0, Math.ceil((progress.endsAt - Date.now()) / 1000));
+                    progress.running = false;
+                    progress.endsAt = null;
                 } else {
-                    running = true;
-                    endTime = Date.now() + remaining * 1000;
-                    toggle.textContent = 'Pausar';
+                    progress.running = true;
+                    progress.endsAt = Date.now() + progress.remainingSeconds * 1000;
                 }
-            });
-            next.addEventListener('click', switchMode);
-            timer = window.setInterval(() => {
-                if (!running) return;
-                remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+                save();
                 show();
-                if (remaining === 0) {
-                    running = false;
-                    toggle.textContent = 'Iniciar';
-                    switchMode();
-                }
+                toggle.textContent = progress.running ? 'Pausar' : 'Continuar';
+            });
+            timer = window.setInterval(() => {
+                update();
             }, 1000);
             show();
+            if (progress.running) update();
+        }
+
+        function setupReviewTimer() {
+            if (reviewTimer) window.clearInterval(reviewTimer);
+            reviewTimer = null;
+            const display = root.querySelector('[data-review-timer]');
+            if (!display || !state.reviewTimer || state.reviewTimer.dayId !== day.id) return;
+            const progress = state.reviewTimer;
+            const toggle = root.querySelector('[data-review-toggle]');
+            const update = () => {
+                if (!progress.running) return;
+                progress.remainingSeconds = Math.max(0, Math.ceil((progress.endsAt - Date.now()) / 1000));
+                display.textContent = `${String(Math.floor(progress.remainingSeconds / 60)).padStart(2, '0')}:${String(progress.remainingSeconds % 60).padStart(2, '0')}`;
+                if (progress.remainingSeconds === 0) {
+                    progress.running = false;
+                    progress.endsAt = null;
+                    const status = state.dailyStatus[day.id] || {};
+                    status.review24h = true;
+                    state.dailyStatus[day.id] = status;
+                    save();
+                    render();
+                }
+            };
+            display.textContent = `${String(Math.floor(progress.remainingSeconds / 60)).padStart(2, '0')}:${String(progress.remainingSeconds % 60).padStart(2, '0')}`;
+            reviewTimer = window.setInterval(() => update(), 1000);
+            if (progress.running) update();
         }
 
         window.addEventListener('beforeunload', () => {
             if (timer) window.clearInterval(timer);
+            if (reviewTimer) window.clearInterval(reviewTimer);
             save();
         });
 
         root.__pcpeCycleGetState = () => state;
+        window.addEventListener('pcpe-cycle:quiz-completed', handleCycleQuizCompleted);
+        window.addEventListener('mission-videos:changed', refreshVideoProgress);
+        window.addEventListener('storage', refreshVideoProgress);
         render();
     }
 
@@ -488,13 +983,25 @@
         COMPLEMENTARY_SUBJECTS,
         BASE_DAYS,
         REVIEW_THRESHOLD,
+        THEORY_SECONDS,
+        QUESTIONS_SECONDS,
+        REVIEW_SECONDS,
         isoToday,
         circularTopics,
+        getVideoLessonsForTopic,
+        getLawSources,
         buildDay,
         isWeeklyReview,
         aggregateMetrics,
         weakTopics,
+        createBlockProgress,
+        advanceBlockProgress,
+        recordQuizResult,
         getPhase,
+        archiveDay,
+        selectDay,
+        reopenLastCompletedDay,
+        migrateHistory,
         mount
     };
 });

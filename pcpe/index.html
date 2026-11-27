@@ -5320,6 +5320,14 @@
             EMBEDDED_VIDEO_LESSONS = buildEmbeddedVideoLessonsFromSequence();
             const picker = document.getElementById("videoLessonPicker");
             const lessonEntries = Object.values(EMBEDDED_VIDEO_LESSONS);
+            window.PCPE_VIDEO_CATALOG = lessonEntries;
+            window.openPcpeVideoLesson = lessonId => {
+                if (!EMBEDDED_VIDEO_LESSONS[lessonId]) return false;
+                picker.value = lessonId;
+                renderSelectedVideoLesson(lessonId);
+                window.activateDashboardView("videos");
+                return true;
+            };
             picker.replaceChildren(new Option("Selecione uma aula", ""));
             lessonEntries.forEach(lesson => picker.add(new Option(`${lesson.subject} · ${lesson.title}`, lesson.id)));
             picker.disabled = lessonEntries.length === 0;
@@ -6066,6 +6074,7 @@
         let currentQIndex = 0;
         let score = 0;
         let answersLog = [];
+        let cycleQuizContext = null;
 
         const getDailyModulePackageIssues = () => [];
         function ensureTopicQuestionCoverage() { return []; }
@@ -6216,7 +6225,58 @@
             renderQuizQuestion();
         };
 
+        window.openCycleTopicQuiz = (topic, dayId) => {
+            cycleQuizContext = null;
+            if (!topic) return false;
+            const module = editalModules.find(item => item.topic === topic);
+            const filterTopicQuestions = items => (items || []).filter(question =>
+                question.topic === topic || question.moduleTopics?.includes(topic)
+            );
+            const moduleQuestions = filterTopicQuestions(module?.questionBank);
+            const storedQuestions = filterTopicQuestions(((window.PCPE_QUESTOES || {})[topic] || []).map(question => ({
+                ...question,
+                topic: question.topic || topic,
+                moduleTopics: question.moduleTopics || [topic]
+            })));
+            const questions = (moduleQuestions.length ? moduleQuestions : storedQuestions).slice(0, 10);
+            if (!questions.length) {
+                showModal('Questões não cadastradas', `Ainda não há uma bateria específica cadastrada para "${topic}".`, 'fa-triangle-exclamation');
+                return false;
+            }
+            const pool = questions.map(question => ({
+                ...question,
+                options: [...question.options],
+                subject: topic
+            }));
+            for (let index = pool.length - 1; index > 0; index--) {
+                const randomIndex = Math.floor(Math.random() * (index + 1));
+                [pool[index], pool[randomIndex]] = [pool[randomIndex], pool[index]];
+            }
+            pool.forEach(question => {
+                const alternatives = question.options.map((text, index) => ({
+                    text,
+                    isCorrect: index === question.correct
+                }));
+                alternatives.sort(() => Math.random() - 0.5);
+                question.options = alternatives.map(alternative => alternative.text);
+                question.correct = alternatives.findIndex(alternative => alternative.isCorrect);
+            });
+            currentQuizQuestions = pool;
+            currentQIndex = 0;
+            score = 0;
+            answersLog = [];
+            cycleQuizContext = dayId ? { topic, dayId } : null;
+            document.getElementById('quizModalTitle').innerHTML =
+                `<i class="fa-solid fa-crosshairs mr-2"></i> BATERIA DO TÓPICO - ${pool.length} QUESTÕES`;
+            document.getElementById('quizSubject').innerText = topic;
+            document.getElementById('quizModal').classList.remove('hidden');
+            document.getElementById('quizModal').classList.add('flex');
+            renderQuizQuestion();
+            return true;
+        };
+
         window.openQuiz = (overrideFilter = null) => {
+            cycleQuizContext = null;
             if (overrideFilter !== 'todos') {
                 showModal('Use a bateria da missão', 'Para estudar conteúdos ainda não vistos, utilize as questões dos dois temas específicos do dia. O simulado cumulativo está disponível apenas em dias de revisão.', 'fa-book-open');
                 return;
@@ -6244,6 +6304,7 @@
         };
 
         window.closeQuiz = () => {
+            cycleQuizContext = null;
             document.getElementById('quizModal').classList.add('hidden');
             document.getElementById('quizModal').classList.remove('flex');
         };
@@ -6280,7 +6341,7 @@
 
             const q = currentQuizQuestions[currentQIndex];
             const isCorrect = selectedIndex === q.correct;
-            const letters = ['A', 'B', 'C', 'D'];
+            const letters = ['A', 'B', 'C', 'D', 'E'];
 
             answersLog.push({
                 questionText: q.text,
@@ -6350,6 +6411,17 @@
         };
 
         window.finishQuizReport = () => {
+            const completedCycleQuiz = cycleQuizContext;
+            cycleQuizContext = null;
+            if (completedCycleQuiz) {
+                window.dispatchEvent(new CustomEvent('pcpe-cycle:quiz-completed', {
+                    detail: {
+                        ...completedCycleQuiz,
+                        total: currentQuizQuestions.length,
+                        correct: score
+                    }
+                }));
+            }
             closeQuiz();
             const perc = (score / currentQuizQuestions.length) * 100;
 
@@ -7055,6 +7127,7 @@
                 populateTopicGuides();
                 renderPdfLibrary();
                 initializeEmbeddedVideoLessons();
+                window.PCPE_STUDY_CYCLE?.mount(document.getElementById('pcpeCycleRoot'));
                 window.PMPE_QUESTION_COVERAGE = editalModules.map(module => ({
                     topic: module.topic,
                     topics: module.questionCoverage || [],
